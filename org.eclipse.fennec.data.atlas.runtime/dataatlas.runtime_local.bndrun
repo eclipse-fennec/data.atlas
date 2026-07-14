@@ -1,0 +1,11 @@
+-include: dataatlas.runtime_base.bndrun
+
+-runproperties.local: \
+	base.path=${.},\
+	logback.configurationFile=file:${.}/runtime/etc/logback.xml,\
+	atlas.log.dir=${.}/runtime/log,\
+	org.apache.felix.configadmin.plugin.interpolation.secretsdir=${.}/runtime/secrets,\
+	data=${.}/runtime/data/
+
+-runtrace: true
+-resolve: never

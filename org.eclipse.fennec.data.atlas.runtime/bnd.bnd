@@ -1,0 +1,9 @@
+-include: dataatlas.runtime_base.bndrun
+
+-buildpath: \
+	org.osgi.annotation.versioning,\
+	org.osgi.annotation.bundle
+
+Bundle-Version: 1.0.0.SNAPSHOT
+
+-workingset: dataatlas

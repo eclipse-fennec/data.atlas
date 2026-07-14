@@ -1,0 +1,21 @@
+/*
+ * Stages the exported runtime jar and the runtime directory for the docker build.
+ */
+task prepareDocker(){
+	def stageDir = file('content')
+	doFirst {
+		stageDir.deleteDir()
+	}
+	doLast {
+		println "Prepare Docker build"
+		stageDir.mkdirs()
+		copy {
+			from new File("../../org.eclipse.fennec.data.atlas.runtime/generated/distributions/executable/dataatlas.runtime_docker.jar")
+			into stageDir
+		}
+		copy {
+			from new File("../../org.eclipse.fennec.data.atlas.runtime/runtime/")
+			into new File(stageDir, "runtime")
+		}
+	}
+}

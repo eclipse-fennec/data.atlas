@@ -1,0 +1,8 @@
+-include: dataatlas.runtime_base.bndrun
+
+-runproperties.docker: \
+	base.path=/opt/dataatlas,\
+	logback.configurationFile=file:/opt/dataatlas/runtime/etc/logback.xml,\
+	atlas.log.dir=/opt/dataatlas/runtime/log,\
+	org.apache.felix.configadmin.plugin.interpolation.secretsdir=/opt/dataatlas/runtime/secrets,\
+	data=/opt/dataatlas/runtime/data
