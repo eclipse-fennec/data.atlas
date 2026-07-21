@@ -25,7 +25,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java-version: [21, 25]
+        # Bytecode target is Java 21, but the OSGi tests need a Java 25 runtime:
+        # the Eclipse Daanse sql.* bundles require osgi.ee JavaSE-25.
+        java-version: [25]
       fail-fast: false
     steps:
     - name: Git Checkout

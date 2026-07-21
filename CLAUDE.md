@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Current State
 
-Bootstrapped bnd/Bndtools OSGi workspace (Gradle, Java 21). Contains the two EMF model bundles (`configuration.model`, `dcat.model`), a runtime assembly bundle with bndrun configurations, and a docker build module. The MDO runtime functionality (importer, REST/GraphQL generation, DCAT provider, Configurator/Bootstrap) is not yet migrated.
+Bootstrapped bnd/Bndtools OSGi workspace (Gradle, Java 21 bytecode / Java 25 test runtime). Contains the two EMF model bundles (`configuration.model`, `dcat.model`), the data-plane bundles migrated from model.atlas (`epackage.watcher`, `jpa.watcher`, `jpa.rest`, `jpa.config.local` + test bundles — folder of `.ecore`/`.eorm`/`.csv` → JPA-backed REST at `/jpa/{rootFolderName}/data/{eClassName}`), a runtime assembly bundle with bndrun configurations, and a docker build module. The `epackage.watcher` bundle also contains the `org.eclipse.fennec.data.atlas.emf.common` helper classes (DynamicEPackageConfigurator, EClassResolvingDynamicEFactory) copied from model.atlas. The MDO runtime functionality (importer, REST/GraphQL generation, DCAT provider, Configurator/Bootstrap) is not yet migrated. The data-plane bundles are not yet part of the runtime bndruns/docker image.
 
 ## Purpose & Context
 
@@ -20,6 +20,8 @@ The functionality is migrated from two sources:
 The first bundles to land are the two EMF model bundles: `org.eclipse.fennec.data.atlas.configuration.model` (the configuration model spine: `configuration.ecore`, `emfmapping.ecore`, `validation.ecore`) and `org.eclipse.fennec.data.atlas.dcat.model` (DCAT-AP model stack).
 
 ## Build & Development Commands
+
+**The OSGi tests need a Java 25 runtime** (the Eclipse Daanse `sql.*` bundles require `osgi.ee=JavaSE-25`), while the bytecode target stays Java 21. Locally run Gradle on JDK 25, e.g. `-Dorg.gradle.java.home=N:/tools/java/jdk-25.0.2`; CI uses Java 25.
 
 ```bash
 ./gradlew build          # full build and tests
