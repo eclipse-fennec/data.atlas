@@ -48,6 +48,13 @@ Bnd/Bndtools OSGi workspace built with Gradle, Java 21:
 docker build -t eclipsefennec/data.atlas:snapshot docker/dataatlas/
 ```
 
+## Documentation
+
+Architecture and usage documentation lives in [`docs/`](docs/README.md);
+bundle-specific documentation sits next to the respective bundle (e.g.
+[`jpa.watcher/README.md`](org.eclipse.fennec.data.atlas.jpa.watcher/README.md),
+[`jpa.rest/docs/jpa-rest-api.md`](org.eclipse.fennec.data.atlas.jpa.rest/docs/jpa-rest-api.md)).
+
 ## License
 
 [Eclipse Public License 2.0](LICENSE) — SPDX-License-Identifier: `EPL-2.0`
