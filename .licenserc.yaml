@@ -34,6 +34,7 @@ header:
     - '**/*.ecore'
     - '**/*.xcore'
     - '**/*.genmodel'
+    - '**/*.eorm'
     - '**/*.md'
     - '**/*.MD'
     - '**/.keep'
