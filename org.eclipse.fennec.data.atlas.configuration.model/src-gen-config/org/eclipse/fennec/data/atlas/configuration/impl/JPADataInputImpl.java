@@ -14,8 +14,6 @@
  */
 package org.eclipse.fennec.data.atlas.configuration.impl;
 
-import emfmapping.EntityMappingsType;
-
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
@@ -26,6 +24,8 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.fennec.data.atlas.configuration.DAConfigPackage;
 import org.eclipse.fennec.data.atlas.configuration.JPADataInput;
 import org.eclipse.fennec.data.atlas.configuration.JdbcDataSource;
+
+import org.eclipse.fennec.persistence.eorm.EntityMappings;
 
 /**
  * <!-- begin-user-doc -->
@@ -50,7 +50,7 @@ public class JPADataInputImpl extends DataInputImpl implements JPADataInput {
 	 * @generated
 	 * @ordered
 	 */
-	protected EntityMappingsType persistenceConfig;
+	protected EntityMappings persistenceConfig;
 
 	/**
 	 * The cached value of the '{@link #getDataSource() <em>Data Source</em>}' reference.
@@ -87,10 +87,10 @@ public class JPADataInputImpl extends DataInputImpl implements JPADataInput {
 	 * @generated
 	 */
 	@Override
-	public EntityMappingsType getPersistenceConfig() {
+	public EntityMappings getPersistenceConfig() {
 		if (persistenceConfig != null && persistenceConfig.eIsProxy()) {
 			InternalEObject oldPersistenceConfig = (InternalEObject)persistenceConfig;
-			persistenceConfig = (EntityMappingsType)eResolveProxy(oldPersistenceConfig);
+			persistenceConfig = (EntityMappings)eResolveProxy(oldPersistenceConfig);
 			if (persistenceConfig != oldPersistenceConfig) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, DAConfigPackage.JPA_DATA_INPUT__PERSISTENCE_CONFIG, oldPersistenceConfig, persistenceConfig));
@@ -104,7 +104,7 @@ public class JPADataInputImpl extends DataInputImpl implements JPADataInput {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EntityMappingsType basicGetPersistenceConfig() {
+	public EntityMappings basicGetPersistenceConfig() {
 		return persistenceConfig;
 	}
 
@@ -114,8 +114,8 @@ public class JPADataInputImpl extends DataInputImpl implements JPADataInput {
 	 * @generated
 	 */
 	@Override
-	public void setPersistenceConfig(EntityMappingsType newPersistenceConfig) {
-		EntityMappingsType oldPersistenceConfig = persistenceConfig;
+	public void setPersistenceConfig(EntityMappings newPersistenceConfig) {
+		EntityMappings oldPersistenceConfig = persistenceConfig;
 		persistenceConfig = newPersistenceConfig;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, DAConfigPackage.JPA_DATA_INPUT__PERSISTENCE_CONFIG, oldPersistenceConfig, persistenceConfig));
@@ -188,7 +188,7 @@ public class JPADataInputImpl extends DataInputImpl implements JPADataInput {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case DAConfigPackage.JPA_DATA_INPUT__PERSISTENCE_CONFIG:
-				setPersistenceConfig((EntityMappingsType)newValue);
+				setPersistenceConfig((EntityMappings)newValue);
 				return;
 			case DAConfigPackage.JPA_DATA_INPUT__DATA_SOURCE:
 				setDataSource((JdbcDataSource)newValue);
@@ -206,7 +206,7 @@ public class JPADataInputImpl extends DataInputImpl implements JPADataInput {
 	public void eUnset(int featureID) {
 		switch (featureID) {
 			case DAConfigPackage.JPA_DATA_INPUT__PERSISTENCE_CONFIG:
-				setPersistenceConfig((EntityMappingsType)null);
+				setPersistenceConfig((EntityMappings)null);
 				return;
 			case DAConfigPackage.JPA_DATA_INPUT__DATA_SOURCE:
 				setDataSource((JdbcDataSource)null);

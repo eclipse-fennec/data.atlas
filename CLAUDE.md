@@ -15,9 +15,21 @@ The guiding idea: a Data Atlas instance is described entirely by an **EMF config
 The functionality is migrated from two sources:
 
 - **`de-jena/MDO`** — the prototype that proves the end-to-end pipeline: dynamic EPackage loading, generic REST/OpenAPI/GraphQL generation per model, JDBC→PushStream→QVT→repository import, DCAT/Piveau publishing. Code is ported here under the `org.eclipse.fennec.data.atlas.*` namespace with `org.gecko.*` dependencies replaced by their Eclipse Fennec successors (`emf.osgi`, `emf.codec`, `emf.m2x`, `fennec-persistence`).
-- **`eclipse-fennec/model.atlas`** — its `org.eclipse.fennec.data.atlas.*` data-plane bundles (`epackage.watcher`, `jpa.watcher`, `jpa.rest`, `jpa.config.local` + tests) move here: they turn a folder of `.ecore` models + `.eorm` JPA mappings + `.csv` data into a JPA-backed (EclipseLink + H2) REST endpoint at `/jpa/{rootFolderName}/data/{eClassName}`. See `model.atlas`'s `jpa.watcher/README.md` and `jpa.rest/docs/jpa-rest-api.md` until they land here.
+- **`eclipse-fennec/model.atlas`** — its `org.eclipse.fennec.data.atlas.*` data-plane bundles (`epackage.watcher`, `jpa.watcher`, `jpa.rest`, `jpa.config.local` + tests) moved here: they turn a folder of `.ecore` models + `.eorm` JPA mappings + `.csv` data into a JPA-backed (EclipseLink + H2) REST endpoint at `/jpa/{rootFolderName}/data/{eClassName}`.
 
-The first bundles to land are the two EMF model bundles: `org.eclipse.fennec.data.atlas.configuration.model` (the configuration model spine: `configuration.ecore`, `emfmapping.ecore`, `validation.ecore`) and `org.eclipse.fennec.data.atlas.dcat.model` (DCAT-AP model stack).
+The first bundles to land are the two EMF model bundles: `org.eclipse.fennec.data.atlas.configuration.model` (the configuration model spine: `configuration.ecore`, `validation.ecore`; the JPA mapping is referenced from the `eorm` model of `org.eclipse.fennec.persistence.orm` via `usedGenPackages`) and `org.eclipse.fennec.data.atlas.dcat.model` (DCAT-AP model stack, generated under `org.eclipse.fennec.data.atlas.dcat.*`).
+
+## Documentation
+
+Cross-cutting docs live in `docs/` (index in `docs/README.md`); bundle-specific docs sit next to their bundle:
+
+- `docs/architecture.md` — target architecture (configuration model → Configurator/Bootstrap → runtime services), implemented-vs-missing, key upstream dependencies
+- `docs/data-plane.md` — the JPA data plane: watcher pipeline component-by-component, PID contract (`WatcherConstants`), test conventions
+- `org.eclipse.fennec.data.atlas.configuration.model/configuration.md` — the configuration model
+- `org.eclipse.fennec.data.atlas.jpa.watcher/README.md` — data-folder layout and watcher configuration
+- `org.eclipse.fennec.data.atlas.jpa.rest/docs/jpa-rest-api.md` — REST API reference
+
+Keep these in sync when changing the corresponding code.
 
 ## Build & Development Commands
 
@@ -40,7 +52,8 @@ Re-run the `resolve.*` task after adding bundles or changing dependencies — it
 
 ## Workspace Conventions
 
-- **bnd workspace**: every top-level dir with a `bnd.bnd` is one OSGi bundle, named after its Bundle-SymbolicName (`org.eclipse.fennec.data.atlas.*`); companion `*.tests` bundles for OSGi tests
+- **bnd workspace**: every top-level dir with a `bnd.bnd` is one OSGi bundle, named after its Bundle-SymbolicName (`org.eclipse.fennec.data.atlas.*`); companion `*.tests` bundles for OSGi tests, each with its own `test.bndrun`
+- **Tests must stay OS-neutral**: never embed filesystem paths in LDAP filters (backslashes are LDAP escape characters); compare `Path` objects instead of URI string suffixes
 - Workspace config in `cnf/`: `cnf/ext/fennec.bnd` (fennec libraries, Java 21, `-groupid`), `cnf/ext/central.mvn` (Maven Central coordinates index). Project coordinates live once in `gradle.properties` (`github_org`, `github_repository`, `maven_group_id`)
 - **EMF codegen at build time**: `-generate` in each model bundle's `bnd.bnd` runs the fennecEMF generator (genmodel → `src-gen-*`). Edit the `.ecore`/`.genmodel` and regenerate — never hand-edit generated code. **The `.genmodel` must be reconciled after every ecore refactoring** (moved/removed features leave unresolved proxies that fail the build; the genmodel is edited as plain XML here, there is no Eclipse UI in the loop)
 - Generated sources (`src-gen-config`, `src-gen-dcat`) are committed

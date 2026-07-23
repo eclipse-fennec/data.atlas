@@ -19,5 +19,6 @@ Bundle-Version: 1.0.0
 -includeresource.model: model=model
 
 -buildpath: \
-	org.osgi.service.condition;version=latest
+	org.osgi.service.condition;version=latest,\
+	org.eclipse.fennec.persistence.orm;version=latest
 

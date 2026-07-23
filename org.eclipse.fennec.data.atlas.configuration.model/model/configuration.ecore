@@ -4,7 +4,7 @@
     nsPrefix="configuration">
   <eAnnotations source="http://www.eclipse.org/OCL/Import">
     <details key="ecore" value="http://www.eclipse.org/emf/2002/Ecore"/>
-    <details key="emfmapping" value="platform:/resource/./emfmapping.ecore#/"/>
+    <details key="eorm" value="platform:/resource/org.eclipse.fennec.persistence.orm/model/eorm.ecore#/"/>
   </eAnnotations>
   <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
     <details key="documentation" value="Configuration model for the Fennec Data-Atlas.&#xA;&#xA;It describes - independent of any concrete deployment - which data sources (DataInput) provide data, which DataSets are published, which DataServices (REST, OData, OGC, QGis, XMLA, GraphQL) expose them, which reusable DistributionExport templates are used for serialization, and which Transformations map between models.&#xA;An instance of this model is meant to fully configure a Data-Atlas runtime, while the model types it refers to are resolved against the Model-Atlas EPackage registry."/>
@@ -315,7 +315,7 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="DataInput backed by any relational data source supported by e.g. EclipseLink (JPA)."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="persistenceConfig" eType="ecore:EClass emfmapping.ecore#//EntityMappingsType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="persistenceConfig" eType="ecore:EClass ../../org.eclipse.fennec.persistence.orm/model/eorm.ecore#//EntityMappings">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="JPA entity mapping (the EclipseLink orm.xml equivalent) describing how the model types map to the relational schema."/>
       </eAnnotations>

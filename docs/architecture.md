@@ -55,8 +55,10 @@ flowchart TB
 
 Implemented today:
 
-- **Model bundles**: `configuration.model` (configuration/emfmapping/validation
-  ecores, generated code) and `dcat.model` (DCAT-AP stack).
+- **Model bundles**: `configuration.model` (configuration/validation ecores,
+  generated code; the JPA mapping type is referenced from the `eorm` model of
+  `org.eclipse.fennec.persistence.orm`) and `dcat.model` (DCAT-AP stack,
+  generated under `org.eclipse.fennec.data.atlas.dcat.*`).
 - **JPA data plane** (migrated from model.atlas): a folder of `.ecore` models +
   `.eorm` JPA mappings + `.csv` data becomes a JPA-backed (EclipseLink + H2)
   REST endpoint at `/jpa/{rootFolderName}/data/{eClassName}`.

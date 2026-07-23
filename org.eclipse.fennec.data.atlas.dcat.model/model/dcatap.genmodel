@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
-    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/de.jena.mdo.dcatap.de.model/src" modelPluginID="de.jena.mdo.dcatap.de.model"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.fennec.data.atlas.dcat.model/src" modelPluginID="org.eclipse.fennec.data.atlas.dcat.model"
     modelName="DCATAP" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
     importerID="org.eclipse.emf.importer.ecore" complianceLevel="5.0" copyrightFields="false"
     operationReflection="true" importOrganizing="true" oSGiCompatible="true">
@@ -17,7 +17,7 @@
   <foreignModel>prov.ecore</foreignModel>
   <foreignModel>schema.ecore</foreignModel>
   <foreignModel>dcatap.de.ecore</foreignModel>
-  <genPackages prefix="Dcat" resource="XML" disposableProviderFactory="true" fileExtensions="rdf"
+  <genPackages prefix="Dcat" basePackage="org.eclipse.fennec.data.atlas.dcat" resource="XML" disposableProviderFactory="true" fileExtensions="rdf"
       ecorePackage="dcatap.ecore#/">
     <genClasses ecoreClass="dcatap.ecore#//Catalog">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference dcatap.ecore#//Catalog/catalog"/>
@@ -120,7 +120,7 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference dcatap.ecore#//DatasetContainer/dataset"/>
     </genClasses>
   </genPackages>
-  <genPackages prefix="Foaf" resource="XML" disposableProviderFactory="true" ecorePackage="foaf.ecore#/">
+  <genPackages prefix="Foaf" basePackage="org.eclipse.fennec.data.atlas.dcat" resource="XML" disposableProviderFactory="true" ecorePackage="foaf.ecore#/">
     <genClasses ecoreClass="foaf.ecore#//Agent">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference foaf.ecore#//Agent/agent"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference foaf.ecore#//Agent/organization"/>
@@ -157,7 +157,7 @@
     <genClasses ecoreClass="foaf.ecore#//Organization"/>
     <genClasses ecoreClass="foaf.ecore#//Person"/>
   </genPackages>
-  <genPackages prefix="Rdf" resource="XML" disposableProviderFactory="true" contentTypeIdentifier="dcat.rdf"
+  <genPackages prefix="Rdf" basePackage="org.eclipse.fennec.data.atlas.dcat" resource="XML" disposableProviderFactory="true" contentTypeIdentifier="dcat.rdf"
       ecorePackage="rdf.ecore#/">
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="rdf.ecore#//DatatypeType">
       <genEnumLiterals ecoreEnumLiteral="rdf.ecore#//DatatypeType/httpWwwW3Org2001XMLSchemaDate"/>
@@ -220,7 +220,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute rdf.ecore#//Description/mixed"/>
     </genClasses>
   </genPackages>
-  <genPackages prefix="Skos" resource="XML" disposableProviderFactory="true" ecorePackage="skos.ecore#/">
+  <genPackages prefix="Skos" basePackage="org.eclipse.fennec.data.atlas.dcat" resource="XML" disposableProviderFactory="true" ecorePackage="skos.ecore#/">
     <genClasses ecoreClass="skos.ecore#//Concept">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference skos.ecore#//Concept/concept"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute skos.ecore#//Concept/resource"/>
@@ -249,7 +249,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference skos.ecore#//DocumentRoot/prefLabel"/>
     </genClasses>
   </genPackages>
-  <genPackages prefix="Terms" resource="XML" disposableProviderFactory="true" ecorePackage="terms.ecore#/">
+  <genPackages prefix="Terms" basePackage="org.eclipse.fennec.data.atlas.dcat" resource="XML" disposableProviderFactory="true" ecorePackage="terms.ecore#/">
     <genClasses ecoreClass="terms.ecore#//DocumentRoot">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute terms.ecore#//DocumentRoot/mixed"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference terms.ecore#//DocumentRoot/xMLNSPrefixMap"/>
@@ -361,7 +361,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute terms.ecore#//StandardType/nodeID"/>
     </genClasses>
   </genPackages>
-  <genPackages prefix="Vcard" resource="XML" disposableProviderFactory="true" ecorePackage="vcard.ecore#/">
+  <genPackages prefix="Vcard" basePackage="org.eclipse.fennec.data.atlas.dcat" resource="XML" disposableProviderFactory="true" ecorePackage="vcard.ecore#/">
     <genClasses ecoreClass="vcard.ecore#//Address">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference vcard.ecore#//Address/address"/>
     </genClasses>
@@ -394,7 +394,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference vcard.ecore#//DocumentRoot/hasAddress"/>
     </genClasses>
   </genPackages>
-  <genPackages prefix="Adms" resource="XML" disposableProviderFactory="true" ecorePackage="adms.ecore#/">
+  <genPackages prefix="Adms" basePackage="org.eclipse.fennec.data.atlas.dcat" resource="XML" disposableProviderFactory="true" ecorePackage="adms.ecore#/">
     <genClasses ecoreClass="adms.ecore#//DocumentRoot">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute adms.ecore#//DocumentRoot/mixed"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference adms.ecore#//DocumentRoot/xMLNSPrefixMap"/>
@@ -411,7 +411,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute adms.ecore#//IdentifierType/about"/>
     </genClasses>
   </genPackages>
-  <genPackages prefix="Locn" resource="XML" disposableProviderFactory="true" ecorePackage="locn.ecore#/">
+  <genPackages prefix="Locn" basePackage="org.eclipse.fennec.data.atlas.dcat" resource="XML" disposableProviderFactory="true" ecorePackage="locn.ecore#/">
     <genClasses ecoreClass="locn.ecore#//Address">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference locn.ecore#//Address/address"/>
     </genClasses>
@@ -430,7 +430,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference locn.ecore#//DocumentRoot/geometry"/>
     </genClasses>
   </genPackages>
-  <genPackages prefix="Odrl" resource="XML" disposableProviderFactory="true" ecorePackage="odrl.ecore#/">
+  <genPackages prefix="Odrl" basePackage="org.eclipse.fennec.data.atlas.dcat" resource="XML" disposableProviderFactory="true" ecorePackage="odrl.ecore#/">
     <genClasses ecoreClass="odrl.ecore#//DocumentRoot">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute odrl.ecore#//DocumentRoot/mixed"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference odrl.ecore#//DocumentRoot/xMLNSPrefixMap"/>
@@ -438,7 +438,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute odrl.ecore#//DocumentRoot/hasPolicy"/>
     </genClasses>
   </genPackages>
-  <genPackages prefix="Owl" resource="XML" disposableProviderFactory="true" ecorePackage="owl.ecore#/">
+  <genPackages prefix="Owl" basePackage="org.eclipse.fennec.data.atlas.dcat" resource="XML" disposableProviderFactory="true" ecorePackage="owl.ecore#/">
     <genClasses ecoreClass="owl.ecore#//DocumentRoot">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute owl.ecore#//DocumentRoot/mixed"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference owl.ecore#//DocumentRoot/xMLNSPrefixMap"/>
@@ -446,7 +446,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute owl.ecore#//DocumentRoot/versionInfo"/>
     </genClasses>
   </genPackages>
-  <genPackages prefix="Prov" resource="XML" disposableProviderFactory="true" ecorePackage="prov.ecore#/">
+  <genPackages prefix="Prov" basePackage="org.eclipse.fennec.data.atlas.dcat" resource="XML" disposableProviderFactory="true" ecorePackage="prov.ecore#/">
     <genClasses ecoreClass="prov.ecore#//DocumentRoot">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute prov.ecore#//DocumentRoot/mixed"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference prov.ecore#//DocumentRoot/xMLNSPrefixMap"/>
@@ -455,7 +455,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute prov.ecore#//DocumentRoot/wasGeneratedBy"/>
     </genClasses>
   </genPackages>
-  <genPackages prefix="Schema" resource="XML" disposableProviderFactory="true" ecorePackage="schema.ecore#/">
+  <genPackages prefix="Schema" basePackage="org.eclipse.fennec.data.atlas.dcat" resource="XML" disposableProviderFactory="true" ecorePackage="schema.ecore#/">
     <genClasses ecoreClass="schema.ecore#//DocumentRoot">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute schema.ecore#//DocumentRoot/mixed"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference schema.ecore#//DocumentRoot/xMLNSPrefixMap"/>
@@ -464,7 +464,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference schema.ecore#//DocumentRoot/startDate"/>
     </genClasses>
   </genPackages>
-  <genPackages prefix="DcatDE" disposableProviderFactory="true" ecorePackage="dcatap.de.ecore#/">
+  <genPackages prefix="DcatDE" basePackage="org.eclipse.fennec.data.atlas.dcat" disposableProviderFactory="true" ecorePackage="dcatap.de.ecore#/">
     <genClasses ecoreClass="dcatap.de.ecore#//ContributorID"/>
     <genClasses ecoreClass="dcatap.de.ecore#//DCATDERoot">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute dcatap.de.ecore#//DCATDERoot/mixed"/>

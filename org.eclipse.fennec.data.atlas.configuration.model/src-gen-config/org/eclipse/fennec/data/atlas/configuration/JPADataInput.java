@@ -14,7 +14,7 @@
  */
 package org.eclipse.fennec.data.atlas.configuration;
 
-import emfmapping.EntityMappingsType;
+import org.eclipse.fennec.persistence.eorm.EntityMappings;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -49,12 +49,12 @@ public interface JPADataInput extends DataInput {
 	 * JPA entity mapping (the EclipseLink orm.xml equivalent) describing how the model types map to the relational schema.
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Persistence Config</em>' reference.
-	 * @see #setPersistenceConfig(EntityMappingsType)
+	 * @see #setPersistenceConfig(EntityMappings)
 	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getJPADataInput_PersistenceConfig()
 	 * @model
 	 * @generated
 	 */
-	EntityMappingsType getPersistenceConfig();
+	EntityMappings getPersistenceConfig();
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.fennec.data.atlas.configuration.JPADataInput#getPersistenceConfig <em>Persistence Config</em>}' reference.
@@ -64,7 +64,7 @@ public interface JPADataInput extends DataInput {
 	 * @see #getPersistenceConfig()
 	 * @generated
 	 */
-	void setPersistenceConfig(EntityMappingsType value);
+	void setPersistenceConfig(EntityMappings value);
 
 	/**
 	 * Returns the value of the '<em><b>Data Source</b></em>' reference.

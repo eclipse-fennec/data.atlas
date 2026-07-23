@@ -14,10 +14,6 @@
  */
 package org.eclipse.fennec.data.atlas.configuration.impl;
 
-import emfmapping.EmfmappingPackage;
-
-import emfmapping.impl.EmfmappingPackageImpl;
-
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EOperation;
@@ -55,6 +51,8 @@ import org.eclipse.fennec.data.atlas.configuration.RestDataServiceConfiguration;
 import org.eclipse.fennec.data.atlas.configuration.Transformation;
 import org.eclipse.fennec.data.atlas.configuration.XMLADataService;
 import org.eclipse.fennec.data.atlas.configuration.XMLADataServiceConfiguration;
+
+import org.eclipse.fennec.persistence.eorm.EORMPackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -298,17 +296,14 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 
 		isInited = true;
 
-		// Obtain or create and register interdependencies
-		Object registeredPackage = EPackage.Registry.INSTANCE.getEPackage(EmfmappingPackage.eNS_URI);
-		EmfmappingPackageImpl theEmfmappingPackage = (EmfmappingPackageImpl)(registeredPackage instanceof EmfmappingPackageImpl ? registeredPackage : EmfmappingPackage.eINSTANCE);
+		// Initialize simple dependencies
+		EORMPackage.eINSTANCE.eClass();
 
 		// Create package meta-data objects
 		theDAConfigPackage.createPackageContents();
-		theEmfmappingPackage.createPackageContents();
 
 		// Initialize created meta-data
 		theDAConfigPackage.initializePackageContents();
-		theEmfmappingPackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
 		theDAConfigPackage.freeze();
@@ -1257,7 +1252,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		setNsURI(eNS_URI);
 
 		// Obtain other dependent packages
-		EmfmappingPackage theEmfmappingPackage = (EmfmappingPackage)EPackage.Registry.INSTANCE.getEPackage(EmfmappingPackage.eNS_URI);
+		EORMPackage theEORMPackage = (EORMPackage)EPackage.Registry.INSTANCE.getEPackage(EORMPackage.eNS_URI);
 
 		// Create type parameters
 
@@ -1359,7 +1354,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		initEClass(fileDataInputEClass, FileDataInput.class, "FileDataInput", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(jpaDataInputEClass, JPADataInput.class, "JPADataInput", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getJPADataInput_PersistenceConfig(), theEmfmappingPackage.getEntityMappingsType(), null, "persistenceConfig", null, 0, 1, JPADataInput.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getJPADataInput_PersistenceConfig(), theEORMPackage.getEntityMappings(), null, "persistenceConfig", null, 0, 1, JPADataInput.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getJPADataInput_DataSource(), this.getJdbcDataSource(), null, "dataSource", null, 1, 1, JPADataInput.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(dataTransformationEClass, DataTransformation.class, "DataTransformation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1419,7 +1414,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		   source,
 		   new String[] {
 			   "ecore", "http://www.eclipse.org/emf/2002/Ecore",
-			   "emfmapping", "platform:/resource/./emfmapping.ecore#/"
+			   "eorm", "platform:/resource/org.eclipse.fennec.persistence.orm/model/eorm.ecore#/"
 		   });
 	}
 

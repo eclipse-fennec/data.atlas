@@ -17,7 +17,7 @@ Early bootstrap. The repository currently contains:
 
 | Bundle | Content |
 |---|---|
-| `org.eclipse.fennec.data.atlas.configuration.model` | The Data Atlas configuration model (`configuration.ecore`, `emfmapping.ecore`, `validation.ecore`) with generated code |
+| `org.eclipse.fennec.data.atlas.configuration.model` | The Data Atlas configuration model (`configuration.ecore`, `validation.ecore`) with generated code; references the `eorm` JPA mapping model from `org.eclipse.fennec.persistence.orm` |
 | `org.eclipse.fennec.data.atlas.dcat.model` | DCAT-AP EMF model stack (dcatap, dcatap.de, skos, foaf, vcard, prov, odrl, locn, adms, …) with generated code |
 | `org.eclipse.fennec.data.atlas.runtime` | OSGi runtime assembly (bndrun configurations) and docker export |
 
