@@ -8,9 +8,17 @@ Test-Cases: ${classes;HIERARCHY_INDIRECTLY_ANNOTATED;org.junit.platform.commons.
 	enableOSGi-Test,\
 	enableEMF
 
+# the bundles under test are on the buildpath so gradle builds their jars
+# before resolve.test/testOSGi run (a clean CI checkout resolves against the
+# workspace repository, which only serves already-built jars)
 -buildpath: \
 	org.osgi.framework;version=latest,\
-	org.osgi.service.cm;version=latest
+	org.osgi.service.cm;version=latest,\
+	org.eclipse.fennec.data.atlas.api;version=project,\
+	org.eclipse.fennec.data.atlas.configuration.model;version=project,\
+	org.eclipse.fennec.data.atlas.bootstrap;version=project,\
+	org.eclipse.fennec.data.atlas.input.file;version=project,\
+	org.eclipse.fennec.data.atlas.rest;version=project
 
 Private-Package: \
 	org.eclipse.fennec.data.atlas.tests
