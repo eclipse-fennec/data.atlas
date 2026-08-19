@@ -16,12 +16,17 @@
 # fennecJPA (from org.eclipse.fennec.persistence.jpa.library.workspace) contributes the
 # repository index for the JPA persistence stack; configuration.model builds against
 # org.eclipse.fennec.persistence.orm (eorm genmodel reference) from it.
+# jakartaREST (org.eclipse.osgitech.rest.bnd.library) and fennecCodec
+# (org.eclipse.fennec.codec.workspace.library) contribute the repository indexes for
+# the Jakarta-RS whiteboard stack and the fennec codec (EMF serialization over REST).
 -library: \
 	fennec,\
 	fennecTest,\
 	fennecJacoco,\
 	fennecEMF,\
-	fennecJPA
+	fennecJPA,\
+	jakartaREST,\
+	fennecCodec
 
 base-version: 1.0.0
 javac.source: 21

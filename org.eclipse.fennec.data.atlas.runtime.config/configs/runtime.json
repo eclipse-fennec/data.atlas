@@ -1,0 +1,19 @@
+{
+	":configurator:resource-version": 1,
+	":configurator:symbolicname": "org.eclipse.fennec.data.atlas.runtime.config",
+	":configurator:version": "1.0.0",
+	"org.apache.felix.http~dataAtlas": {
+		"org.osgi.service.http.port": "$[env:DATA_ATLAS_HTTP_PORT;default=8080]",
+		"org.osgi.service.http.host": "0.0.0.0",
+		"org.apache.felix.http.name": "dataAtlas",
+		"org.apache.felix.http.runtime.init.id": "dataAtlasHttp"
+	},
+	"JakartarsServletWhiteboardRuntimeComponent~dataAtlasRest": {
+		"jersey.jaxrs.whiteboard.name": "dataAtlasRest",
+		"jersey.context.path": "rest",
+		"osgi.http.whiteboard.target": "(id=dataAtlasHttp)"
+	},
+	"DataAtlasBootstrap": {
+		"config.uri": "$[env:DATA_ATLAS_CONFIG_URI;default=$[prop:data;default=/opt/dataatlas/runtime/data]/dataatlas.xmi]"
+	}
+}

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Current State
 
-Bootstrapped bnd/Bndtools OSGi workspace (Gradle, Java 21). Contains exactly two bundles — the EMF configuration model bundle (`configuration.model`, building against the `eorm` model of `org.eclipse.fennec.persistence.orm`) and the runtime assembly bundle with bndrun configurations — plus a docker build module. The formerly contained data-plane bundles (`epackage.watcher`, `jpa.watcher`, `jpa.rest`, `jpa.config.local` + tests) and the `dcat.model` bundle were removed in August 2026 and are **out of scope for this repository**; the further roadmap (Configurator/Bootstrap, importers, endpoint generation) is being re-planned.
+Bnd/Bndtools OSGi workspace (Gradle, Java 21). Milestones 0 and 1 of `docs/roadmap.md` are implemented: the reworked configuration model (root `DataAtlasConfiguration` with containment registries) and the file-mode vertical slice — `bootstrap` loads the configuration XMI and registers config objects as OSGi services, `input.file` and `rest` configurators turn them into `EObjectSource`s and Jakarta-RS whiteboard applications (fennec codec serialization). Bundles: `configuration.model`, `api`, `bootstrap`, `input.file`, `rest`, `runtime.config` (resource-only Configurator), `runtime` (bndruns), `tests` (OSGi integration tests), plus the docker module. The old JPA data plane and `dcat.model` were removed in August 2026 and stay out of scope here (see roadmap "Later").
 
 ## Purpose & Context
 
@@ -41,6 +41,10 @@ docker build -t eclipsefennec/data.atlas:snapshot docker/dataatlas/
 ```
 
 Re-run the `resolve.*` task after adding bundles or changing dependencies — it rewrites `-runbundles` in `dataatlas.runtime_base.bndrun`.
+
+**OSGi test wiring**: a `*.tests` project needs a `build.gradle` that points `testOSGi` at the freshly resolved `test.bndrun` (`resolve.test` with `outputBndrun` into the build dir, `testOSGi { bndrun = ... }`); without it, gradle "tests" the project's `bnd.bnd` — which has no `-runfw` — and the launcher dies with `NoClassDefFoundError: org.osgi.framework.*`. The source `test.bndrun` carries only requirements, no committed `-runbundles`.
+
+**One emf.osgi runtime stack**: the fennec codec bundles are built against the emf.osgi 1.1 line (`component.minimal`); the bndruns blacklist the 0.1.x components, and `EPackageConfigurator` services must carry `emf.model.scope=resourceset` or the 1.1 `DefaultEPackageRegistry` ignores them. `persistence.orm` (pulled in by the eorm imports) requires `emf.core=osgi` in `[0,1.0)` — satisfied via `-runsystemcapabilities` until persistence is rebuilt against emf.osgi 1.1.
 
 ## Workspace Conventions
 

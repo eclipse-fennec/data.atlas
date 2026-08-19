@@ -1,7 +1,7 @@
 # Data Atlas — Roadmap
 
-Status: **draft** (2026-08-19). Horizon is deliberately minimal: only Milestone 0
-and Milestone 1 are planned in detail; everything beyond is parked under
+Status: **Milestones 0 and 1 implemented** (2026-08-19). Horizon is deliberately
+minimal: everything beyond is parked under
 [Later](#later-explicitly-not-planned) without commitment.
 
 ## Principles
@@ -165,6 +165,14 @@ Acceptance:
   codec gives for free).
 
 ## Known risks / open decisions
+
+- **emf.osgi version split across snapshot upstreams**: the fennec codec is
+  built against the emf.osgi 1.1 line, `org.eclipse.fennec.persistence` against
+  0.1.x (it requires `emf.core=osgi` in `[0,1.0)`). The runtimes pin the 1.1
+  line (`component.minimal`), blacklist 0.1.x and satisfy persistence's
+  capability range via `-runsystemcapabilities`. The clean fix is upstream: a
+  persistence rebuild against emf.osgi 1.1 (worth a GitHub issue on
+  `eclipse-fennec/emf.persistence-jpa`).
 
 - **Snapshot-only upstreams**: `org.eclipse.fennec.codec` (0.1.0-SNAPSHOT) and
   `org.eclipse.fennec.persistence.jpa` (0.1.0-SNAPSHOT) come from the Central

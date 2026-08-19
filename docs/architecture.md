@@ -64,18 +64,26 @@ flowchart TB
 
 ## Current state vs. target
 
-Implemented today:
+Implemented today (roadmap Milestones 0 and 1):
 
-- **Model bundle**: `configuration.model` (configuration/validation ecores,
-  generated code; the JPA mapping type is referenced from the `eorm` model of
-  `org.eclipse.fennec.persistence.orm`).
-- **Runtime assembly**: bndruns (`_base`/`_local`/`_docker`) and a distroless
-  docker image build.
+- **Model bundle**: `configuration.model` — `DataAtlasConfiguration` root with
+  containment registries (data sources, inputs, data sets, services, exports,
+  transformations); the JPA mapping type is referenced from the `eorm` model of
+  `org.eclipse.fennec.persistence.orm`. Example instance in
+  `configuration.model/example/`.
+- **File-mode vertical slice**: `bootstrap` (loads the configuration XMI,
+  registers referenced EPackages and the configuration objects as OSGi
+  services), `api` (`EObjectSource` SPI + property constants), `input.file`
+  (one `EObjectSource` per `FileDataInput`), `rest` (one Jakarta-RS whiteboard
+  application per `RestDataService`, fennec codec serialization, pagination),
+  `runtime.config` (resource-only Configurator: Felix HTTP + whiteboard +
+  bootstrap config, env-var driven).
+- **Runtime assembly**: bndruns (`_base`/`_local`/`_docker`), distroless docker
+  image serving the example out of the box, OSGi integration tests (`tests`).
 
-The JPA data plane (folder of `.ecore`/`.eorm`/`.csv` → JPA-backed REST) and the
-DCAT-AP model stack were removed from this repository and are **out of scope
-here**. The remaining runtime functionality (Configurator/Bootstrap, importers,
-endpoint generation) is subject to a new plan.
+Not yet implemented: Model Atlas config retrieval mode, JPA input, DCAT,
+the other DataService kinds, importers/transformations (see the
+[roadmap](roadmap.md)).
 
 ## Key dependencies
 
