@@ -15,9 +15,19 @@ The **Data Atlas** is the counterpart to the
 A Data Atlas instance is described entirely by an **EMF configuration model**
 (`DataAtlasConfiguration`, see
 [`configuration.ecore`](../org.eclipse.fennec.data.atlas.configuration.model/model/configuration.ecore)).
-A **Configurator/Bootstrap** component translates that model into running OSGi
-services at runtime — data importers, REST/GraphQL endpoints, DCAT providers.
 The model is the single source of truth, not scattered Config Admin JSONs.
+
+The Data Atlas is a separate, horizontally scalable component: multiple
+instances can run side by side (e.g. to spread load), each described by its own
+`DataAtlasConfiguration`. An instance obtains its configuration in one of two
+modes — **from the file system** or **by retrieving it from the Model Atlas**.
+
+A **Bootstrap** component loads the model and registers the contained
+configuration objects (e.g. each `RestDataService`, each `DataInput`) as OSGi
+services. Per-technology **configurator components** pick these config services
+up whiteboard-style and create the actual runtime pieces — data importers,
+REST/GraphQL endpoints, DCAT providers — and tear them down again when the
+config service disappears.
 
 ```mermaid
 flowchart TB
@@ -32,9 +42,10 @@ flowchart TB
         ROOT --> DS & IN & SET & SVC & EXP & TRAFO
     end
 
-    CONFIG -->|reads & binds| BOOT["Configurator / Bootstrap<br/>(model → Config Admin factory configs)"]
+    SRC["Config source:<br/>file system | Model Atlas"] -->|provides| CONFIG
+    CONFIG -->|loads| BOOT["Bootstrap<br/>(registers configuration objects as OSGi services)"]
 
-    BOOT --> RT
+    BOOT -->|config services picked up by<br/>per-technology configurators| RT
     subgraph RT["Runtime"]
         IMP["Data importer + QVT"]
         REPO["Repositories / DataInputs"]
