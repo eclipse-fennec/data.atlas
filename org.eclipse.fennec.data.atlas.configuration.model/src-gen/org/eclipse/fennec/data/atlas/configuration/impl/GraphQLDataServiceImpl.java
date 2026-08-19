@@ -16,11 +16,15 @@ package org.eclipse.fennec.data.atlas.configuration.impl;
 
 import java.util.Collection;
 
+import org.eclipse.emf.common.notify.NotificationChain;
+
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
 
-import org.eclipse.emf.ecore.util.EObjectResolvingEList;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.eclipse.fennec.data.atlas.configuration.DAConfigPackage;
 import org.eclipse.fennec.data.atlas.configuration.GraphQLDataService;
@@ -41,7 +45,7 @@ import org.eclipse.fennec.data.atlas.configuration.GraphQLDataServiceConfigurati
  */
 public class GraphQLDataServiceImpl extends DataServiceImpl implements GraphQLDataService {
 	/**
-	 * The cached value of the '{@link #getConfiguration() <em>Configuration</em>}' reference list.
+	 * The cached value of the '{@link #getConfiguration() <em>Configuration</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getConfiguration()
@@ -77,9 +81,23 @@ public class GraphQLDataServiceImpl extends DataServiceImpl implements GraphQLDa
 	@Override
 	public EList<GraphQLDataServiceConfiguration> getConfiguration() {
 		if (configuration == null) {
-			configuration = new EObjectResolvingEList<GraphQLDataServiceConfiguration>(GraphQLDataServiceConfiguration.class, this, DAConfigPackage.GRAPH_QL_DATA_SERVICE__CONFIGURATION);
+			configuration = new EObjectContainmentEList<GraphQLDataServiceConfiguration>(GraphQLDataServiceConfiguration.class, this, DAConfigPackage.GRAPH_QL_DATA_SERVICE__CONFIGURATION);
 		}
 		return configuration;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case DAConfigPackage.GRAPH_QL_DATA_SERVICE__CONFIGURATION:
+				return ((InternalEList<?>)getConfiguration()).basicRemove(otherEnd, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**

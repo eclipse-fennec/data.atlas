@@ -78,6 +78,12 @@ public class DAConfigSwitch<T> extends Switch<T> {
 	@Override
 	protected T doSwitch(int classifierID, EObject theEObject) {
 		switch (classifierID) {
+			case DAConfigPackage.DATA_ATLAS_CONFIGURATION: {
+				DataAtlasConfiguration dataAtlasConfiguration = (DataAtlasConfiguration)theEObject;
+				T result = caseDataAtlasConfiguration(dataAtlasConfiguration);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case DAConfigPackage.DATA_PROVIDER: {
 				DataProvider dataProvider = (DataProvider)theEObject;
 				T result = caseDataProvider(dataProvider);
@@ -270,6 +276,21 @@ public class DAConfigSwitch<T> extends Switch<T> {
 			}
 			default: return defaultCase(theEObject);
 		}
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Data Atlas Configuration</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Data Atlas Configuration</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseDataAtlasConfiguration(DataAtlasConfiguration object) {
+		return null;
 	}
 
 	/**

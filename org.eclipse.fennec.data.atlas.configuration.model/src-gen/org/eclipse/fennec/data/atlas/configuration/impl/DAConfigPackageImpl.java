@@ -26,6 +26,7 @@ import org.eclipse.fennec.data.atlas.configuration.BridgeRepository;
 import org.eclipse.fennec.data.atlas.configuration.CSVDistributionExport;
 import org.eclipse.fennec.data.atlas.configuration.DAConfigFactory;
 import org.eclipse.fennec.data.atlas.configuration.DAConfigPackage;
+import org.eclipse.fennec.data.atlas.configuration.DataAtlasConfiguration;
 import org.eclipse.fennec.data.atlas.configuration.DataInput;
 import org.eclipse.fennec.data.atlas.configuration.DataProvider;
 import org.eclipse.fennec.data.atlas.configuration.DataService;
@@ -61,6 +62,13 @@ import org.eclipse.fennec.persistence.eorm.EORMPackage;
  * @generated
  */
 public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage {
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass dataAtlasConfigurationEClass = null;
+
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -311,6 +319,96 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		// Update the registry and return the package
 		EPackage.Registry.INSTANCE.put(DAConfigPackage.eNS_URI, theDAConfigPackage);
 		return theDAConfigPackage;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EClass getDataAtlasConfiguration() {
+		return dataAtlasConfigurationEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getDataAtlasConfiguration_Name() {
+		return (EAttribute)dataAtlasConfigurationEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getDataAtlasConfiguration_Description() {
+		return (EAttribute)dataAtlasConfigurationEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getDataAtlasConfiguration_DataSources() {
+		return (EReference)dataAtlasConfigurationEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getDataAtlasConfiguration_DataInputs() {
+		return (EReference)dataAtlasConfigurationEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getDataAtlasConfiguration_DataSets() {
+		return (EReference)dataAtlasConfigurationEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getDataAtlasConfiguration_Services() {
+		return (EReference)dataAtlasConfigurationEClass.getEStructuralFeatures().get(5);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getDataAtlasConfiguration_Exports() {
+		return (EReference)dataAtlasConfigurationEClass.getEStructuralFeatures().get(6);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getDataAtlasConfiguration_Transformations() {
+		return (EReference)dataAtlasConfigurationEClass.getEStructuralFeatures().get(7);
 	}
 
 	/**
@@ -829,6 +927,16 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
+	public EAttribute getFileDataInput_Uri() {
+		return (EAttribute)fileDataInputEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getJPADataInput() {
 		return jpaDataInputEClass;
 	}
@@ -1122,6 +1230,16 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		isCreated = true;
 
 		// Create classes and their features
+		dataAtlasConfigurationEClass = createEClass(DATA_ATLAS_CONFIGURATION);
+		createEAttribute(dataAtlasConfigurationEClass, DATA_ATLAS_CONFIGURATION__NAME);
+		createEAttribute(dataAtlasConfigurationEClass, DATA_ATLAS_CONFIGURATION__DESCRIPTION);
+		createEReference(dataAtlasConfigurationEClass, DATA_ATLAS_CONFIGURATION__DATA_SOURCES);
+		createEReference(dataAtlasConfigurationEClass, DATA_ATLAS_CONFIGURATION__DATA_INPUTS);
+		createEReference(dataAtlasConfigurationEClass, DATA_ATLAS_CONFIGURATION__DATA_SETS);
+		createEReference(dataAtlasConfigurationEClass, DATA_ATLAS_CONFIGURATION__SERVICES);
+		createEReference(dataAtlasConfigurationEClass, DATA_ATLAS_CONFIGURATION__EXPORTS);
+		createEReference(dataAtlasConfigurationEClass, DATA_ATLAS_CONFIGURATION__TRANSFORMATIONS);
+
 		dataProviderEClass = createEClass(DATA_PROVIDER);
 		createEAttribute(dataProviderEClass, DATA_PROVIDER__ID);
 		createEAttribute(dataProviderEClass, DATA_PROVIDER__NAME);
@@ -1190,6 +1308,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		mongoRepositoryEClass = createEClass(MONGO_REPOSITORY);
 
 		fileDataInputEClass = createEClass(FILE_DATA_INPUT);
+		createEAttribute(fileDataInputEClass, FILE_DATA_INPUT__URI);
 
 		jpaDataInputEClass = createEClass(JPA_DATA_INPUT);
 		createEReference(jpaDataInputEClass, JPA_DATA_INPUT__PERSISTENCE_CONFIG);
@@ -1282,6 +1401,16 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		csvDistributionExportEClass.getESuperTypes().add(this.getDistributionExport());
 
 		// Initialize classes, features, and operations; add parameters
+		initEClass(dataAtlasConfigurationEClass, DataAtlasConfiguration.class, "DataAtlasConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getDataAtlasConfiguration_Name(), ecorePackage.getEString(), "name", null, 1, 1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDataAtlasConfiguration_Description(), ecorePackage.getEString(), "description", null, 0, 1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getDataAtlasConfiguration_DataSources(), this.getJdbcDataSource(), null, "dataSources", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getDataAtlasConfiguration_DataInputs(), this.getDataInput(), null, "dataInputs", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getDataAtlasConfiguration_DataSets(), this.getDataSet(), null, "dataSets", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getDataAtlasConfiguration_Services(), this.getDataService(), null, "services", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getDataAtlasConfiguration_Exports(), this.getDistributionExport(), null, "exports", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getDataAtlasConfiguration_Transformations(), this.getTransformation(), null, "transformations", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
 		initEClass(dataProviderEClass, DataProvider.class, "DataProvider", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getDataProvider_Id(), ecorePackage.getEString(), "id", null, 1, 1, DataProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getDataProvider_Name(), ecorePackage.getEString(), "name", null, 1, 1, DataProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1314,7 +1443,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		initEOperation(getDataService__GetDistributions(), null, "getDistributions", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(restDataServiceEClass, RestDataService.class, "RestDataService", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getRestDataService_Configuration(), this.getRestDataServiceConfiguration(), null, "configuration", null, 0, -1, RestDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getRestDataService_Configuration(), this.getRestDataServiceConfiguration(), null, "configuration", null, 0, -1, RestDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getRestDataService_OpenAPI(), ecorePackage.getEBoolean(), "openAPI", null, 1, 1, RestDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getRestDataService_PaginationOffsetParameterName(), ecorePackage.getEString(), "paginationOffsetParameterName", "offset", 1, 1, RestDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getRestDataService_PaginationSizeParameterName(), ecorePackage.getEString(), "paginationSizeParameterName", "limit", 1, 1, RestDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1329,16 +1458,16 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		initEAttribute(getRestDataServiceConfiguration_BatchSizeLimit(), ecorePackage.getEBigInteger(), "batchSizeLimit", "-1", 1, 1, RestDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(xmlaDataServiceEClass, XMLADataService.class, "XMLADataService", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getXMLADataService_Configuration(), this.getXMLADataServiceConfiguration(), null, "configuration", null, 0, -1, XMLADataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getXMLADataService_Configuration(), this.getXMLADataServiceConfiguration(), null, "configuration", null, 0, -1, XMLADataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		initEClass(xmlaDataServiceConfigurationEClass, XMLADataServiceConfiguration.class, "XMLADataServiceConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getXMLADataServiceConfiguration_Mapping(), ecorePackage.getEClass(), null, "mapping", null, 1, 1, XMLADataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(graphQLDataServiceEClass, GraphQLDataService.class, "GraphQLDataService", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getGraphQLDataService_Configuration(), this.getGraphQLDataServiceConfiguration(), null, "configuration", null, 0, -1, GraphQLDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getGraphQLDataService_Configuration(), this.getGraphQLDataServiceConfiguration(), null, "configuration", null, 0, -1, GraphQLDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		initEClass(qGisDataServiceEClass, QGisDataService.class, "QGisDataService", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getQGisDataService_Configuration(), this.getQGisDataServiceConfiguration(), null, "configuration", null, 0, -1, QGisDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getQGisDataService_Configuration(), this.getQGisDataServiceConfiguration(), null, "configuration", null, 0, -1, QGisDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		initEClass(qGisDataServiceConfigurationEClass, QGisDataServiceConfiguration.class, "QGisDataServiceConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getQGisDataServiceConfiguration_Layer(), ecorePackage.getEClass(), null, "layer", null, 1, 1, QGisDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1352,6 +1481,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		initEClass(mongoRepositoryEClass, MongoRepository.class, "MongoRepository", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(fileDataInputEClass, FileDataInput.class, "FileDataInput", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getFileDataInput_Uri(), ecorePackage.getEString(), "uri", null, 1, 1, FileDataInput.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(jpaDataInputEClass, JPADataInput.class, "JPADataInput", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getJPADataInput_PersistenceConfig(), theEORMPackage.getEntityMappings(), null, "persistenceConfig", null, 0, 1, JPADataInput.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1365,7 +1495,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		initEClass(queryTransformationEClass, QueryTransformation.class, "QueryTransformation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(oDataDataServiceEClass, ODataDataService.class, "ODataDataService", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getODataDataService_Configuration(), this.getODataDataServiceConfiguration(), null, "configuration", null, 0, -1, ODataDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getODataDataService_Configuration(), this.getODataDataServiceConfiguration(), null, "configuration", null, 0, -1, ODataDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		initEClass(oDataDataServiceConfigurationEClass, ODataDataServiceConfiguration.class, "ODataDataServiceConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -1436,6 +1566,60 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 			   "copyrightText", "******************************************************************\nCopyright (c) 2026 Contributors to the Eclipse Foundation.\n\nThis program and the accompanying materials are made\navailable under the terms of the Eclipse Public License 2.0\nwhich is available at https://www.eclipse.org/legal/epl-2.0/\n\nSPDX-License-Identifier: EPL-2.0\n\nContributors:\n  Data In Motion Consulting - initial implementation\n******************************************************************",
 			   "complianceLevel", "21.0",
 			   "resource", "XMI"
+		   });
+		addAnnotation
+		  (dataAtlasConfigurationEClass,
+		   source,
+		   new String[] {
+			   "documentation", "Root of the configuration model: the complete description of exactly one Data-Atlas instance.\nMultiple Data-Atlas instances can run side by side (e.g. to spread load); each instance is fed its own DataAtlasConfiguration, obtained either from the file system or by retrieving it from the Model-Atlas.\n\nThe root acts as a set of registries: data sources, data inputs, transformations and distribution-export templates are defined here exactly once and only referenced from DataServices and DataSets, so the same service definition can be re-applied to another data source (tenant/test system) and export settings are reusable templates rather than per-provider copies."
+		   });
+		addAnnotation
+		  (getDataAtlasConfiguration_Name(),
+		   source,
+		   new String[] {
+			   "documentation", "Name of the Data-Atlas instance this configuration describes."
+		   });
+		addAnnotation
+		  (getDataAtlasConfiguration_Description(),
+		   source,
+		   new String[] {
+			   "documentation", "Optional description of this Data-Atlas instance."
+		   });
+		addAnnotation
+		  (getDataAtlasConfiguration_DataSources(),
+		   source,
+		   new String[] {
+			   "documentation", "Registry of reusable data source definitions, referenced from DataInputs."
+		   });
+		addAnnotation
+		  (getDataAtlasConfiguration_DataInputs(),
+		   source,
+		   new String[] {
+			   "documentation", "Registry of the DataInputs of this instance, referenced from DataServices and DataSets."
+		   });
+		addAnnotation
+		  (getDataAtlasConfiguration_DataSets(),
+		   source,
+		   new String[] {
+			   "documentation", "Registry of the DataSets of this instance, referenced from the DataServiceConfigurations."
+		   });
+		addAnnotation
+		  (getDataAtlasConfiguration_Services(),
+		   source,
+		   new String[] {
+			   "documentation", "The DataServices (endpoints) this instance publishes."
+		   });
+		addAnnotation
+		  (getDataAtlasConfiguration_Exports(),
+		   source,
+		   new String[] {
+			   "documentation", "Registry of reusable DistributionExport templates, referenced from DataServices and DataSets."
+		   });
+		addAnnotation
+		  (getDataAtlasConfiguration_Transformations(),
+		   source,
+		   new String[] {
+			   "documentation", "Registry of the Transformations of this instance, referenced from DataProviders and BridgeRepositories."
 		   });
 		addAnnotation
 		  (dataProviderEClass,
@@ -1742,6 +1926,12 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		   source,
 		   new String[] {
 			   "documentation", "DataInput backed by EMF files as a source."
+		   });
+		addAnnotation
+		  (getFileDataInput_Uri(),
+		   source,
+		   new String[] {
+			   "documentation", "URI of the EMF resource (or a directory of EMF resources) this input loads its EObjects from."
 		   });
 		addAnnotation
 		  (jpaDataInputEClass,

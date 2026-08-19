@@ -41,16 +41,16 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface ODataDataService extends DataService {
 	/**
-	 * Returns the value of the '<em><b>Configuration</b></em>' reference list.
+	 * Returns the value of the '<em><b>Configuration</b></em>' containment reference list.
 	 * The list contents are of type {@link org.eclipse.fennec.data.atlas.configuration.ODataDataServiceConfiguration}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
 	 * The per-DataSet OData configurations provided by this service.
 	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Configuration</em>' reference list.
+	 * @return the value of the '<em>Configuration</em>' containment reference list.
 	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getODataDataService_Configuration()
-	 * @model ordered="false"
+	 * @model containment="true" ordered="false"
 	 *        annotation="http://www.eclipse.org/OCL/Collection nullFree='false'"
 	 * @generated
 	 */

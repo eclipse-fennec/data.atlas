@@ -17,14 +17,17 @@ package org.eclipse.fennec.data.atlas.configuration.impl;
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
-import org.eclipse.emf.ecore.util.EObjectResolvingEList;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.eclipse.fennec.data.atlas.configuration.DAConfigPackage;
 import org.eclipse.fennec.data.atlas.configuration.RestDataService;
@@ -48,7 +51,7 @@ import org.eclipse.fennec.data.atlas.configuration.RestDataServiceConfiguration;
  */
 public class RestDataServiceImpl extends DataServiceImpl implements RestDataService {
 	/**
-	 * The cached value of the '{@link #getConfiguration() <em>Configuration</em>}' reference list.
+	 * The cached value of the '{@link #getConfiguration() <em>Configuration</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getConfiguration()
@@ -144,7 +147,7 @@ public class RestDataServiceImpl extends DataServiceImpl implements RestDataServ
 	@Override
 	public EList<RestDataServiceConfiguration> getConfiguration() {
 		if (configuration == null) {
-			configuration = new EObjectResolvingEList<RestDataServiceConfiguration>(RestDataServiceConfiguration.class, this, DAConfigPackage.REST_DATA_SERVICE__CONFIGURATION);
+			configuration = new EObjectContainmentEList<RestDataServiceConfiguration>(RestDataServiceConfiguration.class, this, DAConfigPackage.REST_DATA_SERVICE__CONFIGURATION);
 		}
 		return configuration;
 	}
@@ -216,6 +219,20 @@ public class RestDataServiceImpl extends DataServiceImpl implements RestDataServ
 		paginationSizeParameterName = newPaginationSizeParameterName;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, DAConfigPackage.REST_DATA_SERVICE__PAGINATION_SIZE_PARAMETER_NAME, oldPaginationSizeParameterName, paginationSizeParameterName));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case DAConfigPackage.REST_DATA_SERVICE__CONFIGURATION:
+				return ((InternalEList<?>)getConfiguration()).basicRemove(otherEnd, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**

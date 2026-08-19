@@ -80,6 +80,10 @@ public class DAConfigAdapterFactory extends AdapterFactoryImpl {
 	protected DAConfigSwitch<Adapter> modelSwitch =
 		new DAConfigSwitch<Adapter>() {
 			@Override
+			public Adapter caseDataAtlasConfiguration(DataAtlasConfiguration object) {
+				return createDataAtlasConfigurationAdapter();
+			}
+			@Override
 			public Adapter caseDataProvider(DataProvider object) {
 				return createDataProviderAdapter();
 			}
@@ -206,6 +210,20 @@ public class DAConfigAdapterFactory extends AdapterFactoryImpl {
 		return modelSwitch.doSwitch((EObject)target);
 	}
 
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.fennec.data.atlas.configuration.DataAtlasConfiguration <em>Data Atlas Configuration</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DataAtlasConfiguration
+	 * @generated
+	 */
+	public Adapter createDataAtlasConfigurationAdapter() {
+		return null;
+	}
 
 	/**
 	 * Creates a new adapter for an object of class '{@link org.eclipse.fennec.data.atlas.configuration.DataProvider <em>Data Provider</em>}'.

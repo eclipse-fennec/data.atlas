@@ -68,6 +68,7 @@ public class DAConfigFactoryImpl extends EFactoryImpl implements DAConfigFactory
 	@Override
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
+			case DAConfigPackage.DATA_ATLAS_CONFIGURATION: return createDataAtlasConfiguration();
 			case DAConfigPackage.BRIDGE_REPOSITORY: return createBridgeRepository();
 			case DAConfigPackage.DATA_SET: return createDataSet();
 			case DAConfigPackage.REST_DATA_SERVICE: return createRestDataService();
@@ -93,6 +94,17 @@ public class DAConfigFactoryImpl extends EFactoryImpl implements DAConfigFactory
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public DataAtlasConfiguration createDataAtlasConfiguration() {
+		DataAtlasConfigurationImpl dataAtlasConfiguration = new DataAtlasConfigurationImpl();
+		return dataAtlasConfiguration;
 	}
 
 	/**

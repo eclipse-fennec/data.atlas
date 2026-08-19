@@ -48,7 +48,7 @@ Re-run the `resolve.*` task after adding bundles or changing dependencies — it
 - **Tests must stay OS-neutral**: never embed filesystem paths in LDAP filters (backslashes are LDAP escape characters); compare `Path` objects instead of URI string suffixes
 - Workspace config in `cnf/`: `cnf/ext/fennec.bnd` (fennec libraries, Java 21, `-groupid`), `cnf/ext/central.mvn` (Maven Central coordinates index). Project coordinates live once in `gradle.properties` (`github_org`, `github_repository`, `maven_group_id`)
 - **EMF codegen at build time**: `-generate` in each model bundle's `bnd.bnd` runs the fennecEMF generator (genmodel → `src-gen-*`). Edit the `.ecore`/`.genmodel` and regenerate — never hand-edit generated code. **The `.genmodel` must be reconciled after every ecore refactoring** (moved/removed features leave unresolved proxies that fail the build; the genmodel is edited as plain XML here, there is no Eclipse UI in the loop)
-- Generated sources (`src-gen-config`) are committed
+- Generated sources (`src-gen`) are committed
 - OSGi Declarative Services annotations for component wiring
 - License: EPL-2.0, headers checked by SkyWalking Eyes (`.licenserc.yaml`, CI `license.yml`)
 

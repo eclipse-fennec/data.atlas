@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
     xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" copyrightText="******************************************************************&#xA;Copyright (c) 2026 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0&#xA;&#xA;Contributors:&#xA;  Data In Motion Consulting - initial implementation&#xA;******************************************************************"
-    modelDirectory="/org.eclipse.fennec.data-atlas.configuration.model/src" modelPluginID="org.eclipse.fennec.data-atlas.configuration.model"
+    modelDirectory="/org.eclipse.fennec.data.atlas.configuration.model/src" modelPluginID="org.eclipse.fennec.data.atlas.configuration.model"
     modelName="configuration" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
     importerID="org.eclipse.emf.importer.ecore" complianceLevel="21.0" suppressGenModelAnnotations="false"
     copyrightFields="false" usedGenPackages="../../org.eclipse.fennec.persistence.orm/model/epersistence.genmodel#//eorm"
@@ -9,6 +9,16 @@
   <foreignModel>configuration.ecore</foreignModel>
   <genPackages prefix="DAConfig" basePackage="org.eclipse.fennec.data.atlas" resource="XMI"
       disposableProviderFactory="true" ecorePackage="configuration.ecore#/">
+    <genClasses ecoreClass="configuration.ecore#//DataAtlasConfiguration">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DataAtlasConfiguration/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DataAtlasConfiguration/description"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//DataAtlasConfiguration/dataSources"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//DataAtlasConfiguration/dataInputs"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//DataAtlasConfiguration/dataSets"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//DataAtlasConfiguration/services"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//DataAtlasConfiguration/exports"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//DataAtlasConfiguration/transformations"/>
+    </genClasses>
     <genClasses image="false" ecoreClass="configuration.ecore#//DataProvider">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DataProvider/id"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DataProvider/name"/>
@@ -39,7 +49,7 @@
       <genOperations ecoreOperation="configuration.ecore#//DataService/getDistributions"/>
     </genClasses>
     <genClasses ecoreClass="configuration.ecore#//RestDataService">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//RestDataService/configuration"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//RestDataService/configuration"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//RestDataService/openAPI"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//RestDataService/paginationOffsetParameterName"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//RestDataService/paginationSizeParameterName"/>
@@ -54,16 +64,16 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//RestDataServiceConfiguration/batchSizeLimit"/>
     </genClasses>
     <genClasses ecoreClass="configuration.ecore#//XMLADataService">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//XMLADataService/configuration"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//XMLADataService/configuration"/>
     </genClasses>
     <genClasses ecoreClass="configuration.ecore#//XMLADataServiceConfiguration">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//XMLADataServiceConfiguration/mapping"/>
     </genClasses>
     <genClasses ecoreClass="configuration.ecore#//GraphQLDataService">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//GraphQLDataService/configuration"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//GraphQLDataService/configuration"/>
     </genClasses>
     <genClasses ecoreClass="configuration.ecore#//QGisDataService">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//QGisDataService/configuration"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//QGisDataService/configuration"/>
     </genClasses>
     <genClasses ecoreClass="configuration.ecore#//QGisDataServiceConfiguration">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//QGisDataServiceConfiguration/layer"/>
@@ -72,7 +82,9 @@
     <genClasses ecoreClass="configuration.ecore#//OgcFeaturesDataService"/>
     <genClasses ecoreClass="configuration.ecore#//OgcSensorThingsDataService"/>
     <genClasses ecoreClass="configuration.ecore#//MongoRepository"/>
-    <genClasses ecoreClass="configuration.ecore#//FileDataInput"/>
+    <genClasses ecoreClass="configuration.ecore#//FileDataInput">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//FileDataInput/uri"/>
+    </genClasses>
     <genClasses ecoreClass="configuration.ecore#//JPADataInput">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//JPADataInput/persistenceConfig"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//JPADataInput/dataSource"/>
@@ -84,7 +96,7 @@
     </genClasses>
     <genClasses ecoreClass="configuration.ecore#//QueryTransformation"/>
     <genClasses ecoreClass="configuration.ecore#//ODataDataService">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//ODataDataService/configuration"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//ODataDataService/configuration"/>
     </genClasses>
     <genClasses ecoreClass="configuration.ecore#//ODataDataServiceConfiguration"/>
     <genClasses ecoreClass="configuration.ecore#//DistributionExport">

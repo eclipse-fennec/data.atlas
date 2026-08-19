@@ -37,6 +37,15 @@ public interface DAConfigFactory extends EFactory {
 	DAConfigFactory eINSTANCE = org.eclipse.fennec.data.atlas.configuration.impl.DAConfigFactoryImpl.init();
 
 	/**
+	 * Returns a new object of class '<em>Data Atlas Configuration</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Data Atlas Configuration</em>'.
+	 * @generated
+	 */
+	DataAtlasConfiguration createDataAtlasConfiguration();
+
+	/**
 	 * Returns a new object of class '<em>Bridge Repository</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

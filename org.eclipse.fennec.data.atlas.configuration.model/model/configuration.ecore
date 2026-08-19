@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="configuration" nsURI="https://model.data.jena.de/configuration"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="configuration" nsURI="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
     nsPrefix="configuration">
   <eAnnotations source="http://www.eclipse.org/OCL/Import">
     <details key="ecore" value="http://www.eclipse.org/emf/2002/Ecore"/>
@@ -14,6 +14,57 @@
     <details key="complianceLevel" value="21.0"/>
     <details key="resource" value="XMI"/>
   </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="DataAtlasConfiguration">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Root of the configuration model: the complete description of exactly one Data-Atlas instance.&#xA;Multiple Data-Atlas instances can run side by side (e.g. to spread load); each instance is fed its own DataAtlasConfiguration, obtained either from the file system or by retrieving it from the Model-Atlas.&#xA;&#xA;The root acts as a set of registries: data sources, data inputs, transformations and distribution-export templates are defined here exactly once and only referenced from DataServices and DataSets, so the same service definition can be re-applied to another data source (tenant/test system) and export settings are reusable templates rather than per-provider copies."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Name of the Data-Atlas instance this configuration describes."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optional description of this Data-Atlas instance."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dataSources" upperBound="-1"
+        eType="#//JdbcDataSource" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Registry of reusable data source definitions, referenced from DataInputs."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dataInputs" upperBound="-1"
+        eType="#//DataInput" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Registry of the DataInputs of this instance, referenced from DataServices and DataSets."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dataSets" upperBound="-1"
+        eType="#//DataSet" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Registry of the DataSets of this instance, referenced from the DataServiceConfigurations."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="services" upperBound="-1"
+        eType="#//DataService" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The DataServices (endpoints) this instance publishes."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="exports" upperBound="-1"
+        eType="#//DistributionExport" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Registry of reusable DistributionExport templates, referenced from DataServices and DataSets."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="transformations" upperBound="-1"
+        eType="#//Transformation" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Registry of the Transformations of this instance, referenced from DataProviders and BridgeRepositories."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DataProvider" abstract="true">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Abstract base for anything that provides data and can be distributed: a generic DataService or a concrete DataSet.&#xA;Carries the common identity (id/name/description) and the data configuration trias: data source (dataInput), transformation and distribution exports.&#xA;&#xA;A DataSet refines its enclosing DataService: if it sets one of the trias features itself, that value overrides the one of the DataService; if it leaves the feature unset, the value of the DataService applies (override-else-default)."/>
@@ -153,7 +204,7 @@
       <details key="documentation" value="DataService definition for a REST endpoint over HTTP(s), serialized to several mimetypes like XML, CSV, JSON etc."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="configuration" ordered="false"
-        upperBound="-1" eType="#//RestDataServiceConfiguration">
+        upperBound="-1" eType="#//RestDataServiceConfiguration" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Definition of the DataSets that should be provided by this RestDataService."/>
       </eAnnotations>
@@ -228,7 +279,7 @@
       <details key="documentation" value="DataService that exposes DataSets via the XML for Analysis (XMLA) protocol, e.g. for OLAP / Daanse cubes."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="configuration" ordered="false"
-        upperBound="-1" eType="#//XMLADataServiceConfiguration">
+        upperBound="-1" eType="#//XMLADataServiceConfiguration" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The per-DataSet XMLA configurations provided by this service."/>
       </eAnnotations>
@@ -253,7 +304,7 @@
       <details key="documentation" value="DataService that exposes DataSets via a GraphQL endpoint."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="configuration" ordered="false"
-        upperBound="-1" eType="#//GraphQLDataServiceConfiguration">
+        upperBound="-1" eType="#//GraphQLDataServiceConfiguration" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The per-DataSet GraphQL configurations provided by this service."/>
       </eAnnotations>
@@ -267,7 +318,7 @@
       <details key="documentation" value="Endpoint that provides a generated QGis Mapping Configuration file.&#xA;TODO: Repeat for other geoServers"/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="configuration" ordered="false"
-        upperBound="-1" eType="#//QGisDataServiceConfiguration">
+        upperBound="-1" eType="#//QGisDataServiceConfiguration" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The per-DataSet QGis configurations provided by this service."/>
       </eAnnotations>
@@ -310,6 +361,11 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="DataInput backed by EMF files as a source."/>
     </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="uri" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="URI of the EMF resource (or a directory of EMF resources) this input loads its EObjects from."/>
+      </eAnnotations>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="JPADataInput" eSuperTypes="#//DataInput">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -359,7 +415,7 @@
       <details key="documentation" value="DataService that exposes DataSets via the OData protocol."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="configuration" ordered="false"
-        upperBound="-1" eType="#//ODataDataServiceConfiguration">
+        upperBound="-1" eType="#//ODataDataServiceConfiguration" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The per-DataSet OData configurations provided by this service."/>
       </eAnnotations>
