@@ -18,11 +18,7 @@ Early bootstrap. The repository currently contains:
 | Bundle | Content |
 |---|---|
 | `org.eclipse.fennec.data.atlas.configuration.model` | The Data Atlas configuration model (`configuration.ecore`, `validation.ecore`) with generated code; references the `eorm` JPA mapping model from `org.eclipse.fennec.persistence.orm` |
-| `org.eclipse.fennec.data.atlas.dcat.model` | DCAT-AP EMF model stack (dcatap, dcatap.de, skos, foaf, vcard, prov, odrl, locn, adms, …) with generated code |
 | `org.eclipse.fennec.data.atlas.runtime` | OSGi runtime assembly (bndrun configurations) and docker export |
-
-The runtime functionality (data importers, endpoint generation, DCAT
-publishing) is being migrated incrementally.
 
 ## Build
 
@@ -51,9 +47,7 @@ docker build -t eclipsefennec/data.atlas:snapshot docker/dataatlas/
 ## Documentation
 
 Architecture and usage documentation lives in [`docs/`](docs/README.md);
-bundle-specific documentation sits next to the respective bundle (e.g.
-[`jpa.watcher/README.md`](org.eclipse.fennec.data.atlas.jpa.watcher/README.md),
-[`jpa.rest/docs/jpa-rest-api.md`](org.eclipse.fennec.data.atlas.jpa.rest/docs/jpa-rest-api.md)).
+bundle-specific documentation sits next to the respective bundle.
 
 ## License
 

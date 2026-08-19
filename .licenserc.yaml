@@ -51,7 +51,6 @@ header:
     - 'NOTICE'
     - 'cnf/**'
     - '**/src-gen-config/**'
-    - '**/src-gen-dcat/**'
     - '**/generated/**'
     - '.gitattributes'
     - '.github/**'

@@ -24,8 +24,7 @@ slf4j.runpath: \
 	bnd.identity;id='org.apache.felix.configadmin',\
 	bnd.identity;id='org.apache.felix.metatype',\
 	bnd.identity;id='org.eclipse.fennec.data.atlas.runtime',\
-	bnd.identity;id='org.eclipse.fennec.data.atlas.configuration.model',\
-	bnd.identity;id='org.eclipse.fennec.data.atlas.dcat.model'
+	bnd.identity;id='org.eclipse.fennec.data.atlas.configuration.model'
 
 -runfw: org.apache.felix.framework;version='[7.0.5,7.0.5]'
 -runee: JavaSE-21
@@ -47,16 +46,20 @@ slf4j.runpath: \
 	org.apache.felix.gogo.shell;version='[1.1.4,1.1.5)';startlevel=1006,\
 	org.apache.felix.metatype;version='[1.2.4,1.2.5)';startlevel=1007,\
 	org.apache.felix.scr;version='[2.2.12,2.2.13)';startlevel=1008,\
-	org.eclipse.emf.common;version='[2.44.0,2.44.1)';startlevel=1009,\
-	org.eclipse.emf.ecore;version='[2.41.0,2.41.1)';startlevel=1010,\
-	org.eclipse.emf.ecore.xmi;version='[2.39.0,2.39.1)';startlevel=1011,\
-	org.eclipse.fennec.data.atlas.configuration.model;version=snapshot;startlevel=1012,\
-	org.eclipse.fennec.data.atlas.dcat.model;version=snapshot;startlevel=1013,\
-	org.eclipse.fennec.data.atlas.runtime;version=snapshot;startlevel=1014,\
-	org.eclipse.fennec.emf.osgi.component.minimal;version='[0.1.2,0.1.3)';startlevel=1015,\
-	org.eclipse.parsson.jakarta.json;version='[1.1.7,1.1.8)';startlevel=1016,\
-	org.osgi.service.component;version='[1.5.1,1.5.2)';startlevel=1017,\
-	org.osgi.service.log;version='[1.5.0,1.5.1)';startlevel=1018,\
-	org.osgi.util.converter;version='[1.0.9,1.0.10)';startlevel=1019,\
-	org.osgi.util.function;version='[1.2.0,1.2.1)';startlevel=1020,\
-	org.osgi.util.promise;version='[1.3.0,1.3.1)';startlevel=1021
+	org.eclipse.daanse.jdbc.datasource.common;version='[0.0.1,0.0.2)';startlevel=1009,\
+	org.eclipse.daanse.jdbc.datasource.postgresql;version='[0.0.1,0.0.2)';startlevel=1010,\
+	org.eclipse.emf.common;version='[2.44.0,2.44.1)';startlevel=1011,\
+	org.eclipse.emf.ecore;version='[2.41.0,2.41.1)';startlevel=1012,\
+	org.eclipse.emf.ecore.xmi;version='[2.39.0,2.39.1)';startlevel=1013,\
+	org.eclipse.fennec.data.atlas.configuration.model;version=snapshot;startlevel=1014,\
+	org.eclipse.fennec.data.atlas.runtime;version=snapshot;startlevel=1015,\
+	org.eclipse.fennec.emf.osgi.component;version='[0.1.2,0.1.3)';startlevel=1016,\
+	org.eclipse.fennec.persistence;version='[0.1.0,0.1.1)';startlevel=1017,\
+	org.eclipse.fennec.persistence.orm;version='[0.1.0,0.1.1)';startlevel=1018,\
+	org.eclipse.parsson.jakarta.json;version='[1.1.7,1.1.8)';startlevel=1019,\
+	org.osgi.service.component;version='[1.5.1,1.5.2)';startlevel=1020,\
+	org.osgi.service.log;version='[1.5.0,1.5.1)';startlevel=1021,\
+	org.osgi.util.converter;version='[1.0.9,1.0.10)';startlevel=1022,\
+	org.osgi.util.function;version='[1.2.0,1.2.1)';startlevel=1023,\
+	org.osgi.util.promise;version='[1.3.0,1.3.1)';startlevel=1024,\
+	org.postgresql.jdbc;version='[42.7.3,42.7.4)';startlevel=1025

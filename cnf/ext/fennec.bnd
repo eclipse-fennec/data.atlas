@@ -14,8 +14,8 @@
 
 # Enable the Fennec library setups (resolved from Maven Central via central.mvn).
 # fennecJPA (from org.eclipse.fennec.persistence.jpa.library.workspace) contributes the
-# repository index for the whole JPA persistence stack (fennec-persistence, EclipseLink,
-# jakarta.persistence, H2, daanse datasources).
+# repository index for the JPA persistence stack; configuration.model builds against
+# org.eclipse.fennec.persistence.orm (eorm genmodel reference) from it.
 -library: \
 	fennec,\
 	fennecTest,\

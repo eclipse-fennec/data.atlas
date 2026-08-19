@@ -55,33 +55,20 @@ flowchart TB
 
 Implemented today:
 
-- **Model bundles**: `configuration.model` (configuration/validation ecores,
+- **Model bundle**: `configuration.model` (configuration/validation ecores,
   generated code; the JPA mapping type is referenced from the `eorm` model of
-  `org.eclipse.fennec.persistence.orm`) and `dcat.model` (DCAT-AP stack,
-  generated under `org.eclipse.fennec.data.atlas.dcat.*`).
-- **JPA data plane** (migrated from model.atlas): a folder of `.ecore` models +
-  `.eorm` JPA mappings + `.csv` data becomes a JPA-backed (EclipseLink + H2)
-  REST endpoint at `/jpa/{rootFolderName}/data/{eClassName}`.
-  `DataFolderWatcher` wires the factory-config pipeline per data folder;
-  `WorkspaceFolderWatcher` scans a root folder and creates one watcher per
-  subfolder. `EMFFileWatcher` registers `.ecore` files from watched folders as
-  `EPackage` services.
+  `org.eclipse.fennec.persistence.orm`).
 - **Runtime assembly**: bndruns (`_base`/`_local`/`_docker`) and a distroless
   docker image build.
 
-Not yet migrated (coming from the MDO prototype):
-
-- the Configurator/Bootstrap (model → Config Admin translation),
-- the generic data importer (JDBC → PushStream → QVT → repository),
-- generic REST/OpenAPI/GraphQL endpoint generation per model,
-- the DCAT/Piveau provider.
+The JPA data plane (folder of `.ecore`/`.eorm`/`.csv` → JPA-backed REST) and the
+DCAT-AP model stack were removed from this repository and are **out of scope
+here**. The remaining runtime functionality (Configurator/Bootstrap, importers,
+endpoint generation) is subject to a new plan.
 
 ## Key dependencies
 
 | Stack | Provider |
 |---|---|
 | EMF on OSGi (EPackage registry, codegen) | [eclipse-fennec/emf.osgi](https://github.com/eclipse-fennec/emf.osgi) |
-| JPA persistence (EObject ↔ relational, EclipseLink) | [eclipse-fennec/emf.persistence-jpa](https://github.com/eclipse-fennec/emf.persistence-jpa) via the `fennecJPA` bnd library |
-| Codecs / REST serialization | [eclipse-fennec/emf.codec](https://github.com/eclipse-fennec/emf.codec) |
-| File watching, JDBC schema/CSV import | [Eclipse Daanse](https://github.com/eclipse-daanse) (`io.fs.watcher`, `sql.jdbc.*` — requires a Java 25 runtime) |
-| Jakarta-RS whiteboard | [OSGi Technology REST](https://github.com/eclipse-osgi-technology) + Jersey |
+| JPA mapping model (`eorm`, build-time genmodel reference) | [eclipse-fennec/emf.persistence-jpa](https://github.com/eclipse-fennec/emf.persistence-jpa) via the `fennecJPA` bnd library |

@@ -8,7 +8,7 @@ src=${^src},src-gen-config
 	model/configuration.genmodel;\
 		generate=fennecEMF;\
 		genmodel=model/configuration.genmodel;\
-		output=src-gen-config
+		output=src-gen
 # Add this attribute to find some logging information
 #		logfile=test.log;\
 

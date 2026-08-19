@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Current State
 
-Bootstrapped bnd/Bndtools OSGi workspace (Gradle, Java 21 bytecode / Java 25 test runtime). Contains the two EMF model bundles (`configuration.model`, `dcat.model`), the data-plane bundles migrated from model.atlas (`epackage.watcher`, `jpa.watcher`, `jpa.rest`, `jpa.config.local` + test bundles — folder of `.ecore`/`.eorm`/`.csv` → JPA-backed REST at `/jpa/{rootFolderName}/data/{eClassName}`), a runtime assembly bundle with bndrun configurations, and a docker build module. The `epackage.watcher` bundle also contains the `org.eclipse.fennec.data.atlas.emf.common` helper classes (DynamicEPackageConfigurator, EClassResolvingDynamicEFactory) copied from model.atlas. The MDO runtime functionality (importer, REST/GraphQL generation, DCAT provider, Configurator/Bootstrap) is not yet migrated. The data-plane bundles are not yet part of the runtime bndruns/docker image.
+Bootstrapped bnd/Bndtools OSGi workspace (Gradle, Java 21). Contains exactly two bundles — the EMF configuration model bundle (`configuration.model`, building against the `eorm` model of `org.eclipse.fennec.persistence.orm`) and the runtime assembly bundle with bndrun configurations — plus a docker build module. The formerly contained data-plane bundles (`epackage.watcher`, `jpa.watcher`, `jpa.rest`, `jpa.config.local` + tests) and the `dcat.model` bundle were removed in August 2026 and are **out of scope for this repository**; the further roadmap (Configurator/Bootstrap, importers, endpoint generation) is being re-planned.
 
 ## Purpose & Context
 
@@ -12,28 +12,20 @@ Bootstrapped bnd/Bndtools OSGi workspace (Gradle, Java 21 bytecode / Java 25 tes
 
 The guiding idea: a Data Atlas instance is described entirely by an **EMF configuration model** (`DataAtlasConfiguration`). A Configurator/Bootstrap component translates that model into running OSGi services (data importers, REST/GraphQL endpoints, DCAT providers) at runtime — the model is the single source of truth, not scattered Config Admin JSONs.
 
-The functionality is migrated from two sources:
-
-- **`de-jena/MDO`** — the prototype that proves the end-to-end pipeline: dynamic EPackage loading, generic REST/OpenAPI/GraphQL generation per model, JDBC→PushStream→QVT→repository import, DCAT/Piveau publishing. Code is ported here under the `org.eclipse.fennec.data.atlas.*` namespace with `org.gecko.*` dependencies replaced by their Eclipse Fennec successors (`emf.osgi`, `emf.codec`, `emf.m2x`, `fennec-persistence`).
-- **`eclipse-fennec/model.atlas`** — its `org.eclipse.fennec.data.atlas.*` data-plane bundles (`epackage.watcher`, `jpa.watcher`, `jpa.rest`, `jpa.config.local` + tests) moved here: they turn a folder of `.ecore` models + `.eorm` JPA mappings + `.csv` data into a JPA-backed (EclipseLink + H2) REST endpoint at `/jpa/{rootFolderName}/data/{eClassName}`.
-
-The first bundles to land are the two EMF model bundles: `org.eclipse.fennec.data.atlas.configuration.model` (the configuration model spine: `configuration.ecore`, `validation.ecore`; the JPA mapping is referenced from the `eorm` model of `org.eclipse.fennec.persistence.orm` via `usedGenPackages`) and `org.eclipse.fennec.data.atlas.dcat.model` (DCAT-AP model stack, generated under `org.eclipse.fennec.data.atlas.dcat.*`).
+The spine of the repository is `org.eclipse.fennec.data.atlas.configuration.model` (`configuration.ecore`, `validation.ecore`; the JPA mapping is referenced from the `eorm` model of `org.eclipse.fennec.persistence.orm` via `usedGenPackages`). How the runtime functionality (Configurator/Bootstrap, importers, endpoint generation, DCAT publishing) gets here is subject to a new plan; the JPA data plane once migrated from `eclipse-fennec/model.atlas` was removed again and stays out of scope.
 
 ## Documentation
 
 Cross-cutting docs live in `docs/` (index in `docs/README.md`); bundle-specific docs sit next to their bundle:
 
 - `docs/architecture.md` — target architecture (configuration model → Configurator/Bootstrap → runtime services), implemented-vs-missing, key upstream dependencies
-- `docs/data-plane.md` — the JPA data plane: watcher pipeline component-by-component, PID contract (`WatcherConstants`), test conventions
 - `org.eclipse.fennec.data.atlas.configuration.model/configuration.md` — the configuration model
-- `org.eclipse.fennec.data.atlas.jpa.watcher/README.md` — data-folder layout and watcher configuration
-- `org.eclipse.fennec.data.atlas.jpa.rest/docs/jpa-rest-api.md` — REST API reference
 
 Keep these in sync when changing the corresponding code.
 
 ## Build & Development Commands
 
-**The OSGi tests need a Java 25 runtime** (the Eclipse Daanse `sql.*` bundles require `osgi.ee=JavaSE-25`), while the bytecode target stays Java 21. Locally run Gradle on JDK 25, e.g. `-Dorg.gradle.java.home=N:/tools/java/jdk-25.0.2`; CI uses Java 25.
+Bytecode target is Java 21; CI builds on Java 21 and 25.
 
 ```bash
 ./gradlew build          # full build and tests
@@ -56,7 +48,7 @@ Re-run the `resolve.*` task after adding bundles or changing dependencies — it
 - **Tests must stay OS-neutral**: never embed filesystem paths in LDAP filters (backslashes are LDAP escape characters); compare `Path` objects instead of URI string suffixes
 - Workspace config in `cnf/`: `cnf/ext/fennec.bnd` (fennec libraries, Java 21, `-groupid`), `cnf/ext/central.mvn` (Maven Central coordinates index). Project coordinates live once in `gradle.properties` (`github_org`, `github_repository`, `maven_group_id`)
 - **EMF codegen at build time**: `-generate` in each model bundle's `bnd.bnd` runs the fennecEMF generator (genmodel → `src-gen-*`). Edit the `.ecore`/`.genmodel` and regenerate — never hand-edit generated code. **The `.genmodel` must be reconciled after every ecore refactoring** (moved/removed features leave unresolved proxies that fail the build; the genmodel is edited as plain XML here, there is no Eclipse UI in the loop)
-- Generated sources (`src-gen-config`, `src-gen-dcat`) are committed
+- Generated sources (`src-gen-config`) are committed
 - OSGi Declarative Services annotations for component wiring
 - License: EPL-2.0, headers checked by SkyWalking Eyes (`.licenserc.yaml`, CI `license.yml`)
 
