@@ -59,8 +59,11 @@ slf4j.runpath: \
 	begin = 1000, \
 	step  =    1
 
+# org.osgi.service.http.port=-1 disables the default felix.http instance;
+# only the configured org.apache.felix.http~dataAtlas instance binds the port
 -runproperties.base: \
-	felix.cm.config.plugins=org.apache.felix.configadmin.plugin.interpolation
+	felix.cm.config.plugins=org.apache.felix.configadmin.plugin.interpolation,\
+	org.osgi.service.http.port=-1
 -runbundles: \
 	com.fasterxml.jackson.core.jackson-annotations;version='[2.21.0,2.21.1)';startlevel=1000,\
 	jakarta.activation-api;version='[2.1.3,2.1.4)';startlevel=1001,\
