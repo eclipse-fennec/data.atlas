@@ -40,3 +40,7 @@ CLAUDE.local.md
 /generated/
 /bin/
 /bin_test/
+
+# Gradle build output of the docker modules
+docker/build/
+docker/*/build/
