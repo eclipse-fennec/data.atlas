@@ -22,6 +22,12 @@ instances can run side by side (e.g. to spread load), each described by its own
 `DataAtlasConfiguration`. An instance obtains its configuration in one of two
 modes — **from the file system** or **by retrieving it from the Model Atlas**.
 
+**Design decision (2026-08-20): exactly one `DataAtlasConfiguration` per
+instance.** An instance is one runtime (one framework, one process/container);
+scaling out or separating concerns means running more instances, not feeding
+several configurations into one. The `DataAtlasBootstrap` component is
+therefore deliberately a singleton, not a factory component.
+
 A **Bootstrap** component loads the model and registers the contained
 configuration objects (e.g. each `RestDataService`, each `DataInput`) as OSGi
 services. Per-technology **configurator components** pick these config services
