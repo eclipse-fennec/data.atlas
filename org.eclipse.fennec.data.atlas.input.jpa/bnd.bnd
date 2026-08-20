@@ -1,0 +1,13 @@
+Bundle-Name: Fennec Data Atlas - JPA Input
+Bundle-Description: Input configurator: translates JPADataInput configuration services into \
+	the fennec persistence factory configurations (EORM mapping service, entity-mapping \
+	persistence unit, read-only JPA repository), so the repository stack realizes the input.
+
+-library: enableEMF
+
+-buildpath: \
+	org.osgi.service.component.annotations;version=latest,\
+	org.osgi.service.cm;version=latest,\
+	org.eclipse.fennec.data.atlas.configuration.model;version=project,\
+	org.eclipse.fennec.data.atlas.api;version=project,\
+	org.eclipse.fennec.persistence.orm;version=latest

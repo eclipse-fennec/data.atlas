@@ -4,21 +4,27 @@
 	bnd.identity;id='org.eclipse.fennec.data.atlas.tests',\
 	bnd.identity;id='org.eclipse.fennec.data.atlas.bootstrap',\
 	bnd.identity;id='org.eclipse.fennec.data.atlas.input.file',\
+	bnd.identity;id='org.eclipse.fennec.data.atlas.input.jpa',\
 	bnd.identity;id='org.eclipse.fennec.data.atlas.rest',\
 	bnd.identity;id='org.eclipse.fennec.codec',\
 	bnd.identity;id='org.eclipse.fennec.codec.rest',\
 	bnd.identity;id='org.eclipse.fennec.emf.osgi.component.minimal',\
 	bnd.identity;id='org.eclipse.osgitech.rest.servlet.whiteboard',\
 	bnd.identity;id='org.apache.felix.http.jetty12',\
-	bnd.identity;id='org.apache.felix.configadmin'
+	bnd.identity;id='org.apache.felix.configadmin',\
+	bnd.identity;id='org.eclipse.fennec.persistence.eclipselink',\
+	bnd.identity;id='org.eclipse.fennec.persistence.repository.jpa',\
+	bnd.identity;id='org.eclipse.persistence.jpa.jpql'
 
 # only one emf.osgi runtime stack: the codec bundles are built against the
 # 1.1.0 line (component.minimal); a second ResourceSetFactory provider from
 # the 0.1.x line leads to EPackages registered in one registry and
-# resources loaded via the other
+# resources loaded via the other. The spifly framework extension's embedded
+# ASM cannot read Java-21 class files; the dynamic bundle is used instead.
 -runblacklist: \
 	bnd.identity;id='org.eclipse.fennec.emf.osgi.component',\
-	bnd.identity;id='org.eclipse.fennec.emf.osgi.component.minimal';version='[0.1.0,1.0.0)'
+	bnd.identity;id='org.eclipse.fennec.emf.osgi.component.minimal';version='[0.1.0,1.0.0)',\
+	bnd.identity;id='org.apache.aries.spifly.dynamic.framework.extension'
 
 -runprovidedcapabilities: ${native_capability}
 

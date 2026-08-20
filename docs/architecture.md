@@ -70,30 +70,43 @@ flowchart TB
 
 ## Current state vs. target
 
-Implemented today (roadmap Milestones 0 and 1):
+Implemented today (roadmap Milestones 0–2):
 
 - **Model bundle**: `configuration.model` — `DataAtlasConfiguration` root with
   containment registries (data sources, inputs, data sets, services, exports,
   transformations); the JPA mapping type is referenced from the `eorm` model of
-  `org.eclipse.fennec.persistence.orm`. Example instance in
-  `configuration.model/example/`.
-- **File-mode vertical slice**: `bootstrap` (loads the configuration XMI,
-  registers referenced EPackages and the configuration objects as OSGi
-  services), `api` (`EObjectSource` SPI + property constants), `input.file`
-  (one `EObjectSource` per `FileDataInput`), `rest` (one Jakarta-RS whiteboard
-  application per `RestDataService`, fennec codec serialization, pagination),
-  `runtime.config` (resource-only Configurator: Felix HTTP + whiteboard +
-  bootstrap config, env-var driven).
-- **Runtime assembly**: bndruns (`_base`/`_local`/`_docker`), distroless docker
-  image serving the example out of the box, OSGi integration tests (`tests`).
+  `org.eclipse.fennec.persistence.orm`, a `DataSet` can carry a canonical
+  query (`org.eclipse.fennec.query.model`, embedded in the configuration XMI).
+  Example instance in `configuration.model/example/`.
+- **Inputs are repositories**: every `DataInput` materializes as an upstream
+  `ReadRepository` service (`org.eclipse.fennec.persistence.repository.api`),
+  correlated via `persistence.repository.id` = input id — there is no
+  Data-Atlas-private source SPI. `input.file` registers a read-only,
+  file-backed implementation per `FileDataInput`; `input.jpa` translates a
+  `JPADataInput` into the fennec persistence factory configurations (EORM
+  mapping derived from `supportedEClasses`, entity-mapping persistence unit
+  bound to the `JdbcDataSource` filter, read-only `fennec.repository.jpa`),
+  whose repository service *is* the input's runtime representation.
+- **Serving slice**: `bootstrap` (loads the configuration XMI, registers
+  referenced EPackages and the configuration objects as OSGi services), `api`
+  (property constants), `rest` (one Jakarta-RS whiteboard application per
+  `RestDataService`, reading through per-request repository leases; DataSet
+  queries are prepare-validated before an endpoint appears, REST pagination
+  pushes down as `skip`/`top`, declared query parameters bind from HTTP query
+  parameters; fennec codec serialization), `runtime.config` (resource-only
+  Configurator: Felix HTTP + whiteboard + bootstrap config, env-var driven).
+- **Runtime assembly**: bndruns (`_base`/`_local`/`_docker`) including the
+  JPA/EclipseLink stack, distroless docker image serving the file example out
+  of the box (a JPA deployment additionally needs a `DataSource` provider
+  bundle and configuration), OSGi integration tests (`tests`, H2-backed for
+  the JPA slice).
 
-Not yet implemented: Model Atlas config retrieval mode, JPA input, DCAT,
-the other DataService kinds, importers/transformations (see the
-[roadmap](roadmap.md)).
+Not yet implemented: Model Atlas config retrieval mode, DCAT, the other
+DataService kinds, importers/transformations (see the [roadmap](roadmap.md)).
 
 ## Key dependencies
 
 | Stack | Provider |
 |---|---|
 | EMF on OSGi (EPackage registry, codegen) | [eclipse-fennec/emf.osgi](https://github.com/eclipse-fennec/emf.osgi) |
-| JPA mapping model (`eorm`, build-time genmodel reference) | [eclipse-fennec/emf.persistence-jpa](https://github.com/eclipse-fennec/emf.persistence-jpa) via the `fennecJPA` bnd library |
+| Persistence stack (repository facade, JPA/EclipseLink, `eorm`/query/expression models) | [eclipse-fennec/emf.persistence-jpa](https://github.com/eclipse-fennec/emf.persistence-jpa) via the `fennecPersistence` bnd library |

@@ -1,8 +1,8 @@
 # Data Atlas — Roadmap
 
-Status: **Milestones 0 and 1 implemented** (2026-08-19). Horizon is deliberately
-minimal: everything beyond is parked under
-[Later](#later-explicitly-not-planned) without commitment.
+Status: **Milestones 0 and 1 implemented** (2026-08-19), **Milestone 2
+implemented** (2026-08-20). Horizon is deliberately minimal: everything beyond
+is parked under [Later](#later-explicitly-not-planned) without commitment.
 
 ## Principles
 
@@ -144,6 +144,182 @@ Acceptance:
 - the only Data-Atlas-specific configuration entering the runtime is the model
   instance (plus the static whiteboard/http Configurator JSON).
 
+## Milestone 2 — JPA input slice: repository-backed data over REST
+
+Implemented 2026-08-20, based on the repository facade published the same day
+(`org.eclipse.fennec.persistence:*:0.1.0-SNAPSHOT`, repo
+`eclipse-fennec/emf.persistence-jpa`, branch `snapshot`; user guide:
+`docs/repository-user-guide.md` there).
+
+Goal: a `JPADataInput` in the configuration turns into a **read-only
+`ReadRepository`** serving the Milestone 1 REST slice from a relational
+database (H2 in the tests) instead of a file. With this milestone the
+Data-Atlas-private `EObjectSource` SPI is **retired**: the contract between
+inputs and services becomes the upstream repository facade
+(`org.eclipse.fennec.persistence.repository.api.ReadRepository`), and no input
+hands raw EMF `Resource`s to consumers anymore.
+
+Design decisions:
+
+- **`ReadRepository` replaces `EObjectSource`.** Every DataInput materializes
+  as a `ReadRepository` service correlated by the upstream service property
+  `persistence.repository.id` = the input's `id`. The `rest` bundle binds
+  repositories instead of sources and reads via the facade
+  (`getEObject(EClass, id)`, `find(Query)`, `count`); the EMF `Resource` stays
+  a `rest`-internal serialization vehicle for the codec writer, it is no longer
+  part of any contract. This removes a Data-Atlas-private abstraction in favor
+  of the fennec-wide one and gives every future input (Mongo, …) a defined
+  target shape.
+- **A DataSet is a query over an input.** The configuration model has no query
+  support yet — `DataSet` only narrows by `inputType`, although its own
+  documentation already promises "a concrete query" (the `QueryTransformation`
+  placeholder is about mapping *incoming* requests, not about defining dataset
+  content). Upstream closes exactly this gap: the canonical query is itself an
+  EMF model (`org.eclipse.fennec.query.model`, nsURI
+  `https://eclipse.org/fennec/query/2.0.0` — `Query.from: EClass`, `where`
+  (expression model), `orderBy`, `top`/`skip`, `parameters: ParameterDecl*`
+  with `name` + `typeHint: EClassifier`; "dogfooding — queries are EMF
+  objects" per the model documentation). `DataSet` therefore gains an optional
+  **containment `query: Query`**, serialized directly in the configuration XMI
+  via `usedGenPackages` on the query/expression genmodels — the same mechanism
+  the model already uses for the eorm `EntityMappings`. Unset means "all
+  objects of `inputType`" (Milestone 1 behavior); when set, `query.from` must
+  equal `inputType` (runtime constraint, formal validation later). Containment
+  on the DataSet rather than a root registry, because the query is the
+  DataSet's identity, not a reusable template. At runtime the endpoint is
+  **validated eagerly via `repository.prepare(query)`** at reconcile time —
+  upstream validates prepared queries against the backend's `QueryProcessor`
+  at prepare time ("fail early, not at first execution"), so a DataSet whose
+  query the backend refuses never comes up as an endpoint. Requests are then
+  served from a per-request copy of the query with REST pagination overlaid on
+  `skip`/`top`, and declared `parameters` are exposed as HTTP query parameters
+  (converted via their `typeHint`, missing required parameter → 400). The
+  upstream *saved-query catalog* (`saveQuery`/`find(name, …)`) was considered
+  and rejected as the configuration mechanism: it persists queries into the
+  backend on first execution and has, per the repository user guide, no
+  load-back API — backend state, not configuration.
+- **Factory configs, not code, toward the persistence stack.** Upstream is
+  driven entirely by ConfigAdmin factory configurations plus a
+  `javax.sql.DataSource` service:
+  `fennec.jpa.EORMMappingService` (derives an `EntityMappings` from EClasses;
+  keys carry the `fennec.jpa.eorm.` prefix) →
+  `fennec.jpa.EMPersistenceUnit` (binds the `EntityMappings` service +
+  `DataSource` by target filters, publishes a `JPAUnit`; keys carry the
+  `fennec.jpa.` prefix) →
+  `fennec.repository.jpa` (`repositoryId`, `unit.target`, `readOnly` — keys
+  unprefixed; publishes the repository, prototype scope). Because the last
+  link already *is* the `ReadRepository` service, `input.jpa` is pure config
+  translation: one `JPADataInput` → exactly these three factory configs
+  (config name = input id, `repositoryId` = input id) and their deletion on
+  teardown — the "Config Admin factory configs remain an implementation detail
+  inside a configurator" case the principles already allow.
+- **Mapping-free by default.** `supportedEClasses` of the input plus the
+  EPackage the bootstrap already registers (targeted by
+  `emf.nsURI=<package nsURI>` — never by `emf.name`, package names are not
+  unique) feed
+  `fennec.jpa.EORMMappingService`. The EClass names must be listed explicitly —
+  upstream's "omit to map all" documentation claim is wrong. When
+  `persistenceConfig` *is* set, `input.jpa` registers that `EntityMappings`
+  object directly as a service with a filterable property and targets it — no
+  `.eorm` file handling in the Data Atlas either way.
+- **Read-only repositories.** `readOnly=true` → upstream withholds the write
+  interfaces; the file-backed repository implements only the read side. The
+  Data Atlas is a serving layer; import/write paths are separate roadmap items.
+- **Pagination pushes down.** `rest` expresses list requests as
+  `QueryBuilder.from(type).skip(offset).top(limit).build()` against
+  `find(Query)` — the JPA backend translates that to `setFirstResult`/
+  `setMaxResults`, so a DB-backed DataSet never materializes the whole table
+  per request; the file repository slices in memory, which it did before.
+- **Prototype discipline.** Repositories are prototype-scoped services (each
+  instance owns a non-thread-safe `ResourceSet` and is disposed on unget).
+  `rest` binds them as `ServiceObjects` and gets/ungets an instance per
+  request; `Stream`/`QueryResult` results hold backend cursors and are closed
+  via try-with-resources.
+
+Work items:
+
+1. **Upstream docs issue** — filed as
+   [emf.persistence-jpa#193](https://github.com/eclipse-fennec/emf.persistence-jpa/issues/193):
+   the published Getting Started/Configuration Reference give non-working
+   EORM/persistence-unit configurations (missing key prefixes, false "omit
+   `eClasses` to map all", customizer wrongly called optional), the repository
+   facade is unreachable from the entry pages, and the end-to-end mapping-free
+   recipe plus query paging/parameters exist only in source or unpublished
+   drafts.
+2. **Configuration model**: add the optional containment `DataSet.query:
+   Query` (upstream query model via `usedGenPackages` on the query and
+   expression genmodels, same pattern as eorm); document the
+   `query.from = inputType` runtime constraint and the unset-means-all
+   semantics; reconcile the genmodel (M0 lesson: plain-XML editing, unresolved
+   proxies fail the build).
+3. **`api`**: delete `EObjectSource` (and its `INPUT_ID` correlation if nothing
+   else uses it); what remains is the config-object correlation constants.
+4. **`input.file` rework**: the configurator registers a **file-backed
+   `ReadRepository`** per `FileDataInput` (property
+   `persistence.repository.id=<input id>`) instead of an `EObjectSource`.
+   Implementation evaluates extending the upstream SPI
+   (`AbstractRepository`/`AbstractRepositoryComponent`) versus implementing the
+   read interface directly over the loaded XMI contents; the first cut needs
+   `getEObject(EClass, id)`, `getAllEObjects`, `count`, `exist` and the
+   `find(Query)` subset `from` + `skip` + `top` (unsupported query features
+   fail with a clear diagnostic). If a generic in-memory/resource-backed
+   repository flavour turns out to be broadly useful, propose it upstream
+   (`repository.file`?) instead of growing ours.
+5. **`rest` rework**: bind `ReadRepository` `ServiceObjects` by
+   `persistence.repository.id`; list = `find` on the DataSet's query (or
+   `QueryBuilder.from(inputType)` when none) with REST pagination overlaid on a
+   per-request copy's `skip`/`top` and declared query `parameters` bound from
+   HTTP query parameters; by-id = `getEObject`; endpoints with a query are
+   gated on a successful `prepare` at reconcile time; results are wrapped into
+   a detached `Resource`/`EObject` only for the codec response writers. The
+   file-backed repository's `find` subset grows `where`/`orderBy`
+   interpretation only if the fixtures need it — otherwise queries stay a
+   JPA-input feature for now, refused with a clear diagnostic on file inputs.
+6. **New bundle `org.eclipse.fennec.data.atlas.input.jpa`**: tracks
+   `JPADataInput` config services (DYNAMIC/MULTIPLE); per input creates the
+   three factory configs (the `JdbcDataSource.filter` of the model goes
+   verbatim into `fennec.jpa.dataSource.target`) and deletes them on teardown.
+   No service registration of its own — the upstream repository service is the
+   input's runtime representation.
+7. **Fixtures + integration test** (`DataAtlasJpaIntegrationTest`): a
+   `dataatlas-jpa.xmi` with `JPADataInput` + `JdbcDataSource`
+   (finally exercising the `dataSources` registry), an H2 `DataSource` via the
+   daanse factory config, seeding through a test-private *writable* repository
+   config (`fennec.jpa.ext.eclipselink.ddl-generation=create-or-extend-tables`),
+   then the M1 assertions against the JPA-backed DataSet: list, by-id,
+   pagination (now proven to push down), plus lifecycle teardown of the three
+   factory configs. One additional DataSet in the fixture carries a `query`
+   with a `where` predicate and a declared parameter, proving the
+   query-as-DataSet mechanic end to end (embedded query survives XMI loading,
+   `prepare` gates the endpoint, HTTP parameter binds). The existing
+   file-based tests pin the `input.file`/`rest` rework — they must stay green
+   unchanged at the HTTP level.
+8. **Runtime**: `input.jpa` into the base bndrun requirements (drags the
+   repository/EclipseLink/query stack from the `fennecPersistence` library),
+   blacklist `org.apache.aries.spifly.dynamic.framework.extension` (its
+   embedded ASM cannot read Java-21 class files; the runtime already uses
+   `spifly.dynamic.bundle`), re-resolve. The docker example stays file-based —
+   the image *can* serve JPA once a configuration and a database are provided.
+9. **Docs**: architecture.md (inputs are repositories now) + an `input.jpa`
+   bundle doc with the model→factory-config mapping table; update the M1
+   design-decision note — collections-as-`Resource` is demoted from contract to
+   `rest`-internal serialization detail.
+
+Known upstream gotchas baked into the items above: OCD key prefixes
+(`fennec.jpa.eorm.*`, `fennec.jpa.*`, but `fennec.repository.jpa` keys and
+`batchWriting`/`batchSize` unprefixed); never set a
+`fennec.jpa.eorm.customizer.target` that matches nothing (the reference is
+mandatory-static, satisfied by a default no-op component); DDL generation
+defaults to `none` (right for serving an existing schema, tests must opt in).
+
+Acceptance:
+
+- `./gradlew build testOSGi` green including the new H2-backed test;
+- `runtime_base` re-resolves with the JPA stack; docker image behavior
+  unchanged (file example remains the default);
+- the only Data-Atlas-specific configuration entering the runtime is still the
+  model instance.
+
 ## Later (explicitly not planned)
 
 - **Model Atlas config mode**: the second config source — a bootstrap variant
@@ -151,11 +327,6 @@ Acceptance:
   Atlas instead of the file system (client stack precedent:
   `model.atlas/org.eclipse.fennec.model.atlas.rest.client.*`). Only the source
   differs; the config-objects-as-services contract stays identical.
-- **JPA slice**: `JPADataInput` → `org.eclipse.fennec.persistence.eclipselink`
-  (`EntityMappingPersistenceUnitConfigurator`) or the new
-  `persistence.repository.jpa` facade; `EORMMappingProvider` (derive
-  `EntityMappings` from EClass names) makes a mapping-file-free path possible.
-  Partly gated on the persistence stack being snapshot-only.
 - **DCAT**: model was removed with `262bdfc`; git history is the only source
   in the ecosystem (`common.models` has RDF but no DCAT).
 - Other `DataService` kinds (OData, OGC Features/SensorThings, QGis, XMLA,

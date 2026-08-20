@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    xmlns:expression="https://eclipse.org/fennec/expression/1.0.0"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    name="jpa" description="JPA test fixture: persons served from a relational database, plus a query-defined DataSet with a bound parameter.">
+  <dataSources id="persons-db" name="Persons DB" filter="(dataatlas.test.ds=persons)"/>
+  <dataInputs xsi:type="configuration:JPADataInput" id="persons-jpa" dataSource="persons-db">
+    <supportedEClasses href="model/person.ecore#//Person"/>
+  </dataInputs>
+  <dataSets id="persons" name="Persons" description="All persons from the database." dataInput="persons-jpa">
+    <inputType href="model/person.ecore#//Person"/>
+    <outputType href="model/person.ecore#//Person"/>
+  </dataSets>
+  <dataSets id="persons-by-lastname" name="Persons by last name" description="Persons filtered by the lastName parameter."
+      dataInput="persons-jpa">
+    <inputType href="model/person.ecore#//Person"/>
+    <outputType href="model/person.ecore#//Person"/>
+    <query>
+      <from href="model/person.ecore#//Person"/>
+      <predicate xsi:type="expression:Comparison" operator="EQ">
+        <left xsi:type="expression:PropertyPath">
+          <segments xsi:type="ecore:EAttribute" href="model/person.ecore#//Person/lastName"/>
+        </left>
+        <right xsi:type="expression:ParameterRef" name="lastName"/>
+      </predicate>
+      <parameters name="lastName">
+        <typeHint xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </parameters>
+    </query>
+  </dataSets>
+  <services xsi:type="configuration:RestDataService" id="persons-jpa-rest" name="Persons JPA REST"
+      description="REST endpoint publishing the database-backed persons." urlContext="/jpa" openAPI="false">
+    <configuration id="persons-jpa-rest-config" dataSet="persons" path="persons"/>
+    <configuration id="persons-by-lastname-config" dataSet="persons-by-lastname" path="by-lastname"/>
+  </services>
+</configuration:DataAtlasConfiguration>
