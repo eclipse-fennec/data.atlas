@@ -13,9 +13,10 @@
 -include: ${workspace}/gradle.properties
 
 # Enable the Fennec library setups (resolved from Maven Central via central.mvn).
-# fennecJPA (from org.eclipse.fennec.persistence.jpa.library.workspace) contributes the
-# repository index for the JPA persistence stack; configuration.model builds against
-# org.eclipse.fennec.persistence.orm (eorm genmodel reference) from it.
+# fennecPersistence (from org.eclipse.fennec.persistence.workspace.library) contributes
+# the repository index for the persistence stack (incl. the repository facade);
+# configuration.model builds against org.eclipse.fennec.persistence.orm (eorm genmodel
+# reference) from it.
 # jakartaREST (org.eclipse.osgitech.rest.bnd.library) and fennecCodec
 # (org.eclipse.fennec.codec.workspace.library) contribute the repository indexes for
 # the Jakarta-RS whiteboard stack and the fennec codec (EMF serialization over REST).
@@ -24,7 +25,7 @@
 	fennecTest,\
 	fennecJacoco,\
 	fennecEMF,\
-	fennecJPA,\
+	fennecPersistence,\
 	jakartaREST,\
 	fennecCodec
 

@@ -166,13 +166,14 @@ Acceptance:
 
 ## Known risks / open decisions
 
-- **emf.osgi version split across snapshot upstreams**: the fennec codec is
-  built against the emf.osgi 1.1 line, `org.eclipse.fennec.persistence` against
-  0.1.x (it requires `emf.core=osgi` in `[0,1.0)`). The runtimes pin the 1.1
-  line (`component.minimal`), blacklist 0.1.x and satisfy persistence's
-  capability range via `-runsystemcapabilities`. The clean fix is upstream: a
-  persistence rebuild against emf.osgi 1.1 (worth a GitHub issue on
-  `eclipse-fennec/emf.persistence-jpa`).
+- **emf.osgi version split across snapshot upstreams** — *resolved 2026-08-20*:
+  the persistence stack was rebuilt against the emf.osgi 1.1 line and republished
+  under new coordinates (`org.eclipse.fennec.persistence:…workspace.library`,
+  bnd library `fennecPersistence`, incl. the new repository facade). The
+  `-runsystemcapabilities` workaround was removed from the bndruns; the
+  `emf.core=osgi` requirement is now satisfied by the
+  `org.eclipse.fennec.persistence.capabilities` bundle. The 0.1.x blacklist
+  stays as a guard against mixed stacks.
 
 - **Snapshot-only upstreams**: `org.eclipse.fennec.codec` (0.1.0-SNAPSHOT) and
   `org.eclipse.fennec.persistence.jpa` (0.1.0-SNAPSHOT) come from the Central

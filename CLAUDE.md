@@ -44,7 +44,7 @@ Re-run the `resolve.*` task after adding bundles or changing dependencies — it
 
 **OSGi test wiring**: a `*.tests` project needs a `build.gradle` that points `testOSGi` at the freshly resolved `test.bndrun` (`resolve.test` with `outputBndrun` into the build dir, `testOSGi { bndrun = ... }`); without it, gradle "tests" the project's `bnd.bnd` — which has no `-runfw` — and the launcher dies with `NoClassDefFoundError: org.osgi.framework.*`. The source `test.bndrun` carries only requirements, no committed `-runbundles`.
 
-**One emf.osgi runtime stack**: the fennec codec bundles are built against the emf.osgi 1.1 line (`component.minimal`); the bndruns blacklist the 0.1.x components, and `EPackageConfigurator` services must carry `emf.model.scope=resourceset` or the 1.1 `DefaultEPackageRegistry` ignores them. `persistence.orm` (pulled in by the eorm imports) requires `emf.core=osgi` in `[0,1.0)` — satisfied via `-runsystemcapabilities` until persistence is rebuilt against emf.osgi 1.1.
+**One emf.osgi runtime stack**: the whole stack (codec, persistence, fennecEMF codegen) is on the emf.osgi 1.1 line (`component.minimal`); the bndruns blacklist the 0.1.x components, and `EPackageConfigurator` services must carry `emf.model.scope=resourceset` or the 1.1 `DefaultEPackageRegistry` ignores them. The persistence stack comes from `org.eclipse.fennec.persistence:org.eclipse.fennec.persistence.workspace.library` (bnd library `fennecPersistence`, includes the repository facade); its `emf.core=osgi` requirement is satisfied by the resolved `org.eclipse.fennec.persistence.capabilities` bundle.
 
 ## Workspace Conventions
 

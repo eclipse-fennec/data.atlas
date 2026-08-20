@@ -20,12 +20,6 @@
 	bnd.identity;id='org.eclipse.fennec.emf.osgi.component',\
 	bnd.identity;id='org.eclipse.fennec.emf.osgi.component.minimal';version='[0.1.0,1.0.0)'
 
-# org.eclipse.fennec.persistence.orm (pulled in by the eorm imports of
-# configuration.model, unused at runtime here) requires emf.core=osgi in
-# [0,1.0) which only the blacklisted 0.1.x emf.osgi line provides; the real
-# fix is a persistence rebuild against the emf.osgi 1.1 line
--runsystemcapabilities.emfcore: emf.core;emf.core=osgi;version:Version=0.1.2
-
 -runprovidedcapabilities: ${native_capability}
 
 -resolve.effective: active;skip:="osgi.service"
