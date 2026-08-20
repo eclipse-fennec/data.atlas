@@ -18,6 +18,8 @@ import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 
+import org.eclipse.fennec.model.query.Query;
+
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -36,6 +38,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * <ul>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DataSet#getInputType <em>Input Type</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DataSet#getOutputType <em>Output Type</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DataSet#getQuery <em>Query</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DataSet#getChildDataSet <em>Child Data Set</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DataSet#getParentDataSet <em>Parent Data Set</em>}</li>
  * </ul>
@@ -95,6 +98,31 @@ public interface DataSet extends DataProvider {
 	 * @generated
 	 */
 	void setOutputType(EClass value);
+
+	/**
+	 * Returns the value of the '<em><b>Query</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Optional canonical query (fennec query model) defining the content of this DataSet over its dataInput. Unset means all objects of inputType. Runtime constraint: query.from must equal inputType. Declared query parameters are exposed by the serving DataService (e.g. as HTTP query parameters); the service overlays its pagination on skip/top of a per-request copy. The endpoint is only published if the backing repository validates the query at prepare time.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Query</em>' containment reference.
+	 * @see #setQuery(Query)
+	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getDataSet_Query()
+	 * @model containment="true"
+	 * @generated
+	 */
+	Query getQuery();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.fennec.data.atlas.configuration.DataSet#getQuery <em>Query</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Query</em>' containment reference.
+	 * @see #getQuery()
+	 * @generated
+	 */
+	void setQuery(Query value);
 
 	/**
 	 * Returns the value of the '<em><b>Child Data Set</b></em>' reference list.

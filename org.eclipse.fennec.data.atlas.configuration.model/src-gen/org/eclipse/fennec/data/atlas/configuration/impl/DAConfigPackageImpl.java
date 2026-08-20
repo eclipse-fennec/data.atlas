@@ -53,6 +53,10 @@ import org.eclipse.fennec.data.atlas.configuration.Transformation;
 import org.eclipse.fennec.data.atlas.configuration.XMLADataService;
 import org.eclipse.fennec.data.atlas.configuration.XMLADataServiceConfiguration;
 
+import org.eclipse.fennec.model.expression.ExpressionPackage;
+
+import org.eclipse.fennec.model.query.QueryPackage;
+
 import org.eclipse.fennec.persistence.eorm.EORMPackage;
 
 /**
@@ -306,6 +310,8 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 
 		// Initialize simple dependencies
 		EORMPackage.eINSTANCE.eClass();
+		QueryPackage.eINSTANCE.eClass();
+		ExpressionPackage.eINSTANCE.eClass();
 
 		// Create package meta-data objects
 		theDAConfigPackage.createPackageContents();
@@ -607,7 +613,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
-	public EReference getDataSet_ChildDataSet() {
+	public EReference getDataSet_Query() {
 		return (EReference)dataSetEClass.getEStructuralFeatures().get(2);
 	}
 
@@ -617,8 +623,18 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
-	public EReference getDataSet_ParentDataSet() {
+	public EReference getDataSet_ChildDataSet() {
 		return (EReference)dataSetEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getDataSet_ParentDataSet() {
+		return (EReference)dataSetEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -1262,6 +1278,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		dataSetEClass = createEClass(DATA_SET);
 		createEReference(dataSetEClass, DATA_SET__INPUT_TYPE);
 		createEReference(dataSetEClass, DATA_SET__OUTPUT_TYPE);
+		createEReference(dataSetEClass, DATA_SET__QUERY);
 		createEReference(dataSetEClass, DATA_SET__CHILD_DATA_SET);
 		createEReference(dataSetEClass, DATA_SET__PARENT_DATA_SET);
 
@@ -1371,6 +1388,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		setNsURI(eNS_URI);
 
 		// Obtain other dependent packages
+		QueryPackage theQueryPackage = (QueryPackage)EPackage.Registry.INSTANCE.getEPackage(QueryPackage.eNS_URI);
 		EORMPackage theEORMPackage = (EORMPackage)EPackage.Registry.INSTANCE.getEPackage(EORMPackage.eNS_URI);
 
 		// Create type parameters
@@ -1434,6 +1452,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		initEClass(dataSetEClass, DataSet.class, "DataSet", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getDataSet_InputType(), ecorePackage.getEClass(), null, "inputType", null, 1, 1, DataSet.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDataSet_OutputType(), ecorePackage.getEClass(), null, "outputType", null, 1, 1, DataSet.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getDataSet_Query(), theQueryPackage.getQuery(), null, "query", null, 0, 1, DataSet.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDataSet_ChildDataSet(), this.getDataSet(), this.getDataSet_ParentDataSet(), "childDataSet", null, 0, -1, DataSet.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDataSet_ParentDataSet(), this.getDataSet(), this.getDataSet_ChildDataSet(), "parentDataSet", null, 0, 1, DataSet.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -1734,6 +1753,12 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		   source,
 		   new String[] {
 			   "documentation", "The model type (EClass) that is published by this DataSet after an optional transformation. Might be too simple. We may need an approach like a genmodel, to properly resolve e.g. non containment references to other Datasets or Distributions or DataServices."
+		   });
+		addAnnotation
+		  (getDataSet_Query(),
+		   source,
+		   new String[] {
+			   "documentation", "Optional canonical query (fennec query model) defining the content of this DataSet over its dataInput. Unset means all objects of inputType. Runtime constraint: query.from must equal inputType. Declared query parameters are exposed by the serving DataService (e.g. as HTTP query parameters); the service overlays its pagination on skip/top of a per-request copy. The endpoint is only published if the backing repository validates the query at prepare time."
 		   });
 		addAnnotation
 		  (getDataSet_ChildDataSet(),

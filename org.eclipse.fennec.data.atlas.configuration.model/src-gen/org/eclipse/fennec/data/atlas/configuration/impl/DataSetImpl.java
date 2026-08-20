@@ -32,6 +32,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
 import org.eclipse.fennec.data.atlas.configuration.DAConfigPackage;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
 
+import org.eclipse.fennec.model.query.Query;
+
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>Data Set</b></em>'.
@@ -42,6 +44,7 @@ import org.eclipse.fennec.data.atlas.configuration.DataSet;
  * <ul>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DataSetImpl#getInputType <em>Input Type</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DataSetImpl#getOutputType <em>Output Type</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DataSetImpl#getQuery <em>Query</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DataSetImpl#getChildDataSet <em>Child Data Set</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DataSetImpl#getParentDataSet <em>Parent Data Set</em>}</li>
  * </ul>
@@ -68,6 +71,16 @@ public class DataSetImpl extends DataProviderImpl implements DataSet {
 	 * @ordered
 	 */
 	protected EClass outputType;
+
+	/**
+	 * The cached value of the '{@link #getQuery() <em>Query</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getQuery()
+	 * @generated
+	 * @ordered
+	 */
+	protected Query query;
 
 	/**
 	 * The cached value of the '{@link #getChildDataSet() <em>Child Data Set</em>}' reference list.
@@ -194,6 +207,51 @@ public class DataSetImpl extends DataProviderImpl implements DataSet {
 	 * @generated
 	 */
 	@Override
+	public Query getQuery() {
+		return query;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetQuery(Query newQuery, NotificationChain msgs) {
+		Query oldQuery = query;
+		query = newQuery;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, DAConfigPackage.DATA_SET__QUERY, oldQuery, newQuery);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setQuery(Query newQuery) {
+		if (newQuery != query) {
+			NotificationChain msgs = null;
+			if (query != null)
+				msgs = ((InternalEObject)query).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - DAConfigPackage.DATA_SET__QUERY, null, msgs);
+			if (newQuery != null)
+				msgs = ((InternalEObject)newQuery).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - DAConfigPackage.DATA_SET__QUERY, null, msgs);
+			msgs = basicSetQuery(newQuery, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DAConfigPackage.DATA_SET__QUERY, newQuery, newQuery));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EList<DataSet> getChildDataSet() {
 		if (childDataSet == null) {
 			childDataSet = new EObjectWithInverseResolvingEList<DataSet>(DataSet.class, this, DAConfigPackage.DATA_SET__CHILD_DATA_SET, DAConfigPackage.DATA_SET__PARENT_DATA_SET);
@@ -290,6 +348,8 @@ public class DataSetImpl extends DataProviderImpl implements DataSet {
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
+			case DAConfigPackage.DATA_SET__QUERY:
+				return basicSetQuery(null, msgs);
 			case DAConfigPackage.DATA_SET__CHILD_DATA_SET:
 				return ((InternalEList<?>)getChildDataSet()).basicRemove(otherEnd, msgs);
 			case DAConfigPackage.DATA_SET__PARENT_DATA_SET:
@@ -312,6 +372,8 @@ public class DataSetImpl extends DataProviderImpl implements DataSet {
 			case DAConfigPackage.DATA_SET__OUTPUT_TYPE:
 				if (resolve) return getOutputType();
 				return basicGetOutputType();
+			case DAConfigPackage.DATA_SET__QUERY:
+				return getQuery();
 			case DAConfigPackage.DATA_SET__CHILD_DATA_SET:
 				return getChildDataSet();
 			case DAConfigPackage.DATA_SET__PARENT_DATA_SET:
@@ -335,6 +397,9 @@ public class DataSetImpl extends DataProviderImpl implements DataSet {
 				return;
 			case DAConfigPackage.DATA_SET__OUTPUT_TYPE:
 				setOutputType((EClass)newValue);
+				return;
+			case DAConfigPackage.DATA_SET__QUERY:
+				setQuery((Query)newValue);
 				return;
 			case DAConfigPackage.DATA_SET__CHILD_DATA_SET:
 				getChildDataSet().clear();
@@ -361,6 +426,9 @@ public class DataSetImpl extends DataProviderImpl implements DataSet {
 			case DAConfigPackage.DATA_SET__OUTPUT_TYPE:
 				setOutputType((EClass)null);
 				return;
+			case DAConfigPackage.DATA_SET__QUERY:
+				setQuery((Query)null);
+				return;
 			case DAConfigPackage.DATA_SET__CHILD_DATA_SET:
 				getChildDataSet().clear();
 				return;
@@ -383,6 +451,8 @@ public class DataSetImpl extends DataProviderImpl implements DataSet {
 				return inputType != null;
 			case DAConfigPackage.DATA_SET__OUTPUT_TYPE:
 				return outputType != null;
+			case DAConfigPackage.DATA_SET__QUERY:
+				return query != null;
 			case DAConfigPackage.DATA_SET__CHILD_DATA_SET:
 				return childDataSet != null && !childDataSet.isEmpty();
 			case DAConfigPackage.DATA_SET__PARENT_DATA_SET:

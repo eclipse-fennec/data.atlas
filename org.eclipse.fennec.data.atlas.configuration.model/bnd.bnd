@@ -22,5 +22,7 @@ src=${^src},src-gen
 
 -buildpath: \
 	org.osgi.service.condition;version=latest,\
-	org.eclipse.fennec.persistence.orm;version=latest
+	org.eclipse.fennec.persistence.orm;version=latest,\
+	org.eclipse.fennec.query.model;version=latest,\
+	org.eclipse.fennec.expression.model;version=latest
 

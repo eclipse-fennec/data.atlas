@@ -4,7 +4,7 @@
     modelDirectory="/org.eclipse.fennec.data.atlas.configuration.model/src" modelPluginID="org.eclipse.fennec.data.atlas.configuration.model"
     modelName="configuration" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
     importerID="org.eclipse.emf.importer.ecore" complianceLevel="21.0" suppressGenModelAnnotations="false"
-    copyrightFields="false" usedGenPackages="../../org.eclipse.fennec.persistence.orm/model/epersistence.genmodel#//eorm"
+    copyrightFields="false" usedGenPackages="../../org.eclipse.fennec.persistence.orm/model/epersistence.genmodel#//eorm ../../org.eclipse.fennec.query.model/model/query.genmodel#//query ../../org.eclipse.fennec.expression.model/model/expression.genmodel#//expression"
     operationReflection="true" importOrganizing="true" oSGiCompatible="true">
   <foreignModel>configuration.ecore</foreignModel>
   <genPackages prefix="DAConfig" basePackage="org.eclipse.fennec.data.atlas" resource="XMI"
@@ -41,6 +41,7 @@
     <genClasses ecoreClass="configuration.ecore#//DataSet">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//DataSet/inputType"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//DataSet/outputType"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//DataSet/query"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//DataSet/childDataSet"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//DataSet/parentDataSet"/>
     </genClasses>

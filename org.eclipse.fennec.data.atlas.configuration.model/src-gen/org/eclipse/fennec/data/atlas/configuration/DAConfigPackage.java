@@ -49,7 +49,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * @generated
  */
 @ProviderType
-@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:b3fe1efebf60ea10613324dd29dd31d8610aa77ce527c29f0ccfe1220d251458", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
+@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:7039d23e1779fb50f570e6f6c50c67e7c48657bebdb260c7ab9951b83e77464c", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
 public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	/**
 	 * The package name.
@@ -494,13 +494,22 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	int DATA_SET__OUTPUT_TYPE = DATA_PROVIDER_FEATURE_COUNT + 1;
 
 	/**
+	 * The feature id for the '<em><b>Query</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATA_SET__QUERY = DATA_PROVIDER_FEATURE_COUNT + 2;
+
+	/**
 	 * The feature id for the '<em><b>Child Data Set</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_SET__CHILD_DATA_SET = DATA_PROVIDER_FEATURE_COUNT + 2;
+	int DATA_SET__CHILD_DATA_SET = DATA_PROVIDER_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Parent Data Set</b></em>' reference.
@@ -509,7 +518,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_SET__PARENT_DATA_SET = DATA_PROVIDER_FEATURE_COUNT + 3;
+	int DATA_SET__PARENT_DATA_SET = DATA_PROVIDER_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of structural features of the '<em>Data Set</em>' class.
@@ -518,7 +527,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_SET_FEATURE_COUNT = DATA_PROVIDER_FEATURE_COUNT + 4;
+	int DATA_SET_FEATURE_COUNT = DATA_PROVIDER_FEATURE_COUNT + 5;
 
 	/**
 	 * The number of operations of the '<em>Data Set</em>' class.
@@ -2602,6 +2611,17 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	EReference getDataSet_OutputType();
 
 	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.fennec.data.atlas.configuration.DataSet#getQuery <em>Query</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Query</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DataSet#getQuery()
+	 * @see #getDataSet()
+	 * @generated
+	 */
+	EReference getDataSet_Query();
+
+	/**
 	 * Returns the meta object for the reference list '{@link org.eclipse.fennec.data.atlas.configuration.DataSet#getChildDataSet <em>Child Data Set</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3493,6 +3513,14 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		 * @generated
 		 */
 		EReference DATA_SET__OUTPUT_TYPE = eINSTANCE.getDataSet_OutputType();
+
+		/**
+		 * The meta object literal for the '<em><b>Query</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference DATA_SET__QUERY = eINSTANCE.getDataSet_Query();
 
 		/**
 		 * The meta object literal for the '<em><b>Child Data Set</b></em>' reference list feature.

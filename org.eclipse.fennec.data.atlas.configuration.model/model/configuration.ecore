@@ -170,6 +170,12 @@
         <details key="documentation" value="The model type (EClass) that is published by this DataSet after an optional transformation. Might be too simple. We may need an approach like a genmodel, to properly resolve e.g. non containment references to other Datasets or Distributions or DataServices."/>
       </eAnnotations>
     </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="query" eType="ecore:EClass ../../org.eclipse.fennec.query.model/model/query.ecore#//Query"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optional canonical query (fennec query model) defining the content of this DataSet over its dataInput. Unset means all objects of inputType. Runtime constraint: query.from must equal inputType. Declared query parameters are exposed by the serving DataService (e.g. as HTTP query parameters); the service overlays its pagination on skip/top of a per-request copy. The endpoint is only published if the backing repository validates the query at prepare time."/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="childDataSet" upperBound="-1"
         eType="#//DataSet" eOpposite="#//DataSet/parentDataSet">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
