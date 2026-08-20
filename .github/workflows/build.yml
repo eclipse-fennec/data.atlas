@@ -21,12 +21,9 @@ defaults:
 
 jobs:
   build:
-    name: Gradle Build (Java ${{ matrix.java-version }})
+    # The deliverable is a Java 21 docker image; no need for a JDK matrix.
+    name: Gradle Build (Java 21)
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        java-version: [21, 25]
-      fail-fast: false
     steps:
     - name: Git Checkout
       uses: actions/checkout@v4
@@ -37,7 +34,7 @@ jobs:
       with:
         distribution: "temurin"
         cache: "gradle"
-        java-version: ${{ matrix.java-version }}
+        java-version: 21
     - name: Grant execute permission for gradlew
       run: chmod +x ./gradlew
     - name: Gradle version

@@ -25,7 +25,7 @@ Keep these in sync when changing the corresponding code.
 
 ## Build & Development Commands
 
-Bytecode target is Java 21; CI builds on Java 21 and 25.
+Bytecode target is Java 21; CI builds on Java 21 only (the deliverable is a Java 21 docker image).
 
 ```bash
 ./gradlew build          # full build and tests
