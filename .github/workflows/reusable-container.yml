@@ -52,7 +52,19 @@ jobs:
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: release-jars
-          path: .
+          path: release-jars
+      # upload-artifact stores files relative to the least common ancestor of
+      # the artifact-paths, so the archive layout depends on which paths were
+      # uploaded — locate the jars by name instead of assuming a prefix
+      - name: Locate Release Jars
+        id: jars
+        run: |
+          ls -lR release-jars
+          RUNTIME_JAR=$(find release-jars -name dataatlas.runtime_docker.jar | head -1)
+          BUNDLE_JAR=$(find release-jars -name org.eclipse.fennec.data.atlas.runtime.jar | head -1)
+          test -f "$RUNTIME_JAR" && test -f "$BUNDLE_JAR"
+          echo "runtime-jar=${RUNTIME_JAR}" >> "$GITHUB_OUTPUT"
+          echo "bundle-jar=${BUNDLE_JAR}" >> "$GITHUB_OUTPUT"
       - name: Install bnd
         run: |
           curl -Lk -o /tmp/biz.aQute.bnd.jar \
@@ -61,14 +73,15 @@ jobs:
         id: bundle_version
         run: |
           VERSION=$(java -jar /tmp/biz.aQute.bnd.jar select -h Bundle-Version \
-            org.eclipse.fennec.data.atlas.runtime/generated/org.eclipse.fennec.data.atlas.runtime.jar \
+            "${{ steps.jars.outputs.bundle-jar }}" \
             2>/dev/null | head -1)
           echo "VERSION=${VERSION}"
+          test -n "${VERSION}"
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
       - name: Prepare Docker content
         run: |
           mkdir -p docker/dataatlas/content/runtime
-          cp org.eclipse.fennec.data.atlas.runtime/generated/distributions/executable/dataatlas.runtime_docker.jar docker/dataatlas/content/dataatlas.runtime_docker.jar
+          cp "${{ steps.jars.outputs.runtime-jar }}" docker/dataatlas/content/dataatlas.runtime_docker.jar
           cp -rf org.eclipse.fennec.data.atlas.runtime/runtime/* docker/dataatlas/content/runtime
           ls -lR docker/dataatlas/content
       - name: Set up Docker Buildx
