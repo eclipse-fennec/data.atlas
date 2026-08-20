@@ -1,0 +1,45 @@
+name: Snapshot Build
+
+on:
+  push:
+    branches:
+      - snapshot
+
+# Workflow-level ceiling for the called reusables. The credential-scoped release
+# and container steps get their secrets via `secrets: inherit` below (verify
+# never sees them); packages: write is needed for the GHCR image push.
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: snapshot-publish
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    uses: eclipse-fennec/.github/.github/workflows/reusable-verify.yml@4c8b1daf597d0ae439253b59c42d7e52049d5137 # v1.1.2
+
+  release:
+    needs: verify
+    uses: eclipse-fennec/.github/.github/workflows/reusable-release.yml@4c8b1daf597d0ae439253b59c42d7e52049d5137 # v1.1.2
+    with:
+      do-release: false
+      # bnd resolve/export tasks are not parallel-safe in this workspace.
+      gradle-parallel: false
+      # Re-resolve and export the runtime jar in the SAME build that publishes
+      # to Maven, and hand it to the container job as the release-jars artifact.
+      extra-gradle-tasks: >-
+        org.eclipse.fennec.data.atlas.runtime:resolve.dataatlas.runtime_base
+        org.eclipse.fennec.data.atlas.runtime:export.dataatlas.runtime_docker
+      artifact-paths: |
+        org.eclipse.fennec.data.atlas.runtime/generated/distributions/executable/dataatlas.runtime_docker.jar
+        org.eclipse.fennec.data.atlas.runtime/generated/org.eclipse.fennec.data.atlas.runtime.jar
+    secrets: inherit
+
+  container:
+    needs: release
+    uses: ./.github/workflows/reusable-container.yml
+    with:
+      docker-label: snapshot
+    secrets: inherit
