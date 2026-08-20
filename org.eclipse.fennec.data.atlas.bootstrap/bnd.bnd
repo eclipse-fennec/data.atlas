@@ -3,7 +3,6 @@ Bundle-Description: File-mode configuration source: loads the DataAtlasConfigura
 	instance from a configured URI, registers the EPackages of the model types it references, \
 	and registers the contained configuration objects (DataServices, DataInputs) as OSGi \
 	services that the per-technology configurators pick up.
-Bundle-Version: 1.0.0
 
 -library: enableEMF
 

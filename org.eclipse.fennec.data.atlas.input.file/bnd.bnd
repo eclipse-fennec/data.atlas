@@ -2,7 +2,6 @@ Bundle-Name: Fennec Data Atlas - File Input
 Bundle-Description: Input configurator: tracks FileDataInput configuration services and \
 	registers one EObjectSource per configuration, loading the EObjects from the configured \
 	EMF resource file (or directory of files).
-Bundle-Version: 1.0.0
 
 -library: enableEMF
 

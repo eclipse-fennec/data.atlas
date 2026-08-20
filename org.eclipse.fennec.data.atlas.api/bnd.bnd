@@ -2,7 +2,6 @@ Bundle-Name: Fennec Data Atlas - Runtime API
 Bundle-Description: SPI between the Data Atlas bootstrap, the input configurators and the \
 	endpoint configurators: the EObjectSource contract realized per configured DataInput, \
 	and the shared service property constants.
-Bundle-Version: 1.0.0
 
 -library: enableEMF
 

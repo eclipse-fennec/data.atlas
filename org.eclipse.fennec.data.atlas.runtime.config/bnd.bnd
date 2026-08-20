@@ -2,7 +2,6 @@ Bundle-Name: Fennec Data Atlas - Runtime Configuration
 Bundle-Description: Resource-only Configurator bundle: Felix HTTP instance, Jakarta-RS \
 	whiteboard and the Data Atlas bootstrap configuration (environment-variable driven via \
 	the configadmin interpolation plugin).
-Bundle-Version: 1.0.0
 
 -resourceonly: true
 -includeresource: OSGI-INF/configurator/=configs/
