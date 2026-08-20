@@ -20,15 +20,20 @@ import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.fennec.data.atlas.api.DataAtlasConstants;
-import org.eclipse.fennec.data.atlas.api.EObjectSource;
 import org.eclipse.fennec.data.atlas.configuration.DataInput;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
 import org.eclipse.fennec.data.atlas.configuration.RestDataService;
 import org.eclipse.fennec.data.atlas.configuration.RestDataServiceConfiguration;
 import org.eclipse.fennec.data.atlas.rest.DataServiceResource.DataSetEndpoint;
+import org.eclipse.fennec.model.query.Query;
+import org.eclipse.fennec.persistence.repository.RepositoryConstants;
+import org.eclipse.fennec.persistence.repository.api.ReadRepository;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.ComponentServiceObjects;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -43,11 +48,13 @@ import jakarta.ws.rs.core.Application;
 
 /**
  * REST endpoint configurator: tracks {@code RestDataService} configuration
- * services and the {@link EObjectSource}s realizing their {@code DataInput}s.
- * As soon as every DataSet of a service is resolvable, one Jakarta-RS
+ * services and the {@link ReadRepository}s realizing their {@code DataInput}s
+ * (correlated via {@link RepositoryConstants#REPOSITORY_ID} = input id). As
+ * soon as every DataSet of a service is resolvable — and its query, if any,
+ * validates against the backing repository at prepare time — one Jakarta-RS
  * whiteboard {@link Application} is registered under the service's
  * {@code urlContext}; it is unregistered when the configuration or a required
- * source goes away.
+ * repository goes away.
  *
  * <p>
  * The application carries {@code emf=true} so the fennec codec whiteboard
@@ -66,7 +73,7 @@ public class RestEndpointConfigurator {
 
 	// all access guarded by this
 	private final Map<String, RestDataService> services = new HashMap<>();
-	private final Map<String, EObjectSource> sources = new HashMap<>();
+	private final Map<String, ComponentServiceObjects<ReadRepository>> repositories = new HashMap<>();
 	private final Map<String, ServiceRegistration<Application>> applications = new HashMap<>();
 
 	@Activate
@@ -100,17 +107,17 @@ public class RestEndpointConfigurator {
 	}
 
 	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
-	synchronized void addEObjectSource(EObjectSource source, Map<String, Object> props) {
-		Object inputId = props.get(DataAtlasConstants.INPUT_ID);
-		if (inputId instanceof String id) {
-			sources.put(id, source);
+	synchronized void addReadRepository(ComponentServiceObjects<ReadRepository> repository,
+			Map<String, Object> props) {
+		if (props.get(RepositoryConstants.REPOSITORY_ID) instanceof String id) {
+			repositories.put(id, repository);
 			reconcile();
 		}
 	}
 
-	synchronized void removeEObjectSource(EObjectSource source, Map<String, Object> props) {
-		Object inputId = props.get(DataAtlasConstants.INPUT_ID);
-		if (inputId instanceof String id && sources.remove(id) != null) {
+	synchronized void removeReadRepository(ComponentServiceObjects<ReadRepository> repository,
+			Map<String, Object> props) {
+		if (props.get(RepositoryConstants.REPOSITORY_ID) instanceof String id && repositories.remove(id) != null) {
 			reconcile();
 		}
 	}
@@ -145,8 +152,11 @@ public class RestEndpointConfigurator {
 	}
 
 	/**
-	 * Resolves the endpoint map (path -> DataSet/config/source) of a service,
-	 * or {@code null} while a required {@link EObjectSource} is missing.
+	 * Resolves the endpoint map (path -> DataSet/config/repository) of a
+	 * service, or {@code null} while a required {@link ReadRepository} is
+	 * missing. DataSets with configuration errors — no dataSet, no resolvable
+	 * input, a query whose root is not the inputType, or a query the backing
+	 * repository refuses at prepare time — are skipped with a log message.
 	 */
 	private Map<String, DataSetEndpoint> resolveEndpoints(RestDataService service) {
 		Map<String, DataSetEndpoint> endpoints = new LinkedHashMap<>();
@@ -163,14 +173,48 @@ public class RestEndpointConfigurator {
 						+ "' resolves to no DataInput (neither own nor service default), skipping it");
 				continue;
 			}
-			EObjectSource source = sources.get(input.getId());
-			if (source == null) {
-				return null; // required source not (yet) available
+			ComponentServiceObjects<ReadRepository> repository = repositories.get(input.getId());
+			if (repository == null) {
+				return null; // required repository not (yet) available
+			}
+			if (dataSet.getQuery() != null && !validateQuery(dataSet, repository)) {
+				continue;
 			}
 			String path = configuration.getPath() != null ? configuration.getPath() : dataSet.getName();
-			endpoints.put(path, new DataSetEndpoint(dataSet, configuration, source));
+			endpoints.put(path, new DataSetEndpoint(dataSet, configuration, repository));
 		}
 		return endpoints.isEmpty() ? null : endpoints;
+	}
+
+	/**
+	 * Fail-early gate for query-defined DataSets: the query root must be the
+	 * DataSet's inputType, and the backing repository must accept the query at
+	 * prepare time — a refused query never becomes an endpoint.
+	 */
+	private boolean validateQuery(DataSet dataSet, ComponentServiceObjects<ReadRepository> repository) {
+		Query query = dataSet.getQuery();
+		EClass from = query.getFrom();
+		EClass inputType = dataSet.getInputType();
+		boolean sameType = from != null && inputType != null && (from == inputType
+				|| (from.getName().equals(inputType.getName())
+						&& from.getEPackage() != null && inputType.getEPackage() != null
+						&& from.getEPackage().getNsURI().equals(inputType.getEPackage().getNsURI())));
+		if (!sameType) {
+			LOG.log(Level.ERROR, () -> "DataSet '" + dataSet.getId()
+					+ "': query.from does not match inputType, skipping the endpoint");
+			return false;
+		}
+		ReadRepository instance = repository.getService();
+		try {
+			instance.prepare(EcoreUtil.copy(query));
+			return true;
+		} catch (Exception e) {
+			LOG.log(Level.ERROR, () -> "DataSet '" + dataSet.getId()
+					+ "': the backing repository refused the query, skipping the endpoint: " + e.getMessage());
+			return false;
+		} finally {
+			repository.ungetService(instance);
+		}
 	}
 
 	private ServiceRegistration<Application> register(String id, RestDataService service,

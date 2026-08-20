@@ -1,11 +1,16 @@
 Bundle-Name: Fennec Data Atlas - File Input
 Bundle-Description: Input configurator: tracks FileDataInput configuration services and \
-	registers one EObjectSource per configuration, loading the EObjects from the configured \
-	EMF resource file (or directory of files).
+	registers one read-only, file-backed ReadRepository per configuration, loading the \
+	EObjects from the configured EMF resource file (or directory of files).
 
 -library: enableEMF
 
 -buildpath: \
 	org.osgi.service.component.annotations;version=latest,\
 	org.eclipse.fennec.data.atlas.configuration.model;version=project,\
-	org.eclipse.fennec.data.atlas.api;version=project
+	org.eclipse.fennec.data.atlas.api;version=project,\
+	org.eclipse.fennec.persistence.repository;version=latest,\
+	org.eclipse.fennec.persistence.query;version=latest,\
+	org.eclipse.fennec.persistence.capabilities;version=latest,\
+	org.eclipse.fennec.query.model;version=latest,\
+	org.eclipse.fennec.expression.model;version=latest

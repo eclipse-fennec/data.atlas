@@ -33,12 +33,6 @@ public final class DataAtlasConstants {
 	/** The EClass name of the configuration object a service represents. */
 	public static final String CONFIG_OBJECT_TYPE = "data.atlas.config.type";
 
-	/**
-	 * On an {@link EObjectSource}: the {@code id} of the {@code DataInput}
-	 * configuration object this source realizes.
-	 */
-	public static final String INPUT_ID = "data.atlas.input.id";
-
 	private DataAtlasConstants() {
 	}
 }

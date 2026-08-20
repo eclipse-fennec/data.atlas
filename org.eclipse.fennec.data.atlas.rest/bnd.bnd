@@ -1,14 +1,21 @@
 Bundle-Name: Fennec Data Atlas - REST Endpoint Configurator
 Bundle-Description: Tracks RestDataService configuration services and registers one Jakarta-RS \
-	whiteboard application per service, serving the configured DataSets from their \
-	EObjectSources with content negotiation through the fennec codec.
+	whiteboard application per service, serving the configured DataSets through the \
+	ReadRepositories backing their DataInputs, with content negotiation through the fennec codec.
 
 -library: enableEMF
 
 -buildpath: \
 	org.osgi.service.component.annotations;version=latest,\
+	org.osgi.service.component;version=latest,\
 	org.osgi.service.jakartars;version=latest,\
 	org.osgi.service.servlet;version=latest,\
 	jakarta.ws.rs-api;version=latest,\
 	org.eclipse.fennec.data.atlas.configuration.model;version=project,\
-	org.eclipse.fennec.data.atlas.api;version=project
+	org.eclipse.fennec.data.atlas.api;version=project,\
+	org.eclipse.fennec.persistence.repository;version=latest,\
+	org.eclipse.fennec.persistence.query;version=latest,\
+	org.eclipse.fennec.persistence.capabilities;version=latest,\
+	org.eclipse.fennec.query.model;version=latest,\
+	org.eclipse.fennec.expression.model;version=latest,\
+	org.eclipse.emf.ecore.xmi;version=latest

@@ -20,9 +20,11 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.eclipse.fennec.data.atlas.api.DataAtlasConstants;
-import org.eclipse.fennec.data.atlas.api.EObjectSource;
 import org.eclipse.fennec.data.atlas.configuration.FileDataInput;
 import org.eclipse.fennec.emf.osgi.ResourceSetFactory;
+import org.eclipse.fennec.persistence.repository.RepositoryConstants;
+import org.eclipse.fennec.persistence.repository.api.ReadRepository;
+import org.eclipse.fennec.persistence.repository.api.RepositoryService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
@@ -34,9 +36,9 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 
 /**
  * Input configurator: for every {@code FileDataInput} configuration service it
- * registers one {@link EObjectSource}, correlated via
- * {@link DataAtlasConstants#INPUT_ID}; the source is unregistered when the
- * configuration service goes away.
+ * registers one read-only, file-backed {@link ReadRepository}, correlated via
+ * {@link RepositoryConstants#REPOSITORY_ID} = the input's id; the repository is
+ * unregistered when the configuration service goes away.
  */
 @Component(immediate = true)
 public class FileDataInputConfigurator {
@@ -46,7 +48,10 @@ public class FileDataInputConfigurator {
 	private final BundleContext bundleContext;
 	private final ResourceSetFactory resourceSetFactory;
 
-	private final Map<FileDataInput, ServiceRegistration<EObjectSource>> registrations = new IdentityHashMap<>();
+	private record Registered(FileReadRepository repository, ServiceRegistration<?> registration) {
+	}
+
+	private final Map<FileDataInput, Registered> registrations = new IdentityHashMap<>();
 
 	@Activate
 	public FileDataInputConfigurator(BundleContext bundleContext, @Reference ResourceSetFactory resourceSetFactory) {
@@ -57,7 +62,7 @@ public class FileDataInputConfigurator {
 	@Deactivate
 	void deactivate() {
 		synchronized (registrations) {
-			registrations.values().forEach(ServiceRegistration::unregister);
+			registrations.values().forEach(FileDataInputConfigurator::unregister);
 			registrations.clear();
 		}
 	}
@@ -68,27 +73,37 @@ public class FileDataInputConfigurator {
 			LOG.log(Level.WARNING, () -> "Ignoring FileDataInput without id or uri: " + input);
 			return;
 		}
+		FileReadRepository repository = new FileReadRepository(input, resourceSetFactory);
 		Dictionary<String, Object> props = new Hashtable<>();
-		props.put(DataAtlasConstants.INPUT_ID, input.getId());
+		props.put(RepositoryConstants.REPOSITORY_ID, input.getId());
+		props.put(RepositoryConstants.REPOSITORY_BASE_URI, input.getUri());
+		props.put(RepositoryConstants.REPOSITORY_BACKEND, "file");
+		props.put(RepositoryConstants.REPOSITORY_READ_ONLY, Boolean.TRUE);
 		Object atlasName = serviceProps.get(DataAtlasConstants.ATLAS_NAME);
 		if (atlasName != null) {
 			props.put(DataAtlasConstants.ATLAS_NAME, atlasName);
 		}
-		FileEObjectSource source = new FileEObjectSource(input, resourceSetFactory);
+		ServiceRegistration<?> registration = bundleContext.registerService(
+				new String[] { RepositoryService.class.getName(), ReadRepository.class.getName() }, repository, props);
 		synchronized (registrations) {
-			registrations.put(input, bundleContext.registerService(EObjectSource.class, source, props));
+			registrations.put(input, new Registered(repository, registration));
 		}
-		LOG.log(Level.INFO, () -> "Registered EObjectSource for FileDataInput '" + input.getId() + "' ("
+		LOG.log(Level.INFO, () -> "Registered file-backed ReadRepository for FileDataInput '" + input.getId() + "' ("
 				+ input.getUri() + ")");
 	}
 
 	void removeFileDataInput(FileDataInput input, Map<String, Object> serviceProps) {
-		ServiceRegistration<EObjectSource> registration;
+		Registered registered;
 		synchronized (registrations) {
-			registration = registrations.remove(input);
+			registered = registrations.remove(input);
 		}
-		if (registration != null) {
-			registration.unregister();
+		if (registered != null) {
+			unregister(registered);
 		}
+	}
+
+	private static void unregister(Registered registered) {
+		registered.registration().unregister();
+		registered.repository().dispose();
 	}
 }

@@ -12,20 +12,30 @@
  */
 package org.eclipse.fennec.data.atlas.rest;
 
+import java.io.IOException;
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.fennec.data.atlas.api.EObjectSource;
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
 import org.eclipse.fennec.data.atlas.configuration.RestDataServiceConfiguration;
+import org.eclipse.fennec.model.query.ParameterDecl;
+import org.eclipse.fennec.model.query.Query;
+import org.eclipse.fennec.model.query.builder.QueryBuilder;
+import org.eclipse.fennec.persistence.query.api.QueryResult;
+import org.eclipse.fennec.persistence.repository.api.ReadRepository;
+import org.osgi.service.component.ComponentServiceObjects;
 
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -36,16 +46,26 @@ import jakarta.ws.rs.core.UriInfo;
 
 /**
  * Generic Jakarta-RS resource of one {@code RestDataService}: serves the
- * configured DataSets under their configured paths, list and by-id, with the
- * pagination parameter names configured on the service. Serialization happens
- * in the fennec codec message body writers via content negotiation.
+ * configured DataSets under their configured paths, list and by-id, reading
+ * through the {@link ReadRepository} backing each DataSet's input. A DataSet's
+ * canonical query (if any) defines its content; REST pagination is overlaid on
+ * {@code skip}/{@code top} of a per-request copy and declared query parameters
+ * bind from HTTP query parameters. Serialization happens in the fennec codec
+ * message body writers via content negotiation.
+ *
+ * <p>
+ * Repositories are prototype-scoped and own a non-thread-safe ResourceSet, so
+ * every request leases its own instance via {@link ComponentServiceObjects}
+ * and releases it after detaching the results.
+ * </p>
  */
 @Path("/")
 @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 public class DataServiceResource {
 
 	/** Everything needed to serve one configured DataSet. */
-	public record DataSetEndpoint(DataSet dataSet, RestDataServiceConfiguration configuration, EObjectSource source) {
+	public record DataSetEndpoint(DataSet dataSet, RestDataServiceConfiguration configuration,
+			ComponentServiceObjects<ReadRepository> repository) {
 	}
 
 	private final String offsetParameterName;
@@ -63,28 +83,61 @@ public class DataServiceResource {
 	@Path("{dataSetPath}")
 	public Resource list(@PathParam("dataSetPath") String dataSetPath, @Context UriInfo uriInfo) {
 		DataSetEndpoint endpoint = endpoint(dataSetPath);
-		Resource contents = endpoint.source().loadContents();
-		List<EObject> objects = select(contents, endpoint);
-		objects = paginate(objects, endpoint.configuration(), uriInfo);
-		List<EObject> result = List.copyOf(objects);
-		contents.getContents().clear();
-		contents.getContents().addAll(result);
-		return contents;
+		Resource container = newContainer(dataSetPath);
+		int offset = queryParameter(uriInfo, offsetParameterName, 0);
+		int size = effectiveSize(uriInfo, endpoint.configuration());
+		if (size == 0) {
+			return container;
+		}
+		Query query = endpoint.dataSet().getQuery() != null ? EcoreUtil.copy(endpoint.dataSet().getQuery())
+				: QueryBuilder.from(endpoint.dataSet().getInputType()).build();
+		if (offset > 0) {
+			query.setSkip(offset);
+		}
+		if (size > 0) {
+			query.setTop(size);
+		}
+		Map<String, Object> parameters = bindParameters(query, uriInfo);
+		List<EObject> objects = lease(endpoint, dataSetPath, repository -> {
+			try (QueryResult result = repository.find(query, parameters.isEmpty() ? null : parameters, null)) {
+				// copy before the lease is released: the objects may live in
+				// the repository instance's ResourceSet, disposed on unget
+				return List.copyOf(EcoreUtil.copyAll(result.objects().toList()));
+			}
+		});
+		container.getContents().addAll(objects);
+		return container;
 	}
 
 	@GET
 	@Path("{dataSetPath}/{id}")
 	public EObject byId(@PathParam("dataSetPath") String dataSetPath, @PathParam("id") String id) {
 		DataSetEndpoint endpoint = endpoint(dataSetPath);
-		Resource contents = endpoint.source().loadContents();
-		EObject match = select(contents, endpoint).stream()
-				.filter(o -> Objects.equals(EcoreUtil.getID(o), id))
-				.findFirst()
-				.orElseThrow(() -> new NotFoundException(
-						"No object '" + id + "' in data set '" + dataSetPath + "'"));
-		// detach so the writer serializes the single object, not its resource
-		EcoreUtil.remove(match);
-		return match;
+		EObject copy = lease(endpoint, dataSetPath, repository -> {
+			EObject match = repository.getEObject(endpoint.dataSet().getInputType(), id);
+			return match == null ? null : EcoreUtil.copy(match);
+		});
+		if (copy == null) {
+			throw new NotFoundException("No object '" + id + "' in data set '" + dataSetPath + "'");
+		}
+		return copy;
+	}
+
+	private interface RepositoryCall<T> {
+		T call(ReadRepository repository) throws IOException;
+	}
+
+	/** Leases a repository instance for one call and always releases it. */
+	private <T> T lease(DataSetEndpoint endpoint, String dataSetPath, RepositoryCall<T> call) {
+		ReadRepository repository = endpoint.repository().getService();
+		try {
+			return call.call(repository);
+		} catch (IOException e) {
+			throw new InternalServerErrorException(
+					"Reading data set '" + dataSetPath + "' failed: " + e.getMessage(), e);
+		} finally {
+			endpoint.repository().ungetService(repository);
+		}
 	}
 
 	private DataSetEndpoint endpoint(String dataSetPath) {
@@ -95,28 +148,51 @@ public class DataServiceResource {
 		return endpoint;
 	}
 
-	private List<EObject> select(Resource contents, DataSetEndpoint endpoint) {
-		EClass type = endpoint.dataSet().getInputType();
-		return contents.getContents().stream()
-				.filter(o -> type == null || type.isInstance(o))
-				.toList();
+	/** A detached container resource for the codec response writers. */
+	private Resource newContainer(String dataSetPath) {
+		return new XMIResourceImpl(URI.createURI("dataatlas:/" + dataSetPath));
 	}
 
-	private List<EObject> paginate(List<EObject> objects, RestDataServiceConfiguration configuration,
-			UriInfo uriInfo) {
-		int offset = queryParameter(uriInfo, offsetParameterName, 0);
+	/**
+	 * The requested page size, defaulted by {@code batchSize} and capped by
+	 * {@code batchSizeLimit}; -1 means unlimited.
+	 */
+	private int effectiveSize(UriInfo uriInfo, RestDataServiceConfiguration configuration) {
 		int size = queryParameter(uriInfo, sizeParameterName, intValue(configuration.getBatchSize(), -1));
 		int limit = intValue(configuration.getBatchSizeLimit(), -1);
 		if (limit >= 0 && (size < 0 || size > limit)) {
 			size = limit;
 		}
-		if (offset > 0) {
-			objects = offset >= objects.size() ? List.of() : objects.subList(offset, objects.size());
+		return size;
+	}
+
+	/**
+	 * Binds the query's declared parameters from HTTP query parameters,
+	 * converting via the declared type hint; a missing parameter is a client
+	 * error.
+	 */
+	private Map<String, Object> bindParameters(Query query, UriInfo uriInfo) {
+		Map<String, Object> parameters = new HashMap<>();
+		for (ParameterDecl declaration : query.getParameters()) {
+			String value = uriInfo.getQueryParameters().getFirst(declaration.getName());
+			if (value == null) {
+				throw new BadRequestException("Missing query parameter '" + declaration.getName() + "'");
+			}
+			parameters.put(declaration.getName(), convert(declaration, value));
 		}
-		if (size >= 0 && size < objects.size()) {
-			objects = objects.subList(0, size);
+		return parameters;
+	}
+
+	private Object convert(ParameterDecl declaration, String value) {
+		if (declaration.getTypeHint() instanceof EDataType dataType) {
+			try {
+				return EcoreUtil.createFromString(dataType, value);
+			} catch (RuntimeException e) {
+				throw new BadRequestException("Query parameter '" + declaration.getName() + "' is not a valid "
+						+ dataType.getName() + ": " + value);
+			}
 		}
-		return objects;
+		return value;
 	}
 
 	private int queryParameter(UriInfo uriInfo, String name, int defaultValue) {
@@ -130,7 +206,7 @@ public class DataServiceResource {
 		try {
 			return Integer.parseInt(value);
 		} catch (NumberFormatException e) {
-			throw new jakarta.ws.rs.BadRequestException("Query parameter '" + name + "' is not a number: " + value);
+			throw new BadRequestException("Query parameter '" + name + "' is not a number: " + value);
 		}
 	}
 
