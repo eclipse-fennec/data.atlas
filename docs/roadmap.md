@@ -344,14 +344,16 @@ Status: **implemented on the Data Atlas side** (2026-08-21): the
 `ModelAtlasBootstrap`, the `runtime.config.atlas` flavour, the
 `dataatlas.runtime_docker_atlas` bndrun + `data.atlas:atlas-*` image, the
 nsURI-based example instance, and the combined compose setup
-(`docker/dockercompose/docker-compose-atlas.yml`). With the model.atlas#188 fix
-the whole chain is verified up to the last step: schemas seed (201), the
-instance stores (201), the atlas-mode Data Atlas connects and fetches — but the
-Model Atlas cannot read instances of REST-uploaded schemas back
-(**model.atlas#190**, storage's management ResourceSet does not see dynamically
-registered EPackages) — the one remaining blocker. Once model.atlas#175 lands
-(deploy the `InitialModelLoader` bundle), schema seeding can move to an
-`initial-models` mount.
+(`docker/dockercompose/docker-compose-atlas.yml`). **End-to-end verified
+2026-08-21** against `model.atlas:file-snapshot` ≥ `9b4db5d3` (fixes #188 and
+#190): the file-mode and atlas-mode instances answer **byte-identically**
+(list, by-id as XML, pagination, 404). Registered EPackage resource URIs are
+normalized to the nsURI (InitialModelLoader precedent), so EClass `_type` URIs
+are canonical in both modes and the codec's XML schemaLocation deresolution
+works with client-loaded packages. Still open within this milestone: the
+docker-gated OSGi integration test and CI wiring for the `atlas-*` image. Once
+model.atlas#175 lands (deploy the `InitialModelLoader` bundle), schema seeding
+can move to an `initial-models` mount.
 
 Goal: a Data Atlas instance retrieves its `DataAtlasConfiguration` **from a
 running Model Atlas** (the second config source mode), resolving the referenced

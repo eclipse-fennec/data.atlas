@@ -23,9 +23,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.fennec.data.atlas.api.DataAtlasConstants;
 import org.eclipse.fennec.data.atlas.configuration.DataAtlasConfiguration;
@@ -112,6 +114,14 @@ class ConfigurationRegistrar {
 		for (EPackage ePackage : ePackages) {
 			if (EPackage.Registry.INSTANCE.containsKey(ePackage.getNsURI())) {
 				continue;
+			}
+			// align the resource URI with the nsURI (InitialModelLoader precedent):
+			// EClass URIs become canonical nsURI-based regardless of where the
+			// package was loaded from (file path, atlas-client://...), which also
+			// keeps the codec's XML schemaLocation deresolution working
+			Resource resource = ePackage.eResource();
+			if (resource != null && !ePackage.getNsURI().equals(String.valueOf(resource.getURI()))) {
+				resource.setURI(URI.createURI(ePackage.getNsURI()));
 			}
 			Dictionary<String, Object> props = new Hashtable<>();
 			props.put(EMFNamespaces.EMF_NAME, ePackage.getName());
