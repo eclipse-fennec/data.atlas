@@ -211,6 +211,7 @@ public class ModelAtlasModeIntegrationTest {
 				.newBuilder(java.net.URI.create(
 						ATLAS_BASE + "/dataatlas/registries/configurations/stages/release/dataatlas?name=dataatlas"))
 				.header("Content-Type", "application/xmi")
+				.header("Accept", "application/json")
 				.POST(HttpRequest.BodyPublishers.ofString(instance))
 				.build(), HttpResponse.BodyHandlers.ofString());
 		assertTrue(response.statusCode() == 201 || response.statusCode() == 409,
@@ -223,6 +224,7 @@ public class ModelAtlasModeIntegrationTest {
 				.newBuilder(java.net.URI.create(
 						ATLAS_BASE + "/dataatlas/schema/stages/release?nsUri=" + enc + "&version=1.0.0"))
 				.header("Content-Type", "application/xmi")
+				.header("Accept", "application/json")
 				.POST(HttpRequest.BodyPublishers.ofByteArray(Files.readAllBytes(file)))
 				.build(), HttpResponse.BodyHandlers.ofString());
 		assertTrue(response.statusCode() == 201 || response.statusCode() == 409,
