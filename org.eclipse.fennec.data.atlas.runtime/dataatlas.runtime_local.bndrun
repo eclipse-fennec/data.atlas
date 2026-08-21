@@ -1,5 +1,10 @@
 -include: dataatlas.runtime_base.bndrun
 
+# the file-mode configuration flavour (runtime.config is no longer part of the
+# base resolve so the atlas flavour can ship its own config bundle instead)
+-runbundles.file: \
+	org.eclipse.fennec.data.atlas.runtime.config;version=snapshot
+
 -runproperties.local: \
 	base.path=${.},\
 	logback.configurationFile=file:${.}/runtime/etc/logback.xml,\

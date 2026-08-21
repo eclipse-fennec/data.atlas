@@ -1,0 +1,12 @@
+Bundle-Name: Fennec Data Atlas - Runtime Configuration (Model Atlas mode)
+Bundle-Description: Resource-only Configurator bundle for the Model Atlas config mode: Felix \
+	HTTP instance, Jakarta-RS whiteboard, the Model Atlas client and the Data Atlas \
+	Model-Atlas bootstrap configuration (environment-variable driven via the configadmin \
+	interpolation plugin).
+
+-resourceonly: true
+-includeresource: OSGI-INF/configurator/=configs/
+Require-Capability: osgi.extender;filter:='(osgi.extender=osgi.configurator)'
+
+# Do not publish this bundle to Maven Central; local install only
+-maven-release: local

@@ -10,4 +10,5 @@ Bundle-Description: File-mode configuration source: loads the DataAtlasConfigura
 	org.osgi.service.component.annotations;version=latest,\
 	org.osgi.service.metatype.annotations,\
 	org.eclipse.fennec.data.atlas.configuration.model;version=project,\
-	org.eclipse.fennec.data.atlas.api;version=project
+	org.eclipse.fennec.data.atlas.api;version=project,\
+	org.eclipse.fennec.model.atlas.scope.api;version=latest

@@ -1,8 +1,26 @@
 # Data Atlas — Roadmap
 
 Status: **Milestones 0 and 1 implemented** (2026-08-19), **Milestone 2
-implemented** (2026-08-20). Horizon is deliberately minimal: everything beyond
-is parked under [Later](#later-explicitly-not-planned) without commitment.
+implemented** (2026-08-20), **Milestone 3 drafted** (2026-08-21). Horizon is
+deliberately minimal: everything beyond is parked under
+[Later](#later-explicitly-not-planned) without commitment.
+
+## Platform context (xDP)
+
+The Data Atlas is one module of the **xDP platform** (planning lives in the
+private repo `DataInMotion/xdp`, `docs/planning/` — overview `xDP.md`, work
+packages `fennec-module-arbeitspakete.en.md`, model discussions
+`data-atlas-config-diskussion.md`/`data-atlas-planung.md`; project board:
+DataInMotion org project 5). Mapping of the milestones here to the xDP work
+packages:
+
+| Milestone | xDP work packages |
+|---|---|
+| M0 (model rework) | WP-DA-4 (configuration model; discussion points D0–D5) |
+| M1 (config → REST slice) | WP-DA-1 (runtime structure & CI), WP-DA-2 (Jakarta-RS whiteboard), WP-DA-5 (config → running services — realized as config-objects-as-services, see Principles) |
+| M2 (JPA input) | WP-DA-3 (Fennec JPA persistence), D5 (Query concept) |
+| M3 (Model Atlas mode) | WP-DA-11 (Atlas client / custom registry integration) + config retrieval from the Atlas |
+| Later | WP-DA-6 (Git config source — a third config mode), WP-DA-7 (QVT), WP-DA-8 (exporters), WP-DA-9 (OpenAPI), WP-DA-10 (DCAT + portal, blocker WP-DCAT-6), WP-DA-12/13/15 (GeoJSON/OData/GraphQL services), WP-DA-14 (release/deployment), WP-DA-16 (EMF editor) |
 
 ## Principles
 
@@ -320,13 +338,109 @@ Acceptance:
 - the only Data-Atlas-specific configuration entering the runtime is still the
   model instance.
 
+## Milestone 3 — Model Atlas config mode + combined running setup
+
+Status: **implemented on the Data Atlas side** (2026-08-21) — end-to-end
+verification is blocked on upstream model.atlas#175/#188 (the published
+`file-snapshot` image lacks the `InitialModelLoader` bundle, and an
+`EObject`-rooted object registry rejects every instance). Everything below is
+in place: the `ModelAtlasBootstrap`, the `runtime.config.atlas` flavour, the
+`dataatlas.runtime_docker_atlas` bndrun + `data.atlas:atlas-*` image, the
+nsURI-based example instance, and the combined compose setup
+(`docker/dockercompose/docker-compose-atlas.yml`) including the #188 workaround
+(a `configurations` registry rooted at the `DataAtlasConfiguration` EClass,
+injected via `configurator.initial`).
+
+Goal: a Data Atlas instance retrieves its `DataAtlasConfiguration` **from a
+running Model Atlas** (the second config source mode), resolving the referenced
+EPackages against the Model Atlas schema registry by nsURI instead of local
+`.ecore` files — and a compose setup runs a Model Atlas plus one file-mode and
+one atlas-mode Data Atlas side by side against the same example, so both modes
+can be tested against each other early.
+
+What the Model Atlas already provides (verified in the sources 2026-08-21):
+
+- Instance storage: `GET/POST/PUT /{scope}/registries/{registry}/…` handles
+  arbitrary EObjects, addressed by `(scope, registry, stage, objectId)`;
+  content retrieval via `…/content?objectId=…` (XMI/JSON via the fennec
+  codec, ETag/If-None-Match supported). The registry must be
+  `registry.type=OTHER` (the shipped `default` registry accepts any EObject);
+  the instance's EPackage must be known to the server first.
+- Schema retrieval: `GET /{scope}/schema/content?nsUri=…` returns the EPackage.
+- A purpose-built client stack
+  (`model.atlas/org.eclipse.fennec.model.atlas.rest.client.{api,impl,osgi}` +
+  `scope.api`): `ModelAtlasClient` (factory PID
+  `org.eclipse.fennec.model.atlas.rest.client`, `base.uri` + LAZY/EAGER/HYBRID
+  modes), `ReadableScopeService.get(registry, objectId)` for instances,
+  `RemoteEPackageProvider`/`client.newResourceSet()` for nsURI-based package
+  resolution with caching, conditional GET and drift detection.
+- Runnable server: published docker image `eclipsefennec/model.atlas:file-snapshot`
+  (port 8080, base URI `/atlas/rest`, health `/atlas/health`), EPackage
+  preloading via an `initial-models` mount (`InitialModelLoader`).
+
+Design decisions (recommendations):
+
+- **Consume the client stack, not raw HTTP.** It already solves caching,
+  conditional GET, remote package resolution and drift; the Data Atlas should
+  be its first real consumer rather than re-implementing a thin client.
+- **Reuse the file-mode pipeline.** A second bootstrap component (same
+  `bootstrap` bundle, PID `DataAtlasModelAtlasBootstrap`; config `atlas.scope`,
+  `atlas.registry` (default `default`), `atlas.object.id`) binds a
+  `ModelAtlasClient`, fetches the instance via
+  `readOnlyScope(scope).get(registry, objectId)`, resolves proxies in
+  `client.newResourceSet()`, and then runs the **identical** pipeline as file
+  mode: register the resolved EPackages (with `emf.model.scope=resourceset`)
+  and the configuration objects as services. The config-objects-as-services
+  contract stays untouched; input/REST configurators do not change at all.
+- **nsURI-based hrefs in the atlas-mode example.** The example instance for
+  atlas mode references EClasses as
+  `https://…/example/person/1.0.0#//Person` (resolved via the package
+  registry) instead of file-relative ecore paths. Data files stay local in
+  this milestone — only configuration + schema come from the Atlas.
+- **Per-flavour deployment (model.atlas pattern).** A second resource-only
+  Configurator bundle `runtime.config.atlas` (Model Atlas client factory
+  config with `base.uri` ← `MODEL_ATLAS_BASE_URI`, atlas bootstrap config ←
+  `DATA_ATLAS_SCOPE`/`_REGISTRY`/`_OBJECT_ID`) and a second docker variant —
+  images `data.atlas:file-…` and `data.atlas:atlas-…`.
+- **Compose**: `docker/dockercompose/docker-compose-atlas.yml` with the Model
+  Atlas (`file-snapshot`, example person.ecore preloaded via `initial-models`),
+  a one-shot seed container that PUTs the example `DataAtlasConfiguration`
+  into `{scope}/registries/default`, one atlas-mode and one file-mode Data
+  Atlas.
+- **Tests**: a docker-gated OSGi integration test (start the model.atlas file
+  image, seed schema + instance over REST, boot the atlas-mode bootstrap,
+  assert the same REST answers as file mode; skipped when docker is absent).
+
+Upstream prerequisites (model.atlas — same play as the persistence republish):
+
+1. **Publish the client stack** (`rest.client.api|impl|osgi`, `scope.api`) as
+   Maven snapshots plus a consumable bnd library/index — data.atlas has no
+   model.atlas repository wired today; nothing to depend on yet.
+2. **Verify/rebuild the client against the emf.osgi 1.1 line** (model.atlas is
+   still on 0.1.2; the client publishes `EPackageConfigurator` services that
+   the 1.1 `DefaultEPackageRegistry` only binds with
+   `emf.model.scope=resourceset`).
+3. Bundle-version alignment of `rest.client.osgi` (1.0.0 vs 0.1.0 siblings).
+4. **Early risk check**: the published `file-snapshot` image's workflow config
+   appears to point its storage at Apicurio
+   (`storageService.target=(storage.type=apicurio)` in
+   `runtime.config.docker.file`) — the object write path may be broken on the
+   file image. Verify against a running container before building on it.
+
+Nice-to-have upstream (non-blocking, candidate issues): object search by
+`objectType` on the object API; seeding EObject *instances* at startup
+(`INITIAL_OBJECTS_FOLDER` analog — would remove the compose seed container);
+spec/README drift (object API paths, health URL).
+
+Acceptance:
+
+- compose up → the atlas-mode Data Atlas serves the example DataSet with
+  byte-identical responses to the file-mode instance next to it;
+- the docker-gated integration test is green locally and in CI;
+- `./gradlew build testOSGi` stays green without docker (test skipped).
+
 ## Later (explicitly not planned)
 
-- **Model Atlas config mode**: the second config source — a bootstrap variant
-  that retrieves the `DataAtlasConfiguration` for this instance from a Model
-  Atlas instead of the file system (client stack precedent:
-  `model.atlas/org.eclipse.fennec.model.atlas.rest.client.*`). Only the source
-  differs; the config-objects-as-services contract stays identical.
 - **DCAT**: model was removed with `262bdfc`; git history is the only source
   in the ecosystem (`common.models` has RDF but no DCAT).
 - Other `DataService` kinds (OData, OGC Features/SensorThings, QGis, XMLA,

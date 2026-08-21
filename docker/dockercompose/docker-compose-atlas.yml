@@ -1,0 +1,57 @@
+# Combined setup: one Model Atlas serving the Data Atlas configuration, one
+# atlas-mode Data Atlas retrieving it, and one file-mode Data Atlas next to it
+# for side-by-side comparison (both serve the same example DataSet).
+#
+#   docker compose -f docker-compose-atlas.yml up
+#
+#   Model Atlas:          http://localhost:8080/atlas/rest
+#   Data Atlas (file):    http://localhost:8081/rest/example/persons
+#   Data Atlas (atlas):   http://localhost:8082/rest/example/persons
+#
+# NOTE: requires a model.atlas image containing the InitialModelLoader bundle
+# (model.atlas#175) or the #188 fix — see docs/roadmap.md Milestone 3.
+services:
+  modelatlas:
+    image: eclipsefennec/model.atlas:file-snapshot
+    ports:
+      - "8080:8080"
+    environment:
+      # scanned once at startup; seeds the person/configuration/eorm EPackages
+      - INITIAL_MODELS_FOLDER=/initial-models
+      # injects the dataatlas scope + configurations registry (root EClass
+      # DataAtlasConfiguration — sidesteps model.atlas#188)
+      - JAVA_TOOL_OPTIONS=-Dconfigurator.initial=file:///opt/modelatlas/runtime/load/dataatlas.json
+    volumes:
+      - ./modelatlas/initial-models:/initial-models:ro
+      - ../../org.eclipse.fennec.data.atlas.configuration.model/model/configuration.ecore:/initial-models/org.eclipse.fennec.data.atlas.configuration.model/model/configuration.ecore:ro
+      - ../../org.eclipse.fennec.data.atlas.configuration.model/example/model/person.ecore:/initial-models/person.ecore:ro
+      - ./modelatlas/load:/opt/modelatlas/runtime/load:ro
+
+  # one-shot: waits for the dataatlas scope and uploads the example
+  # DataAtlasConfiguration instance into the configurations registry
+  seed:
+    image: curlimages/curl:8.10.1
+    depends_on:
+      - modelatlas
+    volumes:
+      - ./seed/seed.sh:/seed/seed.sh:ro
+      - ../../org.eclipse.fennec.data.atlas.configuration.model/example/dataatlas-atlas.xmi:/seed/dataatlas-atlas.xmi:ro
+    entrypoint: ["/bin/sh", "/seed/seed.sh"]
+
+  dataatlas-file:
+    image: eclipsefennec/data.atlas:snapshot
+    ports:
+      - "8081:8080"
+
+  dataatlas-atlas:
+    image: eclipsefennec/data.atlas:atlas-snapshot
+    ports:
+      - "8082:8080"
+    environment:
+      - MODEL_ATLAS_BASE_URI=http://modelatlas:8080/atlas/rest
+      - DATA_ATLAS_SCOPE=dataatlas
+      - DATA_ATLAS_REGISTRY=configurations
+      - DATA_ATLAS_OBJECT_ID=dataatlas
+    depends_on:
+      seed:
+        condition: service_completed_successfully

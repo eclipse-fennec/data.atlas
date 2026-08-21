@@ -15,34 +15,15 @@ package org.eclipse.fennec.data.atlas.bootstrap;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.fennec.data.atlas.api.DataAtlasConstants;
 import org.eclipse.fennec.data.atlas.configuration.DataAtlasConfiguration;
 import org.eclipse.fennec.data.atlas.configuration.DataInput;
-import org.eclipse.fennec.data.atlas.configuration.DataService;
-import org.eclipse.fennec.data.atlas.configuration.DataSet;
 import org.eclipse.fennec.data.atlas.configuration.FileDataInput;
-import org.eclipse.fennec.emf.osgi.configurator.EPackageConfigurator;
-import org.eclipse.fennec.emf.osgi.constants.EMFNamespaces;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.PrototypeServiceFactory;
-import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -58,19 +39,11 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
  *
  * <p>
  * Loads the {@code DataAtlasConfiguration} from the configured URI once on
- * activation, registers the EPackages of the model types the configuration
- * references, and registers the contained configuration objects (the
- * {@code DataService}s and {@code DataInput}s) as OSGi services. Per-technology
- * configurator components pick those services up and create the actual runtime
- * pieces. Everything is unregistered on deactivation.
- * </p>
- *
- * <p>
- * Configuration objects are registered via a {@link PrototypeServiceFactory}
- * handing out {@link EcoreUtil#copy(EObject) copies}, so consumers can resolve
- * and adapt them without mutating the shared model. Note that non-containment
- * references of a copy (e.g. {@code configuration.dataSet}) still point into
- * the original, fully resolved configuration tree.
+ * activation and publishes it via the {@link ConfigurationRegistrar}: the
+ * EPackages of the referenced model types and the configuration objects (the
+ * {@code DataService}s and {@code DataInput}s) become OSGi services that the
+ * per-technology configurator components pick up. Everything is unregistered
+ * on deactivation.
  * </p>
  */
 @Component(name = DataAtlasBootstrap.PID, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE)
@@ -81,7 +54,7 @@ public class DataAtlasBootstrap {
 
 	private static final Logger LOG = System.getLogger(DataAtlasBootstrap.class.getName());
 
-	@ObjectClassDefinition(name = "Data Atlas Bootstrap Configuration")
+	@ObjectClassDefinition(name = "Data Atlas Bootstrap Configuration (file mode)")
 	public @interface Config {
 
 		@AttributeDefinition(name = "Configuration URI",
@@ -92,23 +65,20 @@ public class DataAtlasBootstrap {
 		String config_uri();
 	}
 
-	private final BundleContext bundleContext;
 	private final ResourceSet resourceSet;
-
-	private final List<ServiceRegistration<?>> registrations = new ArrayList<>();
+	private final ConfigurationRegistrar registrar;
 
 	@Activate
 	public DataAtlasBootstrap(BundleContext bundleContext,
 			@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED) ResourceSet resourceSet, Config config) {
-		this.bundleContext = bundleContext;
 		this.resourceSet = resourceSet;
+		this.registrar = new ConfigurationRegistrar(bundleContext);
 		load(config.config_uri());
 	}
 
 	@Deactivate
 	void deactivate() {
-		registrations.forEach(ServiceRegistration::unregister);
-		registrations.clear();
+		registrar.unregisterAll();
 	}
 
 	private void load(String configUri) {
@@ -126,14 +96,9 @@ public class DataAtlasBootstrap {
 					"DataAtlasBootstrap: " + uri + " does not contain a DataAtlasConfiguration root");
 		}
 		EcoreUtil.resolveAll(resource);
-		failOnUnresolvedProxies(resource);
+		ConfigurationRegistrar.failOnUnresolvedProxies(configuration, uri.toString());
 		absolutizeFileInputUris(configuration, resource.getURI());
-		registerReferencedEPackages(configuration);
-		registerConfigurationObjects(configuration);
-		LOG.log(Level.INFO,
-				() -> "DataAtlasBootstrap: instance '" + configuration.getName() + "' bootstrapped ("
-						+ configuration.getServices().size() + " service(s), "
-						+ configuration.getDataInputs().size() + " input(s)).");
+		registrar.register(configuration);
 	}
 
 	private URI toUri(String value) {
@@ -149,14 +114,6 @@ public class DataAtlasBootstrap {
 		return URI.createFileURI(Paths.get(value).toAbsolutePath().toString());
 	}
 
-	private void failOnUnresolvedProxies(Resource resource) {
-		Map<EObject, ?> unresolved = EcoreUtil.UnresolvedProxyCrossReferencer.find(resource);
-		if (!unresolved.isEmpty()) {
-			throw new IllegalStateException("DataAtlasBootstrap: configuration " + resource.getURI()
-					+ " has unresolved references: " + unresolved.keySet());
-		}
-	}
-
 	/**
 	 * Resolves relative FileDataInput URIs against the configuration resource,
 	 * so consumers of the (detached) configuration object copies do not need
@@ -170,107 +127,6 @@ public class DataAtlasBootstrap {
 					fileInput.setUri(fileUri.resolve(base).toString());
 				}
 			}
-		}
-	}
-
-	/**
-	 * Registers the EPackages of all EClasses the configuration references
-	 * (input types, output types, supported classes), unless their nsURI is
-	 * already registered. In Model Atlas mode this is where the packages would
-	 * be resolved remotely instead.
-	 */
-	private void registerReferencedEPackages(DataAtlasConfiguration configuration) {
-		Set<EPackage> ePackages = new LinkedHashSet<>();
-		for (DataInput input : configuration.getDataInputs()) {
-			input.getSupportedEClasses().forEach(c -> addPackage(ePackages, c));
-		}
-		for (DataSet dataSet : configuration.getDataSets()) {
-			addPackage(ePackages, dataSet.getInputType());
-			addPackage(ePackages, dataSet.getOutputType());
-		}
-		for (EPackage ePackage : ePackages) {
-			if (EPackage.Registry.INSTANCE.containsKey(ePackage.getNsURI())) {
-				continue;
-			}
-			Dictionary<String, Object> props = new Hashtable<>();
-			props.put(EMFNamespaces.EMF_NAME, ePackage.getName());
-			props.put(EMFNamespaces.EMF_MODEL_NSURI, ePackage.getNsURI());
-			props.put(EMFNamespaces.EMF_MODEL_REGISTRATION, EMFNamespaces.MODEL_REGISTRATION_DYNAMIC);
-			// the EPackage registry only picks up configurators with resourceset scope
-			props.put(EMFNamespaces.EMF_MODEL_SCOPE, EMFNamespaces.EMF_MODEL_SCOPE_RESOURCE_SET);
-			registrations.add(bundleContext.registerService(EPackageConfigurator.class,
-					new DynamicEPackageConfigurator(ePackage), props));
-			registrations.add(bundleContext.registerService(EPackage.class, ePackage, props));
-			LOG.log(Level.INFO, () -> "DataAtlasBootstrap: registered EPackage " + ePackage.getNsURI());
-		}
-	}
-
-	private void addPackage(Set<EPackage> ePackages, EClass eClass) {
-		if (eClass != null && eClass.getEPackage() != null) {
-			ePackages.add(eClass.getEPackage());
-		}
-	}
-
-	private void registerConfigurationObjects(DataAtlasConfiguration configuration) {
-		for (DataService service : configuration.getServices()) {
-			registerConfigurationObject(configuration, service, service.getId());
-		}
-		for (DataInput input : configuration.getDataInputs()) {
-			registerConfigurationObject(configuration, input, input.getId());
-		}
-	}
-
-	private void registerConfigurationObject(DataAtlasConfiguration configuration, EObject object, String id) {
-		if (id == null || id.isBlank()) {
-			LOG.log(Level.WARNING, () -> "DataAtlasBootstrap: skipping configuration object without id: " + object);
-			return;
-		}
-		String[] interfaces = serviceInterfaces(object);
-		Dictionary<String, Object> props = new Hashtable<>();
-		if (configuration.getName() != null) {
-			props.put(DataAtlasConstants.ATLAS_NAME, configuration.getName());
-		}
-		props.put(DataAtlasConstants.CONFIG_OBJECT_ID, id);
-		props.put(DataAtlasConstants.CONFIG_OBJECT_TYPE, object.eClass().getName());
-		registrations.add(bundleContext.registerService(interfaces, new EObjectPrototypeFactory(object), props));
-		LOG.log(Level.INFO, () -> "DataAtlasBootstrap: registered " + object.eClass().getName() + " '" + id + "'");
-	}
-
-	/**
-	 * The generated model interface of the object's EClass plus all model
-	 * supertypes (e.g. RestDataService, DataService, DataProvider).
-	 */
-	private String[] serviceInterfaces(EObject object) {
-		// LinkedHashMap keyed by name to keep order and drop duplicates
-		Map<String, String> names = new LinkedHashMap<>();
-		addInstanceClassName(names, object.eClass());
-		object.eClass().getEAllSuperTypes().forEach(s -> addInstanceClassName(names, s));
-		return names.values().toArray(String[]::new);
-	}
-
-	private void addInstanceClassName(Map<String, String> names, EClass eClass) {
-		String name = eClass.getInstanceClassName();
-		if (name != null) {
-			names.put(name, name);
-		}
-	}
-
-	private static final class EObjectPrototypeFactory implements PrototypeServiceFactory<EObject> {
-
-		private final EObject original;
-
-		EObjectPrototypeFactory(EObject original) {
-			this.original = original;
-		}
-
-		@Override
-		public EObject getService(Bundle bundle, ServiceRegistration<EObject> registration) {
-			return EcoreUtil.copy(original);
-		}
-
-		@Override
-		public void ungetService(Bundle bundle, ServiceRegistration<EObject> registration, EObject service) {
-			// nothing to release
 		}
 	}
 }
