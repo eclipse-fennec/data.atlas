@@ -31,7 +31,12 @@ Private-Package: \
 
 # the example configuration + data of the configuration model bundle is the test
 # fixture; the lifecycle/coverage fixtures reuse its model and data via the same
-# relative hrefs, so they are merged into the same folder
+# relative hrefs, so they are merged into the same folder. The atlas/ tree holds
+# the Model-Atlas-mode fixtures (scope/registry configurator config + the
+# schemas the seeder uploads), shared with the compose setup.
 -includeresource: \
 	data=../org.eclipse.fennec.data.atlas.configuration.model/example,\
-	data=fixtures
+	data=fixtures,\
+	atlas/load=../docker/dockercompose/modelatlas/load,\
+	atlas/models=../docker/dockercompose/seed/models,\
+	atlas/models/configuration.ecore=../org.eclipse.fennec.data.atlas.configuration.model/model/configuration.ecore
