@@ -3,11 +3,12 @@
 	":configurator:symbolic-name": "org.eclipse.fennec.data.atlas.config.modelatlas",
 	":configurator:version": "1.0.0",
 	"ScopeService~dataatlas": {
+		"atlas.scope": "dataatlas",
 		"scope.name": "dataatlas",
 		"scope.description": "Data Atlas configuration scope",
 		"parent.scope": "atlas",
 		"registryService.target": "(|(registry.name=schema)(registry.name=configurations))",
-		"registryService.cardinality.minimum:int": 1
+		"registryService.cardinality.minimum:int": 2
 	},
 	"RegistryService~configurations": {
 		"registry.name": "configurations",
@@ -34,8 +35,8 @@
 				"final": true
 			}
 		],
-		"schema.uri": "https://eclipse.org/fennec/data/atlas/configuration/1.0.0",
-		"root.eclass.uri": "https://eclipse.org/fennec/data/atlas/configuration/1.0.0#//DataAtlasConfiguration",
+		"schema.uri": "http://www.eclipse.org/emf/2002/Ecore",
+		"root.eclass.uri": "http://www.eclipse.org/emf/2002/Ecore#//EObject",
 		"resourceSet.target": "(emf.name=ecore)"
 	}
 }

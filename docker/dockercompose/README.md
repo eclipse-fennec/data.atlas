@@ -14,29 +14,18 @@ Both Data Atlas instances must answer identically.
 
 How the Model Atlas side is assembled:
 
-- **Schemas at boot**: the `initial-models` mount seeds `person.ecore`,
-  `configuration.ecore` (mounted straight from the repo) and a committed copy
-  of `eorm.ecore` (from `org.eclipse.fennec.persistence.orm`, laid out so the
-  relative href inside `configuration.ecore` resolves). Registry roots from
-  custom models must be present at boot — REST-uploaded schemas are too late
-  (see model.atlas#175/#188).
 - **Custom scope/registry**: `modelatlas/load/dataatlas.json` is injected via
   `JAVA_TOOL_OPTIONS=-Dconfigurator.initial=…`. It defines the `dataatlas`
-  scope and a `configurations` registry whose `root.eclass.uri` is the
-  `DataAtlasConfiguration` EClass — the exact-match compatibility check works,
-  sidestepping model.atlas#188.
-- **Instance**: the one-shot `seed` service uploads
-  `example/dataatlas-atlas.xmi` (nsURI-based hrefs) into the final `release`
-  stage.
+  scope and a `configurations` registry rooted at `Ecore#//EObject` — always
+  resolvable at boot, and accepting arbitrary instances since the
+  model.atlas#188 fix.
+- **Schemas + instance**: the one-shot `seed` service uploads the schemas the
+  example references (`eorm.ecore` — a committed copy from
+  `org.eclipse.fennec.persistence.orm` 0.1.0-SNAPSHOT, `configuration.ecore`
+  and `person.ecore` mounted straight from the repo; eorm first, since
+  `configuration.ecore` references it) into `dataatlas/schema` and then the
+  example `DataAtlasConfiguration` (`example/dataatlas-atlas.xmi`, nsURI-based
+  hrefs) into the final `release` stage of `configurations`.
 
-> **Upstream prerequisite**: the published `model.atlas:file-snapshot` image
-> does not yet contain the `InitialModelLoader` bundle (model.atlas#175), so
-> the schema seeding — and with it this compose file — only works with an
-> image containing that fix.
-
-### Fixture provenance
-
-`modelatlas/initial-models/org.eclipse.fennec.persistence.orm/model/eorm.ecore`
-is a copy of the model shipped in
-`org.eclipse.fennec.persistence.orm` (0.1.0-SNAPSHOT). Refresh it from the
-bundle jar when the upstream model changes.
+> Once model.atlas#175 (deploy the `InitialModelLoader` bundle) is resolved,
+> the schema uploads can move from the seeder to an `initial-models` mount.

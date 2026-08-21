@@ -7,9 +7,9 @@
 #
 # SPDX-License-Identifier: EPL-2.0
 
-# One-shot seeder: waits until the Model Atlas serves the dataatlas scope
-# (i.e. the configurations registry activated against the preloaded
-# configuration EPackage), then uploads the example DataAtlasConfiguration
+# One-shot seeder: waits for the dataatlas scope, uploads the schemas the
+# example configuration references (the server must know an EPackage before it
+# can deserialize instances of it), then uploads the DataAtlasConfiguration
 # instance into the final 'release' stage.
 set -eu
 
@@ -26,11 +26,33 @@ until curl -sf "$BASE/scopes/dataatlas" >/dev/null 2>&1; do
   sleep 2
 done
 
+upload_schema() {
+  FILE="$1"; NSURI="$2"; NAME="$3"
+  # rawurlencode the nsUri (sufficient for the characters used here)
+  ENC=$(printf '%s' "$NSURI" | sed 's|:|%3A|g; s|/|%2F|g')
+  # the instance goes to the final 'release' stage, whose stage-scoped
+  # ResourceSet only sees release-stage packages - so the schemas go there too
+  CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+    -H "Content-Type: application/xmi" \
+    --data-binary @"$FILE" \
+    "$BASE/dataatlas/schema/stages/release?nsUri=$ENC&name=$NAME&version=1.0.0")
+  case "$CODE" in
+    200|201) echo "seed: schema $NAME uploaded ($CODE)" ;;
+    409) echo "seed: schema $NAME already present ($CODE)" ;;
+    *) echo "seed: schema $NAME upload failed ($CODE)" >&2; exit 1 ;;
+  esac
+}
+
+# eorm first: configuration.ecore references it
+upload_schema /seed/models/eorm.ecore "https://eclipse.org/fennec/persistence/eorm/1.0.0" eorm
+upload_schema /seed/models/configuration.ecore "https://eclipse.org/fennec/data/atlas/configuration/1.0.0" configuration
+upload_schema /seed/models/person.ecore "https://eclipse.org/fennec/data/atlas/example/person/1.0.0" person
+
 echo "seed: uploading the DataAtlasConfiguration instance..."
 CODE=$(curl -s -o /dev/stderr -w "%{http_code}" -X POST \
   -H "Content-Type: application/xmi" \
   --data-binary @/seed/dataatlas-atlas.xmi \
-  "$BASE/dataatlas/registries/configurations/stages/release/dataatlas?name=dataatlas&override=true")
+  "$BASE/dataatlas/registries/configurations/stages/release/dataatlas?name=dataatlas")
 case "$CODE" in
   200|201) echo "seed: done ($CODE)" ;;
   409) echo "seed: already present ($CODE)" ;;

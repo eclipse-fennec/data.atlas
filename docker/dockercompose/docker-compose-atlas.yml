@@ -8,33 +8,30 @@
 #   Data Atlas (file):    http://localhost:8081/rest/example/persons
 #   Data Atlas (atlas):   http://localhost:8082/rest/example/persons
 #
-# NOTE: requires a model.atlas image containing the InitialModelLoader bundle
-# (model.atlas#175) or the #188 fix — see docs/roadmap.md Milestone 3.
+# Requires a model.atlas image with the #188 fix (EObject-rooted registries).
 services:
   modelatlas:
     image: eclipsefennec/model.atlas:file-snapshot
     ports:
       - "8080:8080"
     environment:
-      # scanned once at startup; seeds the person/configuration/eorm EPackages
-      - INITIAL_MODELS_FOLDER=/initial-models
-      # injects the dataatlas scope + configurations registry (root EClass
-      # DataAtlasConfiguration — sidesteps model.atlas#188)
+      # injects the dataatlas scope + configurations registry (registry root
+      # EObject; instances accepted since model.atlas#188)
       - JAVA_TOOL_OPTIONS=-Dconfigurator.initial=file:///opt/modelatlas/runtime/load/dataatlas.json
     volumes:
-      - ./modelatlas/initial-models:/initial-models:ro
-      - ../../org.eclipse.fennec.data.atlas.configuration.model/model/configuration.ecore:/initial-models/org.eclipse.fennec.data.atlas.configuration.model/model/configuration.ecore:ro
-      - ../../org.eclipse.fennec.data.atlas.configuration.model/example/model/person.ecore:/initial-models/person.ecore:ro
       - ./modelatlas/load:/opt/modelatlas/runtime/load:ro
 
-  # one-shot: waits for the dataatlas scope and uploads the example
-  # DataAtlasConfiguration instance into the configurations registry
+  # one-shot: uploads the referenced schemas (eorm, configuration, person) and
+  # then the example DataAtlasConfiguration instance
   seed:
     image: curlimages/curl:8.10.1
     depends_on:
       - modelatlas
     volumes:
       - ./seed/seed.sh:/seed/seed.sh:ro
+      - ./seed/models/eorm.ecore:/seed/models/eorm.ecore:ro
+      - ../../org.eclipse.fennec.data.atlas.configuration.model/model/configuration.ecore:/seed/models/configuration.ecore:ro
+      - ../../org.eclipse.fennec.data.atlas.configuration.model/example/model/person.ecore:/seed/models/person.ecore:ro
       - ../../org.eclipse.fennec.data.atlas.configuration.model/example/dataatlas-atlas.xmi:/seed/dataatlas-atlas.xmi:ro
     entrypoint: ["/bin/sh", "/seed/seed.sh"]
 

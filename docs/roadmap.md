@@ -340,16 +340,18 @@ Acceptance:
 
 ## Milestone 3 — Model Atlas config mode + combined running setup
 
-Status: **implemented on the Data Atlas side** (2026-08-21) — end-to-end
-verification is blocked on upstream model.atlas#175/#188 (the published
-`file-snapshot` image lacks the `InitialModelLoader` bundle, and an
-`EObject`-rooted object registry rejects every instance). Everything below is
-in place: the `ModelAtlasBootstrap`, the `runtime.config.atlas` flavour, the
+Status: **implemented on the Data Atlas side** (2026-08-21): the
+`ModelAtlasBootstrap`, the `runtime.config.atlas` flavour, the
 `dataatlas.runtime_docker_atlas` bndrun + `data.atlas:atlas-*` image, the
 nsURI-based example instance, and the combined compose setup
-(`docker/dockercompose/docker-compose-atlas.yml`) including the #188 workaround
-(a `configurations` registry rooted at the `DataAtlasConfiguration` EClass,
-injected via `configurator.initial`).
+(`docker/dockercompose/docker-compose-atlas.yml`). With the model.atlas#188 fix
+the whole chain is verified up to the last step: schemas seed (201), the
+instance stores (201), the atlas-mode Data Atlas connects and fetches — but the
+Model Atlas cannot read instances of REST-uploaded schemas back
+(**model.atlas#190**, storage's management ResourceSet does not see dynamically
+registered EPackages) — the one remaining blocker. Once model.atlas#175 lands
+(deploy the `InitialModelLoader` bundle), schema seeding can move to an
+`initial-models` mount.
 
 Goal: a Data Atlas instance retrieves its `DataAtlasConfiguration` **from a
 running Model Atlas** (the second config source mode), resolving the referenced
