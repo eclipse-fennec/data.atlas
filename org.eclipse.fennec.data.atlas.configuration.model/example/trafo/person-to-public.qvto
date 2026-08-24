@@ -1,0 +1,25 @@
+-- Copyright (c) 2026 Contributors to the Eclipse Foundation.
+--
+-- This program and the accompanying materials are made
+-- available under the terms of the Eclipse Public License 2.0
+-- which is available at https://www.eclipse.org/legal/epl-2.0/
+--
+-- SPDX-License-Identifier: EPL-2.0
+
+-- The authoring source of the example transformation. The runtime references
+-- the parsed AST (person-to-public.xmi) - regenerate it with
+-- PersonToPublicAstGenerator in org.eclipse.fennec.data.atlas.transformation
+-- after changing this file.
+modeltype PERSON uses 'https://eclipse.org/fennec/data/atlas/example/person/1.0.0';
+modeltype PUB uses 'https://eclipse.org/fennec/data/atlas/example/person/public/1.0.0';
+
+transformation PersonToPublic(in src : PERSON, out tgt : PUB);
+
+main() {
+    src.rootObjects()[Person]->map toPublic();
+}
+
+mapping Person::toPublic() : PublicPerson {
+    id := self.id;
+    displayName := self.firstName + ' ' + self.lastName;
+}

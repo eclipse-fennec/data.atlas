@@ -33,6 +33,13 @@ public final class DataAtlasConstants {
 	/** The EClass name of the configuration object a service represents. */
 	public static final String CONFIG_OBJECT_TYPE = "data.atlas.config.type";
 
+	/**
+	 * The {@code DataTransformation} id a {@link DataTransformer} service
+	 * executes, used to correlate transformer services with the configuration
+	 * objects referencing the transformation.
+	 */
+	public static final String TRANSFORMATION_ID = "data.atlas.transformation.id";
+
 	private DataAtlasConstants() {
 	}
 }

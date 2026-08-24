@@ -144,6 +144,20 @@ org.eclipse.fennec.model.atlas:org.eclipse.fennec.model.atlas.rest.client.api:0.
 org.eclipse.fennec.model.atlas:org.eclipse.fennec.model.atlas.rest.client.impl:0.1.0-SNAPSHOT
 org.eclipse.fennec.model.atlas:org.eclipse.fennec.model.atlas.rest.client.osgi:0.1.0-SNAPSHOT
 org.eclipse.fennec.model.atlas:org.eclipse.fennec.model.atlas.scope.api:0.1.0-SNAPSHOT
-org.eclipse.fennec.m2x:org.eclipse.fennec.m2x.library.workspace:0.1.0-SNAPSHOT
+# fennec M2X QVT-O stack (Milestone 6: data transformations) — pinned directly
+# instead of via the fennecM2X workspace library: its index would add a second
+# emf.osgi line (1.1.0-SNAPSHOT) to the workspace repos
+org.antlr:antlr4-runtime:4.13.2
+org.eclipse.fennec.m2x:org.eclipse.fennec.m2x.ocl.model:0.1.1-SNAPSHOT
+org.eclipse.fennec.m2x:org.eclipse.fennec.m2x.ocl.api:0.1.1-SNAPSHOT
+org.eclipse.fennec.m2x:org.eclipse.fennec.m2x.ocl.parser:0.1.1-SNAPSHOT
+org.eclipse.fennec.m2x:org.eclipse.fennec.m2x.ocl.engine:0.1.1-SNAPSHOT
+org.eclipse.fennec.m2x:org.eclipse.fennec.m2x.qvt.model:0.1.1-SNAPSHOT
+org.eclipse.fennec.m2x:org.eclipse.fennec.m2x.qvtd.api:0.1.1-SNAPSHOT
+org.eclipse.fennec.m2x:org.eclipse.fennec.m2x.qvtd.model:0.1.1-SNAPSHOT
+org.eclipse.fennec.m2x:org.eclipse.fennec.m2x.qvto.model:0.1.1-SNAPSHOT
+org.eclipse.fennec.m2x:org.eclipse.fennec.m2x.qvto.api:0.1.1-SNAPSHOT
+org.eclipse.fennec.m2x:org.eclipse.fennec.m2x.qvto.parser:0.1.1-SNAPSHOT
+org.eclipse.fennec.m2x:org.eclipse.fennec.m2x.qvto.engine:0.1.1-SNAPSHOT
 org.eclipse.fennec.persistence:org.eclipse.fennec.persistence.workspace.library:0.1.0-SNAPSHOT
 org.eclipse.fennec.models:org.eclipse.fennec.common.models.library:0.0.1-SNAPSHOT

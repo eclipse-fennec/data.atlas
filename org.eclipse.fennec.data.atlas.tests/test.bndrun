@@ -6,6 +6,9 @@
 	bnd.identity;id='org.eclipse.daanse.io.fs.watcher.watchservice',\
 	bnd.identity;id='org.eclipse.fennec.data.atlas.input.file',\
 	bnd.identity;id='org.eclipse.fennec.data.atlas.input.jpa',\
+	bnd.identity;id='org.eclipse.fennec.data.atlas.input.bridge',\
+	bnd.identity;id='org.eclipse.fennec.data.atlas.transformation',\
+	bnd.identity;id='org.eclipse.fennec.m2x.qvto.engine',\
 	bnd.identity;id='org.eclipse.fennec.data.atlas.rest',\
 	bnd.identity;id='org.eclipse.fennec.codec',\
 	bnd.identity;id='org.eclipse.fennec.codec.rest',\

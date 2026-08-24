@@ -24,5 +24,8 @@ src=${^src},src-gen
 	org.osgi.service.condition;version=latest,\
 	org.eclipse.fennec.persistence.orm;version=latest,\
 	org.eclipse.fennec.query.model;version=latest,\
-	org.eclipse.fennec.expression.model;version=latest
+	org.eclipse.fennec.expression.model;version=latest,\
+	org.eclipse.fennec.m2x.qvto.model;version=latest,\
+	org.eclipse.fennec.m2x.ocl.model;version=latest,\
+	org.eclipse.fennec.m2x.qvt.model;version=latest
 

@@ -53,6 +53,8 @@ import org.eclipse.fennec.data.atlas.configuration.Transformation;
 import org.eclipse.fennec.data.atlas.configuration.XMLADataService;
 import org.eclipse.fennec.data.atlas.configuration.XMLADataServiceConfiguration;
 
+import org.eclipse.fennec.m2x.model.qvtoperational.QvtOperationalPackage;
+
 import org.eclipse.fennec.model.expression.ExpressionPackage;
 
 import org.eclipse.fennec.model.query.QueryPackage;
@@ -312,6 +314,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		EORMPackage.eINSTANCE.eClass();
 		QueryPackage.eINSTANCE.eClass();
 		ExpressionPackage.eINSTANCE.eClass();
+		QvtOperationalPackage.eINSTANCE.eClass();
 
 		// Create package meta-data objects
 		theDAConfigPackage.createPackageContents();
@@ -993,7 +996,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
-	public EReference getDataTransformation_SupportedEClasses() {
+	public EReference getDataTransformation_Transformation() {
 		return (EReference)dataTransformationEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -1003,7 +1006,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
-	public EReference getDataTransformation_ResultEClasses() {
+	public EReference getDataTransformation_SupportedEClasses() {
 		return (EReference)dataTransformationEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -1013,8 +1016,8 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
-	public EAttribute getDataTransformation_QVTPlaceholder() {
-		return (EAttribute)dataTransformationEClass.getEStructuralFeatures().get(2);
+	public EReference getDataTransformation_ResultEClasses() {
+		return (EReference)dataTransformationEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -1332,9 +1335,9 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		createEReference(jpaDataInputEClass, JPA_DATA_INPUT__DATA_SOURCE);
 
 		dataTransformationEClass = createEClass(DATA_TRANSFORMATION);
+		createEReference(dataTransformationEClass, DATA_TRANSFORMATION__TRANSFORMATION);
 		createEReference(dataTransformationEClass, DATA_TRANSFORMATION__SUPPORTED_ECLASSES);
 		createEReference(dataTransformationEClass, DATA_TRANSFORMATION__RESULT_ECLASSES);
-		createEAttribute(dataTransformationEClass, DATA_TRANSFORMATION__QVT_PLACEHOLDER);
 
 		queryTransformationEClass = createEClass(QUERY_TRANSFORMATION);
 
@@ -1390,6 +1393,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		// Obtain other dependent packages
 		QueryPackage theQueryPackage = (QueryPackage)EPackage.Registry.INSTANCE.getEPackage(QueryPackage.eNS_URI);
 		EORMPackage theEORMPackage = (EORMPackage)EPackage.Registry.INSTANCE.getEPackage(EORMPackage.eNS_URI);
+		QvtOperationalPackage theQvtOperationalPackage = (QvtOperationalPackage)EPackage.Registry.INSTANCE.getEPackage(QvtOperationalPackage.eNS_URI);
 
 		// Create type parameters
 
@@ -1446,8 +1450,8 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		initEClass(bridgeRepositoryEClass, BridgeRepository.class, "BridgeRepository", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getBridgeRepository_Source(), this.getDataInput(), null, "source", null, 1, 1, BridgeRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getBridgeRepository_DataTrafo(), this.getDataTransformation(), null, "dataTrafo", null, 1, 1, BridgeRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getBridgeRepository_QueryTrafo(), this.getQueryTransformation(), null, "queryTrafo", null, 1, 1, BridgeRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getBridgeRepository_Filter(), ecorePackage.getEObject(), null, "filter", null, 1, 1, BridgeRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBridgeRepository_QueryTrafo(), this.getQueryTransformation(), null, "queryTrafo", null, 0, 1, BridgeRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBridgeRepository_Filter(), ecorePackage.getEObject(), null, "filter", null, 0, 1, BridgeRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(dataSetEClass, DataSet.class, "DataSet", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getDataSet_InputType(), ecorePackage.getEClass(), null, "inputType", null, 1, 1, DataSet.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1507,9 +1511,9 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		initEReference(getJPADataInput_DataSource(), this.getJdbcDataSource(), null, "dataSource", null, 1, 1, JPADataInput.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(dataTransformationEClass, DataTransformation.class, "DataTransformation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getDataTransformation_Transformation(), theQvtOperationalPackage.getOperationalTransformation(), null, "transformation", null, 1, 1, DataTransformation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDataTransformation_SupportedEClasses(), ecorePackage.getEClass(), null, "supportedEClasses", null, 0, -1, DataTransformation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDataTransformation_ResultEClasses(), ecorePackage.getEClass(), null, "resultEClasses", null, 0, -1, DataTransformation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getDataTransformation_QVTPlaceholder(), ecorePackage.getEString(), "QVTPlaceholder", null, 0, 1, DataTransformation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(queryTransformationEClass, QueryTransformation.class, "QueryTransformation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -1728,7 +1732,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		  (getBridgeRepository_QueryTrafo(),
 		   source,
 		   new String[] {
-			   "documentation", "Transformation applied to incoming queries so they can be executed against the source."
+			   "documentation", "Transformation applied to incoming queries so they can be executed against the source. Optional: without one, the bridge only accepts from/skip/top queries on its output type and rewrites them to the source type."
 		   });
 		addAnnotation
 		  (getBridgeRepository_Filter(),
@@ -1980,7 +1984,13 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		  (dataTransformationEClass,
 		   source,
 		   new String[] {
-			   "documentation", "Describes a transformation Step from Model A to B"
+			   "documentation", "Describes a transformation Step from Model A to B.\n\nThe executable transformation is a QVT-O AST (an OperationalTransformation of the fennec m2x qvto model) referenced as an EObject: in file mode from an XMI next to the configuration, in Model Atlas mode from a dedicated EObject registry of the scope. Authoring happens in QVT-O text, parsed once at publish time.\n\nData-Atlas contract: the transformation is 1:1 - one source object maps to exactly one result object carrying the same id."
+		   });
+		addAnnotation
+		  (getDataTransformation_Transformation(),
+		   source,
+		   new String[] {
+			   "documentation", "The executable QVT-O transformation (the parsed AST, referenced as an EObject)."
 		   });
 		addAnnotation
 		  (getDataTransformation_SupportedEClasses(),
@@ -1993,12 +2003,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		   source,
 		   new String[] {
 			   "documentation", "Output EClasses this transformation produces."
-		   });
-		addAnnotation
-		  (getDataTransformation_QVTPlaceholder(),
-		   source,
-		   new String[] {
-			   "documentation", "Will be replaced with the actual QVT Script in the end"
 		   });
 		addAnnotation
 		  (queryTransformationEClass,

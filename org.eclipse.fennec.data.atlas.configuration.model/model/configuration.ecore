@@ -141,14 +141,12 @@
         <details key="documentation" value="Transformation applied to the source EObjects when they are loaded."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="queryTrafo" lowerBound="1"
-        eType="#//QueryTransformation">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="queryTrafo" eType="#//QueryTransformation">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Transformation applied to incoming queries so they can be executed against the source."/>
+        <details key="documentation" value="Transformation applied to incoming queries so they can be executed against the source. Optional: without one, the bridge only accepts from/skip/top queries on its output type and rewrites them to the source type."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="filter" lowerBound="1"
-        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="filter" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="A Placeholder for now. Will provide e.g. security filters or anonymization rules for the bridged dataset"/>
       </eAnnotations>
@@ -391,8 +389,14 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DataTransformation" eSuperTypes="#//Transformation">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Describes a transformation Step from Model A to B"/>
+      <details key="documentation" value="Describes a transformation Step from Model A to B.&#xA;&#xA;The executable transformation is a QVT-O AST (an OperationalTransformation of the fennec m2x qvto model) referenced as an EObject: in file mode from an XMI next to the configuration, in Model Atlas mode from a dedicated EObject registry of the scope. Authoring happens in QVT-O text, parsed once at publish time.&#xA;&#xA;Data-Atlas contract: the transformation is 1:1 - one source object maps to exactly one result object carrying the same id."/>
     </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="transformation" lowerBound="1"
+        eType="ecore:EClass ../../org.eclipse.fennec.m2x.qvto.model/model/qvtoperational.ecore#//OperationalTransformation">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The executable QVT-O transformation (the parsed AST, referenced as an EObject)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="supportedEClasses" upperBound="-1"
         eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EClass">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -403,11 +407,6 @@
         eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EClass">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Output EClasses this transformation produces."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="QVTPlaceholder" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Will be replaced with the actual QVT Script in the end"/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>

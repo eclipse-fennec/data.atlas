@@ -102,12 +102,12 @@ public interface BridgeRepository extends DataInput {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * Transformation applied to incoming queries so they can be executed against the source.
+	 * Transformation applied to incoming queries so they can be executed against the source. Optional: without one, the bridge only accepts from/skip/top queries on its output type and rewrites them to the source type.
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Query Trafo</em>' reference.
 	 * @see #setQueryTrafo(QueryTransformation)
 	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getBridgeRepository_QueryTrafo()
-	 * @model required="true"
+	 * @model
 	 * @generated
 	 */
 	QueryTransformation getQueryTrafo();
@@ -132,7 +132,7 @@ public interface BridgeRepository extends DataInput {
 	 * @return the value of the '<em>Filter</em>' reference.
 	 * @see #setFilter(EObject)
 	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getBridgeRepository_Filter()
-	 * @model required="true"
+	 * @model
 	 * @generated
 	 */
 	EObject getFilter();

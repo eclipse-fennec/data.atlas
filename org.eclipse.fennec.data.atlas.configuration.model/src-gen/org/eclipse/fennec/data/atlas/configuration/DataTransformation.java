@@ -18,6 +18,8 @@ import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 
+import org.eclipse.fennec.m2x.model.qvtoperational.OperationalTransformation;
+
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -26,16 +28,20 @@ import org.osgi.annotation.versioning.ProviderType;
  * <!-- end-user-doc -->
  *
  * <!-- begin-model-doc -->
- * Describes a transformation Step from Model A to B
+ * Describes a transformation Step from Model A to B.
+ * 
+ * The executable transformation is a QVT-O AST (an OperationalTransformation of the fennec m2x qvto model) referenced as an EObject: in file mode from an XMI next to the configuration, in Model Atlas mode from a dedicated EObject registry of the scope. Authoring happens in QVT-O text, parsed once at publish time.
+ * 
+ * Data-Atlas contract: the transformation is 1:1 - one source object maps to exactly one result object carrying the same id.
  * <!-- end-model-doc -->
  *
  * <p>
  * The following features are supported:
  * </p>
  * <ul>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DataTransformation#getTransformation <em>Transformation</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DataTransformation#getSupportedEClasses <em>Supported EClasses</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DataTransformation#getResultEClasses <em>Result EClasses</em>}</li>
- *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DataTransformation#getQVTPlaceholder <em>QVT Placeholder</em>}</li>
  * </ul>
  *
  * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getDataTransformation()
@@ -44,6 +50,31 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @ProviderType
 public interface DataTransformation extends Transformation {
+	/**
+	 * Returns the value of the '<em><b>Transformation</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * The executable QVT-O transformation (the parsed AST, referenced as an EObject).
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Transformation</em>' reference.
+	 * @see #setTransformation(OperationalTransformation)
+	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getDataTransformation_Transformation()
+	 * @model required="true"
+	 * @generated
+	 */
+	OperationalTransformation getTransformation();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.fennec.data.atlas.configuration.DataTransformation#getTransformation <em>Transformation</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Transformation</em>' reference.
+	 * @see #getTransformation()
+	 * @generated
+	 */
+	void setTransformation(OperationalTransformation value);
+
 	/**
 	 * Returns the value of the '<em><b>Supported EClasses</b></em>' reference list.
 	 * The list contents are of type {@link org.eclipse.emf.ecore.EClass}.
@@ -73,30 +104,5 @@ public interface DataTransformation extends Transformation {
 	 * @generated
 	 */
 	EList<EClass> getResultEClasses();
-
-	/**
-	 * Returns the value of the '<em><b>QVT Placeholder</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * Will be replaced with the actual QVT Script in the end
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>QVT Placeholder</em>' attribute.
-	 * @see #setQVTPlaceholder(String)
-	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getDataTransformation_QVTPlaceholder()
-	 * @model
-	 * @generated
-	 */
-	String getQVTPlaceholder();
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.fennec.data.atlas.configuration.DataTransformation#getQVTPlaceholder <em>QVT Placeholder</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>QVT Placeholder</em>' attribute.
-	 * @see #getQVTPlaceholder()
-	 * @generated
-	 */
-	void setQVTPlaceholder(String value);
 
 } // DataTransformation

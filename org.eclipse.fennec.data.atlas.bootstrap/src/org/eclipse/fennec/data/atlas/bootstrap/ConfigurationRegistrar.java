@@ -35,6 +35,7 @@ import org.eclipse.fennec.data.atlas.configuration.DataAtlasConfiguration;
 import org.eclipse.fennec.data.atlas.configuration.DataInput;
 import org.eclipse.fennec.data.atlas.configuration.DataService;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
+import org.eclipse.fennec.data.atlas.configuration.Transformation;
 import org.eclipse.fennec.emf.osgi.configurator.EPackageConfigurator;
 import org.eclipse.fennec.emf.osgi.constants.EMFNamespaces;
 import org.osgi.framework.Bundle;
@@ -205,6 +206,9 @@ class ConfigurationRegistrar {
 		}
 		for (DataInput input : configuration.getDataInputs()) {
 			addObject(desired, input, input.getId());
+		}
+		for (Transformation transformation : configuration.getTransformations()) {
+			addObject(desired, transformation, transformation.getId());
 		}
 
 		// unregister removed objects

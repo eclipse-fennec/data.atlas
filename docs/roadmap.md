@@ -624,20 +624,28 @@ its `docs/qvto-user-guide.md`).
 
 Design:
 
-- **The trias does the work, not a new concept.** `DataProvider` already
-  carries `dataInput` + `transformation` + `distributionExport`
-  (override-else-default between service and DataSet), and the model already
-  states: `outputType` must equal `inputType` **unless a transformation maps
-  between them**. M6 implements exactly that leg: the serving path reads
-  source objects (of `inputType`) from the repository and runs the effective
-  `DataTransformation` before serialization. Queries and pagination keep
-  their full push-down — they target the **source** side (`inputType`);
+- **The `BridgeRepository` does the work** (decided 2026-08-24): the
+  transformation runs input-side, behind the repository facade. A
+  `BridgeRepository` is a `DataInput` wrapping a `source` input and applying
+  its `dataTrafo` to loaded objects — per the M2 contract it materializes as
+  one more read-only `ReadRepository` (`persistence.repository.id` = bridge
+  id), so the REST layer needs **no change at all**, and cascading works for
+  free (a bridge's source can be another bridge). A DataSet on a bridge has
+  the bridge's *output* type as its `inputType`.
+- **Query surface without `QueryTransformation`**: the bridge accepts only
+  `from`+`skip`+`top` queries (the `FileReadRepository` philosophy) — it
+  rewrites `from` output→source type and delegates; predicates/ordering/
+  parameters would need the `QueryTransformation`, which comes **later** —
+  until then the bridge refuses them at prepare time, so a DataSet with such
+  a query never becomes an endpoint (the established gating). The model's
+  `queryTrafo` and `filter` references relax from `[1..1]` to `[0..1]` —
+  today no valid bridge instance could omit them.
   **Transformed DataSets are 1:1 by contract** (decided 2026-08-24): one
-  source object maps to one result object, so `skip`/`top` on source objects
-  *is* result paging. Anything non-1:1 would force materializing the full
-  source result set just to know what to skip — out of scope, stays Later
-  together with `BridgeRepository` (input-side cascading) and
-  `QueryTransformation`, which require query translation to be honest.
+  source object maps to one result object **with the same id**, so
+  `skip`/`top` pushed down on source objects *is* result paging, and by-id
+  lookups fetch the source object by the requested id and transform it.
+  Anything non-1:1 would force materializing the full source result set
+  just to know what to skip — out of scope, stays Later.
 - **The transformation is an EObject and is referenced as one** (decided
   2026-08-24). The parsed QVT-O AST *is* an EMF model instance
   (`OperationalTransformation` of the m2x `qvto.model` metamodel), so
@@ -676,33 +684,41 @@ Work items:
 
 1. Model: `DataTransformation.transformation` (non-containment reference to
    the qvto.model `OperationalTransformation`) in `configuration.ecore`,
-   qvto.model via `usedGenPackages` (+ genmodel reconcile, regen); document
-   the 1:1 contract on `DataSet`.
-2. New bundle `org.eclipse.fennec.data.atlas.transformation`: the
-   `DataTransformer` contract in `api`, the configurator translating
-   `DataTransformation` services into ready-to-execute transformer services
-   (fennec QVT-O engine via `@Reference QvtoEngine`; a broken/unresolvable
-   referenced AST fails the registration loudly).
-3. `rest`: resolve the effective transformation from the trias; when
-   present, require the matching `DataTransformer` (endpoint appears only
-   when it is available), run it over each response page / by-id result,
-   validate input/outputType.
-4. Runtime: m2x bundles (`m2x`, `ocl.*`, `qvto.api/parser/engine/model`) in
-   `central.mvn` + base bndrun, re-resolve.
-5. Example + tests: a transformed DataSet in the example configuration
-   (person → a projected/derived output type; the transformation AST XMI is
+   qvto.model via `usedGenPackages`; `BridgeRepository.queryTrafo`/`filter`
+   relax to `[0..1]` (+ genmodel reconcile, regen); document the 1:1
+   contract.
+2. `bootstrap`: the registrar additionally publishes the `transformations`
+   registry objects as services (today only services + inputs).
+3. New bundle `org.eclipse.fennec.data.atlas.transformation`: the
+   `DataTransformer` contract in `api`, the configurator translating each
+   `DataTransformation` service into a ready-to-execute transformer service
+   (fennec QVT-O engine, PROTOTYPE per transformer; the AST subtree is
+   copied at registration so it does not dangle into a replaced
+   configuration; a broken/unresolvable AST or a non-1:1 type declaration
+   fails the registration loudly).
+4. New bundle `org.eclipse.fennec.data.atlas.input.bridge`: per
+   `BridgeRepository` config service (tracked together with the source
+   `ReadRepository` and the `DataTransformer`, reconcile pattern) one
+   read-only bridge `ReadRepository`: `find`/`count` rewrite `from` and
+   delegate with skip/top push-down, `getEObject` delegates by id and
+   transforms, everything else is refused with a diagnostic.
+5. Runtime: m2x bundles (`m2x`, `ocl.*`, `qvt.model`,
+   `qvto.api/parser/engine/model`) in `central.mvn` + base bndrun,
+   re-resolve.
+6. Example + tests: a bridged DataSet in the example configuration
+   (person → a projected public-person type; the transformation AST XMI is
    produced from `.qvto` text by the engine at build/seed time); OSGi ITs:
-   transformed list + by-id, pagination on a transformed set, broken/missing
-   transformation reference → no endpoint + loud log, transformation change →
-   new output within the M4 lifecycle; atlas-mode IT proves the WP-DA-7
+   transformed list + by-id, pagination through the bridge, missing/broken
+   transformation → no endpoint + loud log, transformation change → new
+   output within the M4 lifecycle; atlas-mode IT proves the WP-DA-7
    evidence (the AST is published into a `transformations` registry of the
    scope, referenced from the configuration, fetched and executed).
-6. Docs: user guide section (writing a transformation), configuration.md,
+7. Docs: user guide section (writing a transformation), configuration.md,
    architecture.md.
 
 Acceptance:
 
-- A DataSet with `outputType != inputType` and a QVT-O `DataTransformation`
+- A DataSet on a `BridgeRepository` with a QVT-O `DataTransformation`
   serves transformed objects over REST in both config modes.
 - A broken script keeps the endpoint down (fail hard, loud log); fixing the
   script via the M4 lifecycle brings it up without a restart.
@@ -715,9 +731,9 @@ Acceptance:
 - Other `DataService` kinds (OData, OGC Features/SensorThings, QGis, XMLA,
   GraphQL — no GraphQL implementation exists anywhere in fennec today);
   GeoJSON is Milestone 5.
-- Importers, `BridgeRepository` and `QueryTransformation` (input-side
-  transformation — needs query translation; the serving-side
-  `DataTransformation` is Milestone 6), multi-tenancy mappings,
+- Importers, `QueryTransformation` (query translation so bridged DataSets
+  can carry predicates — the `BridgeRepository` data path is Milestone 6),
+  the serving-side trias `transformation` leg, multi-tenancy mappings,
   DistributionExport execution (CSV etc. beyond what the codec gives for
   free).
 

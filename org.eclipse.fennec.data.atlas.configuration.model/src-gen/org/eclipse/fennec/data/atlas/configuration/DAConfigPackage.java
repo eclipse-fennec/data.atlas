@@ -49,7 +49,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * @generated
  */
 @ProviderType
-@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:7039d23e1779fb50f570e6f6c50c67e7c48657bebdb260c7ab9951b83e77464c", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
+@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:a3346533d2997527db331623a4ab07e70a49668c008b89a4c81f59f6017c4e6a", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
 public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	/**
 	 * The package name.
@@ -1861,13 +1861,22 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	int DATA_TRANSFORMATION__DESCRIPTION = TRANSFORMATION__DESCRIPTION;
 
 	/**
+	 * The feature id for the '<em><b>Transformation</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATA_TRANSFORMATION__TRANSFORMATION = TRANSFORMATION_FEATURE_COUNT + 0;
+
+	/**
 	 * The feature id for the '<em><b>Supported EClasses</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_TRANSFORMATION__SUPPORTED_ECLASSES = TRANSFORMATION_FEATURE_COUNT + 0;
+	int DATA_TRANSFORMATION__SUPPORTED_ECLASSES = TRANSFORMATION_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Result EClasses</b></em>' reference list.
@@ -1876,16 +1885,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_TRANSFORMATION__RESULT_ECLASSES = TRANSFORMATION_FEATURE_COUNT + 1;
-
-	/**
-	 * The feature id for the '<em><b>QVT Placeholder</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATA_TRANSFORMATION__QVT_PLACEHOLDER = TRANSFORMATION_FEATURE_COUNT + 2;
+	int DATA_TRANSFORMATION__RESULT_ECLASSES = TRANSFORMATION_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of structural features of the '<em>Data Transformation</em>' class.
@@ -3012,6 +3012,17 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	EClass getDataTransformation();
 
 	/**
+	 * Returns the meta object for the reference '{@link org.eclipse.fennec.data.atlas.configuration.DataTransformation#getTransformation <em>Transformation</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Transformation</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DataTransformation#getTransformation()
+	 * @see #getDataTransformation()
+	 * @generated
+	 */
+	EReference getDataTransformation_Transformation();
+
+	/**
 	 * Returns the meta object for the reference list '{@link org.eclipse.fennec.data.atlas.configuration.DataTransformation#getSupportedEClasses <em>Supported EClasses</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3032,17 +3043,6 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 */
 	EReference getDataTransformation_ResultEClasses();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DataTransformation#getQVTPlaceholder <em>QVT Placeholder</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>QVT Placeholder</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DataTransformation#getQVTPlaceholder()
-	 * @see #getDataTransformation()
-	 * @generated
-	 */
-	EAttribute getDataTransformation_QVTPlaceholder();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.QueryTransformation <em>Query Transformation</em>}'.
@@ -3851,6 +3851,14 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		EClass DATA_TRANSFORMATION = eINSTANCE.getDataTransformation();
 
 		/**
+		 * The meta object literal for the '<em><b>Transformation</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference DATA_TRANSFORMATION__TRANSFORMATION = eINSTANCE.getDataTransformation_Transformation();
+
+		/**
 		 * The meta object literal for the '<em><b>Supported EClasses</b></em>' reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -3865,14 +3873,6 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		 * @generated
 		 */
 		EReference DATA_TRANSFORMATION__RESULT_ECLASSES = eINSTANCE.getDataTransformation_ResultEClasses();
-
-		/**
-		 * The meta object literal for the '<em><b>QVT Placeholder</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute DATA_TRANSFORMATION__QVT_PLACEHOLDER = eINSTANCE.getDataTransformation_QVTPlaceholder();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.QueryTransformationImpl <em>Query Transformation</em>}' class.

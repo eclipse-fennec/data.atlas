@@ -1,0 +1,17 @@
+Bundle-Name: Fennec Data Atlas - Bridge Input
+Bundle-Description: Input configurator: tracks BridgeRepository configuration services and \
+	registers one read-only ReadRepository per configuration that reads from the source \
+	input's repository and applies the configured DataTransformation to the loaded objects.
+
+-library: enableEMF
+
+-buildpath: \
+	org.osgi.service.component.annotations;version=latest,\
+	org.osgi.service.component;version=latest,\
+	org.eclipse.fennec.data.atlas.configuration.model;version=project,\
+	org.eclipse.fennec.data.atlas.api;version=project,\
+	org.eclipse.fennec.persistence.repository;version=latest,\
+	org.eclipse.fennec.persistence.query;version=latest,\
+	org.eclipse.fennec.persistence.capabilities;version=latest,\
+	org.eclipse.fennec.query.model;version=latest,\
+	org.eclipse.fennec.expression.model;version=latest
