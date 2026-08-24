@@ -1,8 +1,9 @@
 # Data Atlas — Roadmap
 
 Status: **Milestones 0 and 1 implemented** (2026-08-19), **Milestone 2
-implemented** (2026-08-20), **Milestone 3 drafted** (2026-08-21). Horizon is
-deliberately minimal: everything beyond is parked under
+implemented** (2026-08-20), **Milestone 3 implemented and verified end-to-end**
+(2026-08-21), **Milestone 4 drafted** (2026-08-24). Horizon is deliberately
+minimal: everything beyond is parked under
 [Later](#later-explicitly-not-planned) without commitment.
 
 ## Platform context (xDP)
@@ -19,7 +20,8 @@ packages:
 | M0 (model rework) | WP-DA-4 (configuration model; discussion points D0–D5) |
 | M1 (config → REST slice) | WP-DA-1 (runtime structure & CI), WP-DA-2 (Jakarta-RS whiteboard), WP-DA-5 (config → running services — realized as config-objects-as-services, see Principles) |
 | M2 (JPA input) | WP-DA-3 (Fennec JPA persistence), D5 (Query concept) |
-| M3 (Model Atlas mode) | WP-DA-11 (Atlas client / custom registry integration) + config retrieval from the Atlas |
+| M3 (Model Atlas mode) | WP-DA-11 (Atlas client / custom registry integration; the transformations part follows WP-DA-7) + config retrieval from the Atlas |
+| M4 (config lifecycle) | WP-DA-5 lifecycle criterion (changes/deletions reach running services); prerequisite for WP-DA-6 |
 | Later | WP-DA-6 (Git config source — a third config mode), WP-DA-7 (QVT), WP-DA-8 (exporters), WP-DA-9 (OpenAPI), WP-DA-10 (DCAT + portal, blocker WP-DCAT-6), WP-DA-12/13/15 (GeoJSON/OData/GraphQL services), WP-DA-14 (release/deployment), WP-DA-16 (EMF editor) |
 
 ## Principles
@@ -442,6 +444,91 @@ Acceptance:
   byte-identical responses to the file-mode instance next to it;
 - the docker-gated integration test is green locally and in CI;
 - `./gradlew build testOSGi` stays green without docker (test skipped).
+
+## Milestone 4 — configuration lifecycle: changes reach the running instance
+
+Status: **draft** (2026-08-24).
+
+Goal: a change to the `DataAtlasConfiguration` reaches a **running** Data Atlas
+instance without a restart — in atlas mode by picking the change up from the
+Model Atlas, in file mode on a Config-Admin update — and only the runtime
+pieces whose configuration objects actually changed are rebuilt. This
+completes the WP-DA-5 evidence criterion ("changes to the configuration model
+… are reflected … and the services react accordingly") and is the
+prerequisite for the Git config source (WP-DA-6): a hook without a reacting
+runtime is worthless.
+
+How changes flow (design decisions):
+
+- **Atlas mode: staged updates + cheap polling.** Config changes follow the
+  Model Atlas workflow: upload the new version to `draft`, transition to
+  `release` (updates *in* a final stage are forbidden by the server — the
+  stage workflow *is* the intended change mechanism). The bootstrap re-fetches
+  the instance periodically through the `ReadableScopeService` — the client's
+  cache makes an unchanged check a conditional GET (304), so short intervals
+  are cheap. A changed fetch returns the new object; push-based invalidation
+  (the xDP "Model change API" work package) can replace the poll later without
+  touching the swap logic.
+- **File mode: Config-Admin `@Modified` + file watcher (MDO heritage).** A
+  changed `config.uri` re-loads the configuration; changes to the file itself
+  are picked up by a **Daanse `io.fs.watcher` listener**
+  (`FileSystemWatcherListener` on the config file's directory, debounced) —
+  the same mechanism as MDO's `EMFFileWatcher` / the removed data-plane
+  watcher. No polling in file mode. Only the two `io.fs.watcher` artifacts
+  return to the repo index (not the Daanse `sql.*` ones that forced Java 25).
+  `refresh.interval.ms` exists in **atlas mode only** (default 300000 ms,
+  aligned with the client's drift cadence; overridable via
+  `DATA_ATLAS_REFRESH_INTERVAL` — the change latency is a deployment detail,
+  demos can go shorter).
+- **Diff, don't restart: the registrar becomes id-keyed.** The
+  `ConfigurationRegistrar` keeps its registrations keyed by configuration
+  object id (and EPackages by nsURI) instead of a flat list. On a new
+  configuration it diffs against the current state: unchanged objects
+  (`EcoreUtil.equals` on the copy) keep their service registration — their
+  endpoints stay up without interruption; changed objects are re-registered
+  (the whiteboard configurators tear down and rebuild exactly those pieces);
+  removed objects are unregistered; added objects are registered. An
+  unparseable/unresolvable new configuration **fails hard**: the instance
+  tears its published configuration down (endpoints disappear) and the error
+  is logged loudly — consistent with the fail-fast at startup, and a broken
+  update never keeps serving stale state unnoticed.
+- **Schema drift is out of scope.** EPackage *content* changes (a new version
+  of a model already registered) are not handled — the registrar continues to
+  skip already-registered nsURIs. Swapping live EPackages under loaded
+  EObjects is a separate, hairy problem (tracked upstream by the client's
+  drift substitution); a Data Atlas restart remains the answer for schema
+  changes in this milestone.
+
+Work items:
+
+1. Registrar refactor: id-keyed registrations, `apply(newConfiguration)` with
+   diff semantics (unchanged/changed/added/removed), fail-hard on a broken
+   configuration (full teardown + loud log).
+2. `ModelAtlasBootstrap`: `refresh.interval.ms` scheduler around the existing
+   fetch path; `@Modified` for config changes (registry/object id/target
+   switch = full re-apply).
+3. `DataAtlasBootstrap` (file mode): `@Modified` instead of restart-only; a
+   Daanse `FileSystemWatcherListener` (debounced, MDO `EMFFileWatcher`
+   pattern) re-loads on changes to the configured file. Re-add
+   `org.eclipse.daanse.io.fs.watcher.api`/`watchservice` to `central.mvn` and
+   the runtimes.
+4. Tests: lifecycle IT extensions — file mode: overwrite the config file and
+   assert an added DataSet appears, a removed one 404s, and an unchanged one
+   keeps serving without interruption; atlas mode (docker-gated): upload v2 to
+   `draft`, transition to `release`, assert the change lands within the
+   refresh interval; negative: a broken v2 tears the endpoints down (fail
+   hard) and is visible in the log.
+5. Docs: architecture.md lifecycle section; compose README gets a "change the
+   config at runtime" walkthrough (the staged-update workflow).
+
+Acceptance:
+
+- file mode: saving a changed config file is live without restarting the
+  framework; unchanged DataSets serve continuously through the update.
+- atlas mode: draft→release transition of a new configuration version reaches
+  a running instance within `refresh.interval.ms`.
+- a broken new version fails hard: endpoints down, error in the log.
+- `./gradlew build testOSGi` green (docker-gated parts skipped without docker).
 
 ## Later (explicitly not planned)
 
