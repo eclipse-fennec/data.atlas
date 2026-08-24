@@ -11,14 +11,29 @@ A Data Atlas instance is described entirely by an **EMF configuration model**
 model into running OSGi services at runtime — the model is the single source
 of truth.
 
+For the full user documentation covering getting started with Docker, core
+concepts, the REST endpoints, and the configuration lifecycle, see the
+**[User Guide](docs/user-guide.md)**.
+
 ## Status
 
-Early bootstrap. The repository currently contains:
+Implemented today (see the [roadmap](docs/roadmap.md)): file- and JPA-backed
+data inputs served over REST, both configuration-source modes (file system /
+Model Atlas), and the configuration lifecycle — changes reach a running
+instance without a restart. Docker images:
+`eclipsefennec/data.atlas:file-snapshot` (file mode) and
+`eclipsefennec/data.atlas:atlas-snapshot` (Model Atlas mode).
 
 | Bundle | Content |
 |---|---|
-| `org.eclipse.fennec.data.atlas.configuration.model` | The Data Atlas configuration model (`configuration.ecore`, `validation.ecore`) with generated code; references the `eorm` JPA mapping model from `org.eclipse.fennec.persistence.orm` |
-| `org.eclipse.fennec.data.atlas.runtime` | OSGi runtime assembly (bndrun configurations) and docker export |
+| `…configuration.model` | The Data Atlas configuration model (`configuration.ecore`, `validation.ecore`) with generated code; references the `eorm` JPA mapping model of the fennec persistence stack |
+| `…api` | Shared property constants |
+| `…bootstrap` | Loads the configuration (file or Model Atlas mode) and registers the configuration objects as OSGi services, applying updates as a diff |
+| `…input.file` / `…input.jpa` | Translate `FileDataInput`/`JPADataInput` into read-only repository services |
+| `…rest` | One Jakarta-RS whiteboard application per `RestDataService` |
+| `…runtime.config` / `…runtime.config.atlas` | Configurator resources per config-source flavour |
+| `…runtime`, `docker/*` | OSGi runtime assembly (bndruns), docker images and compose setups |
+| `…tests` | OSGi integration tests |
 
 ## Build
 
