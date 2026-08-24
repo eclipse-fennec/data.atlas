@@ -22,7 +22,8 @@ packages:
 | M2 (JPA input) | WP-DA-3 (Fennec JPA persistence), D5 (Query concept) |
 | M3 (Model Atlas mode) | WP-DA-11 (Atlas client / custom registry integration; the transformations part follows WP-DA-7) + config retrieval from the Atlas |
 | M4 (config lifecycle) | WP-DA-5 lifecycle criterion (changes/deletions reach running services); prerequisite for WP-DA-6 |
-| Later | WP-DA-6 (Git config source — a third config mode), WP-DA-7 (QVT), WP-DA-8 (exporters), WP-DA-9 (OpenAPI), WP-DA-10 (DCAT + portal, blocker WP-DCAT-6), WP-DA-12/13/15 (GeoJSON/OData/GraphQL services), WP-DA-14 (release/deployment), WP-DA-16 (EMF editor) |
+| M5 (GeoJSON DataService) | WP-DA-12 (GeoJSON delivery via `org.geojson.model` + fennec codec GeoJSON) |
+| Later | WP-DA-6 (Git config source — a third config mode), WP-DA-7 (QVT), WP-DA-8 (exporters), WP-DA-9 (OpenAPI), WP-DA-10 (DCAT + portal, blocker WP-DCAT-6), WP-DA-13/15 (OData/GraphQL services), WP-DA-14 (release/deployment), WP-DA-16 (EMF editor) |
 
 ## Principles
 
@@ -538,12 +539,80 @@ Acceptance:
 - a broken new version fails hard: endpoints down, error in the log.
 - `./gradlew build testOSGi` green (docker-gated parts skipped without docker).
 
+## Milestone 5 — GeoJSON DataService
+
+Status: **draft** (2026-08-24).
+
+Goal (WP-DA-12): geodata leaves the Data Atlas as spec-conform GeoJSON — a
+new `DataService` kind whose endpoints return a valid RFC 7946
+`FeatureCollection`, built on the upstream pieces: the Fennec
+`org.geojson.model` (nsURI `https://geojson.org/model/2016`, in
+`common.models`, part of the codec workspace library) and the
+`org.eclipse.fennec.codec.geojson` codec (both already reachable from our
+repository index).
+
+Design:
+
+- **A new service kind, not a media type on `RestDataService`.** Serving
+  GeoJSON needs mapping configuration (which features of the domain type
+  carry the geometry, what becomes `properties`) that has no place on the
+  generic REST service. The configuration model gains
+  `GeoJsonDataService` (extends `DataService`, keeps the placeholder pattern
+  of the other kinds) and a per-DataSet `GeoJsonDataServiceConfiguration`
+  (extends `DataServiceConfiguration`) with `path` plus the mapping features.
+- **Mapping: domain EObject → `Feature`** (the MDO prototype's approach,
+  made configurable instead of hardcoded): the configuration names the
+  geometry source — either two numeric attributes (`longitude`/`latitude` →
+  `Point`) or one feature already holding a `org.geojson.model` `Geometry`
+  (passthrough) — plus optionally an id feature; all remaining attributes
+  become `properties`. The endpoint wraps the mapped Features into a
+  `FeatureCollection`. Coordinates are assumed to be **WGS 84** (GeoJSON
+  mandates it — RFC 7946 §4); coordinate transformation is out of scope
+  (that is a `Transformation` concern, WP-DA-7).
+- **Serving reuses the REST plumbing.** The `rest` bundle gains a
+  `GeoJsonEndpointConfigurator` next to the existing one: one whiteboard
+  application per `GeoJsonDataService` under its `urlContext`,
+  `GET {path}` → `FeatureCollection`, `GET {path}/{id}` → `Feature`,
+  repository leases, prepare-gating, `skip`/`top` pagination overlay and
+  bound query parameters exactly as in the REST service.
+- **Serialization through the codec, media type `application/geo+json`.**
+  Blocker upstream:
+  [emf.codec#168](https://github.com/eclipse-fennec/emf.codec/issues/168) —
+  the GeoJSON resource factory registers no `emf.contentType`, so the codec
+  REST writers cannot resolve it for `application/geo+json` yet (every other
+  codec registers its media type).
+
+Work items:
+
+1. Model: `GeoJsonDataService` + `GeoJsonDataServiceConfiguration` in
+   `configuration.ecore` (+ genmodel reconcile, regen).
+2. `rest`: `GeoJsonEndpointConfigurator` + a Feature-mapping resource
+   (FeatureCollection list / Feature by id), sharing the lease/pagination
+   plumbing.
+3. Runtime: require `org.eclipse.fennec.codec.geojson` + `org.geojson.model`
+   in the base bndrun, re-resolve.
+4. Example + tests: a geo DataSet (points with lon/lat) in the example
+   configuration; OSGi IT asserting the endpoint returns a **valid** GeoJSON
+   `FeatureCollection` (parsed, `type`/`features`/`geometry.coordinates`
+   verified — the WP-DA-12 evidence criterion), plus pagination and 404.
+5. Docs: user guide section (writing a GeoJSON service), configuration.md,
+   architecture.md service list.
+
+Acceptance:
+
+- `GET {urlContext}/{path}` with `Accept: application/geo+json` returns a
+  spec-valid `FeatureCollection`; `{path}/{id}` returns the single `Feature`.
+- The service is fully configuration-driven (add/change/remove follows the
+  M4 lifecycle like every other configuration object).
+- `./gradlew build testOSGi` green.
+
 ## Later (explicitly not planned)
 
 - **DCAT**: model was removed with `262bdfc`; git history is the only source
   in the ecosystem (`common.models` has RDF but no DCAT).
 - Other `DataService` kinds (OData, OGC Features/SensorThings, QGis, XMLA,
-  GraphQL — no GraphQL implementation exists anywhere in fennec today).
+  GraphQL — no GraphQL implementation exists anywhere in fennec today);
+  GeoJSON is Milestone 5.
 - Importers, QVT transformations (`org.eclipse.fennec.m2x`), `BridgeRepository`,
   multi-tenancy mappings, DistributionExport execution (CSV etc. beyond what the
   codec gives for free).
