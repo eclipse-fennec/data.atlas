@@ -22,7 +22,8 @@ packages:
 | M2 (JPA input) | WP-DA-3 (Fennec JPA persistence), D5 (Query concept) |
 | M3 (Model Atlas mode) | WP-DA-11 (Atlas client / custom registry integration; the transformations part follows WP-DA-7) + config retrieval from the Atlas |
 | M4 (config lifecycle) | WP-DA-5 lifecycle criterion (changes/deletions reach running services); prerequisite for WP-DA-6 |
-| M5 (GeoJSON DataService) | WP-DA-12 (GeoJSON delivery via `org.geojson.model` + fennec codec GeoJSON) |
+| M5 (GeoJSON DataService, parked) | WP-DA-12 (GeoJSON delivery via `org.geojson.model` + fennec codec GeoJSON) |
+| M6 (data transformations) | WP-DA-7 (Fennec M2X QVT integration; transformations travel inside the configuration, which the Model Atlas serves in atlas mode) |
 | Later | WP-DA-6 (Git config source — a third config mode), WP-DA-7 (QVT), WP-DA-8 (exporters), WP-DA-9 (OpenAPI), WP-DA-10 (DCAT + portal, blocker WP-DCAT-6), WP-DA-13/15 (OData/GraphQL services), WP-DA-14 (release/deployment), WP-DA-16 (EMF editor) |
 
 ## Principles
@@ -541,7 +542,10 @@ Acceptance:
 
 ## Milestone 5 — GeoJSON DataService
 
-Status: **draft** (2026-08-24).
+Status: **draft, parked** (2026-08-24 — deprioritized in favour of
+Milestone 6; the upstream blocker
+[emf.codec#168](https://github.com/eclipse-fennec/emf.codec/issues/168) can
+be resolved in the meantime).
 
 Goal (WP-DA-12): geodata leaves the Data Atlas as spec-conform GeoJSON — a
 new `DataService` kind whose endpoints return a valid RFC 7946
@@ -606,6 +610,90 @@ Acceptance:
   M4 lifecycle like every other configuration object).
 - `./gradlew build testOSGi` green.
 
+## Milestone 6 — data transformations (QVT-O)
+
+Status: **draft** (2026-08-24).
+
+Goal (WP-DA-7): input data is transformed into output data with the Fennec
+M2X QVT-O engine, driven entirely by the configuration model — a `DataSet`
+whose `outputType` differs from its `inputType` serves **transformed**
+objects. Upstream: `eclipse-fennec/emf.m2x` (QVT Operational v1.3, ANTLR4
+parser, standalone Java 21 + OSGi DS, group `org.eclipse.fennec.m2x`,
+0.1.1-SNAPSHOT on Central snapshots; engine and 5990 tests are done — see
+its `docs/qvto-user-guide.md`).
+
+Design:
+
+- **The trias does the work, not a new concept.** `DataProvider` already
+  carries `dataInput` + `transformation` + `distributionExport`
+  (override-else-default between service and DataSet), and the model already
+  states: `outputType` must equal `inputType` **unless a transformation maps
+  between them**. M6 implements exactly that leg: the serving path reads
+  source objects (of `inputType`) from the repository and runs the effective
+  `DataTransformation` before serialization. Queries and pagination keep
+  their full push-down — they target the **source** side (`inputType`);
+  `skip`/`top` therefore counts source objects (identical to result paging
+  for 1:1 mappings; documented for 1:n). `BridgeRepository` (input-side
+  cascading) and `QueryTransformation` stay Later — they require query
+  translation to be honest.
+- **The script travels inside the configuration.** `DataTransformation`
+  gains a `script` attribute (the QVT-O source text, inline in the XMI) next
+  to the existing `supportedEClasses`/`resultEClasses`. This works
+  identically in both config modes and satisfies the WP-DA-7 evidence in
+  atlas mode for free: the transformation is part of the configuration
+  instance published to and fetched from the Model Atlas. `modeltype … uses
+  '<nsURI>'` declarations in the script resolve against the instance's
+  ResourceSet — the bootstrap already registers every EPackage the
+  configuration references.
+- **Config-objects-as-services, one more configurator.** A new
+  `transformation` bundle translates each `DataTransformation` config
+  service into a Data-Atlas `DataTransformer` service (api-bundle contract:
+  transform a list of source EObjects), correlated by
+  `data.atlas.transformation.id`. It parses the script **once at
+  registration** (parse once, execute many — the AST is reusable); a script
+  that does not parse fails the registration loudly, so no endpoint serving
+  wrong data ever appears (the same prepare-gating philosophy as queries),
+  and the M4 lifecycle applies unchanged (changed script → re-registration →
+  dependent endpoints rebuild).
+- **Validation**: the DataSet's `inputType` must be among the
+  transformation's `supportedEClasses`, its `outputType` among
+  `resultEClasses` — checked at endpoint registration.
+- **Security defaults stay upstream's.** Blackbox libraries and unit
+  resolvers are off by default in the engine and remain off; the engine is
+  PROTOTYPE-scoped DS, one instance (with its own caches) per transformer.
+
+Work items:
+
+1. Model: `DataTransformation.script` (EString, the QVT-O source) in
+   `configuration.ecore` (+ genmodel reconcile, regen); document the
+   1:n pagination semantics on `DataSet`.
+2. New bundle `org.eclipse.fennec.data.atlas.transformation`: the
+   `DataTransformer` contract in `api`, the configurator translating
+   `DataTransformation` services into parsed, ready-to-execute transformer
+   services (fennec QVT-O engine via `@Reference QvtoEngine`).
+3. `rest`: resolve the effective transformation from the trias; when
+   present, require the matching `DataTransformer` (endpoint appears only
+   when it is available), run it over each response page / by-id result,
+   validate input/outputType.
+4. Runtime: m2x bundles (`m2x`, `ocl.*`, `qvto.api/parser/engine/model`) in
+   `central.mvn` + base bndrun, re-resolve.
+5. Example + tests: a transformed DataSet in the example configuration
+   (person → a projected/derived output type via a small QVT-O script);
+   OSGi ITs: transformed list + by-id, pagination on a transformed set,
+   broken script → no endpoint + loud log, script change → new output within
+   the M4 lifecycle; atlas-mode IT proves the WP-DA-7 evidence (script
+   arrives via Model Atlas and executes).
+6. Docs: user guide section (writing a transformation), configuration.md,
+   architecture.md.
+
+Acceptance:
+
+- A DataSet with `outputType != inputType` and a QVT-O `DataTransformation`
+  serves transformed objects over REST in both config modes.
+- A broken script keeps the endpoint down (fail hard, loud log); fixing the
+  script via the M4 lifecycle brings it up without a restart.
+- `./gradlew build testOSGi` green.
+
 ## Later (explicitly not planned)
 
 - **DCAT**: model was removed with `262bdfc`; git history is the only source
@@ -613,9 +701,11 @@ Acceptance:
 - Other `DataService` kinds (OData, OGC Features/SensorThings, QGis, XMLA,
   GraphQL — no GraphQL implementation exists anywhere in fennec today);
   GeoJSON is Milestone 5.
-- Importers, QVT transformations (`org.eclipse.fennec.m2x`), `BridgeRepository`,
-  multi-tenancy mappings, DistributionExport execution (CSV etc. beyond what the
-  codec gives for free).
+- Importers, `BridgeRepository` and `QueryTransformation` (input-side
+  transformation — needs query translation; the serving-side
+  `DataTransformation` is Milestone 6), multi-tenancy mappings,
+  DistributionExport execution (CSV etc. beyond what the codec gives for
+  free).
 
 ## Known risks / open decisions
 
