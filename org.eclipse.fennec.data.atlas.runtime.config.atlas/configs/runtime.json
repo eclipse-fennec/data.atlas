@@ -15,11 +15,13 @@
 	},
 	"org.eclipse.fennec.model.atlas.rest.client~dataAtlas": {
 		"base.uri": "$[env:MODEL_ATLAS_BASE_URI;default=http://modelatlas:8080/atlas/rest]",
-		"scope.allow.list": ["$[env:DATA_ATLAS_SCOPE;default=dataatlas]"]
+		"scope.allow.list": ["$[env:DATA_ATLAS_SCOPE;default=dataatlas]"],
+		"cache.ttl.ms": "$[env:DATA_ATLAS_REFRESH_INTERVAL;default=300000]"
 	},
 	"DataAtlasModelAtlasBootstrap": {
 		"atlas.registry": "$[env:DATA_ATLAS_REGISTRY;default=configurations]",
 		"atlas.object.id": "$[env:DATA_ATLAS_OBJECT_ID;default=dataatlas]",
+		"refresh.interval.ms": "$[env:DATA_ATLAS_REFRESH_INTERVAL;default=300000]",
 		"scopeService.target": "(atlas.scope=$[env:DATA_ATLAS_SCOPE;default=dataatlas])"
 	}
 }

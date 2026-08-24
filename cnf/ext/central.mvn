@@ -134,6 +134,11 @@ org.eclipse.osgi-technology.rest:org.eclipse.osgitech.rest.bnd.library:1.2.3
 org.eclipse.fennec.codec:org.eclipse.fennec.codec.workspace.library:0.1.0-SNAPSHOT
 org.osgi:org.osgi.test.junit5.cm:1.3.0
 
+# File watcher whiteboard for the config-file lifecycle (Milestone 4; the MDO
+# EMFFileWatcher heritage — deliberately NOT the Daanse sql.* stack)
+org.eclipse.daanse:org.eclipse.daanse.io.fs.watcher.api:0.0.1-SNAPSHOT
+org.eclipse.daanse:org.eclipse.daanse.io.fs.watcher.watchservice:0.0.1-SNAPSHOT
+
 # Model Atlas client stack (Milestone 3: atlas config mode)
 org.eclipse.fennec.model.atlas:org.eclipse.fennec.model.atlas.rest.client.api:0.1.0-SNAPSHOT
 org.eclipse.fennec.model.atlas:org.eclipse.fennec.model.atlas.rest.client.impl:0.1.0-SNAPSHOT

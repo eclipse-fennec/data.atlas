@@ -14,8 +14,8 @@ package org.eclipse.fennec.data.atlas.bootstrap;
 
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
-import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -42,9 +43,24 @@ import org.osgi.framework.PrototypeServiceFactory;
 import org.osgi.framework.ServiceRegistration;
 
 /**
- * The config-source-independent half of the bootstrap: registers the EPackages
+ * The config-source-independent half of the bootstrap: publishes the EPackages
  * a resolved {@code DataAtlasConfiguration} references and the configuration
- * objects themselves as OSGi services, and takes everything down again.
+ * objects themselves as OSGi services, applies configuration <em>changes</em>
+ * as a diff, and takes everything down again.
+ *
+ * <p>
+ * {@link #apply(DataAtlasConfiguration)} diffs the new configuration against
+ * the currently published state by configuration object id: unchanged objects
+ * keep their service registration (their runtime pieces stay up), changed
+ * objects are re-registered, removed objects are unregistered. An object only
+ * counts as unchanged when it is structurally equal <em>and</em> none of the
+ * EPackages it references were replaced in the same apply — otherwise its
+ * EClass references would go stale against the published packages. Package
+ * replacement is detected by instance identity: a config source that returns
+ * the same EPackage instances across fetches (the Model Atlas client cache)
+ * gets fine-grained diffs; a source that re-loads from scratch (file mode)
+ * swaps consistently.
+ * </p>
  *
  * <p>
  * Configuration objects are registered via a {@link PrototypeServiceFactory}
@@ -58,8 +74,18 @@ class ConfigurationRegistrar {
 
 	private static final Logger LOG = System.getLogger(ConfigurationRegistrar.class.getName());
 
+	private record PackageEntry(EPackage ePackage, ServiceRegistration<?> configuratorRegistration,
+			ServiceRegistration<?> packageRegistration) {
+	}
+
+	private record ObjectEntry(EObject original, ServiceRegistration<?> registration) {
+	}
+
 	private final BundleContext bundleContext;
-	private final List<ServiceRegistration<?>> registrations = new ArrayList<>();
+
+	// both keyed state maps are guarded by this
+	private final Map<String, PackageEntry> ePackages = new LinkedHashMap<>();
+	private final Map<String, ObjectEntry> objects = new LinkedHashMap<>();
 
 	ConfigurationRegistrar(BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
@@ -78,84 +104,165 @@ class ConfigurationRegistrar {
 	}
 
 	/**
-	 * Publishes the whole configuration: the referenced EPackages first, then
-	 * the configuration objects.
+	 * Publishes the configuration, diffing against the currently published
+	 * state: the referenced EPackages first, then the configuration objects.
 	 */
-	void register(DataAtlasConfiguration configuration) {
-		registerReferencedEPackages(configuration);
-		registerConfigurationObjects(configuration);
+	synchronized void apply(DataAtlasConfiguration configuration) {
+		Set<String> replacedNsUris = applyEPackages(configuration);
+		applyConfigurationObjects(configuration, replacedNsUris);
 		LOG.log(Level.INFO,
-				() -> "Data Atlas instance '" + configuration.getName() + "' bootstrapped ("
+				() -> "Data Atlas instance '" + configuration.getName() + "' published ("
 						+ configuration.getServices().size() + " service(s), "
 						+ configuration.getDataInputs().size() + " input(s)).");
 	}
 
-	void unregisterAll() {
-		registrations.forEach(ServiceRegistration::unregister);
-		registrations.clear();
+	synchronized void unregisterAll() {
+		objects.values().forEach(entry -> entry.registration().unregister());
+		objects.clear();
+		ePackages.values().forEach(ConfigurationRegistrar::unregister);
+		ePackages.clear();
 	}
 
 	/**
-	 * Registers the EPackages of all EClasses the configuration references
-	 * (input types, output types, supported classes), unless their nsURI is
-	 * already registered. In Model Atlas mode the packages have been resolved
-	 * remotely by then; registering them here makes them available to the
-	 * whole runtime (data loading, codec serialization) either way.
+	 * Diffs the referenced EPackages against the published ones (keyed by
+	 * nsURI, compared by instance identity) and returns the nsURIs whose
+	 * published package instance was replaced or removed in this apply.
 	 */
-	private void registerReferencedEPackages(DataAtlasConfiguration configuration) {
-		Set<EPackage> ePackages = new LinkedHashSet<>();
+	private Set<String> applyEPackages(DataAtlasConfiguration configuration) {
+		Map<String, EPackage> desired = new LinkedHashMap<>();
 		for (DataInput input : configuration.getDataInputs()) {
-			input.getSupportedEClasses().forEach(c -> addPackage(ePackages, c));
+			input.getSupportedEClasses().forEach(c -> addPackage(desired, c));
 		}
 		for (DataSet dataSet : configuration.getDataSets()) {
-			addPackage(ePackages, dataSet.getInputType());
-			addPackage(ePackages, dataSet.getOutputType());
+			addPackage(desired, dataSet.getInputType());
+			addPackage(desired, dataSet.getOutputType());
 		}
-		for (EPackage ePackage : ePackages) {
-			if (EPackage.Registry.INSTANCE.containsKey(ePackage.getNsURI())) {
+
+		Set<String> replaced = new HashSet<>();
+		// remove or replace published packages
+		for (String nsUri : List.copyOf(ePackages.keySet())) {
+			PackageEntry entry = ePackages.get(nsUri);
+			EPackage wanted = desired.get(nsUri);
+			if (wanted == entry.ePackage()) {
+				continue; // identical instance: keep as-is
+			}
+			unregister(ePackages.remove(nsUri));
+			replaced.add(nsUri);
+			LOG.log(Level.INFO, () -> (wanted == null ? "Unregistered EPackage " : "Replacing EPackage ") + nsUri);
+		}
+		// register new (or replacing) packages
+		for (EPackage ePackage : desired.values()) {
+			String nsUri = ePackage.getNsURI();
+			if (ePackages.containsKey(nsUri)) {
 				continue;
 			}
-			// align the resource URI with the nsURI (InitialModelLoader precedent):
-			// EClass URIs become canonical nsURI-based regardless of where the
-			// package was loaded from (file path, atlas-client://...), which also
-			// keeps the codec's XML schemaLocation deresolution working
-			Resource resource = ePackage.eResource();
-			if (resource != null && !ePackage.getNsURI().equals(String.valueOf(resource.getURI()))) {
-				resource.setURI(URI.createURI(ePackage.getNsURI()));
+			if (!replaced.contains(nsUri) && EPackage.Registry.INSTANCE.containsKey(nsUri)) {
+				// someone else (a model bundle, another instance) provides it
+				continue;
 			}
-			Dictionary<String, Object> props = new Hashtable<>();
-			props.put(EMFNamespaces.EMF_NAME, ePackage.getName());
-			props.put(EMFNamespaces.EMF_MODEL_NSURI, ePackage.getNsURI());
-			props.put(EMFNamespaces.EMF_MODEL_REGISTRATION, EMFNamespaces.MODEL_REGISTRATION_DYNAMIC);
-			// the EPackage registry only picks up configurators with resourceset scope
-			props.put(EMFNamespaces.EMF_MODEL_SCOPE, EMFNamespaces.EMF_MODEL_SCOPE_RESOURCE_SET);
-			registrations.add(bundleContext.registerService(EPackageConfigurator.class,
-					new DynamicEPackageConfigurator(ePackage), props));
-			registrations.add(bundleContext.registerService(EPackage.class, ePackage, props));
-			LOG.log(Level.INFO, () -> "Registered EPackage " + ePackage.getNsURI());
+			registerEPackage(ePackage);
+		}
+		return replaced;
+	}
+
+	private void registerEPackage(EPackage ePackage) {
+		// align the resource URI with the nsURI (InitialModelLoader precedent):
+		// EClass URIs become canonical nsURI-based regardless of where the
+		// package was loaded from (file path, atlas-client://...), which also
+		// keeps the codec's XML schemaLocation deresolution working
+		Resource resource = ePackage.eResource();
+		if (resource != null && !ePackage.getNsURI().equals(String.valueOf(resource.getURI()))) {
+			resource.setURI(URI.createURI(ePackage.getNsURI()));
+		}
+		Dictionary<String, Object> props = new Hashtable<>();
+		props.put(EMFNamespaces.EMF_NAME, ePackage.getName());
+		props.put(EMFNamespaces.EMF_MODEL_NSURI, ePackage.getNsURI());
+		props.put(EMFNamespaces.EMF_MODEL_REGISTRATION, EMFNamespaces.MODEL_REGISTRATION_DYNAMIC);
+		// the EPackage registry only picks up configurators with resourceset scope
+		props.put(EMFNamespaces.EMF_MODEL_SCOPE, EMFNamespaces.EMF_MODEL_SCOPE_RESOURCE_SET);
+		ServiceRegistration<?> configurator = bundleContext.registerService(EPackageConfigurator.class,
+				new DynamicEPackageConfigurator(ePackage), props);
+		ServiceRegistration<?> packageRegistration = bundleContext.registerService(EPackage.class, ePackage, props);
+		ePackages.put(ePackage.getNsURI(), new PackageEntry(ePackage, configurator, packageRegistration));
+		LOG.log(Level.INFO, () -> "Registered EPackage " + ePackage.getNsURI());
+	}
+
+	private static void unregister(PackageEntry entry) {
+		entry.packageRegistration().unregister();
+		entry.configuratorRegistration().unregister();
+	}
+
+	private void addPackage(Map<String, EPackage> desired, EClass eClass) {
+		if (eClass != null && eClass.getEPackage() != null && eClass.getEPackage().getNsURI() != null) {
+			desired.putIfAbsent(eClass.getEPackage().getNsURI(), eClass.getEPackage());
 		}
 	}
 
-	private void addPackage(Set<EPackage> ePackages, EClass eClass) {
-		if (eClass != null && eClass.getEPackage() != null) {
-			ePackages.add(eClass.getEPackage());
-		}
-	}
-
-	private void registerConfigurationObjects(DataAtlasConfiguration configuration) {
+	private void applyConfigurationObjects(DataAtlasConfiguration configuration, Set<String> replacedNsUris) {
+		Map<String, EObject> desired = new LinkedHashMap<>();
 		for (DataService service : configuration.getServices()) {
-			registerConfigurationObject(configuration, service, service.getId());
+			addObject(desired, service, service.getId());
 		}
 		for (DataInput input : configuration.getDataInputs()) {
-			registerConfigurationObject(configuration, input, input.getId());
+			addObject(desired, input, input.getId());
+		}
+
+		// unregister removed objects
+		for (String id : List.copyOf(objects.keySet())) {
+			if (!desired.containsKey(id)) {
+				objects.remove(id).registration().unregister();
+				LOG.log(Level.INFO, () -> "Unregistered configuration object '" + id + "'");
+			}
+		}
+		// register added and changed objects
+		for (Map.Entry<String, EObject> wanted : desired.entrySet()) {
+			String id = wanted.getKey();
+			EObject object = wanted.getValue();
+			ObjectEntry current = objects.get(id);
+			if (current != null && EcoreUtil.equals(current.original(), object)
+					&& !referencesReplacedPackage(object, replacedNsUris)) {
+				continue; // unchanged: its runtime pieces stay up
+			}
+			if (current != null) {
+				objects.remove(id).registration().unregister();
+				LOG.log(Level.INFO, () -> "Re-registering changed configuration object '" + id + "'");
+			}
+			registerConfigurationObject(configuration, object, id);
 		}
 	}
 
-	private void registerConfigurationObject(DataAtlasConfiguration configuration, EObject object, String id) {
+	private void addObject(Map<String, EObject> desired, EObject object, String id) {
 		if (id == null || id.isBlank()) {
 			LOG.log(Level.WARNING, () -> "Skipping configuration object without id: " + object);
 			return;
 		}
+		if (desired.putIfAbsent(id, object) != null) {
+			LOG.log(Level.WARNING, () -> "Duplicate configuration object id '" + id + "', keeping the first");
+		}
+	}
+
+	/**
+	 * Whether the object (or its containment tree) references an EClass whose
+	 * published EPackage instance was replaced in this apply — such an object
+	 * must be re-registered even if structurally unchanged, or its EClass
+	 * references would point at a package the runtime no longer publishes.
+	 */
+	private boolean referencesReplacedPackage(EObject object, Set<String> replacedNsUris) {
+		if (replacedNsUris.isEmpty()) {
+			return false;
+		}
+		for (TreeIterator<EObject> it = EcoreUtil.getAllContents(object, false); it.hasNext();) {
+			for (EObject referenced : it.next().eCrossReferences()) {
+				if (referenced instanceof EClass eClass && eClass.getEPackage() != null
+						&& replacedNsUris.contains(eClass.getEPackage().getNsURI())) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private void registerConfigurationObject(DataAtlasConfiguration configuration, EObject object, String id) {
 		String[] interfaces = serviceInterfaces(object);
 		Dictionary<String, Object> props = new Hashtable<>();
 		if (configuration.getName() != null) {
@@ -163,7 +270,9 @@ class ConfigurationRegistrar {
 		}
 		props.put(DataAtlasConstants.CONFIG_OBJECT_ID, id);
 		props.put(DataAtlasConstants.CONFIG_OBJECT_TYPE, object.eClass().getName());
-		registrations.add(bundleContext.registerService(interfaces, new EObjectPrototypeFactory(object), props));
+		ServiceRegistration<?> registration = bundleContext.registerService(interfaces,
+				new EObjectPrototypeFactory(object), props);
+		objects.put(id, new ObjectEntry(object, registration));
 		LOG.log(Level.INFO, () -> "Registered " + object.eClass().getName() + " '" + id + "'");
 	}
 

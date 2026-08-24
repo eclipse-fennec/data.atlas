@@ -2,7 +2,7 @@
 
 Status: **Milestones 0 and 1 implemented** (2026-08-19), **Milestone 2
 implemented** (2026-08-20), **Milestone 3 implemented and verified end-to-end**
-(2026-08-21), **Milestone 4 drafted** (2026-08-24). Horizon is deliberately
+(2026-08-21), **Milestone 4 implemented** (2026-08-24). Horizon is deliberately
 minimal: everything beyond is parked under
 [Later](#later-explicitly-not-planned) without commitment.
 
@@ -447,7 +447,15 @@ Acceptance:
 
 ## Milestone 4 — configuration lifecycle: changes reach the running instance
 
-Status: **draft** (2026-08-24).
+Status: **implemented** (2026-08-24, 20/20 OSGi tests green — both lifecycles
+covered including fail-hard and recovery). Two implementation notes beyond the
+plan below: the Daanse watchservice matches the listener pattern against the
+**full path string** (a bare quoted filename never matches), and the Model
+Atlas client cache is unbounded by default — without `cache.ttl.ms` the
+refresh poll would see the same cached instance forever, so the atlas flavour
+couples `cache.ttl.ms` to `DATA_ATLAS_REFRESH_INTERVAL`. Staged updates also
+require the schemas in the **draft** stage (each stage resolves against its
+own package view) — the seeders feed both stages.
 
 Goal: a change to the `DataAtlasConfiguration` reaches a **running** Data Atlas
 instance without a restart — in atlas mode by picking the change up from the

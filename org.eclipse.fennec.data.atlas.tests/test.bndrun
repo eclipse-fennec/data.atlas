@@ -3,6 +3,7 @@
 -runrequires: \
 	bnd.identity;id='org.eclipse.fennec.data.atlas.tests',\
 	bnd.identity;id='org.eclipse.fennec.data.atlas.bootstrap',\
+	bnd.identity;id='org.eclipse.daanse.io.fs.watcher.watchservice',\
 	bnd.identity;id='org.eclipse.fennec.data.atlas.input.file',\
 	bnd.identity;id='org.eclipse.fennec.data.atlas.input.jpa',\
 	bnd.identity;id='org.eclipse.fennec.data.atlas.rest',\

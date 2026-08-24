@@ -72,6 +72,7 @@ public class ModelAtlasModeIntegrationTest {
 	private static Configuration clientConfig;
 	private static Configuration bootstrapConfig;
 	private static boolean containerStarted;
+	private static String seededInstance;
 
 	@BeforeAll
 	static void setup(@InjectBundleContext BundleContext bundleContext,
@@ -111,12 +112,17 @@ public class ModelAtlasModeIntegrationTest {
 		Dictionary<String, Object> clientProps = new Hashtable<>();
 		clientProps.put("base.uri", ATLAS_BASE);
 		clientProps.put("scope.allow.list", new String[] { "dataatlas" });
+		// without a TTL the client cache never revalidates and the refresh
+		// poll would keep seeing the same instance forever
+		clientProps.put("cache.ttl.ms", 1000L);
 		clientConfig.update(clientProps);
 
 		bootstrapConfig = configAdmin.getConfiguration("DataAtlasModelAtlasBootstrap", "?");
 		Dictionary<String, Object> bootProps = new Hashtable<>();
 		bootProps.put("atlas.registry", "configurations");
 		bootProps.put("atlas.object.id", "dataatlas");
+		// short refresh so the staged-update lifecycle test completes quickly
+		bootProps.put("refresh.interval.ms", 2000L);
 		bootProps.put("scopeService.target", "(atlas.scope=dataatlas)");
 		bootstrapConfig.update(bootProps);
 	}
@@ -153,6 +159,56 @@ public class ModelAtlasModeIntegrationTest {
 		assertTrue(response.body().contains("Hopper"), () -> "missing Hopper in: " + response.body());
 		assertTrue(response.body().contains("https://eclipse.org/fennec/data/atlas/example/person/1.0.0"),
 				() -> "missing person namespace in: " + response.body());
+	}
+
+	/**
+	 * Milestone 4 lifecycle: a new configuration version published through the
+	 * stage workflow (draft -> release) reaches the running instance within the
+	 * refresh interval; a broken version fails hard; a corrected version
+	 * recovers the instance.
+	 */
+	@Test
+	void appliesStagedConfigurationUpdates() throws Exception {
+		awaitOk(BASE_URL, "application/json", 120_000);
+
+		// v2 ADDS a second endpoint for the same DataSet
+		publishVersion(seededInstance.replace(
+				"<configuration id=\"persons-rest-config\" dataSet=\"persons\" path=\"persons\"/>",
+				"<configuration id=\"persons-rest-config\" dataSet=\"persons\" path=\"persons\"/>\n"
+						+ "    <configuration id=\"persons2-config\" dataSet=\"persons\" path=\"persons2\"/>"));
+		HttpResponse<String> added = awaitOk(BASE_URL.replace("/persons", "/persons2"), "application/json", 60_000);
+		assertEquals(200, added.statusCode());
+		assertTrue(added.body().contains("Lovelace"), () -> "missing Lovelace in: " + added.body());
+		assertEquals(200, get(BASE_URL, "application/json").statusCode());
+
+		// a broken version (unresolvable EClass reference) fails hard
+		publishVersion(seededInstance.replace(
+				"https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person",
+				"https://eclipse.org/fennec/does/not/exist/1.0.0#//Nope"));
+		assertEquals(404, awaitStatus(BASE_URL, 404, 60_000));
+
+		// the corrected version recovers the instance
+		publishVersion(seededInstance);
+		assertEquals(200, awaitOk(BASE_URL, "application/json", 60_000).statusCode());
+		assertEquals(404, get(BASE_URL.replace("/persons", "/persons2"), "application/json").statusCode());
+	}
+
+	/** Polls until the URL answers with the wanted status (or times out). */
+	private int awaitStatus(String url, int wanted, long timeoutMs) throws Exception {
+		long deadline = System.currentTimeMillis() + timeoutMs;
+		int last = -1;
+		while (System.currentTimeMillis() < deadline) {
+			try {
+				last = get(url, "application/json").statusCode();
+				if (last == wanted) {
+					return last;
+				}
+			} catch (Exception e) {
+				last = -1;
+			}
+			Thread.sleep(500);
+		}
+		return last;
 	}
 
 	@Test
@@ -204,32 +260,64 @@ public class ModelAtlasModeIntegrationTest {
 
 		// the example instance, with the data location retargeted to the
 		// extracted persons.xmi (the atlas-mode bootstrap uses URIs as-is)
-		String instance = Files.readString(dir.resolve("data/dataatlas-atlas.xmi"), StandardCharsets.UTF_8)
+		seededInstance = Files.readString(dir.resolve("data/dataatlas-atlas.xmi"), StandardCharsets.UTF_8)
 				.replace("/opt/dataatlas/runtime/data/data/persons.xmi",
 						dir.resolve("data/data/persons.xmi").toUri().toString());
-		HttpResponse<String> response = CLIENT.send(HttpRequest
-				.newBuilder(java.net.URI.create(
-						ATLAS_BASE + "/dataatlas/registries/configurations/stages/release/dataatlas?name=dataatlas"))
+		HttpResponse<String> seeded = postInstance("release", seededInstance);
+		assertTrue(seeded.statusCode() == 201 || seeded.statusCode() == 409,
+				() -> "instance seed failed: " + seeded.statusCode() + " " + seeded.body());
+	}
+
+	/** Uploads a DataAtlasConfiguration instance version into the given stage. */
+	private static HttpResponse<String> postInstance(String stage, String body) throws Exception {
+		return CLIENT.send(HttpRequest
+				.newBuilder(java.net.URI.create(ATLAS_BASE + "/dataatlas/registries/configurations/stages/" + stage
+						+ "/dataatlas?name=dataatlas&override=true"))
 				.header("Content-Type", "application/xmi")
 				.header("Accept", "application/json")
-				.POST(HttpRequest.BodyPublishers.ofString(instance))
+				.POST(HttpRequest.BodyPublishers.ofString(body))
 				.build(), HttpResponse.BodyHandlers.ofString());
-		assertTrue(response.statusCode() == 201 || response.statusCode() == 409,
-				() -> "instance seed failed: " + response.statusCode() + " " + response.body());
+	}
+
+	/** Transitions the configuration object from draft to release. */
+	private static int transitionToRelease() throws Exception {
+		HttpResponse<String> response = CLIENT.send(HttpRequest
+				.newBuilder(java.net.URI.create(
+						ATLAS_BASE + "/dataatlas/registries/configurations/stages/draft/actions/transition"))
+				.header("Content-Type", "application/json")
+				.header("Accept", "application/json")
+				.POST(HttpRequest.BodyPublishers
+						.ofString("{\"objectId\": \"dataatlas\", \"targetStage\": \"release\"}"))
+				.build(), HttpResponse.BodyHandlers.ofString());
+		return response.statusCode();
+	}
+
+	/** Publishes a new configuration version through the stage workflow. */
+	private static void publishVersion(String body) throws Exception {
+		HttpResponse<String> posted = postInstance("draft", body);
+		assertTrue(posted.statusCode() == 201 || posted.statusCode() == 200,
+				() -> "draft upload failed: " + posted.statusCode() + " " + posted.body());
+		int transitioned = transitionToRelease();
+		assertTrue(transitioned >= 200 && transitioned < 300, () -> "transition failed: " + transitioned);
 	}
 
 	private static void postSchema(Path file, String nsUri) throws Exception {
 		String enc = URLEncoder.encode(nsUri, StandardCharsets.UTF_8);
-		HttpResponse<String> response = CLIENT.send(HttpRequest
-				.newBuilder(java.net.URI.create(
-						ATLAS_BASE + "/dataatlas/schema/stages/release?nsUri=" + enc + "&version=1.0.0"))
-				.header("Content-Type", "application/xmi")
-				.header("Accept", "application/json")
-				.POST(HttpRequest.BodyPublishers.ofByteArray(Files.readAllBytes(file)))
-				.build(), HttpResponse.BodyHandlers.ofString());
-		assertTrue(response.statusCode() == 201 || response.statusCode() == 409,
-				() -> "schema seed " + file.getFileName() + " failed: " + response.statusCode() + " "
-						+ response.body());
+		// the instance lives in release, but staged updates are uploaded to
+		// draft first - each stage resolves against its own package view, so
+		// the schemas are seeded into both stages
+		for (String stage : new String[] { "release", "draft" }) {
+			HttpResponse<String> response = CLIENT.send(HttpRequest
+					.newBuilder(java.net.URI.create(ATLAS_BASE + "/dataatlas/schema/stages/" + stage + "?nsUri="
+							+ enc + "&version=1.0.0"))
+					.header("Content-Type", "application/xmi")
+					.header("Accept", "application/json")
+					.POST(HttpRequest.BodyPublishers.ofByteArray(Files.readAllBytes(file)))
+					.build(), HttpResponse.BodyHandlers.ofString());
+			assertTrue(response.statusCode() == 201 || response.statusCode() == 409,
+					() -> "schema seed " + file.getFileName() + " (" + stage + ") failed: " + response.statusCode()
+							+ " " + response.body());
+		}
 	}
 
 	private static int docker(String... args) throws Exception {

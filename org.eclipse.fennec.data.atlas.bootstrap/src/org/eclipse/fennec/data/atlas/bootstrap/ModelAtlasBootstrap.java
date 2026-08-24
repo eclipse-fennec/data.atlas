@@ -14,6 +14,11 @@ package org.eclipse.fennec.data.atlas.bootstrap;
 
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
+import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -24,6 +29,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
@@ -45,11 +51,18 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
  * </p>
  *
  * <p>
- * After retrieval the pipeline is identical to file mode (see
- * {@link ConfigurationRegistrar}): the resolved EPackages and the
- * configuration objects are registered as OSGi services and unregistered on
- * deactivation. Note that {@code FileDataInput} URIs are used as-is in this
- * mode — a configuration served by a Model Atlas must use absolute URIs.
+ * <b>Lifecycle:</b> the configuration is re-fetched every
+ * {@code refresh.interval.ms} (0 disables the poll). The client's cache makes
+ * an unchanged check a conditional GET and returns the identical instance, so
+ * short intervals are cheap; changes flow through the Model Atlas stage
+ * workflow (upload to a writable stage, transition to the final one). Applied
+ * changes are diffed by the {@link ConfigurationRegistrar} — unchanged
+ * configuration objects keep serving. A transient fetch failure (Model Atlas
+ * unreachable) keeps the current state and retries; a fetched but <em>broken</em>
+ * configuration — or a removed object — fails hard: the published
+ * configuration is torn down and the error logged loudly. Note that
+ * {@code FileDataInput} URIs are used as-is in this mode — a configuration
+ * served by a Model Atlas must use absolute URIs.
  * </p>
  */
 @Component(name = ModelAtlasBootstrap.PID, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE)
@@ -71,36 +84,128 @@ public class ModelAtlasBootstrap {
 		@AttributeDefinition(name = "Object id",
 				description = "Object id of the DataAtlasConfiguration instance within the registry.")
 		String atlas_object_id();
+
+		@AttributeDefinition(name = "Refresh interval (ms)",
+				description = "How often the configuration is re-fetched from the Model Atlas; an unchanged "
+						+ "check is a conditional GET through the client cache. 0 disables the poll.")
+		long refresh_interval_ms() default 300_000L;
 	}
 
+	private final ReadableScopeService<EObject> scopeService;
 	private final ConfigurationRegistrar registrar;
+	private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(runnable -> {
+		Thread thread = new Thread(runnable, "dataatlas-config-refresh");
+		thread.setDaemon(true);
+		return thread;
+	});
+
+	// guarded by this
+	private String registry;
+	private String objectId;
+	private ScheduledFuture<?> refreshTask;
+	private EObject lastApplied;
 
 	@Activate
 	public ModelAtlasBootstrap(BundleContext bundleContext,
 			@Reference(name = "scopeService") ReadableScopeService<EObject> scopeService, Config config) {
+		this.scopeService = scopeService;
 		this.registrar = new ConfigurationRegistrar(bundleContext);
-		load(scopeService, config);
+		synchronized (this) {
+			configure(config);
+			// initial load stays fail-fast: an invalid configuration at startup
+			// fails the component activation
+			apply(fetch().orElseThrow(() -> new IllegalStateException(
+					"ModelAtlasBootstrap: no object found at " + source())));
+			reschedule(config.refresh_interval_ms());
+		}
+	}
+
+	@Modified
+	synchronized void modified(Config config) {
+		LOG.log(Level.INFO, () -> "ModelAtlasBootstrap: configuration changed, re-applying");
+		configure(config);
+		refresh();
+		reschedule(config.refresh_interval_ms());
 	}
 
 	@Deactivate
 	void deactivate() {
+		scheduler.shutdownNow();
 		registrar.unregisterAll();
 	}
 
-	private void load(ReadableScopeService<EObject> scopeService, Config config) {
-		String source = "atlas scope '" + scopeService.getScopeName() + "', registry '" + config.atlas_registry()
-				+ "', object '" + config.atlas_object_id() + "'";
-		LOG.log(Level.INFO, () -> "ModelAtlasBootstrap: loading Data Atlas configuration from " + source);
-		EObject object = scopeService.get(config.atlas_registry(), config.atlas_object_id())
-				.orElseThrow(() -> new IllegalStateException(
-						"ModelAtlasBootstrap: no object found at " + source));
+	private void configure(Config config) {
+		this.registry = config.atlas_registry();
+		this.objectId = config.atlas_object_id();
+	}
+
+	private void reschedule(long intervalMs) {
+		if (refreshTask != null) {
+			refreshTask.cancel(false);
+			refreshTask = null;
+		}
+		if (intervalMs > 0) {
+			refreshTask = scheduler.scheduleWithFixedDelay(this::refresh, intervalMs, intervalMs,
+					TimeUnit.MILLISECONDS);
+			LOG.log(Level.INFO, () -> "ModelAtlasBootstrap: refreshing " + source() + " every " + intervalMs + " ms");
+		}
+	}
+
+	/**
+	 * One refresh cycle. A transient fetch failure keeps the current state; a
+	 * missing or broken configuration fails hard (teardown + loud log) — and
+	 * the poll keeps running, so a later corrected version recovers the
+	 * instance.
+	 */
+	private synchronized void refresh() {
+		Optional<EObject> fetched;
+		try {
+			fetched = fetch();
+		} catch (RuntimeException e) {
+			LOG.log(Level.WARNING,
+					() -> "ModelAtlasBootstrap: could not reach the Model Atlas (" + source()
+							+ "), keeping the current configuration: " + e);
+			return;
+		}
+		if (fetched.isEmpty()) {
+			LOG.log(Level.ERROR, () -> "ModelAtlasBootstrap: configuration object disappeared at " + source()
+					+ " - tearing the published configuration down");
+			registrar.unregisterAll();
+			lastApplied = null;
+			return;
+		}
+		if (fetched.get() == lastApplied) {
+			return; // client cache hit: unchanged
+		}
+		try {
+			apply(fetched.get());
+		} catch (RuntimeException e) {
+			LOG.log(Level.ERROR, () -> "ModelAtlasBootstrap: the new configuration at " + source()
+					+ " is broken - tearing the published configuration down", e);
+			registrar.unregisterAll();
+			lastApplied = null;
+		}
+	}
+
+	private Optional<EObject> fetch() {
+		return scopeService.get(registry, objectId);
+	}
+
+	private void apply(EObject object) {
 		if (!(object instanceof DataAtlasConfiguration configuration)) {
-			throw new IllegalStateException("ModelAtlasBootstrap: object at " + source + " is a "
+			throw new IllegalStateException("ModelAtlasBootstrap: object at " + source() + " is a "
 					+ object.eClass().getName() + ", not a DataAtlasConfiguration");
 		}
+		LOG.log(Level.INFO, () -> "ModelAtlasBootstrap: applying Data Atlas configuration from " + source());
 		// resolves EClass references remotely through the client's ResourceSet
 		EcoreUtil.resolveAll(configuration);
-		ConfigurationRegistrar.failOnUnresolvedProxies(configuration, source);
-		registrar.register(configuration);
+		ConfigurationRegistrar.failOnUnresolvedProxies(configuration, source());
+		registrar.apply(configuration);
+		lastApplied = object;
+	}
+
+	private String source() {
+		return "atlas scope '" + scopeService.getScopeName() + "', registry '" + registry + "', object '" + objectId
+				+ "'";
 	}
 }

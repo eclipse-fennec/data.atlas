@@ -70,7 +70,7 @@ flowchart TB
 
 ## Current state vs. target
 
-Implemented today (roadmap Milestones 0–2):
+Implemented today (roadmap Milestones 0–4):
 
 - **Model bundle**: `configuration.model` — `DataAtlasConfiguration` root with
   containment registries (data sources, inputs, data sets, services, exports,
@@ -95,14 +95,53 @@ Implemented today (roadmap Milestones 0–2):
   pushes down as `skip`/`top`, declared query parameters bind from HTTP query
   parameters; fennec codec serialization), `runtime.config` (resource-only
   Configurator: Felix HTTP + whiteboard + bootstrap config, env-var driven).
-- **Runtime assembly**: bndruns (`_base`/`_local`/`_docker`) including the
-  JPA/EclipseLink stack, distroless docker image serving the file example out
-  of the box (a JPA deployment additionally needs a `DataSource` provider
-  bundle and configuration), OSGi integration tests (`tests`, H2-backed for
-  the JPA slice).
+- **Model Atlas config mode**: `bootstrap` carries a second component
+  (`DataAtlasModelAtlasBootstrap`) that fetches the configuration instance from
+  a Model Atlas registry through the model.atlas client stack (per-scope
+  `ReadableScopeService`) and feeds the same registrar pipeline; the
+  `runtime.config.atlas` Configurator wires the client (env-var driven), and
+  the `_docker_atlas` bndrun / `docker/dataatlas-atlas` image package it.
+- **Runtime assembly**: bndruns (`_base`/`_local`/`_docker`/`_docker_atlas`)
+  including the JPA/EclipseLink stack, distroless docker images (`file-*` and
+  `atlas-*` tags) serving the file example out of the box (a JPA deployment
+  additionally needs a `DataSource` provider bundle and configuration), OSGi
+  integration tests (`tests`, H2-backed for the JPA slice, docker-gated for
+  the compose setups).
 
-Not yet implemented: Model Atlas config retrieval mode, DCAT, the other
-DataService kinds, importers/transformations (see the [roadmap](roadmap.md)).
+Not yet implemented: DCAT, the other DataService kinds,
+importers/transformations (see the [roadmap](roadmap.md)).
+
+## Configuration lifecycle
+
+Configuration changes reach a **running** instance without a restart; the
+mechanics differ per config source, the application path is shared:
+
+- **Shared diff semantics** (`ConfigurationRegistrar`): every apply is an
+  id-keyed diff against the currently published state. EPackages are keyed by
+  nsURI and kept while the instance is identical; configuration objects are
+  keyed by their id and kept while they are structurally equal
+  (`EcoreUtil.equals`) *and* reference no replaced package — everything else
+  is re-registered, removed objects are unregistered. Consumers therefore see
+  service dynamics only for what actually changed; untouched DataSets keep
+  serving through a reload.
+- **File mode** (`DataAtlasBootstrap`): a Daanse `io.fs.watcher` whiteboard
+  listener watches the configuration file (debounced, 1s) and triggers a
+  reload into a fresh ResourceSet; a changed `config.uri` arrives via Config
+  Admin (`@Modified`). Note the watchservice matches the listener pattern
+  against the **full path string**, not the file name.
+- **Model Atlas mode** (`DataAtlasModelAtlasBootstrap`): a scheduled refresh
+  polls the registry every `refresh.interval.ms` (default 300000, env
+  `DATA_ATLAS_REFRESH_INTERVAL`). The client cache must revalidate at the same
+  cadence (`cache.ttl.ms` — unset/≤0 means *cache forever*), which the atlas
+  runtime config couples to the same env variable. Updates enter through the
+  Model Atlas stage workflow: upload into `draft`, transition to `release`
+  (final stages reject direct updates); schemas must be seeded into **both**
+  stages, since each stage resolves against its own package view.
+- **Failure semantics — fail hard**: a broken new configuration (unresolvable
+  proxies, wrong root, deleted file, empty registry entry) tears the published
+  configuration down and logs loudly; the watcher/poll keeps running, so a
+  corrected version recovers the instance. A transient Model Atlas fetch error
+  (network) only warns and keeps the current state.
 
 ## Key dependencies
 
