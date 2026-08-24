@@ -632,19 +632,29 @@ Design:
   source objects (of `inputType`) from the repository and runs the effective
   `DataTransformation` before serialization. Queries and pagination keep
   their full push-down — they target the **source** side (`inputType`);
-  `skip`/`top` therefore counts source objects (identical to result paging
-  for 1:1 mappings; documented for 1:n). `BridgeRepository` (input-side
-  cascading) and `QueryTransformation` stay Later — they require query
-  translation to be honest.
-- **The script travels inside the configuration.** `DataTransformation`
-  gains a `script` attribute (the QVT-O source text, inline in the XMI) next
-  to the existing `supportedEClasses`/`resultEClasses`. This works
-  identically in both config modes and satisfies the WP-DA-7 evidence in
-  atlas mode for free: the transformation is part of the configuration
-  instance published to and fetched from the Model Atlas. `modeltype … uses
-  '<nsURI>'` declarations in the script resolve against the instance's
-  ResourceSet — the bootstrap already registers every EPackage the
-  configuration references.
+  **Transformed DataSets are 1:1 by contract** (decided 2026-08-24): one
+  source object maps to one result object, so `skip`/`top` on source objects
+  *is* result paging. Anything non-1:1 would force materializing the full
+  source result set just to know what to skip — out of scope, stays Later
+  together with `BridgeRepository` (input-side cascading) and
+  `QueryTransformation`, which require query translation to be honest.
+- **The transformation is an EObject and is referenced as one** (decided
+  2026-08-24). The parsed QVT-O AST *is* an EMF model instance
+  (`OperationalTransformation` of the m2x `qvto.model` metamodel), so
+  `DataTransformation` gains a non-containment reference `transformation` to
+  it — no script text in the configuration. In **file mode** the reference
+  is an href to an XMI next to the configuration; in **atlas mode** the
+  transformation instances live in a dedicated EObject registry of the scope
+  (e.g. `transformations`) and are fetched from there — which is the WP-DA-7
+  evidence verbatim ("transformations are published to the Model-Atlas and
+  read by the Data-Atlas"). `configuration.model` references the qvto.model
+  genmodel via `usedGenPackages` (same pattern as `eorm`). The engine
+  executes any well-formed AST, parsed or built (`QvtoEngine.execute`
+  javadoc) — authoring stays QVT-O text, parsed **once at publish time**
+  (the seed step / future tooling turns `.qvto` into the AST XMI; the
+  example ships the generated XMI). Verification item: the AST must
+  round-trip XMI losslessly — if it does not, that is an upstream
+  emf.m2x issue, not a downstream workaround.
 - **Config-objects-as-services, one more configurator.** A new
   `transformation` bundle translates each `DataTransformation` config
   service into a Data-Atlas `DataTransformer` service (api-bundle contract:
@@ -664,13 +674,15 @@ Design:
 
 Work items:
 
-1. Model: `DataTransformation.script` (EString, the QVT-O source) in
-   `configuration.ecore` (+ genmodel reconcile, regen); document the
-   1:n pagination semantics on `DataSet`.
+1. Model: `DataTransformation.transformation` (non-containment reference to
+   the qvto.model `OperationalTransformation`) in `configuration.ecore`,
+   qvto.model via `usedGenPackages` (+ genmodel reconcile, regen); document
+   the 1:1 contract on `DataSet`.
 2. New bundle `org.eclipse.fennec.data.atlas.transformation`: the
    `DataTransformer` contract in `api`, the configurator translating
-   `DataTransformation` services into parsed, ready-to-execute transformer
-   services (fennec QVT-O engine via `@Reference QvtoEngine`).
+   `DataTransformation` services into ready-to-execute transformer services
+   (fennec QVT-O engine via `@Reference QvtoEngine`; a broken/unresolvable
+   referenced AST fails the registration loudly).
 3. `rest`: resolve the effective transformation from the trias; when
    present, require the matching `DataTransformer` (endpoint appears only
    when it is available), run it over each response page / by-id result,
@@ -678,11 +690,13 @@ Work items:
 4. Runtime: m2x bundles (`m2x`, `ocl.*`, `qvto.api/parser/engine/model`) in
    `central.mvn` + base bndrun, re-resolve.
 5. Example + tests: a transformed DataSet in the example configuration
-   (person → a projected/derived output type via a small QVT-O script);
-   OSGi ITs: transformed list + by-id, pagination on a transformed set,
-   broken script → no endpoint + loud log, script change → new output within
-   the M4 lifecycle; atlas-mode IT proves the WP-DA-7 evidence (script
-   arrives via Model Atlas and executes).
+   (person → a projected/derived output type; the transformation AST XMI is
+   produced from `.qvto` text by the engine at build/seed time); OSGi ITs:
+   transformed list + by-id, pagination on a transformed set, broken/missing
+   transformation reference → no endpoint + loud log, transformation change →
+   new output within the M4 lifecycle; atlas-mode IT proves the WP-DA-7
+   evidence (the AST is published into a `transformations` registry of the
+   scope, referenced from the configuration, fetched and executed).
 6. Docs: user guide section (writing a transformation), configuration.md,
    architecture.md.
 
