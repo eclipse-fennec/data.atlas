@@ -480,6 +480,37 @@ Both images are configured through environment variables.
 | `DATA_ATLAS_OBJECT_ID` | `dataatlas` | Object id of the `DataAtlasConfiguration` instance |
 | `DATA_ATLAS_REFRESH_INTERVAL` | `300000` | Poll interval for configuration updates, in milliseconds (also bounds the client cache revalidation) |
 
+### Docker Image Details
+
+Both images are distroless Java 21 images (no shell, no package manager)
+running as the non-root user `65532` — anything you mount must be readable by
+that uid. Fixed layout:
+
+| Path | Purpose |
+|---|---|
+| `/opt/dataatlas` | Application home (runtime jar) |
+| `/opt/dataatlas/runtime/data` | Data directory; the file variant's built-in example configuration lives here |
+| `/opt/dataatlas/runtime/etc/logback.xml` | Logging configuration — mount your own file over it to change logging |
+| `/opt/dataatlas/runtime/log` | Log files |
+| `/opt/dataatlas/runtime/secrets` | Secrets directory (see below) |
+| `/tmp/dataatlas` | Temp directory |
+
+**Secrets**: all configuration values support the Felix Config Admin
+interpolation plugin. Besides the `$[env:…]` environment interpolation used
+throughout this guide, `$[secret:<name>]` resolves to the content of the file
+`/opt/dataatlas/runtime/secrets/<name>` — mount credential files there (e.g.
+a docker/k8s secret with a database password) instead of passing them as
+environment variables.
+
+**Additional OSGi configuration**: the runtime uses the standard OSGi
+Configurator, so extra configurations (e.g. a `DataSource` factory
+configuration for a JPA deployment) can be injected without rebuilding the
+image via `JAVA_TOOL_OPTIONS=-Dconfigurator.initial=file:///path/to/config.json`
+pointing at a mounted Configurator JSON — the same pattern the
+[compose setup](../docker/dockercompose/README.md) uses to configure the
+Model Atlas. Note that a JPA deployment additionally needs the JDBC
+driver/pool *bundles*, which do require a custom runtime assembly.
+
 ---
 
 ## Further Reading
