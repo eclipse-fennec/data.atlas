@@ -38,10 +38,12 @@ Bnd/Bndtools OSGi workspace built with Gradle, Java 21:
 
 # Export the docker runtime jar
 ./gradlew :org.eclipse.fennec.data.atlas.runtime:export.dataatlas.runtime_docker
+./gradlew :org.eclipse.fennec.data.atlas.runtime:export.dataatlas.runtime_docker_atlas
 
-# Stage and build the docker image
-./gradlew :docker:dataatlas:prepareDocker
-docker build -t eclipsefennec/data.atlas:snapshot docker/dataatlas/
+# Stage and build the docker images (file mode / Model Atlas mode)
+./gradlew :docker:dataatlas:prepareDocker :docker:dataatlas-atlas:prepareDocker
+docker build -t eclipsefennec/data.atlas:file-snapshot docker/dataatlas/
+docker build -t eclipsefennec/data.atlas:atlas-snapshot docker/dataatlas-atlas/
 ```
 
 ## Documentation

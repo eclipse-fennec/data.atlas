@@ -37,7 +37,8 @@ Bytecode target is Java 21; CI builds on Java 21 only (the deliverable is a Java
 ./gradlew :org.eclipse.fennec.data.atlas.runtime:resolve.dataatlas.runtime_base   # re-resolve -runbundles
 ./gradlew :org.eclipse.fennec.data.atlas.runtime:export.dataatlas.runtime_docker  # executable jar
 ./gradlew :docker:dataatlas:prepareDocker                                         # stage docker/dataatlas/content/
-docker build -t eclipsefennec/data.atlas:snapshot docker/dataatlas/
+docker build -t eclipsefennec/data.atlas:file-snapshot docker/dataatlas/                   # file mode
+docker build -t eclipsefennec/data.atlas:atlas-snapshot docker/dataatlas-atlas/            # Model Atlas mode
 ```
 
 Re-run the `resolve.*` task after adding bundles or changing dependencies — it rewrites `-runbundles` in `dataatlas.runtime_base.bndrun`.

@@ -35,14 +35,30 @@ jobs:
       extra-gradle-tasks: >-
         org.eclipse.fennec.data.atlas.runtime:resolve.dataatlas.runtime_base
         org.eclipse.fennec.data.atlas.runtime:export.dataatlas.runtime_docker
+        org.eclipse.fennec.data.atlas.runtime:export.dataatlas.runtime_docker_atlas
       artifact-paths: |
         org.eclipse.fennec.data.atlas.runtime/generated/distributions/executable/dataatlas.runtime_docker.jar
+        org.eclipse.fennec.data.atlas.runtime/generated/distributions/executable/dataatlas.runtime_docker_atlas.jar
         org.eclipse.fennec.data.atlas.runtime/generated/org.eclipse.fennec.data.atlas.runtime.jar
     secrets: inherit
 
-  container:
+  # image tagging follows the model.atlas scheme: file-snapshot / atlas-snapshot
+  container-file:
     needs: release
     uses: ./.github/workflows/reusable-container.yml
     with:
       docker-label: snapshot
+      variant: file
+      runtime-jar: dataatlas.runtime_docker.jar
+      docker-context: docker/dataatlas/
+    secrets: inherit
+
+  container-atlas:
+    needs: release
+    uses: ./.github/workflows/reusable-container.yml
+    with:
+      docker-label: snapshot
+      variant: atlas
+      runtime-jar: dataatlas.runtime_docker_atlas.jar
+      docker-context: docker/dataatlas-atlas/
     secrets: inherit
