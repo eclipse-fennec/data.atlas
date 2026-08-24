@@ -18,6 +18,8 @@ Test-Cases: ${classes;HIERARCHY_INDIRECTLY_ANNOTATED;org.junit.platform.commons.
 	org.eclipse.fennec.data.atlas.bootstrap;version=project,\
 	org.eclipse.fennec.data.atlas.input.file;version=project,\
 	org.eclipse.fennec.data.atlas.input.jpa;version=project,\
+	org.eclipse.fennec.data.atlas.input.bridge;version=project,\
+	org.eclipse.fennec.data.atlas.transformation;version=project,\
 	org.eclipse.fennec.data.atlas.rest;version=project,\
 	org.eclipse.fennec.persistence.repository;version=latest,\
 	org.eclipse.fennec.persistence.capabilities;version=latest,\
