@@ -22,6 +22,9 @@ import java.util.Map;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.fennec.codec.annotation.RequireCodecJson;
+import org.eclipse.fennec.codec.csv.annotation.RequireCodecCsv;
+import org.eclipse.fennec.codec.rest.annotations.RequireCodecMessageBodyReaderWriter;
 import org.eclipse.fennec.data.atlas.api.DataAtlasConstants;
 import org.eclipse.fennec.data.atlas.configuration.DataInput;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
@@ -65,6 +68,16 @@ import jakarta.ws.rs.core.Application;
 @Component(immediate = true)
 @RequireJakartarsWhiteboard
 @RequireHttpWhiteboard
+// The formats DataServiceResource declares in @Produces are only writable if
+// the codecs behind them are actually deployed. These meta-annotations turn
+// that into OSGi requirements, so a runtime missing one fails to resolve
+// instead of failing per request: the message body writers, the JSON codec
+// (the default format) and the CSV codec (text/csv and application/x-csv-zip).
+// The option-key constants alone would not do it - they are compile-time
+// String constants and inline, leaving no Import-Package behind.
+@RequireCodecMessageBodyReaderWriter
+@RequireCodecJson
+@RequireCodecCsv
 public class RestEndpointConfigurator {
 
 	private static final Logger LOG = System.getLogger(RestEndpointConfigurator.class.getName());

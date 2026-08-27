@@ -33,7 +33,10 @@ import java.util.function.Predicate;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -58,13 +61,14 @@ import org.osgi.test.junit5.service.ServiceExtension;
  * is what keeps every pre-export configuration working.</li>
  * </ul>
  *
- * It also pins that the configured CSV settings actually reach the codec, and
- * — as verified upstream behaviour rather than an assumption — that the codec's
- * client-side {@code Codec-Options} header does not reach a Data Atlas endpoint
- * yet (emf.codec#170).
+ * It also covers who wins over the CSV settings: by default the configuration,
+ * because the codec's client-option filter is not targeted at our applications —
+ * and the client, once a deployment points that filter at them through Config
+ * Admin. Both are asserted, so the default and the documented knob stay honest.
  */
 @ExtendWith(BundleContextExtension.class)
 @ExtendWith(ServiceExtension.class)
+@TestMethodOrder(OrderAnnotation.class)
 public class DataAtlasExportFormatIntegrationTest {
 
 	private static final int HTTP_PORT = 18089;
@@ -77,6 +81,7 @@ public class DataAtlasExportFormatIntegrationTest {
 	private static Configuration httpConfig;
 	private static Configuration whiteboardConfig;
 	private static Configuration bootstrapConfig;
+	private static Configuration clientOptionsFilterConfig;
 
 	@BeforeAll
 	static void setup(@InjectBundleContext BundleContext bundleContext,
@@ -106,7 +111,8 @@ public class DataAtlasExportFormatIntegrationTest {
 
 	@AfterAll
 	static void tearDown() throws Exception {
-		for (Configuration configuration : new Configuration[] { bootstrapConfig, whiteboardConfig, httpConfig }) {
+		for (Configuration configuration : new Configuration[] { clientOptionsFilterConfig, bootstrapConfig,
+				whiteboardConfig, httpConfig }) {
 			if (configuration != null) {
 				configuration.delete();
 			}
@@ -184,28 +190,77 @@ public class DataAtlasExportFormatIntegrationTest {
 	}
 
 	/**
-	 * Pins verified upstream behaviour, not a wish: the codec's client-side
-	 * override (the {@code Codec-Options} header of
+	 * The default: the codec's client-side override (the {@code Codec-Options}
+	 * header of
 	 * <a href="https://github.com/eclipse-fennec/emf.codec/issues/33">emf.codec#33</a>)
-	 * does <b>not</b> reach a Data Atlas endpoint. Its
-	 * {@code ClientCodecOptionsFilter} carries no
-	 * {@code @JakartarsApplicationSelect}, so the whiteboard adds it to the
-	 * {@code .default} application only — while every Data Atlas service is its
-	 * own application. The configured separator therefore stands.
+	 * does not reach a Data Atlas endpoint, so the configured settings are
+	 * authoritative out of the box.
 	 *
 	 * <p>
-	 * Reported upstream on
-	 * <a href="https://github.com/eclipse-fennec/emf.codec/issues/170">emf.codec#170</a>.
-	 * When that is fixed this test fails, which is the point: we then adopt the
-	 * new precedence deliberately instead of discovering it in production. Our
-	 * own option publishing already merges client options on top, so the fix
-	 * needs no change on this side.
+	 * The reason is a defaulting asymmetry upstream: the codec's message body
+	 * handlers select {@code (|(emf=true)(osgi.jakartars.name=.default))}, its
+	 * {@code ClientCodecOptionsFilter} selects nothing at all, so the whiteboard
+	 * attaches it to the {@code .default} application only — while every Data
+	 * Atlas service is its own application. That default is a deployment
+	 * decision, not a dead end: see
+	 * {@link #aClientCodecOptionWinsOnceTheFilterIsTargetedAtOurApplications()}.
 	 * </p>
 	 */
 	@Test
-	void aClientCodecOptionDoesNotReachTheEndpointYet() throws Exception {
+	@Order(1)
+	void aClientCodecOptionIsIgnoredByDefault() throws Exception {
 		getUntil(BASE_URL + "/both", TEXT_CSV, body -> body.contains("Lovelace"));
 
+		String header = firstRowWithClientDelimiter();
+		assertTrue(header.contains(";"),
+				"by default the configured separator stands: " + header);
+		assertFalse(header.contains("|"), "the client header is not honoured by default: " + header);
+	}
+
+	/**
+	 * The knob: {@code ClientCodecOptionsFilter} is a DS component, so its
+	 * whiteboard target is a component property and can be set through Config
+	 * Admin like any other — no upstream change and no downstream reimplementation
+	 * needed. Pointing it at the same applications the codec's message body
+	 * handlers already select makes the client override work, and our own option
+	 * publishing puts the configured values *underneath* whatever the filter
+	 * deposited, so the client legitimately wins.
+	 *
+	 * <p>
+	 * A deployment that wants the configuration to stay authoritative simply does
+	 * not set this; one that wants clients to tune the whitelisted options sets it
+	 * broadly ({@code (osgi.jakartars.name=*)}) or per application.
+	 * </p>
+	 */
+	@Test
+	@Order(2)
+	void aClientCodecOptionWinsOnceTheFilterIsTargetedAtOurApplications(
+			@InjectService ConfigurationAdmin configAdmin) throws Exception {
+		getUntil(BASE_URL + "/both", TEXT_CSV, body -> body.contains("Lovelace"));
+
+		clientOptionsFilterConfig = configAdmin
+				.getConfiguration("org.eclipse.fennec.codec.rest.jakartas.filter.ClientCodecOptionsFilter", "?");
+		Dictionary<String, Object> props = new Hashtable<>();
+		props.put("osgi.jakartars.application.select", "(|(emf=true)(osgi.jakartars.name=.default))");
+		clientOptionsFilterConfig.update(props);
+
+		// the filter is re-registered and the applications rebuilt asynchronously
+		long deadline = System.currentTimeMillis() + DEADLINE_MS;
+		String header = "";
+		while (System.currentTimeMillis() < deadline) {
+			header = firstRowWithClientDelimiter();
+			if (header.contains("|")) {
+				break;
+			}
+			Thread.sleep(500);
+		}
+		assertTrue(header.contains("|"),
+				"with the filter targeted at our applications the whitelisted client option must win: " + header);
+		assertFalse(header.contains(";"), "the configured separator must be replaced, not combined: " + header);
+	}
+
+	/** First CSV row of {@code /both} requested with a client delimiter override. */
+	private static String firstRowWithClientDelimiter() throws Exception {
 		HttpRequest request = HttpRequest.newBuilder(java.net.URI.create(BASE_URL + "/both"))
 				.header("Accept", TEXT_CSV)
 				.header("Codec-Options", "codec.csv.delimiter=|")
@@ -213,14 +268,8 @@ public class DataAtlasExportFormatIntegrationTest {
 				.GET()
 				.build();
 		HttpResponse<String> response = CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
-
 		assertEquals(200, response.statusCode());
-		String header = response.body().lines().filter(line -> !line.isBlank()).findFirst().orElse("");
-		assertTrue(header.contains(";"),
-				"the configured separator still applies while emf.codec#170 is open: " + header);
-		assertFalse(header.contains("|"),
-				"if the client option now reaches the endpoint, emf.codec#170 was fixed - adopt the "
-						+ "client-wins precedence and update this test: " + header);
+		return response.body().lines().filter(line -> !line.isBlank()).findFirst().orElse("");
 	}
 
 	// --- helpers ---
