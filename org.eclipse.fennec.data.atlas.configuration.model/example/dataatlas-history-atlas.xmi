@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SensiNact history database served as CSV — file-mode variant.
+
+     The first example in which the Data Atlas reads a schema it does NOT own:
+     the TimescaleDB store of SensiNact's history provider (schema `sensinact`,
+     hypertables numeric_data / text_data / geo_data). Two consequences visible
+     here:
+
+     * The JPADataInput carries a persistenceConfig - an explicit eorm
+       EntityMappings - because the derived naming cannot express lower-case,
+       schema-qualified tables, and because the tables have no primary key and
+       need a declared composite id.
+     * geo_data is deliberately NOT mapped: geography(POINT,4326) onto an EMF
+       attribute is out of scope here (eclipse-fennec/data.atlas#2).
+
+     Atlas-mode variant: EClass references are nsURI hrefs resolved against the
+     Model Atlas schema registry. The persistenceConfig, however, points at a
+     MOUNTED file: an eorm EntityMappings is an instance, not a schema, and the
+     atlas-mode bootstrap fetches exactly one configuration object - it cannot
+     follow a reference into another registry. So the mapping travels with the
+     deployment, like a Configurator file does. dataatlas-history.xmi is the
+     file-mode twin. -->
+<configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    name="example-history-atlas" description="Example Data Atlas instance serving the SensiNact history database as CSV, delivered by a Model Atlas.">
+  <dataSources id="history-db" name="SensiNact history DB" filter="(dataSourceName=historyDs)"/>
+  <dataInputs xsi:type="configuration:JPADataInput" id="history-jpa" dataSource="history-db"
+      persistenceConfig="/opt/dataatlas/runtime/data/model/sensinact-history-atlas.eorm#/">
+    <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//NumericData"/>
+    <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//TextData"/>
+  </dataInputs>
+  <dataSets id="numeric" name="Numeric history" description="Recorded numeric resource values (bounded view)."
+      dataInput="history-jpa" distributionExport="csv json">
+    <inputType href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//NumericData"/>
+    <outputType href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//NumericData"/>
+  </dataSets>
+  <dataSets id="text" name="Text history" description="Recorded textual resource values (bounded view)."
+      dataInput="history-jpa" distributionExport="csv json">
+    <inputType href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//TextData"/>
+    <outputType href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//TextData"/>
+  </dataSets>
+  <services xsi:type="configuration:RestDataService" id="history-rest" name="SensiNact history REST"
+      description="REST endpoint publishing the recorded history." urlContext="/history" openAPI="false">
+    <configuration id="numeric-config" dataSet="numeric" path="numeric"/>
+    <configuration id="text-config" dataSet="text" path="text"/>
+  </services>
+  <exports xsi:type="configuration:CSVDistributionExport" id="csv" name="CSV"
+      description="Semicolon separated, no SQL-type row." separator=";" includeTypeHeader="false"/>
+  <exports id="json" name="JSON" description="Plain JSON, kept alongside the CSV export." mediaType="application/json"/>
+</configuration:DataAtlasConfiguration>

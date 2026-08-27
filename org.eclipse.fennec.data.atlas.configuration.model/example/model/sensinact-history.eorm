@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Explicit JPA mapping for the SensiNact history database.
+
+     Why this file exists at all: the DERIVED eorm mapping names the table after
+     the EClass upper-cased and unqualified (PERSON), while this schema is
+     lower-case and schema-qualified (sensinact.numeric_data). The derivation
+     cannot express that, so the names are pinned here. This is the case the
+     input.jpa readme points at.
+
+     Two things beyond the names:
+
+     * The tables have NO primary key (upstream defines them that way). JPA needs
+       an identity, so a composite id over (time, provider, service, resource) is
+       declared - four <id> elements, which Attributes.id allows (upperBound=-1).
+     * The entities are mapped onto the BOUNDED VIEWS (…_recent), not the
+       hypertables, so a database that has been recording for a month cannot turn
+       one request into an unbounded dump. Point <table> at numeric_data /
+       text_data to serve the raw tables instead.
+
+     Following the convention of every other eorm in the ecosystem, each id
+     attribute is ALSO listed as a <basic> on the same column - that is not a
+     copy-paste slip.
+
+     File-mode variant: the EClass references are RELATIVE hrefs into
+     sensinact-history.ecore, so the configuration and this mapping resolve to
+     the same EPackage instance within one ResourceSet. The atlas-mode twin
+     (sensinact-history-atlas.eorm) uses nsURI hrefs for the same reason, because
+     there the schema comes from the Model Atlas registry. -->
+<eorm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:eorm="https://eclipse.org/fennec/persistence/eorm/1.0.0"
+    package="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0"
+    name="sensinact-history">
+
+  <entity access="FIELD" name="NumericData">
+    <accessibleObject xsi:type="eorm:EClassObject" name="sensinactHistory.NumericData">
+      <eclass href="sensinact-history.ecore#//NumericData"/>
+    </accessibleObject>
+    <table name="numeric_data_recent" schema="sensinact"/>
+    <attributes>
+      <id access="FIELD" name="time">
+        <accessibleObject xsi:type="eorm:EFeatureObject" name="time">
+          <feature xsi:type="ecore:EAttribute" href="sensinact-history.ecore#//NumericData/time"/>
+        </accessibleObject>
+        <column name="time" nullable="false" insertable="true" updatable="true" columnDefinition="TIMESTAMPTZ"/>
+      </id>
+      <id access="FIELD" name="provider">
+        <accessibleObject xsi:type="eorm:EFeatureObject" name="provider">
+          <feature xsi:type="ecore:EAttribute" href="sensinact-history.ecore#//NumericData/provider"/>
+        </accessibleObject>
+        <column name="provider" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+      </id>
+      <id access="FIELD" name="service">
+        <accessibleObject xsi:type="eorm:EFeatureObject" name="service">
+          <feature xsi:type="ecore:EAttribute" href="sensinact-history.ecore#//NumericData/service"/>
+        </accessibleObject>
+        <column name="service" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+      </id>
+      <id access="FIELD" name="resource">
+        <accessibleObject xsi:type="eorm:EFeatureObject" name="resource">
+          <feature xsi:type="ecore:EAttribute" href="sensinact-history.ecore#//NumericData/resource"/>
+        </accessibleObject>
+        <column name="resource" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+      </id>
+      <basic access="FIELD" name="time" fetch="EAGER" optional="false">
+        <accessibleObject xsi:type="eorm:EFeatureObject" name="time">
+          <feature xsi:type="ecore:EAttribute" href="sensinact-history.ecore#//NumericData/time"/>
+        </accessibleObject>
+        <column name="time" nullable="false" insertable="true" updatable="true" columnDefinition="TIMESTAMPTZ"/>
+      </basic>
+      <basic access="FIELD" name="provider" fetch="EAGER" optional="false">
+        <accessibleObject xsi:type="eorm:EFeatureObject" name="provider">
+          <feature xsi:type="ecore:EAttribute" href="sensinact-history.ecore#//NumericData/provider"/>
+        </accessibleObject>
+        <column name="provider" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+      </basic>
+      <basic access="FIELD" name="service" fetch="EAGER" optional="false">
+        <accessibleObject xsi:type="eorm:EFeatureObject" name="service">
+          <feature xsi:type="ecore:EAttribute" href="sensinact-history.ecore#//NumericData/service"/>
+        </accessibleObject>
+        <column name="service" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+      </basic>
+      <basic access="FIELD" name="resource" fetch="EAGER" optional="false">
+        <accessibleObject xsi:type="eorm:EFeatureObject" name="resource">
+          <feature xsi:type="ecore:EAttribute" href="sensinact-history.ecore#//NumericData/resource"/>
+        </accessibleObject>
+        <column name="resource" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+      </basic>
+      <basic access="FIELD" name="modelPackageUri" fetch="EAGER" optional="false">
+        <accessibleObject xsi:type="eorm:EFeatureObject" name="modelPackageUri">
+          <feature xsi:type="ecore:EAttribute" href="sensinact-history.ecore#//NumericData/modelPackageUri"/>
+        </accessibleObject>
+        <column name="modelpackageuri" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+      </basic>
+      <basic access="FIELD" name="model" fetch="EAGER" optional="false">
+        <accessibleObject xsi:type="eorm:EFeatureObject" name="model">
+          <feature xsi:type="ecore:EAttribute" href="sensinact-history.ecore#//NumericData/model"/>
+        </accessibleObject>
+        <column name="model" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+      </basic>
+      <basic access="FIELD" name="data" fetch="EAGER" optional="true">
+        <accessibleObject xsi:type="eorm:EFeatureObject" name="data">
+          <feature xsi:type="ecore:EAttribute" href="sensinact-history.ecore#//NumericData/data"/>
+        </accessibleObject>
+        <column name="data" nullable="true" insertable="true" updatable="true" columnDefinition="NUMERIC"/>
+      </basic>
+    </attributes>
+    <class xsi:type="ecore:EClass" href="sensinact-history.ecore#//NumericData"/>
+  </entity>
+
+  <entity access="FIELD" name="TextData">
+    <accessibleObject xsi:type="eorm:EClassObject" name="sensinactHistory.TextData">
+      <eclass href="sensinact-history.ecore#//TextData"/>
+    </accessibleObject>
+    <table name="text_data_recent" schema="sensinact"/>
+    <attributes>
+      <id access="FIELD" name="time">
+        <accessibleObject xsi:type="eorm:EFeatureObject" name="time">
+          <feature xsi:type="ecore:EAttribute" href="sensinact-history.ecore#//TextData/time"/>
+        </accessibleObject>
+        <column name="time" nullable="false" insertable="true" updatable="true" columnDefinition="TIMESTAMPTZ"/>
+      </id>
+      <id access="FIELD" name="provider">
+        <accessibleObject xsi:type="eorm:EFeatureObject" name="provider">
+          <feature xsi:type="ecore:EAttribute" href="sensinact-history.ecore#//TextData/provider"/>
+        </accessibleObject>
+        <column name="provider" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+      </id>
+      <id access="FIELD" name="service">
+        <accessibleObject xsi:type="eorm:EFeatureObject" name="service">
+          <feature xsi:type="ecore:EAttribute" href="sensinact-history.ecore#//TextData/service"/>
+        </accessibleObject>
+        <column name="service" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+      </id>
+      <id access="FIELD" name="resource">
+        <accessibleObject xsi:type="eorm:EFeatureObject" name="resource">
+          <feature xsi:type="ecore:EAttribute" href="sensinact-history.ecore#//TextData/resource"/>
+        </accessibleObject>
+        <column name="resource" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+      </id>
+      <basic access="FIELD" name="time" fetch="EAGER" optional="false">
+        <accessibleObject xsi:type="eorm:EFeatureObject" name="time">
+          <feature xsi:type="ecore:EAttribute" href="sensinact-history.ecore#//TextData/time"/>
+        </accessibleObject>
+        <column name="time" nullable="false" insertable="true" updatable="true" columnDefinition="TIMESTAMPTZ"/>
+      </basic>
+      <basic access="FIELD" name="provider" fetch="EAGER" optional="false">
+        <accessibleObject xsi:type="eorm:EFeatureObject" name="provider">
+          <feature xsi:type="ecore:EAttribute" href="sensinact-history.ecore#//TextData/provider"/>
+        </accessibleObject>
+        <column name="provider" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+      </basic>
+      <basic access="FIELD" name="service" fetch="EAGER" optional="false">
+        <accessibleObject xsi:type="eorm:EFeatureObject" name="service">
+          <feature xsi:type="ecore:EAttribute" href="sensinact-history.ecore#//TextData/service"/>
+        </accessibleObject>
+        <column name="service" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+      </basic>
+      <basic access="FIELD" name="resource" fetch="EAGER" optional="false">
+        <accessibleObject xsi:type="eorm:EFeatureObject" name="resource">
+          <feature xsi:type="ecore:EAttribute" href="sensinact-history.ecore#//TextData/resource"/>
+        </accessibleObject>
+        <column name="resource" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+      </basic>
+      <basic access="FIELD" name="modelPackageUri" fetch="EAGER" optional="false">
+        <accessibleObject xsi:type="eorm:EFeatureObject" name="modelPackageUri">
+          <feature xsi:type="ecore:EAttribute" href="sensinact-history.ecore#//TextData/modelPackageUri"/>
+        </accessibleObject>
+        <column name="modelpackageuri" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+      </basic>
+      <basic access="FIELD" name="model" fetch="EAGER" optional="false">
+        <accessibleObject xsi:type="eorm:EFeatureObject" name="model">
+          <feature xsi:type="ecore:EAttribute" href="sensinact-history.ecore#//TextData/model"/>
+        </accessibleObject>
+        <column name="model" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+      </basic>
+      <basic access="FIELD" name="data" fetch="EAGER" optional="true">
+        <accessibleObject xsi:type="eorm:EFeatureObject" name="data">
+          <feature xsi:type="ecore:EAttribute" href="sensinact-history.ecore#//TextData/data"/>
+        </accessibleObject>
+        <column name="data" nullable="true" insertable="true" updatable="true" columnDefinition="text"/>
+      </basic>
+    </attributes>
+    <class xsi:type="ecore:EClass" href="sensinact-history.ecore#//TextData"/>
+  </entity>
+</eorm:EntityMappings>
