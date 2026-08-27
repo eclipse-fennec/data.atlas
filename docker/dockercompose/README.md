@@ -12,6 +12,7 @@ Two setups live here:
 |---|---|
 | [`docker-compose-atlas.yml`](#docker-compose-atlasyml--file-mode-vs-model-atlas-mode) | the same file-based example served in both config modes, side by side |
 | [`docker-compose-postgres.yml`](#docker-compose-postgresyml--postgresql-served-as-csv) | a PostgreSQL table served as CSV, configuration delivered by a Model Atlas |
+| [`docker-compose-history.yml`](#docker-compose-historyyml--the-sensinact-history-database-as-csv) | the SensiNact history database - a schema we do **not** own - served as CSV |
 
 ## docker-compose-atlas.yml — file mode vs. Model Atlas mode
 
@@ -150,3 +151,237 @@ so the two cannot drift apart unnoticed. If your existing schema does not follow
 that derivation, pin the names explicitly with a `JPADataInput.persistenceConfig`
 instead of hand-tuning the SQL.
 
+## docker-compose-history.yml — the SensiNact history database as CSV
+
+```bash
+docker compose -f docker-compose-history.yml up
+```
+
+| Service | URL |
+|---|---|
+| `history-db` | `localhost:15433` (db/user/password: `sensinact`) |
+| `dataatlas` | http://localhost:8081/rest/history/numeric, `…/text` |
+
+The difference to the Postgres example: that one serves a schema we invented and
+shaped to fit the derived eorm naming. This one serves the **TimescaleDB store of
+SensiNact's history provider** — lower-case, schema-qualified, hypertables, no
+primary key. That is the realistic shape of "serve an existing database", and it
+is what a production setup gets pointed at.
+
+There is deliberately no `event.atlas` here: the example is about *reading* the
+history database, not about producing the data, so the schema and a few
+recordings are seeded by SQL and the setup stands on its own.
+
+```bash
+curl -H "Accept: text/csv" http://localhost:8081/rest/history/numeric
+# time;modelPackageUri;model;provider;service;resource;data
+# 2026-08-27 14:59:39.419406;https://eclipse.org/sensinact/example/weather/1.0.0;weather;station-1;sensor;temperature;21.4
+# 2026-08-27 14:59:39.419406;https://eclipse.org/sensinact/example/weather/1.0.0;weather;station-1;sensor;humidity;63.0
+# 2026-08-27 14:39:39.419406;https://eclipse.org/sensinact/example/weather/1.0.0;weather;station-1;sensor;temperature;20.8
+
+curl -H "Accept: text/csv" http://localhost:8081/rest/history/text
+# time;modelPackageUri;model;provider;service;resource;data
+# 2026-08-27 14:59:39.474253;…;weather;station-1;admin;status;ok
+# 2026-08-27 14:54:39.474253;…;weather;station-2;admin;status;maintenance
+
+# JSON is declared too
+curl -H "Accept: application/json" http://localhost:8081/rest/history/numeric
+
+# XMI is not declared, so it is refused
+curl -i -H "Accept: application/xml" http://localhost:8081/rest/history/numeric   # 406
+```
+
+Note the CSV header: `time;modelPackageUri;model;…` — the **model** attribute
+names, while the database columns are `time, modelpackageuri, model, …`. That gap
+is exactly what the explicit mapping bridges.
+
+### Why file mode here, and not atlas mode
+
+The Postgres example runs in atlas mode; this one cannot yet. A configuration for
+a foreign schema must carry an explicit eorm `EntityMappings`, and the eorm model
+mirrors JPA's `orm.xml`, so it uses `ExtendedMetaData` XML names. The Model Atlas
+cannot round-trip such an object: it accepts the upload (`201`), writes
+`column-definition` to disk, and then fails to read its own file back with
+`FeatureNotFoundException: Feature 'column-definition' not found`
+([model.atlas#213](https://github.com/eclipse-fennec/model.atlas/issues/213)).
+
+The atlas-mode instance (`dataatlas-history-atlas.xmi`) is committed and its
+services are kept behind a compose profile, so when #213 is fixed:
+
+```bash
+docker compose -f docker-compose-history.yml --profile atlas up
+```
+
+### The three things this example had to solve
+
+**1. The names.** The derived eorm mapping expects an upper-cased, unqualified
+table (`NUMERICDATA`); the real relations are `sensinact.numeric_data_recent`. So
+the `JPADataInput` carries a `persistenceConfig` — an explicit `EntityMappings`
+pinning table, schema and every column name. It is **inline** in the
+configuration, not an href to a file: `persistenceConfig` is a containment
+reference precisely so the mapping travels with the configuration.
+
+**2. No primary key.** The hypertables have none — upstream defines them that way,
+and it is not our schema to change. JPA needs an identity, so the mapping declares
+a **composite id** over `(time, provider, service, resource)`, the natural reading
+of a time series per resource. Four `<id>` elements; the model allows it
+(`Attributes.id` is `[0..*]`).
+
+**3. Unbounded tables.** A hypertable that has been recording for a month must not
+become one CSV response. The endpoint stays a plain dump (no query filters), so
+the bound lives in SQL: the entities are mapped onto the views
+`sensinact.numeric_data_recent` / `text_data_recent` (7-day window, `LIMIT 1000`).
+Pointing `<table>` at `numeric_data` / `text_data` serves the raw tables instead.
+
+### Keeping the seeded schema honest
+
+`history/init/01-schema.sql` is a **verbatim** transcription of the statements
+`TimescaleHistoricalStore#setupTables` executes (verified against `75f1f45`,
+including the nine indexes). It is not ours to change — if it drifts from
+upstream, upstream wins.
+
+What the store *presupposes* rather than creates lives separately in
+`00-extensions.sql`: it calls `create_hypertable()` but never creates the
+`timescaledb` extension, because a real deployment's database already has it. A
+database freshly created by `POSTGRES_DB` does not, so seeding the store's DDL
+alone fails with `function create_hypertable(...) does not exist`.
+
+`DataAtlasHistoryIntegrationTest` runs the real eorm mapping against these very
+files in a docker-gated test, so a drift that breaks the mapping fails the build
+instead of production. That matters more here than in the Postgres example,
+because the reference DDL is upstream and can change.
+
+`geo_data` is seeded so the schema is exercised as upstream defines it, but it is
+not mapped — see the geo discussion in
+[eclipse-fennec/data.atlas#2](https://github.com/eclipse-fennec/data.atlas/issues/2).
+
+---
+
+## Adding a history CSV endpoint to an existing deployment
+
+The compose file above is a demo. This is the recipe for a real setup — an
+existing Data Atlas that should additionally serve an existing SensiNact history
+database. Nothing here depends on the compose file.
+
+### 1. What has to exist
+
+- a reachable PostgreSQL/TimescaleDB carrying the `sensinact` schema (the one
+  SensiNact's history provider writes into) and a user that may `SELECT` on it;
+- a Data Atlas instance, `file-snapshot` or `atlas-snapshot`. The image already
+  contains the PostgreSQL driver, the daanse DataSource provider and the CSV
+  codec, so **no custom runtime assembly is needed**.
+
+### 2. Bound what you serve
+
+The Data Atlas never creates or changes anything in the database — it stays
+read-only, and `eclipselink.ddl-generation` stays `none`. Create views next to the
+hypertables and point the mapping at them, so a response can never be unbounded:
+
+```sql
+CREATE OR REPLACE VIEW sensinact.numeric_data_recent AS
+    SELECT time, modelpackageuri, model, provider, service, resource, data
+    FROM sensinact.numeric_data
+    WHERE time > now() - INTERVAL '7 days'
+    ORDER BY time DESC
+    LIMIT 1000;
+```
+
+Adjust the window and the limit to the deployment. If you prefer no views, point
+the `<table>` elements at the hypertables and accept the consequence.
+
+### 3. Provide the DataSource
+
+One Config-Admin factory configuration, injected without rebuilding the image:
+
+```json
+{
+	":configurator:resource-version": 1,
+	":configurator:symbolic-name": "my.deployment.history.datasource",
+	":configurator:version": "1.0.0",
+	"daanse.jdbc.datasource.postgresql.DataSource~history": {
+		"host": "history-db.internal",
+		"port:Integer": 5432,
+		"dbname": "sensinact",
+		"user": "dataatlas_ro",
+		".password": "$[secret:history-db-password]",
+		"dataSourceName": "historyDs"
+	}
+}
+```
+
+Mount it and point the JVM at it:
+
+```
+-v /path/to/load:/opt/dataatlas/runtime/load:ro
+-e JAVA_TOOL_OPTIONS=-Dconfigurator.initial=file:///opt/dataatlas/runtime/load/datasource.json
+```
+
+Four details that each cost a debug cycle:
+
+| Detail | Why |
+|---|---|
+| `:configurator:symbolic-name` **with** the hyphen | otherwise the Configurator rejects the whole file as `Invalid JSON` |
+| `"port:Integer"`, not `"port"` | a bare JSON number arrives as `Long` and the component refuses it |
+| `dataSourceName` is **not** a key of the component | every non-dot key also becomes a *service property* — that is what the configuration's filter selects |
+| `.password` starts with a dot | dot keys deliberately stay out of the service properties |
+
+`$[secret:history-db-password]` resolves from
+`/opt/dataatlas/runtime/secrets/history-db-password` — mount a docker/Kubernetes
+secret there rather than passing the password as an environment variable.
+
+### 4. Publish the domain schema
+
+The Data Atlas needs the EPackage describing the rows.
+`configuration.model/example/model/sensinact-history.ecore` (nsURI
+`https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0`) can be
+used as-is or copied under your own nsURI.
+
+- **file mode**: put the `.ecore` next to the configuration file and reference it
+  by a relative href, exactly as `dataatlas-history.xmi` does.
+- **atlas mode**: upload it into the scope's schema registry and reference it by
+  **nsURI**. It must be present in *every* stage that serves the configuration,
+  because each stage resolves against its own package view.
+
+### 5. The configuration
+
+Take `configuration.model/example/dataatlas-history.xmi` (file mode) or
+`dataatlas-history-atlas.xmi` (atlas mode) as the template and change:
+
+- `dataSources/@filter` — must match the `dataSourceName` from step 3;
+- the `<table name=… schema=…/>` elements in the inline `persistenceConfig` — the
+  relations from step 2;
+- `urlContext` and the `path` of each configuration — where the endpoints appear;
+- the `exports` — which formats the DataSets offer. **Declaring exports defines
+  the list**: a DataSet that references an export serves exactly those media types
+  and answers `406` for anything else. Declare JSON explicitly if you want it next
+  to CSV.
+
+Which names have to agree, and this is the whole list:
+
+| This | must equal | that |
+|---|---|---|
+| `dataSources/@filter` | ↔ | a service property of the DataSource (step 3) |
+| `dataSets/@dataInput` | ↔ | `dataInputs/@id` |
+| `configuration/@dataSet` | ↔ | `dataSets/@id` |
+| `dataSets/@distributionExport` | ↔ | `exports/@id` |
+| the mapping's `<table>` | ↔ | the relation in the database |
+| every `<column name=…>` | ↔ | the column in the database |
+| the mapping's `eclass`/`feature` hrefs | ↔ | the published `.ecore` (step 4) |
+
+### 6. Verifying, and what failure looks like
+
+```bash
+curl -H "Accept: text/csv" http://<host>:8080/rest/history/numeric
+```
+
+The Data Atlas refuses to publish an endpoint it cannot serve, so a `404` — not an
+error page — is the normal symptom of a misconfiguration. Read the log rather than
+guessing:
+
+| Symptom | Look for |
+|---|---|
+| `404` on the path | `Registering REST application for service …` — absent means the input never materialized. A wrong `dataSources/@filter` is the usual cause: no DataSource matches, so no repository appears |
+| `404`, input realized | `Realized JPADataInput …` present but no REST line — a DataSet was skipped; the log names it and why |
+| `406` | the media type is not among the DataSet's declared exports |
+| `500` | logged with its cause; a wrong table or column name in the mapping surfaces here |
+| endpoint serves nothing | the view's time window excludes all rows — check `select count(*)` on the *view*, not the table |
