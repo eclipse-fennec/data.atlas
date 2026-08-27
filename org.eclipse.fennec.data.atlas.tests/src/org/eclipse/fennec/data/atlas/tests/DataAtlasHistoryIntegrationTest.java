@@ -179,6 +179,28 @@ public class DataAtlasHistoryIntegrationTest {
 				"expected the seeded textual recordings: " + response.body());
 	}
 
+	/**
+	 * The geo case, and the answer to "would geodata work": yes, without teaching
+	 * the Data Atlas about PostGIS. The column is {@code geography(POINT,4326)},
+	 * which has no JDBC representation the persistence stack knows — so the view
+	 * projects it with {@code ST_AsText} and {@code ST_X}/{@code ST_Y} into text
+	 * and double precision. PostGIS does the geometry work in the database, where
+	 * the geometry already lives, and the mapping stays plain.
+	 */
+	@Test
+	void servesTheGeographyColumnThroughTheProjectingView() throws Exception {
+		HttpResponse<String> response = awaitOk(BASE_URL + "/geo", TEXT_CSV);
+
+		List<String> rows = response.body().lines().filter(line -> !line.isBlank()).toList();
+		String header = rows.get(0);
+		assertTrue(header.contains("location") && header.contains("longitude") && header.contains("latitude"),
+				"expected the projected geo columns in the header: " + header);
+		assertTrue(response.body().contains("POINT(11.582 50.927)"),
+				"expected the WKT of the seeded point: " + response.body());
+		assertTrue(response.body().contains("11.582") && response.body().contains("50.927"),
+				"expected longitude and latitude as numbers: " + response.body());
+	}
+
 	@Test
 	void servesTheSameDataAsJson() throws Exception {
 		HttpResponse<String> response = awaitOk(BASE_URL + "/numeric", "application/json");

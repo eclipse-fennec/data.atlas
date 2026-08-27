@@ -251,9 +251,37 @@ files in a docker-gated test, so a drift that breaks the mapping fails the build
 instead of production. That matters more here than in the Postgres example,
 because the reference DDL is upstream and can change.
 
-`geo_data` is seeded so the schema is exercised as upstream defines it, but it is
-not mapped — see the geo discussion in
-[eclipse-fennec/data.atlas#2](https://github.com/eclipse-fennec/data.atlas/issues/2).
+### Geodata: it works, and PostGIS stays in the database
+
+`geo_data` is served too — `http://localhost:8081/rest/history/geo`:
+
+```bash
+curl -H "Accept: text/csv" http://localhost:8081/rest/history/geo
+# time;modelPackageUri;model;provider;service;resource;location;longitude;latitude
+# 2026-08-27 …;…;weather;station-1;admin;location;POINT(11.582 50.927);11.582;50.927
+```
+
+Its column is `geography(POINT,4326)`, a PostGIS type with no JDBC
+representation the persistence stack knows. Rather than teaching the Data Atlas
+about PostGIS, the view projects it into ordinary SQL types:
+
+```sql
+ST_AsText(data)            AS location   -- text
+ST_X(data::geometry)       AS longitude  -- double precision
+ST_Y(data::geometry)       AS latitude   -- double precision
+```
+
+Those map to plain `EString`/`EDoubleObject` attributes with **no type converter
+at all**. The geometry work happens in the database, where the geometry already
+lives — and the lon/lat pair is exactly the shape a future GeoJSON service wants.
+
+Serving the raw `geography` column instead would need three things the runtime
+does not have today: a modelled `EDataType` for the geometry, a `TypeConverter`
+(`org.eclipse.fennec.persistence.api`, matched by the attribute's instance type
+name) turning the driver's `PGobject`/EWKB into it, and either PostGIS JDBC types
+or WKB parsing — no PostGIS JDBC artefact is in any of our repository indexes.
+Worth doing when a service needs real geometry objects; not worth doing to
+produce CSV.
 
 ---
 

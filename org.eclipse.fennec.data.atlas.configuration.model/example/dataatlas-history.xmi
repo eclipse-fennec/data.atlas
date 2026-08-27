@@ -24,6 +24,7 @@
   <dataInputs xsi:type="configuration:JPADataInput" id="history-jpa" dataSource="history-db">
     <supportedEClasses href="model/sensinact-history.ecore#//NumericData"/>
     <supportedEClasses href="model/sensinact-history.ecore#//TextData"/>
+    <supportedEClasses href="model/sensinact-history.ecore#//GeoData"/>
     <persistenceConfig package="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0" name="sensinact-history">
       <entity access="FIELD" name="NumericData">
         <accessibleObject xsi:type="eorm:EClassObject" name="sensinactHistory.NumericData">
@@ -176,6 +177,94 @@
         </attributes>
         <class xsi:type="ecore:EClass" href="model/sensinact-history.ecore#//TextData"/>
       </entity>
+
+      <entity access="FIELD" name="GeoData">
+        <accessibleObject xsi:type="eorm:EClassObject" name="sensinactHistory.GeoData">
+          <eclass href="model/sensinact-history.ecore#//GeoData"/>
+        </accessibleObject>
+        <table name="geo_data_recent" schema="sensinact"/>
+        <attributes>
+          <id access="FIELD" name="time">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="time">
+              <feature xsi:type="ecore:EAttribute" href="model/sensinact-history.ecore#//GeoData/time"/>
+            </accessibleObject>
+            <column name="time" nullable="false" insertable="true" updatable="true" columnDefinition="TIMESTAMPTZ"/>
+          </id>
+          <id access="FIELD" name="provider">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="provider">
+              <feature xsi:type="ecore:EAttribute" href="model/sensinact-history.ecore#//GeoData/provider"/>
+            </accessibleObject>
+            <column name="provider" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+          </id>
+          <id access="FIELD" name="service">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="service">
+              <feature xsi:type="ecore:EAttribute" href="model/sensinact-history.ecore#//GeoData/service"/>
+            </accessibleObject>
+            <column name="service" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+          </id>
+          <id access="FIELD" name="resource">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="resource">
+              <feature xsi:type="ecore:EAttribute" href="model/sensinact-history.ecore#//GeoData/resource"/>
+            </accessibleObject>
+            <column name="resource" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+          </id>
+          <basic access="FIELD" name="time" fetch="EAGER" optional="false">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="time">
+              <feature xsi:type="ecore:EAttribute" href="model/sensinact-history.ecore#//GeoData/time"/>
+            </accessibleObject>
+            <column name="time" nullable="false" insertable="true" updatable="true" columnDefinition="TIMESTAMPTZ"/>
+          </basic>
+          <basic access="FIELD" name="provider" fetch="EAGER" optional="false">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="provider">
+              <feature xsi:type="ecore:EAttribute" href="model/sensinact-history.ecore#//GeoData/provider"/>
+            </accessibleObject>
+            <column name="provider" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+          </basic>
+          <basic access="FIELD" name="service" fetch="EAGER" optional="false">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="service">
+              <feature xsi:type="ecore:EAttribute" href="model/sensinact-history.ecore#//GeoData/service"/>
+            </accessibleObject>
+            <column name="service" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+          </basic>
+          <basic access="FIELD" name="resource" fetch="EAGER" optional="false">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="resource">
+              <feature xsi:type="ecore:EAttribute" href="model/sensinact-history.ecore#//GeoData/resource"/>
+            </accessibleObject>
+            <column name="resource" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+          </basic>
+          <basic access="FIELD" name="modelPackageUri" fetch="EAGER" optional="false">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="modelPackageUri">
+              <feature xsi:type="ecore:EAttribute" href="model/sensinact-history.ecore#//GeoData/modelPackageUri"/>
+            </accessibleObject>
+            <column name="modelpackageuri" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+          </basic>
+          <basic access="FIELD" name="model" fetch="EAGER" optional="false">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="model">
+              <feature xsi:type="ecore:EAttribute" href="model/sensinact-history.ecore#//GeoData/model"/>
+            </accessibleObject>
+            <column name="model" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+          </basic>
+          <basic access="FIELD" name="location" fetch="EAGER" optional="true">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="location">
+              <feature xsi:type="ecore:EAttribute" href="model/sensinact-history.ecore#//GeoData/location"/>
+            </accessibleObject>
+            <column name="location" nullable="true" insertable="true" updatable="true" columnDefinition="text"/>
+          </basic>
+          <basic access="FIELD" name="longitude" fetch="EAGER" optional="true">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="longitude">
+              <feature xsi:type="ecore:EAttribute" href="model/sensinact-history.ecore#//GeoData/longitude"/>
+            </accessibleObject>
+            <column name="longitude" nullable="true" insertable="true" updatable="true" columnDefinition="DOUBLE PRECISION"/>
+          </basic>
+          <basic access="FIELD" name="latitude" fetch="EAGER" optional="true">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="latitude">
+              <feature xsi:type="ecore:EAttribute" href="model/sensinact-history.ecore#//GeoData/latitude"/>
+            </accessibleObject>
+            <column name="latitude" nullable="true" insertable="true" updatable="true" columnDefinition="DOUBLE PRECISION"/>
+          </basic>
+        </attributes>
+        <class xsi:type="ecore:EClass" href="model/sensinact-history.ecore#//GeoData"/>
+      </entity>
     </persistenceConfig>
   </dataInputs>
   <dataSets id="numeric" name="Numeric history" description="Recorded numeric resource values (bounded view)."
@@ -188,10 +277,16 @@
     <inputType href="model/sensinact-history.ecore#//TextData"/>
     <outputType href="model/sensinact-history.ecore#//TextData"/>
   </dataSets>
+  <dataSets id="geo" name="Geo history" description="Recorded locations, projected to WKT plus longitude/latitude by the view."
+      dataInput="history-jpa" distributionExport="csv json">
+    <inputType href="model/sensinact-history.ecore#//GeoData"/>
+    <outputType href="model/sensinact-history.ecore#//GeoData"/>
+  </dataSets>
   <services xsi:type="configuration:RestDataService" id="history-rest" name="SensiNact history REST"
       description="REST endpoint publishing the recorded history." urlContext="/history" openAPI="false">
     <configuration id="numeric-config" dataSet="numeric" path="numeric"/>
     <configuration id="text-config" dataSet="text" path="text"/>
+    <configuration id="geo-config" dataSet="geo" path="geo"/>
   </services>
   <exports xsi:type="configuration:CSVDistributionExport" id="csv" name="CSV"
       description="Semicolon separated, no SQL-type row." separator=";" includeTypeHeader="false"/>

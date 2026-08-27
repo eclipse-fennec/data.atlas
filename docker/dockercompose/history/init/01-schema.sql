@@ -71,3 +71,24 @@ CREATE OR REPLACE VIEW sensinact.text_data_recent AS
     WHERE time > now() - INTERVAL '7 days'
     ORDER BY time DESC
     LIMIT 1000;
+
+-- geo_data needs one thing more than a window: its `data` column is
+-- geography(POINT,4326), a PostGIS type that has no JDBC representation the
+-- persistence stack knows. Rather than teaching the Data Atlas about PostGIS,
+-- the view projects it into ordinary SQL types - PostGIS does the work in the
+-- database, where the geometry already lives:
+--
+--   ST_AsText(data)        -> text             (WKT, e.g. POINT(11.582 50.927))
+--   ST_X/ST_Y(data::geometry) -> double precision
+--
+-- Both map to plain EMF attributes with no type converter at all. The lon/lat
+-- pair is also exactly the shape a future GeoJSON service would want.
+CREATE OR REPLACE VIEW sensinact.geo_data_recent AS
+    SELECT time, modelpackageuri, model, provider, service, resource,
+           ST_AsText(data)           AS location,
+           ST_X(data::geometry)      AS longitude,
+           ST_Y(data::geometry)      AS latitude
+    FROM sensinact.geo_data
+    WHERE time > now() - INTERVAL '7 days'
+    ORDER BY time DESC
+    LIMIT 1000;

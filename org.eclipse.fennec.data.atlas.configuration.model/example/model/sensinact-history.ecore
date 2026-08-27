@@ -7,10 +7,16 @@
      the hypertables `numeric_data`, `text_data` and `geo_data` (verified against
      TimescaleHistoricalStore#setupTables). The attribute names here are EMF-side
      names; the mapping onto the real lower-case, schema-qualified column names
-     is pinned explicitly in sensinact-history.eorm, because the derived eorm
-     naming would expect an upper-cased, unqualified table.
+     is pinned explicitly in the inline persistenceConfig of the configuration
+     (dataatlas-history.xmi), because the derived eorm naming would expect an
+     upper-cased, unqualified table.
 
-     The two EClasses repeat their common attributes instead of sharing an
+     GeoData is the geo_data case. Its column is geography(POINT,4326), which has
+     no JDBC representation the persistence stack knows - so the view projects it
+     into ordinary SQL types (ST_AsText, ST_X/ST_Y) and this EClass needs neither
+     a PostGIS-aware EMF type nor a TypeConverter.
+
+     The EClasses repeat their common attributes instead of sharing an
      abstract supertype. That is deliberate: an abstract EMF supertype that is
      not itself an entity puts EClass inheritance in front of the EclipseLink
      dynamic type builder, which then has to be told an inheritance strategy for
@@ -114,6 +120,65 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="data" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The recorded value."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="GeoData">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A recorded location - table sensinact.geo_data, column data of type geography(POINT,4326). Served through the view sensinact.geo_data_recent, which PROJECTS the PostGIS value into ordinary SQL types (ST_AsText, ST_X/ST_Y). That is why this EClass needs no PostGIS-aware EMF type and no TypeConverter: the geometry work happens in the database, where the geometry already lives."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="time" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Recording timestamp - the hypertable's partitioning column (TIMESTAMPTZ). Part of the composite id."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="modelPackageUri" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="nsURI of the model package the provider belongs to (column modelpackageuri)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="model" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Name of the provider's model."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="provider" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Provider id. Part of the composite id."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="service" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Service name within the provider. Part of the composite id."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="resource" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Resource name within the service. Part of the composite id."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="location"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The point as WKT, e.g. POINT(11.582 50.927) - the view computes it with ST_AsText."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="longitude"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Longitude in WGS 84, computed by the view with ST_X. EDoubleObject rather than EDouble, because the column is nullable and 0.0 is a real coordinate."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="latitude"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Latitude in WGS 84, computed by the view with ST_Y."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
