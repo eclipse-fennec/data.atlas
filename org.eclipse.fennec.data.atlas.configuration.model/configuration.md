@@ -79,8 +79,30 @@ pagination parameter names; per-dataset `RestDataServiceConfiguration` with
 ### `DistributionExport` — reusable serialization templates
 
 Defined once in the `exports` registry and referenced via
-`DataProvider.distributionExport`. `CSVDistributionExport` carries `separator`,
-`compressed` and `includeTypeHeader`.
+`DataProvider.distributionExport` (override-else-default like the rest of the
+trias: a `DataSet`'s own exports fully replace the enclosing service's).
+
+`mediaType` names the HTTP media type an export is served as. Unset means the
+kind-specific default of the concrete export, so a `CSVDistributionExport`
+needs no `mediaType`; a format without a dedicated subclass — JSON, XMI — is
+expressed as a plain `DistributionExport` with `mediaType` set.
+
+`CSVDistributionExport` carries `separator`, `compressed` and
+`includeTypeHeader`. All three map onto fennec codec option keys rather than
+being reimplemented, which pins their semantics:
+
+| Attribute | Codec option | Meaning |
+|---|---|---|
+| `separator` | `codec.csv.delimiter` | Field delimiter; only the first character is used |
+| `includeTypeHeader` | `codec.csv.dataTypeInSecondRow` | Emits an extra **SQL-type row** between header and data. The column header row is always written and cannot be switched off |
+| `compressed` | *(selects the media type)* | `application/x-csv-zip` — a ZIP with one CSV per serialized EClass, **not** a gzipped single CSV |
+
+**How the effective formats are resolved at runtime**: a `DataProvider` that
+resolves to no export at all is served in the runtime's default formats
+(`application/json`, `application/xml`). As soon as it resolves to at least one
+export, exactly those media types are served and any other `Accept` is answered
+with `406 Not Acceptable` — so a configuration that wants CSV *and* JSON must
+declare both.
 
 ### `Transformation`
 

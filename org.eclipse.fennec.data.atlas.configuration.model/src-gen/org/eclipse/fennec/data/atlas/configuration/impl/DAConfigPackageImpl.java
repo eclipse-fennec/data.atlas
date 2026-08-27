@@ -1106,6 +1106,16 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
+	public EAttribute getDistributionExport_MediaType() {
+		return (EAttribute)distributionExportEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getCSVDistributionExport() {
 		return csvDistributionExportEClass;
 	}
@@ -1350,6 +1360,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		createEAttribute(distributionExportEClass, DISTRIBUTION_EXPORT__ID);
 		createEAttribute(distributionExportEClass, DISTRIBUTION_EXPORT__NAME);
 		createEAttribute(distributionExportEClass, DISTRIBUTION_EXPORT__DESCRIPTION);
+		createEAttribute(distributionExportEClass, DISTRIBUTION_EXPORT__MEDIA_TYPE);
 
 		csvDistributionExportEClass = createEClass(CSV_DISTRIBUTION_EXPORT);
 		createEAttribute(csvDistributionExportEClass, CSV_DISTRIBUTION_EXPORT__SEPARATOR);
@@ -1526,6 +1537,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		initEAttribute(getDistributionExport_Id(), ecorePackage.getEString(), "id", null, 1, 1, DistributionExport.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getDistributionExport_Name(), ecorePackage.getEString(), "name", null, 1, 1, DistributionExport.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getDistributionExport_Description(), ecorePackage.getEString(), "description", null, 1, 1, DistributionExport.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDistributionExport_MediaType(), ecorePackage.getEString(), "mediaType", null, 0, 1, DistributionExport.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(csvDistributionExportEClass, CSVDistributionExport.class, "CSVDistributionExport", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getCSVDistributionExport_Separator(), ecorePackage.getEString(), "separator", null, 0, 1, CSVDistributionExport.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2053,6 +2065,12 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 			   "documentation", "Derives from the model annotation by default"
 		   });
 		addAnnotation
+		  (getDistributionExport_MediaType(),
+		   source,
+		   new String[] {
+			   "documentation", "The HTTP media type this export is served as, e.g. \'text/csv\' or \'application/json\'.\nUnset means the kind-specific default of the concrete export: CSVDistributionExport serves \'text/csv\', or \'application/x-csv-zip\' when compressed is set. A plain DistributionExport therefore needs this attribute to be meaningful - it is how a configuration keeps a format that has no dedicated subclass (e.g. JSON) alongside a specialized one.\nResolution at runtime: a DataProvider that resolves to no export at all is served in the runtime default formats; as soon as it resolves to at least one export, exactly the media types of those exports are served and any other Accept is answered with 406."
+		   });
+		addAnnotation
 		  (csvDistributionExportEClass,
 		   source,
 		   new String[] {
@@ -2062,19 +2080,19 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		  (getCSVDistributionExport_Separator(),
 		   source,
 		   new String[] {
-			   "documentation", "Column separator character (e.g. \',\' or \';\')."
+			   "documentation", "Column separator character (e.g. \',\' or \';\'). Only the first character is used - it maps to the fennec codec option \'codec.csv.delimiter\', which takes a single char."
 		   });
 		addAnnotation
 		  (getCSVDistributionExport_Compressed(),
 		   source,
 		   new String[] {
-			   "documentation", "Whether the CSV output is compressed (e.g. gzipped)."
+			   "documentation", "Whether the CSV output is delivered compressed. This is NOT a gzip of a single CSV: it selects the fennec codec\'s zipped multi-table CSV (media type \'application/x-csv-zip\'), a ZIP containing one CSV per serialized EClass."
 		   });
 		addAnnotation
 		  (getCSVDistributionExport_IncludeTypeHeader(),
 		   source,
 		   new String[] {
-			   "documentation", "Whether to include a leading header row describing the columns/types."
+			   "documentation", "Whether to emit an additional row carrying each column\'s SQL type between the header row and the data rows. The column header row itself is ALWAYS written and cannot be switched off. Maps to the fennec codec option \'codec.csv.dataTypeInSecondRow\'."
 		   });
 		addAnnotation
 		  (transformationEClass,

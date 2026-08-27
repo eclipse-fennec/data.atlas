@@ -45,7 +45,7 @@ public interface CSVDistributionExport extends DistributionExport {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * Column separator character (e.g. ',' or ';').
+	 * Column separator character (e.g. ',' or ';'). Only the first character is used - it maps to the fennec codec option 'codec.csv.delimiter', which takes a single char.
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Separator</em>' attribute.
 	 * @see #setSeparator(String)
@@ -70,7 +70,7 @@ public interface CSVDistributionExport extends DistributionExport {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * Whether the CSV output is compressed (e.g. gzipped).
+	 * Whether the CSV output is delivered compressed. This is NOT a gzip of a single CSV: it selects the fennec codec's zipped multi-table CSV (media type 'application/x-csv-zip'), a ZIP containing one CSV per serialized EClass.
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Compressed</em>' attribute.
 	 * @see #setCompressed(boolean)
@@ -95,7 +95,7 @@ public interface CSVDistributionExport extends DistributionExport {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * Whether to include a leading header row describing the columns/types.
+	 * Whether to emit an additional row carrying each column's SQL type between the header row and the data rows. The column header row itself is ALWAYS written and cannot be switched off. Maps to the fennec codec option 'codec.csv.dataTypeInSecondRow'.
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Include Type Header</em>' attribute.
 	 * @see #setIncludeTypeHeader(boolean)

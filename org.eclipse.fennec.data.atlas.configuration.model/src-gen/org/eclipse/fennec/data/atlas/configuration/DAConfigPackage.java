@@ -49,7 +49,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * @generated
  */
 @ProviderType
-@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:a3346533d2997527db331623a4ab07e70a49668c008b89a4c81f59f6017c4e6a", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
+@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:4d6f3f8b6e658ead103d3158358e35d2fcb4448147d460e39379c795099e86bd", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
 public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	/**
 	 * The package name.
@@ -2153,13 +2153,22 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	int DISTRIBUTION_EXPORT__DESCRIPTION = 2;
 
 	/**
+	 * The feature id for the '<em><b>Media Type</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DISTRIBUTION_EXPORT__MEDIA_TYPE = 3;
+
+	/**
 	 * The number of structural features of the '<em>Distribution Export</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DISTRIBUTION_EXPORT_FEATURE_COUNT = 3;
+	int DISTRIBUTION_EXPORT_FEATURE_COUNT = 4;
 
 	/**
 	 * The number of operations of the '<em>Distribution Export</em>' class.
@@ -2206,6 +2215,15 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @ordered
 	 */
 	int CSV_DISTRIBUTION_EXPORT__DESCRIPTION = DISTRIBUTION_EXPORT__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Media Type</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CSV_DISTRIBUTION_EXPORT__MEDIA_TYPE = DISTRIBUTION_EXPORT__MEDIA_TYPE;
 
 	/**
 	 * The feature id for the '<em><b>Separator</b></em>' attribute.
@@ -3129,6 +3147,17 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	EAttribute getDistributionExport_Description();
 
 	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DistributionExport#getMediaType <em>Media Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Media Type</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DistributionExport#getMediaType()
+	 * @see #getDistributionExport()
+	 * @generated
+	 */
+	EAttribute getDistributionExport_MediaType();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.CSVDistributionExport <em>CSV Distribution Export</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3945,6 +3974,14 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		 * @generated
 		 */
 		EAttribute DISTRIBUTION_EXPORT__DESCRIPTION = eINSTANCE.getDistributionExport_Description();
+
+		/**
+		 * The meta object literal for the '<em><b>Media Type</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DISTRIBUTION_EXPORT__MEDIA_TYPE = eINSTANCE.getDistributionExport_MediaType();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.CSVDistributionExportImpl <em>CSV Distribution Export</em>}' class.

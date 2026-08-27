@@ -104,6 +104,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DistributionExport/id"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DistributionExport/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DistributionExport/description"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DistributionExport/mediaType"/>
     </genClasses>
     <genClasses ecoreClass="configuration.ecore#//CSVDistributionExport">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//CSVDistributionExport/separator"/>

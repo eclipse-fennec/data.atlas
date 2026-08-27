@@ -35,6 +35,7 @@ import org.eclipse.fennec.data.atlas.configuration.DistributionExport;
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DistributionExportImpl#getId <em>Id</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DistributionExportImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DistributionExportImpl#getDescription <em>Description</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DistributionExportImpl#getMediaType <em>Media Type</em>}</li>
  * </ul>
  *
  * @generated
@@ -99,6 +100,26 @@ public class DistributionExportImpl extends MinimalEObjectImpl.Container impleme
 	 * @ordered
 	 */
 	protected String description = DESCRIPTION_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getMediaType() <em>Media Type</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getMediaType()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String MEDIA_TYPE_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getMediaType() <em>Media Type</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getMediaType()
+	 * @generated
+	 * @ordered
+	 */
+	protected String mediaType = MEDIA_TYPE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -194,6 +215,29 @@ public class DistributionExportImpl extends MinimalEObjectImpl.Container impleme
 	 * @generated
 	 */
 	@Override
+	public String getMediaType() {
+		return mediaType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setMediaType(String newMediaType) {
+		String oldMediaType = mediaType;
+		mediaType = newMediaType;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DAConfigPackage.DISTRIBUTION_EXPORT__MEDIA_TYPE, oldMediaType, mediaType));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case DAConfigPackage.DISTRIBUTION_EXPORT__ID:
@@ -202,6 +246,8 @@ public class DistributionExportImpl extends MinimalEObjectImpl.Container impleme
 				return getName();
 			case DAConfigPackage.DISTRIBUTION_EXPORT__DESCRIPTION:
 				return getDescription();
+			case DAConfigPackage.DISTRIBUTION_EXPORT__MEDIA_TYPE:
+				return getMediaType();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -222,6 +268,9 @@ public class DistributionExportImpl extends MinimalEObjectImpl.Container impleme
 				return;
 			case DAConfigPackage.DISTRIBUTION_EXPORT__DESCRIPTION:
 				setDescription((String)newValue);
+				return;
+			case DAConfigPackage.DISTRIBUTION_EXPORT__MEDIA_TYPE:
+				setMediaType((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -244,6 +293,9 @@ public class DistributionExportImpl extends MinimalEObjectImpl.Container impleme
 			case DAConfigPackage.DISTRIBUTION_EXPORT__DESCRIPTION:
 				setDescription(DESCRIPTION_EDEFAULT);
 				return;
+			case DAConfigPackage.DISTRIBUTION_EXPORT__MEDIA_TYPE:
+				setMediaType(MEDIA_TYPE_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -262,6 +314,8 @@ public class DistributionExportImpl extends MinimalEObjectImpl.Container impleme
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case DAConfigPackage.DISTRIBUTION_EXPORT__DESCRIPTION:
 				return DESCRIPTION_EDEFAULT == null ? description != null : !DESCRIPTION_EDEFAULT.equals(description);
+			case DAConfigPackage.DISTRIBUTION_EXPORT__MEDIA_TYPE:
+				return MEDIA_TYPE_EDEFAULT == null ? mediaType != null : !MEDIA_TYPE_EDEFAULT.equals(mediaType);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -282,6 +336,8 @@ public class DistributionExportImpl extends MinimalEObjectImpl.Container impleme
 		result.append(name);
 		result.append(", description: ");
 		result.append(description);
+		result.append(", mediaType: ");
+		result.append(mediaType);
 		result.append(')');
 		return result.toString();
 	}

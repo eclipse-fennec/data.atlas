@@ -34,6 +34,7 @@ import org.osgi.annotation.versioning.ProviderType;
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DistributionExport#getId <em>Id</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DistributionExport#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DistributionExport#getDescription <em>Description</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DistributionExport#getMediaType <em>Media Type</em>}</li>
  * </ul>
  *
  * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getDistributionExport()
@@ -116,5 +117,32 @@ public interface DistributionExport extends EObject {
 	 * @generated
 	 */
 	void setDescription(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Media Type</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * The HTTP media type this export is served as, e.g. 'text/csv' or 'application/json'.
+	 * Unset means the kind-specific default of the concrete export: CSVDistributionExport serves 'text/csv', or 'application/x-csv-zip' when compressed is set. A plain DistributionExport therefore needs this attribute to be meaningful - it is how a configuration keeps a format that has no dedicated subclass (e.g. JSON) alongside a specialized one.
+	 * Resolution at runtime: a DataProvider that resolves to no export at all is served in the runtime default formats; as soon as it resolves to at least one export, exactly the media types of those exports are served and any other Accept is answered with 406.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Media Type</em>' attribute.
+	 * @see #setMediaType(String)
+	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getDistributionExport_MediaType()
+	 * @model
+	 * @generated
+	 */
+	String getMediaType();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.fennec.data.atlas.configuration.DistributionExport#getMediaType <em>Media Type</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Media Type</em>' attribute.
+	 * @see #getMediaType()
+	 * @generated
+	 */
+	void setMediaType(String value);
 
 } // DistributionExport
