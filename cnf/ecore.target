@@ -4,13 +4,13 @@
 	<locations>
 		<location path="${eclipse_home}" type="Profile"/>
   	<location type="BndRepositoryLocation">
-    	<repository name="Eclipse Fennec Codec - 0.1.0.202608191857-SNAPSHOT"/>
-  	</location>
-  	<location type="BndRepositoryLocation">
-    	<repository name="Eclipse Fennec Persistence - 0.1.0.202608201120-SNAPSHOT"/>
-  	</location>
-  	<location type="BndRepositoryLocation">
     	<repository name="data.atlas"/>
+  	</location>
+  	<location type="BndRepositoryLocation">
+    	<repository name="Eclipse Fennec Persistence - 0.1.0.202608270839-SNAPSHOT"/>
+  	</location>
+  	<location type="BndRepositoryLocation">
+    	<repository name="Eclipse Fennec Codec - 0.1.0.202608261429-SNAPSHOT"/>
   	</location>
 	</locations>
 	<environment>

@@ -14,6 +14,7 @@ package org.eclipse.fennec.data.atlas.bootstrap;
 
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardWatchEventKinds;
@@ -137,10 +138,33 @@ public class DataAtlasBootstrap {
 			return;
 		}
 		configUri = toUri(configUriValue);
+		if (isAbsentFile(configUri)) {
+			// Not an error: the image ships no configuration, so "no file yet"
+			// is the normal state of an unconfigured instance. Nothing is
+			// published, and the watcher picks the file up once it is mounted
+			// or created.
+			LOG.log(Level.INFO, () -> "DataAtlasBootstrap: no configuration file at " + configUri
+					+ " (yet) - nothing is published until one appears");
+			registrar.unregisterAll();
+			registerWatcher();
+			return;
+		}
 		// initial load stays fail-fast: an invalid configuration at startup (or
 		// on a config.uri switch) fails loudly
 		load();
 		registerWatcher();
+	}
+
+	/**
+	 * {@code true} for a file URI whose file is not there. Distinguishes "not
+	 * configured yet" from "configured but broken": only the latter is an error.
+	 * A non-file URI is always attempted, so a bad remote URI still fails loudly.
+	 */
+	private static boolean isAbsentFile(URI uri) {
+		if (!uri.isFile() || uri.toFileString() == null) {
+			return false;
+		}
+		return !Files.isRegularFile(Path.of(uri.toFileString()));
 	}
 
 	/** Loads the configuration into a fresh ResourceSet and applies it. */
@@ -162,6 +186,11 @@ public class DataAtlasBootstrap {
 	/** A reload triggered by the file watcher: a broken file fails hard. */
 	private synchronized void reload() {
 		if (configUri == null) {
+			return;
+		}
+		if (isAbsentFile(configUri)) {
+			// a CREATE event can arrive before the content is there, and a
+			// DELETE is handled by the listener itself
 			return;
 		}
 		try {

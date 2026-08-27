@@ -1,5 +1,11 @@
 # Data Atlas — Combined Compose Setups
 
+> **The images carry no models, configuration or data.** Nothing in a Data
+> Atlas image relies on files being present out of the box — whatever an example
+> needs is **mounted in** from outside, or (for the schemas in atlas mode)
+> deposited in the Model Atlas. That is why both setups below have `volumes:`
+> entries pointing into `configuration.model/example/`.
+
 Two setups live here:
 
 | File | What it shows |
@@ -18,6 +24,19 @@ Runs one Model Atlas plus two Data Atlas instances against the same example:
 | `dataatlas-atlas` | http://localhost:8082/rest/example/persons | retrieved from the Model Atlas |
 
 Both Data Atlas instances must answer identically.
+
+What is mounted where, and why:
+
+- **file mode** — the whole `example/` folder becomes
+  `/opt/dataatlas/runtime/data`, the directory `DATA_ATLAS_CONFIG_URI` defaults
+  into (`<data>/dataatlas.xmi`). The example's relative hrefs (`model/…`,
+  `data/…`) resolve against it.
+- **atlas mode** — the *configuration* comes from the Model Atlas and the
+  *schemas* from its registry, so neither is mounted. The example's
+  `FileDataInput` still reads its **data** from a file, so `example/data` is
+  mounted at the absolute path `dataatlas-atlas.xmi` names. A configuration
+  whose inputs are all databases (like the Postgres setup) needs no mount at
+  all.
 
 How the Model Atlas side is assembled:
 

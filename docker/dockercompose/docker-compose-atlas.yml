@@ -35,10 +35,16 @@ services:
       - ../../org.eclipse.fennec.data.atlas.configuration.model/example/dataatlas-atlas.xmi:/seed/dataatlas-atlas.xmi:ro
     entrypoint: ["/bin/sh", "/seed/seed.sh"]
 
+  # The images ship no models or data at all, so the example is mounted in.
+  # /opt/dataatlas/runtime/data is the directory DATA_ATLAS_CONFIG_URI defaults
+  # into (<data>/dataatlas.xmi), and the example's relative hrefs resolve
+  # against it.
   dataatlas-file:
     image: eclipsefennec/data.atlas:file-snapshot
     ports:
       - "8081:8080"
+    volumes:
+      - ../../org.eclipse.fennec.data.atlas.configuration.model/example:/opt/dataatlas/runtime/data:ro
 
   dataatlas-atlas:
     image: eclipsefennec/data.atlas:atlas-snapshot
@@ -49,6 +55,11 @@ services:
       - DATA_ATLAS_SCOPE=dataatlas
       - DATA_ATLAS_REGISTRY=configurations
       - DATA_ATLAS_OBJECT_ID=dataatlas
+    volumes:
+      # atlas mode gets the CONFIGURATION from the Model Atlas, but the example's
+      # FileDataInput still reads its DATA from a file - which the image does not
+      # carry either, so it is mounted at the absolute path the instance names
+      - ../../org.eclipse.fennec.data.atlas.configuration.model/example/data:/opt/dataatlas/runtime/data/data:ro
     depends_on:
       seed:
         condition: service_completed_successfully
