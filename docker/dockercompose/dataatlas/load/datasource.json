@@ -1,0 +1,13 @@
+{
+	":configurator:resource-version": 1,
+	":configurator:symbolic-name": "org.eclipse.fennec.data.atlas.compose.postgres",
+	":configurator:version": "1.0.0",
+	"daanse.jdbc.datasource.postgresql.DataSource~persons": {
+		"host": "$[env:POSTGRES_HOST;default=postgres]",
+		"port:Integer": 5432,
+		"dbname": "$[env:POSTGRES_DB;default=dataatlas]",
+		"user": "$[env:POSTGRES_USER;default=dataatlas]",
+		".password": "$[env:POSTGRES_PASSWORD;default=dataatlas]",
+		"dataSourceName": "personsDs"
+	}
+}

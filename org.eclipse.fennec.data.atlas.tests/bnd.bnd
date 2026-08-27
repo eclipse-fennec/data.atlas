@@ -41,4 +41,5 @@ Private-Package: \
 	data=fixtures,\
 	atlas/load=../docker/dockercompose/modelatlas/load,\
 	atlas/models=../docker/dockercompose/seed/models,\
-	atlas/models/configuration.ecore=../org.eclipse.fennec.data.atlas.configuration.model/model/configuration.ecore
+	atlas/models/configuration.ecore=../org.eclipse.fennec.data.atlas.configuration.model/model/configuration.ecore,\
+	postgres/init=../docker/dockercompose/postgres/init

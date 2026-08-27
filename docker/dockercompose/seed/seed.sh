@@ -11,9 +11,13 @@
 # example configuration references (the server must know an EPackage before it
 # can deserialize instances of it), then uploads the DataAtlasConfiguration
 # instance into the final 'release' stage.
+#
+# SEED_INSTANCE selects which configuration instance is uploaded, so the same
+# seeder serves every compose setup (file/atlas example, Postgres example).
 set -eu
 
 BASE="http://modelatlas:8080/atlas/rest"
+INSTANCE="${SEED_INSTANCE:-/seed/dataatlas-atlas.xmi}"
 
 echo "seed: waiting for the dataatlas scope..."
 i=0
@@ -48,10 +52,10 @@ upload_schema /seed/models/eorm.ecore "https://eclipse.org/fennec/persistence/eo
 upload_schema /seed/models/configuration.ecore "https://eclipse.org/fennec/data/atlas/configuration/1.0.0" configuration
 upload_schema /seed/models/person.ecore "https://eclipse.org/fennec/data/atlas/example/person/1.0.0" person
 
-echo "seed: uploading the DataAtlasConfiguration instance..."
+echo "seed: uploading the DataAtlasConfiguration instance $INSTANCE..."
 CODE=$(curl -s -o /dev/stderr -w "%{http_code}" -X POST \
   -H "Content-Type: application/xmi" \
-  --data-binary @/seed/dataatlas-atlas.xmi \
+  --data-binary @"$INSTANCE" \
   "$BASE/dataatlas/registries/configurations/stages/release/dataatlas?name=dataatlas")
 case "$CODE" in
   200|201) echo "seed: done ($CODE)" ;;

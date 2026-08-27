@@ -1,0 +1,81 @@
+# Postgres + CSV setup: a PostgreSQL database, a Model Atlas holding the
+# configuration, and one atlas-mode Data Atlas serving the database table as
+# CSV — the whole path described by the configuration model.
+#
+#   docker compose -f docker-compose-postgres.yml up
+#
+#   Model Atlas:  http://localhost:8080/atlas/rest
+#   Data Atlas:   http://localhost:8081/rest/pg/persons
+#   PostgreSQL:   localhost:15432 (user/password/db: dataatlas)
+#
+#   # CSV, semicolon separated, no SQL-type row — as configured
+#   curl -H "Accept: text/csv" http://localhost:8081/rest/pg/persons
+#   # the same DataSet also declares a JSON export
+#   curl -H "Accept: application/json" http://localhost:8081/rest/pg/persons
+#   # XMI is NOT declared, so it is refused
+#   curl -i -H "Accept: application/xml" http://localhost:8081/rest/pg/persons   # 406
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_DB=dataatlas
+      - POSTGRES_USER=dataatlas
+      - POSTGRES_PASSWORD=dataatlas
+    ports:
+      - "15432:5432"
+    volumes:
+      # the schema is created here, not by the persistence unit: the Data Atlas
+      # is a serving layer and keeps eclipselink.ddl-generation at `none`
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dataatlas -d dataatlas"]
+      interval: 3s
+      timeout: 5s
+      retries: 20
+
+  modelatlas:
+    image: eclipsefennec/model.atlas:file-snapshot
+    ports:
+      - "8080:8080"
+    environment:
+      # injects the dataatlas scope + configurations registry
+      - JAVA_TOOL_OPTIONS=-Dconfigurator.initial=file:///opt/modelatlas/runtime/load/dataatlas.json
+    volumes:
+      - ./modelatlas/load:/opt/modelatlas/runtime/load:ro
+
+  # one-shot: uploads the referenced schemas and then the Postgres example
+  # instance (SEED_INSTANCE picks it; the default is the file-mode example)
+  seed:
+    image: curlimages/curl:8.10.1
+    depends_on:
+      - modelatlas
+    environment:
+      - SEED_INSTANCE=/seed/dataatlas-postgres-atlas.xmi
+    volumes:
+      - ./seed/seed.sh:/seed/seed.sh:ro
+      - ./seed/models/eorm.ecore:/seed/models/eorm.ecore:ro
+      - ../../org.eclipse.fennec.data.atlas.configuration.model/model/configuration.ecore:/seed/models/configuration.ecore:ro
+      - ../../org.eclipse.fennec.data.atlas.configuration.model/example/model/person.ecore:/seed/models/person.ecore:ro
+      - ../../org.eclipse.fennec.data.atlas.configuration.model/example/dataatlas-postgres-atlas.xmi:/seed/dataatlas-postgres-atlas.xmi:ro
+    entrypoint: ["/bin/sh", "/seed/seed.sh"]
+
+  dataatlas:
+    image: eclipsefennec/data.atlas:atlas-snapshot
+    ports:
+      - "8081:8080"
+    environment:
+      - MODEL_ATLAS_BASE_URI=http://modelatlas:8080/atlas/rest
+      - DATA_ATLAS_SCOPE=dataatlas
+      - DATA_ATLAS_REGISTRY=configurations
+      - DATA_ATLAS_OBJECT_ID=dataatlas
+      # the DataSource the configuration's JdbcDataSource filter selects is
+      # created from a mounted Configurator file, so no credential is baked
+      # into the image
+      - JAVA_TOOL_OPTIONS=-Dconfigurator.initial=file:///opt/dataatlas/runtime/load/datasource.json
+    volumes:
+      - ./dataatlas/load:/opt/dataatlas/runtime/load:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      seed:
+        condition: service_completed_successfully
