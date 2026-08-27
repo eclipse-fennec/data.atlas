@@ -1,0 +1,127 @@
+# SensiNact history database served as CSV: a TimescaleDB carrying the schema
+# SensiNact's history provider creates, and a Data Atlas serving the recordings.
+#
+#   docker compose -f docker-compose-history.yml up
+#
+#   Data Atlas:   http://localhost:8081/rest/history/numeric
+#                 http://localhost:8081/rest/history/text
+#   TimescaleDB:  localhost:15433 (db/user/password: sensinact)
+#
+#   # CSV, semicolon separated, no SQL-type row
+#   curl -H "Accept: text/csv" http://localhost:8081/rest/history/numeric
+#   curl -H "Accept: text/csv" http://localhost:8081/rest/history/text
+#   # JSON is declared too
+#   curl -H "Accept: application/json" http://localhost:8081/rest/history/numeric
+#   # XMI is not declared, so it is refused
+#   curl -i -H "Accept: application/xml" http://localhost:8081/rest/history/numeric   # 406
+#
+# There is deliberately NO event.atlas here: this example is about *reading* the
+# history database, not about producing the data. The schema and sample rows are
+# seeded by SQL, so the setup stands on its own.
+#
+# ---------------------------------------------------------------------------
+# Why this one runs in FILE mode while the Postgres example runs in atlas mode
+# ---------------------------------------------------------------------------
+# A configuration for a foreign schema must carry an explicit JPA mapping (an
+# eorm EntityMappings, see dataatlas-history.xmi), because the derived naming
+# cannot address lower-case, schema-qualified tables. The eorm model mirrors
+# JPA's orm.xml and therefore uses ExtendedMetaData XML names — and the Model
+# Atlas cannot round-trip such an object: it stores it (201) writing
+# `column-definition`, then fails to read its own file back with
+# `FeatureNotFoundException: Feature 'column-definition' not found`.
+#
+#   upstream: https://github.com/eclipse-fennec/model.atlas/issues/213
+#
+# So atlas mode is blocked, not abandoned: the atlas-mode instance
+# (dataatlas-history-atlas.xmi) is committed and the services below are kept
+# behind the `atlas` profile. Once #213 is fixed:
+#
+#   docker compose -f docker-compose-history.yml --profile atlas up
+services:
+  history-db:
+    image: timescale/timescaledb-ha:pg16
+    environment:
+      - POSTGRES_DB=sensinact
+      - POSTGRES_USER=sensinact
+      - POSTGRES_PASSWORD=sensinact
+    ports:
+      - "15433:5432"
+    volumes:
+      # 00-extensions.sql supplies what the store presupposes (the timescaledb
+      # extension), 01-schema.sql is a verbatim transcription of what the store
+      # creates, 02-data.sql seeds a few recordings
+      - ./history/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      # the seeded view, not pg_isready: initdb.d runs while the server is
+      # already accepting connections on the socket, so readiness has to mean
+      # "the schema is there"
+      test: ["CMD-SHELL", "psql -U sensinact -d sensinact -tAc 'select 1 from sensinact.numeric_data_recent limit 1'"]
+      interval: 5s
+      timeout: 10s
+      retries: 30
+
+  dataatlas:
+    image: eclipsefennec/data.atlas:file-snapshot
+    ports:
+      - "8081:8080"
+    environment:
+      # the image ships nothing, so the configuration is mounted and named
+      - DATA_ATLAS_CONFIG_URI=/opt/dataatlas/runtime/data/dataatlas-history.xmi
+      # the DataSource, from a mounted Configurator file so no credential is
+      # baked into the image
+      - JAVA_TOOL_OPTIONS=-Dconfigurator.initial=file:///opt/dataatlas/runtime/load/datasource.json
+    volumes:
+      - ../../org.eclipse.fennec.data.atlas.configuration.model/example:/opt/dataatlas/runtime/data:ro
+      - ./history/load:/opt/dataatlas/runtime/load:ro
+    depends_on:
+      history-db:
+        condition: service_healthy
+
+  # --- the atlas-mode variant, blocked by model.atlas#213 (see header) --------
+  modelatlas:
+    profiles: ["atlas"]
+    image: eclipsefennec/model.atlas:file-snapshot
+    ports:
+      - "8080:8080"
+    environment:
+      - JAVA_TOOL_OPTIONS=-Dconfigurator.initial=file:///opt/modelatlas/runtime/load/dataatlas.json
+    volumes:
+      - ./modelatlas/load:/opt/modelatlas/runtime/load:ro
+
+  seed:
+    profiles: ["atlas"]
+    image: curlimages/curl:8.10.1
+    depends_on:
+      - modelatlas
+    environment:
+      - SEED_INSTANCE=/seed/dataatlas-history-atlas.xmi
+      - SEED_EXTRA_SCHEMA=/seed/models/sensinact-history.ecore
+      - SEED_EXTRA_NSURI=https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0
+      - SEED_EXTRA_NAME=sensinact-history
+    volumes:
+      - ./seed/seed.sh:/seed/seed.sh:ro
+      - ./seed/models/eorm.ecore:/seed/models/eorm.ecore:ro
+      - ../../org.eclipse.fennec.data.atlas.configuration.model/model/configuration.ecore:/seed/models/configuration.ecore:ro
+      - ../../org.eclipse.fennec.data.atlas.configuration.model/example/model/person.ecore:/seed/models/person.ecore:ro
+      - ../../org.eclipse.fennec.data.atlas.configuration.model/example/model/sensinact-history.ecore:/seed/models/sensinact-history.ecore:ro
+      - ../../org.eclipse.fennec.data.atlas.configuration.model/example/dataatlas-history-atlas.xmi:/seed/dataatlas-history-atlas.xmi:ro
+    entrypoint: ["/bin/sh", "/seed/seed.sh"]
+
+  dataatlas-atlas:
+    profiles: ["atlas"]
+    image: eclipsefennec/data.atlas:atlas-snapshot
+    ports:
+      - "8082:8080"
+    environment:
+      - MODEL_ATLAS_BASE_URI=http://modelatlas:8080/atlas/rest
+      - DATA_ATLAS_SCOPE=dataatlas
+      - DATA_ATLAS_REGISTRY=configurations
+      - DATA_ATLAS_OBJECT_ID=dataatlas
+      - JAVA_TOOL_OPTIONS=-Dconfigurator.initial=file:///opt/dataatlas/runtime/load/datasource.json
+    volumes:
+      - ./history/load:/opt/dataatlas/runtime/load:ro
+    depends_on:
+      history-db:
+        condition: service_healthy
+      seed:
+        condition: service_completed_successfully

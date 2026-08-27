@@ -13,6 +13,8 @@
 package org.eclipse.fennec.data.atlas.rest;
 
 import java.io.IOException;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
@@ -79,6 +81,8 @@ import jakarta.ws.rs.core.Variant;
 @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, ExportFormats.TEXT_CSV,
 		ExportFormats.APPLICATION_CSV_ZIP })
 public class DataServiceResource {
+
+	private static final Logger LOG = System.getLogger(DataServiceResource.class.getName());
 
 	/** Everything needed to serve one configured DataSet. */
 	public record DataSetEndpoint(DataSet dataSet, RestDataServiceConfiguration configuration,
@@ -198,14 +202,32 @@ public class DataServiceResource {
 		T call(ReadRepository repository) throws IOException;
 	}
 
-	/** Leases a repository instance for one call and always releases it. */
+	/**
+	 * Leases a repository instance for one call and always releases it.
+	 *
+	 * <p>
+	 * Both failure paths are logged with their cause before the request is
+	 * answered: a 500 that leaves no trace on the server is not diagnosable, and
+	 * Jersey does not log a {@link InternalServerErrorException} it is handed.
+	 * </p>
+	 */
 	private <T> T lease(DataSetEndpoint endpoint, String dataSetPath, RepositoryCall<T> call) {
 		ReadRepository repository = endpoint.repository().getService();
+		if (repository == null) {
+			LOG.log(Level.ERROR, () -> "Data set '" + dataSetPath
+					+ "': the backing repository yielded no instance - refusing the request");
+			throw new InternalServerErrorException(
+					"Data set '" + dataSetPath + "' has no usable repository instance");
+		}
 		try {
 			return call.call(repository);
 		} catch (IOException e) {
+			LOG.log(Level.ERROR, "Reading data set '" + dataSetPath + "' failed", e);
 			throw new InternalServerErrorException(
 					"Reading data set '" + dataSetPath + "' failed: " + e.getMessage(), e);
+		} catch (RuntimeException e) {
+			LOG.log(Level.ERROR, "Reading data set '" + dataSetPath + "' failed", e);
+			throw e;
 		} finally {
 			endpoint.repository().ungetService(repository);
 		}

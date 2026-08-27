@@ -15,6 +15,7 @@
 package org.eclipse.fennec.data.atlas.configuration.impl;
 
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -43,7 +44,7 @@ import org.eclipse.fennec.persistence.eorm.EntityMappings;
  */
 public class JPADataInputImpl extends DataInputImpl implements JPADataInput {
 	/**
-	 * The cached value of the '{@link #getPersistenceConfig() <em>Persistence Config</em>}' reference.
+	 * The cached value of the '{@link #getPersistenceConfig() <em>Persistence Config</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getPersistenceConfig()
@@ -88,14 +89,6 @@ public class JPADataInputImpl extends DataInputImpl implements JPADataInput {
 	 */
 	@Override
 	public EntityMappings getPersistenceConfig() {
-		if (persistenceConfig != null && persistenceConfig.eIsProxy()) {
-			InternalEObject oldPersistenceConfig = (InternalEObject)persistenceConfig;
-			persistenceConfig = (EntityMappings)eResolveProxy(oldPersistenceConfig);
-			if (persistenceConfig != oldPersistenceConfig) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, DAConfigPackage.JPA_DATA_INPUT__PERSISTENCE_CONFIG, oldPersistenceConfig, persistenceConfig));
-			}
-		}
 		return persistenceConfig;
 	}
 
@@ -104,8 +97,14 @@ public class JPADataInputImpl extends DataInputImpl implements JPADataInput {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EntityMappings basicGetPersistenceConfig() {
-		return persistenceConfig;
+	public NotificationChain basicSetPersistenceConfig(EntityMappings newPersistenceConfig, NotificationChain msgs) {
+		EntityMappings oldPersistenceConfig = persistenceConfig;
+		persistenceConfig = newPersistenceConfig;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, DAConfigPackage.JPA_DATA_INPUT__PERSISTENCE_CONFIG, oldPersistenceConfig, newPersistenceConfig);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
 	}
 
 	/**
@@ -115,10 +114,17 @@ public class JPADataInputImpl extends DataInputImpl implements JPADataInput {
 	 */
 	@Override
 	public void setPersistenceConfig(EntityMappings newPersistenceConfig) {
-		EntityMappings oldPersistenceConfig = persistenceConfig;
-		persistenceConfig = newPersistenceConfig;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, DAConfigPackage.JPA_DATA_INPUT__PERSISTENCE_CONFIG, oldPersistenceConfig, persistenceConfig));
+		if (newPersistenceConfig != persistenceConfig) {
+			NotificationChain msgs = null;
+			if (persistenceConfig != null)
+				msgs = ((InternalEObject)persistenceConfig).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - DAConfigPackage.JPA_DATA_INPUT__PERSISTENCE_CONFIG, null, msgs);
+			if (newPersistenceConfig != null)
+				msgs = ((InternalEObject)newPersistenceConfig).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - DAConfigPackage.JPA_DATA_INPUT__PERSISTENCE_CONFIG, null, msgs);
+			msgs = basicSetPersistenceConfig(newPersistenceConfig, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DAConfigPackage.JPA_DATA_INPUT__PERSISTENCE_CONFIG, newPersistenceConfig, newPersistenceConfig));
 	}
 
 	/**
@@ -167,11 +173,24 @@ public class JPADataInputImpl extends DataInputImpl implements JPADataInput {
 	 * @generated
 	 */
 	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case DAConfigPackage.JPA_DATA_INPUT__PERSISTENCE_CONFIG:
+				return basicSetPersistenceConfig(null, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case DAConfigPackage.JPA_DATA_INPUT__PERSISTENCE_CONFIG:
-				if (resolve) return getPersistenceConfig();
-				return basicGetPersistenceConfig();
+				return getPersistenceConfig();
 			case DAConfigPackage.JPA_DATA_INPUT__DATA_SOURCE:
 				if (resolve) return getDataSource();
 				return basicGetDataSource();

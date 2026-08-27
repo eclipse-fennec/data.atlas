@@ -1518,7 +1518,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		initEAttribute(getFileDataInput_Uri(), ecorePackage.getEString(), "uri", null, 1, 1, FileDataInput.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(jpaDataInputEClass, JPADataInput.class, "JPADataInput", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getJPADataInput_PersistenceConfig(), theEORMPackage.getEntityMappings(), null, "persistenceConfig", null, 0, 1, JPADataInput.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getJPADataInput_PersistenceConfig(), theEORMPackage.getEntityMappings(), null, "persistenceConfig", null, 0, 1, JPADataInput.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getJPADataInput_DataSource(), this.getJdbcDataSource(), null, "dataSource", null, 1, 1, JPADataInput.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(dataTransformationEClass, DataTransformation.class, "DataTransformation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1984,7 +1984,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		  (getJPADataInput_PersistenceConfig(),
 		   source,
 		   new String[] {
-			   "documentation", "JPA entity mapping (the EclipseLink orm.xml equivalent) describing how the model types map to the relational schema."
+			   "documentation", "JPA entity mapping (the EclipseLink orm.xml equivalent) describing how the model types map to the relational schema. Set it when the derived naming cannot address the schema - e.g. lower-case or schema-qualified tables, or a table without a primary key that needs a declared composite id.\nContainment, deliberately: the mapping has to travel WITH the configuration. A non-containment href into a deployment-local file cannot be resolved by a Model Atlas that serves the configuration, which fails the upload with an unresolved EClass proxy. If a mapping ever needs to be shared between inputs, that belongs in a registry of the root, like the other reusables."
 		   });
 		addAnnotation
 		  (getJPADataInput_DataSource(),

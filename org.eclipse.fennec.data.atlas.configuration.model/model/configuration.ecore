@@ -375,9 +375,10 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="DataInput backed by any relational data source supported by e.g. EclipseLink (JPA)."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="persistenceConfig" eType="ecore:EClass ../../org.eclipse.fennec.persistence.orm/model/eorm.ecore#//EntityMappings">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="persistenceConfig" eType="ecore:EClass https://eclipse.org/fennec/persistence/eorm/1.0.0#//EntityMappings"
+        containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="JPA entity mapping (the EclipseLink orm.xml equivalent) describing how the model types map to the relational schema."/>
+        <details key="documentation" value="JPA entity mapping (the EclipseLink orm.xml equivalent) describing how the model types map to the relational schema. Set it when the derived naming cannot address the schema - e.g. lower-case or schema-qualified tables, or a table without a primary key that needs a declared composite id.&#xA;Containment, deliberately: the mapping has to travel WITH the configuration. A non-containment href into a deployment-local file cannot be resolved by a Model Atlas that serves the configuration, which fails the upload with an unresolved EClass proxy. If a mapping ever needs to be shared between inputs, that belongs in a registry of the root, like the other reusables."/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="dataSource" lowerBound="1"

@@ -13,22 +13,178 @@
      * geo_data is deliberately NOT mapped: geography(POINT,4326) onto an EMF
        attribute is out of scope here (eclipse-fennec/data.atlas#2).
 
-     Atlas-mode variant: EClass references are nsURI hrefs resolved against the
-     Model Atlas schema registry. The persistenceConfig, however, points at a
-     MOUNTED file: an eorm EntityMappings is an instance, not a schema, and the
-     atlas-mode bootstrap fetches exactly one configuration object - it cannot
-     follow a reference into another registry. So the mapping travels with the
-     deployment, like a Configurator file does. dataatlas-history.xmi is the
-     file-mode twin. -->
+     Atlas-mode variant: every EClass reference is an nsURI href, resolved
+     against the Model Atlas schema registry.
+
+     The eorm mapping is INLINE (persistenceConfig is a containment reference)
+     and not an href into a mounted file. That is not a style choice: a
+     non-containment href to a deployment-local path cannot be resolved by the
+     Model Atlas while it deserializes the instance, and the upload fails with
+     "EClass.getEPackage() is null". An explicit mapping has to travel with the
+     configuration. dataatlas-history.xmi is the file-mode twin. -->
 <configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:eorm="https://eclipse.org/fennec/persistence/eorm/1.0.0"
     xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
     name="example-history-atlas" description="Example Data Atlas instance serving the SensiNact history database as CSV, delivered by a Model Atlas.">
   <dataSources id="history-db" name="SensiNact history DB" filter="(dataSourceName=historyDs)"/>
-  <dataInputs xsi:type="configuration:JPADataInput" id="history-jpa" dataSource="history-db"
-      persistenceConfig="/opt/dataatlas/runtime/data/model/sensinact-history-atlas.eorm#/">
+  <dataInputs xsi:type="configuration:JPADataInput" id="history-jpa" dataSource="history-db">
     <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//NumericData"/>
     <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//TextData"/>
+    <persistenceConfig package="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0" name="sensinact-history">
+      <entity access="FIELD" name="NumericData">
+        <accessibleObject xsi:type="eorm:EClassObject" name="sensinactHistory.NumericData">
+          <eclass href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//NumericData"/>
+        </accessibleObject>
+        <table name="numeric_data_recent" schema="sensinact"/>
+        <attributes>
+          <id access="FIELD" name="time">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="time">
+              <feature xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//NumericData/time"/>
+            </accessibleObject>
+            <column name="time" nullable="false" insertable="true" updatable="true" columnDefinition="TIMESTAMPTZ"/>
+          </id>
+          <id access="FIELD" name="provider">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="provider">
+              <feature xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//NumericData/provider"/>
+            </accessibleObject>
+            <column name="provider" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+          </id>
+          <id access="FIELD" name="service">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="service">
+              <feature xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//NumericData/service"/>
+            </accessibleObject>
+            <column name="service" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+          </id>
+          <id access="FIELD" name="resource">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="resource">
+              <feature xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//NumericData/resource"/>
+            </accessibleObject>
+            <column name="resource" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+          </id>
+          <basic access="FIELD" name="time" fetch="EAGER" optional="false">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="time">
+              <feature xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//NumericData/time"/>
+            </accessibleObject>
+            <column name="time" nullable="false" insertable="true" updatable="true" columnDefinition="TIMESTAMPTZ"/>
+          </basic>
+          <basic access="FIELD" name="provider" fetch="EAGER" optional="false">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="provider">
+              <feature xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//NumericData/provider"/>
+            </accessibleObject>
+            <column name="provider" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+          </basic>
+          <basic access="FIELD" name="service" fetch="EAGER" optional="false">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="service">
+              <feature xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//NumericData/service"/>
+            </accessibleObject>
+            <column name="service" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+          </basic>
+          <basic access="FIELD" name="resource" fetch="EAGER" optional="false">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="resource">
+              <feature xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//NumericData/resource"/>
+            </accessibleObject>
+            <column name="resource" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+          </basic>
+          <basic access="FIELD" name="modelPackageUri" fetch="EAGER" optional="false">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="modelPackageUri">
+              <feature xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//NumericData/modelPackageUri"/>
+            </accessibleObject>
+            <column name="modelpackageuri" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+          </basic>
+          <basic access="FIELD" name="model" fetch="EAGER" optional="false">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="model">
+              <feature xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//NumericData/model"/>
+            </accessibleObject>
+            <column name="model" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+          </basic>
+          <basic access="FIELD" name="data" fetch="EAGER" optional="true">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="data">
+              <feature xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//NumericData/data"/>
+            </accessibleObject>
+            <column name="data" nullable="true" insertable="true" updatable="true" columnDefinition="NUMERIC"/>
+          </basic>
+        </attributes>
+        <class xsi:type="ecore:EClass" href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//NumericData"/>
+      </entity>
+
+      <entity access="FIELD" name="TextData">
+        <accessibleObject xsi:type="eorm:EClassObject" name="sensinactHistory.TextData">
+          <eclass href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//TextData"/>
+        </accessibleObject>
+        <table name="text_data_recent" schema="sensinact"/>
+        <attributes>
+          <id access="FIELD" name="time">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="time">
+              <feature xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//TextData/time"/>
+            </accessibleObject>
+            <column name="time" nullable="false" insertable="true" updatable="true" columnDefinition="TIMESTAMPTZ"/>
+          </id>
+          <id access="FIELD" name="provider">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="provider">
+              <feature xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//TextData/provider"/>
+            </accessibleObject>
+            <column name="provider" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+          </id>
+          <id access="FIELD" name="service">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="service">
+              <feature xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//TextData/service"/>
+            </accessibleObject>
+            <column name="service" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+          </id>
+          <id access="FIELD" name="resource">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="resource">
+              <feature xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//TextData/resource"/>
+            </accessibleObject>
+            <column name="resource" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+          </id>
+          <basic access="FIELD" name="time" fetch="EAGER" optional="false">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="time">
+              <feature xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//TextData/time"/>
+            </accessibleObject>
+            <column name="time" nullable="false" insertable="true" updatable="true" columnDefinition="TIMESTAMPTZ"/>
+          </basic>
+          <basic access="FIELD" name="provider" fetch="EAGER" optional="false">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="provider">
+              <feature xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//TextData/provider"/>
+            </accessibleObject>
+            <column name="provider" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+          </basic>
+          <basic access="FIELD" name="service" fetch="EAGER" optional="false">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="service">
+              <feature xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//TextData/service"/>
+            </accessibleObject>
+            <column name="service" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+          </basic>
+          <basic access="FIELD" name="resource" fetch="EAGER" optional="false">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="resource">
+              <feature xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//TextData/resource"/>
+            </accessibleObject>
+            <column name="resource" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+          </basic>
+          <basic access="FIELD" name="modelPackageUri" fetch="EAGER" optional="false">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="modelPackageUri">
+              <feature xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//TextData/modelPackageUri"/>
+            </accessibleObject>
+            <column name="modelpackageuri" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+          </basic>
+          <basic access="FIELD" name="model" fetch="EAGER" optional="false">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="model">
+              <feature xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//TextData/model"/>
+            </accessibleObject>
+            <column name="model" nullable="false" insertable="true" updatable="true" columnDefinition="VARCHAR(128)"/>
+          </basic>
+          <basic access="FIELD" name="data" fetch="EAGER" optional="true">
+            <accessibleObject xsi:type="eorm:EFeatureObject" name="data">
+              <feature xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//TextData/data"/>
+            </accessibleObject>
+            <column name="data" nullable="true" insertable="true" updatable="true" columnDefinition="text"/>
+          </basic>
+        </attributes>
+        <class xsi:type="ecore:EClass" href="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0#//TextData"/>
+      </entity>
+    </persistenceConfig>
   </dataInputs>
   <dataSets id="numeric" name="Numeric history" description="Recorded numeric resource values (bounded view)."
       dataInput="history-jpa" distributionExport="csv json">

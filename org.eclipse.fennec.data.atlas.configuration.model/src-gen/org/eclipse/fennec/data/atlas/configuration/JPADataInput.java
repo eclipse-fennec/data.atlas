@@ -42,25 +42,26 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface JPADataInput extends DataInput {
 	/**
-	 * Returns the value of the '<em><b>Persistence Config</b></em>' reference.
+	 * Returns the value of the '<em><b>Persistence Config</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * JPA entity mapping (the EclipseLink orm.xml equivalent) describing how the model types map to the relational schema.
+	 * JPA entity mapping (the EclipseLink orm.xml equivalent) describing how the model types map to the relational schema. Set it when the derived naming cannot address the schema - e.g. lower-case or schema-qualified tables, or a table without a primary key that needs a declared composite id.
+	 * Containment, deliberately: the mapping has to travel WITH the configuration. A non-containment href into a deployment-local file cannot be resolved by a Model Atlas that serves the configuration, which fails the upload with an unresolved EClass proxy. If a mapping ever needs to be shared between inputs, that belongs in a registry of the root, like the other reusables.
 	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Persistence Config</em>' reference.
+	 * @return the value of the '<em>Persistence Config</em>' containment reference.
 	 * @see #setPersistenceConfig(EntityMappings)
 	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getJPADataInput_PersistenceConfig()
-	 * @model
+	 * @model containment="true"
 	 * @generated
 	 */
 	EntityMappings getPersistenceConfig();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.fennec.data.atlas.configuration.JPADataInput#getPersistenceConfig <em>Persistence Config</em>}' reference.
+	 * Sets the value of the '{@link org.eclipse.fennec.data.atlas.configuration.JPADataInput#getPersistenceConfig <em>Persistence Config</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Persistence Config</em>' reference.
+	 * @param value the new value of the '<em>Persistence Config</em>' containment reference.
 	 * @see #getPersistenceConfig()
 	 * @generated
 	 */

@@ -1,0 +1,13 @@
+{
+	":configurator:resource-version": 1,
+	":configurator:symbolic-name": "org.eclipse.fennec.data.atlas.compose.history",
+	":configurator:version": "1.0.0",
+	"daanse.jdbc.datasource.postgresql.DataSource~history": {
+		"host": "$[env:HISTORY_DB_HOST;default=history-db]",
+		"port:Integer": 5432,
+		"dbname": "$[env:HISTORY_DB_NAME;default=sensinact]",
+		"user": "$[env:HISTORY_DB_USER;default=sensinact]",
+		".password": "$[env:HISTORY_DB_PASSWORD;default=sensinact]",
+		"dataSourceName": "historyDs"
+	}
+}

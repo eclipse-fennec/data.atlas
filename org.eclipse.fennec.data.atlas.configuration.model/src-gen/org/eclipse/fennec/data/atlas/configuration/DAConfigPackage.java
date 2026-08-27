@@ -49,7 +49,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * @generated
  */
 @ProviderType
-@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:4d6f3f8b6e658ead103d3158358e35d2fcb4448147d460e39379c795099e86bd", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
+@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:d99568a78f61f6393a17f67baf4ac1e0d9ee5d84f3f4c36d658b3907da6f8068", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
 public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	/**
 	 * The package name.
@@ -1724,7 +1724,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	int JPA_DATA_INPUT__SUPPORTED_ECLASSES = DATA_INPUT__SUPPORTED_ECLASSES;
 
 	/**
-	 * The feature id for the '<em><b>Persistence Config</b></em>' reference.
+	 * The feature id for the '<em><b>Persistence Config</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -2998,10 +2998,10 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	EClass getJPADataInput();
 
 	/**
-	 * Returns the meta object for the reference '{@link org.eclipse.fennec.data.atlas.configuration.JPADataInput#getPersistenceConfig <em>Persistence Config</em>}'.
+	 * Returns the meta object for the containment reference '{@link org.eclipse.fennec.data.atlas.configuration.JPADataInput#getPersistenceConfig <em>Persistence Config</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Persistence Config</em>'.
+	 * @return the meta object for the containment reference '<em>Persistence Config</em>'.
 	 * @see org.eclipse.fennec.data.atlas.configuration.JPADataInput#getPersistenceConfig()
 	 * @see #getJPADataInput()
 	 * @generated
@@ -3854,7 +3854,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		EClass JPA_DATA_INPUT = eINSTANCE.getJPADataInput();
 
 		/**
-		 * The meta object literal for the '<em><b>Persistence Config</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Persistence Config</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
