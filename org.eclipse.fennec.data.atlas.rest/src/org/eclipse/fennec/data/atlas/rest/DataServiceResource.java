@@ -24,6 +24,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
+import org.eclipse.fennec.codec.rest.jakartas.JakartaRestConstants;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
 import org.eclipse.fennec.data.atlas.configuration.RestDataServiceConfiguration;
 import org.eclipse.fennec.model.query.ParameterDecl;
@@ -36,13 +37,18 @@ import org.osgi.service.component.ComponentServiceObjects;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.InternalServerErrorException;
+import jakarta.ws.rs.NotAcceptableException;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Request;
+import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.Variant;
 
 /**
  * Generic Jakarta-RS resource of one {@code RestDataService}: serves the
@@ -50,8 +56,18 @@ import jakarta.ws.rs.core.UriInfo;
  * through the {@link ReadRepository} backing each DataSet's input. A DataSet's
  * canonical query (if any) defines its content; REST pagination is overlaid on
  * {@code skip}/{@code top} of a per-request copy and declared query parameters
- * bind from HTTP query parameters. Serialization happens in the fennec codec
- * message body writers via content negotiation.
+ * bind from HTTP query parameters.
+ *
+ * <p>
+ * Serialization happens in the fennec codec message body writers. Which formats
+ * a DataSet offers is configuration, not code: the {@link ExportFormats}
+ * resolved from its {@code DistributionExport}s define the negotiable variants,
+ * a request for anything else is a {@code 406}, and the export's codec options
+ * (CSV delimiter, SQL-type row) reach the writer through the codec's
+ * per-request option property. Because {@code @Produces} is static while the
+ * DataSets are not, it lists everything the runtime <em>can</em> write and the
+ * per-DataSet restriction is applied here.
+ * </p>
  *
  * <p>
  * Repositories are prototype-scoped and own a non-thread-safe ResourceSet, so
@@ -60,12 +76,13 @@ import jakarta.ws.rs.core.UriInfo;
  * </p>
  */
 @Path("/")
-@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, ExportFormats.TEXT_CSV,
+		ExportFormats.APPLICATION_CSV_ZIP })
 public class DataServiceResource {
 
 	/** Everything needed to serve one configured DataSet. */
 	public record DataSetEndpoint(DataSet dataSet, RestDataServiceConfiguration configuration,
-			ComponentServiceObjects<ReadRepository> repository) {
+			ComponentServiceObjects<ReadRepository> repository, ExportFormats formats) {
 	}
 
 	private final String offsetParameterName;
@@ -81,13 +98,15 @@ public class DataServiceResource {
 
 	@GET
 	@Path("{dataSetPath}")
-	public Resource list(@PathParam("dataSetPath") String dataSetPath, @Context UriInfo uriInfo) {
+	public Response list(@PathParam("dataSetPath") String dataSetPath, @Context UriInfo uriInfo,
+			@Context Request request, @Context ContainerRequestContext requestContext) {
 		DataSetEndpoint endpoint = endpoint(dataSetPath);
+		MediaType mediaType = negotiate(endpoint, dataSetPath, request, requestContext);
 		Resource container = newContainer(dataSetPath);
 		int offset = queryParameter(uriInfo, offsetParameterName, 0);
 		int size = effectiveSize(uriInfo, endpoint.configuration());
 		if (size == 0) {
-			return container;
+			return Response.ok(container).type(mediaType).build();
 		}
 		Query query = endpoint.dataSet().getQuery() != null ? EcoreUtil.copy(endpoint.dataSet().getQuery())
 				: QueryBuilder.from(endpoint.dataSet().getInputType()).build();
@@ -106,13 +125,15 @@ public class DataServiceResource {
 			}
 		});
 		container.getContents().addAll(objects);
-		return container;
+		return Response.ok(container).type(mediaType).build();
 	}
 
 	@GET
 	@Path("{dataSetPath}/{id}")
-	public EObject byId(@PathParam("dataSetPath") String dataSetPath, @PathParam("id") String id) {
+	public Response byId(@PathParam("dataSetPath") String dataSetPath, @PathParam("id") String id,
+			@Context Request request, @Context ContainerRequestContext requestContext) {
 		DataSetEndpoint endpoint = endpoint(dataSetPath);
+		MediaType mediaType = negotiate(endpoint, dataSetPath, request, requestContext);
 		EObject copy = lease(endpoint, dataSetPath, repository -> {
 			EObject match = repository.getEObject(endpoint.dataSet().getInputType(), id);
 			return match == null ? null : EcoreUtil.copy(match);
@@ -120,7 +141,54 @@ public class DataServiceResource {
 		if (copy == null) {
 			throw new NotFoundException("No object '" + id + "' in data set '" + dataSetPath + "'");
 		}
-		return copy;
+		return Response.ok(copy).type(mediaType).build();
+	}
+
+	/**
+	 * Negotiates the response media type against the DataSet's configured
+	 * export formats and publishes that export's codec options for this
+	 * request.
+	 *
+	 * @return the selected media type
+	 * @throws NotAcceptableException if the client accepts none of the
+	 *                                configured formats
+	 */
+	private MediaType negotiate(DataSetEndpoint endpoint, String dataSetPath, Request request,
+			ContainerRequestContext requestContext) {
+		ExportFormats formats = endpoint.formats();
+		Variant variant = request.selectVariant(formats.variants());
+		if (variant == null || variant.getMediaType() == null) {
+			throw new NotAcceptableException(
+					"Data set '" + dataSetPath + "' is served as " + formats.mediaTypes() + " only");
+		}
+		MediaType mediaType = variant.getMediaType();
+		publishCodecOptions(formats.optionsFor(mediaType), requestContext);
+		return mediaType;
+	}
+
+	/**
+	 * Hands the configured codec save options to the codec's message body
+	 * writer, which reads them from
+	 * {@link JakartaRestConstants#CLIENT_CODEC_OPTIONS} at serialization time.
+	 *
+	 * <p>
+	 * Options a client supplied through the codec's {@code Codec-Options}
+	 * header are already in that property when this runs, and they keep
+	 * precedence: the configured values go in underneath. Upstream
+	 * <a href="https://github.com/eclipse-fennec/emf.codec/issues/170">emf.codec#170</a>
+	 * asks for a channel named for this server-side case; until then this
+	 * public constant is the only per-request one.
+	 * </p>
+	 */
+	private void publishCodecOptions(Map<String, Object> configured, ContainerRequestContext requestContext) {
+		if (configured.isEmpty() || requestContext == null) {
+			return;
+		}
+		Map<String, Object> merged = new HashMap<>(configured);
+		if (requestContext.getProperty(JakartaRestConstants.CLIENT_CODEC_OPTIONS) instanceof Map<?, ?> client) {
+			client.forEach((key, value) -> merged.put(String.valueOf(key), value));
+		}
+		requestContext.setProperty(JakartaRestConstants.CLIENT_CODEC_OPTIONS, merged);
 	}
 
 	private interface RepositoryCall<T> {

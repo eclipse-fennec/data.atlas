@@ -155,8 +155,9 @@ public class RestEndpointConfigurator {
 	 * Resolves the endpoint map (path -> DataSet/config/repository) of a
 	 * service, or {@code null} while a required {@link ReadRepository} is
 	 * missing. DataSets with configuration errors — no dataSet, no resolvable
-	 * input, a query whose root is not the inputType, or a query the backing
-	 * repository refuses at prepare time — are skipped with a log message.
+	 * input, a query whose root is not the inputType, a query the backing
+	 * repository refuses at prepare time, or DistributionExports that name no
+	 * media type — are skipped with a log message.
 	 */
 	private Map<String, DataSetEndpoint> resolveEndpoints(RestDataService service) {
 		Map<String, DataSetEndpoint> endpoints = new LinkedHashMap<>();
@@ -180,8 +181,14 @@ public class RestEndpointConfigurator {
 			if (dataSet.getQuery() != null && !validateQuery(dataSet, repository)) {
 				continue;
 			}
+			ExportFormats formats = ExportFormats.resolve(dataSet, service);
+			if (formats == null) {
+				// exports are declared but none of them is servable — never
+				// publish an endpoint whose configured format is unreachable
+				continue;
+			}
 			String path = configuration.getPath() != null ? configuration.getPath() : dataSet.getName();
-			endpoints.put(path, new DataSetEndpoint(dataSet, configuration, repository));
+			endpoints.put(path, new DataSetEndpoint(dataSet, configuration, repository, formats));
 		}
 		return endpoints.isEmpty() ? null : endpoints;
 	}
@@ -233,7 +240,8 @@ public class RestEndpointConfigurator {
 		props.put("emf", Boolean.TRUE);
 		String logBase = base;
 		LOG.log(Level.INFO, () -> "Registering REST application for service '" + id + "' at '" + logBase + "' with "
-				+ endpoints.size() + " data set(s): " + endpoints.keySet());
+				+ endpoints.size() + " data set(s): " + endpoints.entrySet().stream()
+						.map(e -> e.getKey() + " " + e.getValue().formats()).toList());
 		return bundleContext.registerService(Application.class, new DataAtlasRestApplication(resource), props);
 	}
 }
