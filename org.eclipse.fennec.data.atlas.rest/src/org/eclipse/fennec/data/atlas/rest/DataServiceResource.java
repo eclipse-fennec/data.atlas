@@ -172,12 +172,15 @@ public class DataServiceResource {
 	 * {@link JakartaRestConstants#CLIENT_CODEC_OPTIONS} at serialization time.
 	 *
 	 * <p>
-	 * Options a client supplied through the codec's {@code Codec-Options}
-	 * header are already in that property when this runs, and they keep
-	 * precedence: the configured values go in underneath. Upstream
-	 * <a href="https://github.com/eclipse-fennec/emf.codec/issues/170">emf.codec#170</a>
-	 * asks for a channel named for this server-side case; until then this
-	 * public constant is the only per-request one.
+	 * Anything already in that property keeps precedence — the configured values
+	 * go in underneath — so a client override would win once it can reach us. It
+	 * cannot today: the codec's {@code ClientCodecOptionsFilter} declares no
+	 * application select, so the whiteboard attaches it to the {@code .default}
+	 * application only, never to the per-service applications the Data Atlas
+	 * registers. Both that and the missing server-side channel are
+	 * <a href="https://github.com/eclipse-fennec/emf.codec/issues/170">emf.codec#170</a>;
+	 * until it is resolved this public constant is the only per-request channel
+	 * there is.
 	 * </p>
 	 */
 	private void publishCodecOptions(Map<String, Object> configured, ContainerRequestContext requestContext) {
