@@ -64,6 +64,12 @@
         <details key="documentation" value="Registry of the Transformations of this instance, referenced from DataProviders and BridgeRepositories."/>
       </eAnnotations>
     </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="publications" upperBound="-1"
+        eType="#//DcatPublication" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Registry of reusable DcatPublication declarations, referenced from DataServices and DataSets (via DataProvider.publication)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DataProvider" abstract="true">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -100,6 +106,11 @@
         eType="#//DistributionExport">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="References reusable DistributionExport templates (defined in the export registry) describing the formats this provider can be serialized to.&#xA;On a DataService this is the set of available/default exports. On a DataSet, if it defines its own exports they fully replace the service's; if left empty, the service's exports apply (override-else-default)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="publication" eType="#//DcatPublication">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Opt-in open-data publication of this provider: references a DcatPublication declaration (defined in the publications registry). Absent means the provider is not published - nothing is published implicitly.&#xA;Follows the override-else-default rule: what a DataService declares applies to its DataSets unless a DataSet references a DcatPublication of its own.&#xA;Deliberately plain data - the mapping to a DCAT model lives in the omittable publication bundle, never in this model (see data.atlas issue #4, DA-DCAT-1)."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
@@ -501,6 +512,76 @@
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Derives from the model annotation by default"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DcatPublication">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Declares that a DataProvider referencing this element is published as open data to a DCAT portal (DCAT.Atlas). Defined once in the publications registry and referenced from DataServices and DataSets (via DataProvider.publication), so the same target catalog and metadata defaults are not duplicated per provider.&#xA;&#xA;Deliberately plain data: an id, a catalog name and a handful of metadata overrides. The mapping to dcat:Dataset / dcat:DataService lives in the omittable publication bundle - this model must never depend on a DCAT model (data.atlas issue #4, DA-DCAT-1). Metadata left unset here is derived from the provider (name, description, model annotations); an explicit value wins over a derived one (DA-DCAT-8).&#xA;&#xA;The portal endpoint itself (base URL, credentials, timeouts) is a deployment concern and is NOT configured here: it is the Config-Admin configuration of the dcat.atlas client (DA-DCAT-6)."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        iD="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Unique identifier of this publication declaration."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="catalog" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifier of the target catalog in the portal the published entries are linked into. The catalog is expected to exist - catalog creation is out of scope (DA-DCAT-5)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="portal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Logical name of the portal to publish to, matching the 'dcat.portal' service property of a configured dcat.atlas client. Unset means the single configured client; with more than one client configured, an unset portal is a configuration error. This is the link between the deployment-owned client configuration and this model (DA-DCAT-5/6)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="identifier" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optional override of the DCAT identifier (the last PUT path segment). Unset means the id of the published provider. Must be stable and deterministic - it survives restarts, configuration reloads and redeployments (DA-DCAT-10/11)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Explicit dct:title override. Unset derives from the provider's name."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Explicit dct:description override. Unset derives from the provider's description, else from the GenModel documentation annotation of the provider's model type."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="language" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="en">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Language tag of the published plain literals (title, description, keywords)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="keywords" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:keyword entries of the published dataset(s)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="themes" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:theme IRIs of the published dataset(s), e.g. an EU data theme vocabulary entry."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="publisherName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Name of the dct:publisher (a foaf:Agent). Mandatory for publication by the portal's shapes and not derivable from the data model - a publication without one is a diagnosed configuration error (DA-DCAT-9)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="publisherUri" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optional IRI identifying the publisher agent."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="licenseUri" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="License IRI of the published distributions (e.g. a dcat-ap.de license vocabulary entry). Mandatory for a distribution by the portal's shapes - a publication whose provider serves distributions needs one (DA-DCAT-9)."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>

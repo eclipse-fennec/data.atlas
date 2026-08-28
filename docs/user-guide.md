@@ -41,6 +41,11 @@ instances of those schemas.
   - [File Mode: Watching the Configuration File](#file-mode-watching-the-configuration-file)
   - [Model Atlas Mode: Staged Updates](#model-atlas-mode-staged-updates)
   - [Failure Semantics](#failure-semantics)
+- [Publishing to a DCAT Portal](#publishing-to-a-dcat-portal)
+  - [Declaring a Publication](#declaring-a-publication)
+  - [Connecting the Portal](#connecting-the-portal)
+  - [What Reaches the Portal](#what-reaches-the-portal)
+  - [Robustness and Observability](#robustness-and-observability)
 - [Configuration Reference](#configuration-reference)
 - [Further Reading](#further-reading)
 
@@ -637,6 +642,114 @@ retries on the next refresh.
 
 ---
 
+## Publishing to a DCAT Portal
+
+A Data Atlas can register its data as open data with a
+[DCAT.Atlas](https://github.com/eclipse-fennec/dcat.atlas) portal and keep the
+portal in sync with the running configuration. Publication is **an option a
+deployment adds**: nothing is published unless the configuration declares it,
+and a runtime without the publication bundles installed is a complete Data
+Atlas. If a configuration *does* declare publications while no handler bundle
+is installed, the bootstrap logs a warning — the data services serve
+regardless.
+
+### Declaring a Publication
+
+Publication is declared in the configuration model: a `DcatPublication` in
+the root's `publications` registry, referenced from the `DataService` (a
+`DataSet` can reference its own to override catalog or metadata):
+
+```xml
+<services xsi:type="configuration:RestDataService" id="persons-rest" name="Persons REST"
+    description="REST endpoint publishing the example persons." urlContext="/example"
+    publication="open-data">
+  <configuration id="persons-rest-config" dataSet="persons" path="persons"/>
+</services>
+<publications id="open-data" catalog="example"
+    publisherName="Eclipse Fennec Data Atlas example"
+    licenseUri="http://dcat-ap.de/def/licenses/dl-by-de/2.0">
+  <keywords>persons</keywords>
+</publications>
+```
+
+The target `catalog` is expected to exist in the portal — creating catalogs
+is deliberately not the Data Atlas's job. Metadata is **derived by default
+and overridden explicitly**: title falls back to the provider's name,
+description to the provider's description (else to the documentation
+annotation of its model type). `publisherName` and `licenseUri` cannot be
+derived and are required by the portal — leaving them out is a diagnosed
+configuration error, logged with what is missing.
+
+### Connecting the Portal
+
+*Which* portal to talk to is deployment configuration, not part of the
+model. Two pieces:
+
+1. **The dcat.atlas client** — a Config Admin factory configuration (PID
+   `org.eclipse.fennec.dcat.atlas.client`), injected like any other extra
+   configuration via a mounted Configurator JSON:
+
+   ```json
+   {
+     ":configurator:resource-version": 1,
+     ":configurator:symbolic-name": "org.eclipse.fennec.data.atlas.dcat.client.config",
+     ":configurator:version": "1.0.0",
+     "org.eclipse.fennec.dcat.atlas.client~portal": {
+       "dcat.portal": "portal",
+       "base.uri": "http://dcatatlas:8080/rest/"
+     }
+   }
+   ```
+
+   With more than one portal configured, `DcatPublication.portal` selects by
+   the `dcat.portal` name.
+
+2. **The public base URL** — `DATA_ATLAS_PUBLIC_BASE_URL`, the address the
+   portal's consumers reach this Data Atlas under (behind a reverse proxy
+   that is not the address the container sees). It becomes the endpoint and
+   distribution URLs in the portal; declared publications without it are a
+   configuration error.
+
+The [compose setup](../docker/dockercompose/docker-compose-dcat.yml) wires
+all of this end to end: a portal, a one-shot catalog seeder, and a file-mode
+Data Atlas publishing the example.
+
+### What Reaches the Portal
+
+Only **metadata and references** — payload never leaves the Data Atlas. The
+mapping is DataService-first, matching the model's own structure:
+
+| Data Atlas | Portal | Key content |
+|---|---|---|
+| `DataService` | `dcat:DataService` | endpoint URL = public base + `urlContext` |
+| `DataSet` | `dcat:Dataset` | title/description/keywords/themes, linked `servesDataset` and into the catalog |
+| resolved `DistributionExport` | `dcat:Distribution` | access URL = the endpoint that serves it, media type, license |
+
+The distributions mirror exactly what the endpoint serves: the resolved
+exports, or the runtime defaults (JSON and XMI) when none are declared. The
+registration is idempotent and re-runs in full on every configuration change;
+a provider that disappears from the configuration is **withdrawn** from the
+portal. Identifiers are the configuration ids (overridable via
+`DcatPublication.identifier`), so they survive restarts, reloads and a
+redeployment against another portal.
+
+### Robustness and Observability
+
+The portal is never on the critical path: an unreachable, slow or rejecting
+portal does not stop the Data Atlas from serving. Transient failures are
+retried on an interval (`DATA_ATLAS_DCAT_RETRY_INTERVAL`); a portal-side
+validation refusal is treated as a configuration error and not retried until
+the configuration changes.
+
+Every published provider is observable without reading the portal: the
+handler registers one `PublicationStatus` service per provider
+(`data.atlas.config.id` = provider id) whose `data.atlas.publication.state`
+property is `PENDING`, `REGISTERED`, `RETRYING` or `ERROR`, with the last
+error message and timestamp on the service — and every state change is
+logged.
+
+---
+
 ## Configuration Reference
 
 Both images are configured through environment variables.
@@ -646,6 +759,8 @@ Both images are configured through environment variables.
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `DATA_ATLAS_HTTP_PORT` | `8080` | HTTP port of the REST endpoints |
+| `DATA_ATLAS_PUBLIC_BASE_URL` | *(unset)* | Public base URL this instance is reachable under, used as the endpoint/distribution base of [DCAT publications](#publishing-to-a-dcat-portal). Only needed when publications are declared |
+| `DATA_ATLAS_DCAT_RETRY_INTERVAL` | `30000` | Retry interval (ms) for transiently failed DCAT portal registrations |
 
 ### File variant
 

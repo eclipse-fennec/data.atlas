@@ -235,6 +235,15 @@ public interface DAConfigFactory extends EFactory {
 	CSVDistributionExport createCSVDistributionExport();
 
 	/**
+	 * Returns a new object of class '<em>Dcat Publication</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Dcat Publication</em>'.
+	 * @generated
+	 */
+	DcatPublication createDcatPublication();
+
+	/**
 	 * Returns a new object of class '<em>Jdbc Data Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

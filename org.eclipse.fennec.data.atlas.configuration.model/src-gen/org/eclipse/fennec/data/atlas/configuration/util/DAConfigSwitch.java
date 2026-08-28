@@ -268,6 +268,12 @@ public class DAConfigSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case DAConfigPackage.DCAT_PUBLICATION: {
+				DcatPublication dcatPublication = (DcatPublication)theEObject;
+				T result = caseDcatPublication(dcatPublication);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case DAConfigPackage.JDBC_DATA_SOURCE: {
 				JdbcDataSource jdbcDataSource = (JdbcDataSource)theEObject;
 				T result = caseJdbcDataSource(jdbcDataSource);
@@ -680,6 +686,21 @@ public class DAConfigSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseTransformation(Transformation object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Dcat Publication</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Dcat Publication</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseDcatPublication(DcatPublication object) {
 		return null;
 	}
 

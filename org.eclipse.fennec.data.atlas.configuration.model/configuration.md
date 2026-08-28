@@ -25,6 +25,7 @@ are only *referenced* from the rest of the model:
 | `services` | `DataService` | The endpoints this instance publishes |
 | `exports` | `DistributionExport` | Reusable serialization templates (e.g. CSV settings) |
 | `transformations` | `Transformation` | Data and query transformations |
+| `publications` | `DcatPublication` | Opt-in open-data publication declarations (target catalog + metadata overrides) |
 
 This registry design is deliberate: the same service definition can be
 re-applied to another data source (tenant, test system) by swapping the
@@ -109,6 +110,33 @@ declare both.
 `DataTransformation` (model A → model B, QVT script placeholder for now, with
 `supportedEClasses`/`resultEClasses`) and `QueryTransformation` (maps incoming
 queries onto the underlying source).
+
+### `DcatPublication` — opt-in open-data publication
+
+Declares that a `DataProvider` referencing it (via `DataProvider.publication`)
+is published to a DCAT portal (DCAT.Atlas). **Absent declaration means not
+published** — nothing is published implicitly, and a configuration without any
+publication is valid and complete. The reference follows override-else-default:
+a `DataService`'s declaration applies to its DataSets unless a `DataSet`
+references a `DcatPublication` of its own.
+
+The element is deliberately **plain data** — `catalog` (the target catalog id,
+expected to exist in the portal), an optional `portal` name (matching the
+`dcat.portal` service property of a configured dcat.atlas client), an optional
+`identifier` override, and metadata that is *derived by default and overridden
+explicitly*: `title` (else the provider's name), `description` (else the
+provider's description, else the GenModel documentation of its model type),
+`language`, `keywords`, `themes`, `publisherName`/`publisherUri` and
+`licenseUri`. `publisherName` and — as soon as distributions are served —
+`licenseUri` are required by the portal's shapes and not derivable: leaving
+them unset is a diagnosed configuration error, not a silent omission.
+
+The mapping to `dcat:DataService`/`dcat:Dataset`/`dcat:Distribution` lives in
+the omittable `org.eclipse.fennec.data.atlas.publication.dcat` bundle; this
+model never depends on a DCAT model (data.atlas#4, DA-DCAT-1). The portal
+endpoint itself (base URL, credentials) is deployment configuration — the
+dcat.atlas client's Config-Admin factory configuration — never part of this
+model.
 
 ## Runtime constraints (not yet formally validated)
 

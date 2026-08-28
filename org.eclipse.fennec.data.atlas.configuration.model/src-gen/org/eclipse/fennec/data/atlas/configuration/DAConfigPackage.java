@@ -49,7 +49,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * @generated
  */
 @ProviderType
-@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:d99568a78f61f6393a17f67baf4ac1e0d9ee5d84f3f4c36d658b3907da6f8068", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
+@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:d0b6f20f9168e50c25644c86805d31b81c7a64ed9c3e14cd253cc675efc0cb0d", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
 public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	/**
 	 * The package name.
@@ -166,13 +166,22 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	int DATA_ATLAS_CONFIGURATION__TRANSFORMATIONS = 7;
 
 	/**
+	 * The feature id for the '<em><b>Publications</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATA_ATLAS_CONFIGURATION__PUBLICATIONS = 8;
+
+	/**
 	 * The number of structural features of the '<em>Data Atlas Configuration</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_ATLAS_CONFIGURATION_FEATURE_COUNT = 8;
+	int DATA_ATLAS_CONFIGURATION_FEATURE_COUNT = 9;
 
 	/**
 	 * The number of operations of the '<em>Data Atlas Configuration</em>' class.
@@ -248,13 +257,22 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	int DATA_PROVIDER__DISTRIBUTION_EXPORT = 5;
 
 	/**
+	 * The feature id for the '<em><b>Publication</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATA_PROVIDER__PUBLICATION = 6;
+
+	/**
 	 * The number of structural features of the '<em>Data Provider</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_PROVIDER_FEATURE_COUNT = 6;
+	int DATA_PROVIDER_FEATURE_COUNT = 7;
 
 	/**
 	 * The number of operations of the '<em>Data Provider</em>' class.
@@ -476,6 +494,15 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	int DATA_SET__DISTRIBUTION_EXPORT = DATA_PROVIDER__DISTRIBUTION_EXPORT;
 
 	/**
+	 * The feature id for the '<em><b>Publication</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATA_SET__PUBLICATION = DATA_PROVIDER__PUBLICATION;
+
+	/**
 	 * The feature id for the '<em><b>Input Type</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -603,6 +630,15 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	int DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_PROVIDER__DISTRIBUTION_EXPORT;
 
 	/**
+	 * The feature id for the '<em><b>Publication</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATA_SERVICE__PUBLICATION = DATA_PROVIDER__PUBLICATION;
+
+	/**
 	 * The feature id for the '<em><b>Url Context</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -701,6 +737,15 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @ordered
 	 */
 	int REST_DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_SERVICE__DISTRIBUTION_EXPORT;
+
+	/**
+	 * The feature id for the '<em><b>Publication</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int REST_DATA_SERVICE__PUBLICATION = DATA_SERVICE__PUBLICATION;
 
 	/**
 	 * The feature id for the '<em><b>Url Context</b></em>' attribute.
@@ -958,6 +1003,15 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	int XMLA_DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_SERVICE__DISTRIBUTION_EXPORT;
 
 	/**
+	 * The feature id for the '<em><b>Publication</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int XMLA_DATA_SERVICE__PUBLICATION = DATA_SERVICE__PUBLICATION;
+
+	/**
 	 * The feature id for the '<em><b>Url Context</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1122,6 +1176,15 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	int GRAPH_QL_DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_SERVICE__DISTRIBUTION_EXPORT;
 
 	/**
+	 * The feature id for the '<em><b>Publication</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GRAPH_QL_DATA_SERVICE__PUBLICATION = DATA_SERVICE__PUBLICATION;
+
+	/**
 	 * The feature id for the '<em><b>Url Context</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1229,6 +1292,15 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @ordered
 	 */
 	int QGIS_DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_SERVICE__DISTRIBUTION_EXPORT;
+
+	/**
+	 * The feature id for the '<em><b>Publication</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int QGIS_DATA_SERVICE__PUBLICATION = DATA_SERVICE__PUBLICATION;
 
 	/**
 	 * The feature id for the '<em><b>Url Context</b></em>' attribute.
@@ -1441,6 +1513,15 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	int OGC_FEATURES_DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_SERVICE__DISTRIBUTION_EXPORT;
 
 	/**
+	 * The feature id for the '<em><b>Publication</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OGC_FEATURES_DATA_SERVICE__PUBLICATION = DATA_SERVICE__PUBLICATION;
+
+	/**
 	 * The feature id for the '<em><b>Url Context</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1539,6 +1620,15 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @ordered
 	 */
 	int OGC_SENSOR_THINGS_DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_SERVICE__DISTRIBUTION_EXPORT;
+
+	/**
+	 * The feature id for the '<em><b>Publication</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OGC_SENSOR_THINGS_DATA_SERVICE__PUBLICATION = DATA_SERVICE__PUBLICATION;
 
 	/**
 	 * The feature id for the '<em><b>Url Context</b></em>' attribute.
@@ -2025,6 +2115,15 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	int ODATA_DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_SERVICE__DISTRIBUTION_EXPORT;
 
 	/**
+	 * The feature id for the '<em><b>Publication</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ODATA_DATA_SERVICE__PUBLICATION = DATA_SERVICE__PUBLICATION;
+
+	/**
 	 * The feature id for the '<em><b>Url Context</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2271,6 +2370,142 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	int CSV_DISTRIBUTION_EXPORT_OPERATION_COUNT = DISTRIBUTION_EXPORT_OPERATION_COUNT + 0;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DcatPublicationImpl <em>Dcat Publication</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DcatPublicationImpl
+	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDcatPublication()
+	 * @generated
+	 */
+	int DCAT_PUBLICATION = 27;
+
+	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DCAT_PUBLICATION__ID = 0;
+
+	/**
+	 * The feature id for the '<em><b>Catalog</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DCAT_PUBLICATION__CATALOG = 1;
+
+	/**
+	 * The feature id for the '<em><b>Portal</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DCAT_PUBLICATION__PORTAL = 2;
+
+	/**
+	 * The feature id for the '<em><b>Identifier</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DCAT_PUBLICATION__IDENTIFIER = 3;
+
+	/**
+	 * The feature id for the '<em><b>Title</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DCAT_PUBLICATION__TITLE = 4;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DCAT_PUBLICATION__DESCRIPTION = 5;
+
+	/**
+	 * The feature id for the '<em><b>Language</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DCAT_PUBLICATION__LANGUAGE = 6;
+
+	/**
+	 * The feature id for the '<em><b>Keywords</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DCAT_PUBLICATION__KEYWORDS = 7;
+
+	/**
+	 * The feature id for the '<em><b>Themes</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DCAT_PUBLICATION__THEMES = 8;
+
+	/**
+	 * The feature id for the '<em><b>Publisher Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DCAT_PUBLICATION__PUBLISHER_NAME = 9;
+
+	/**
+	 * The feature id for the '<em><b>Publisher Uri</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DCAT_PUBLICATION__PUBLISHER_URI = 10;
+
+	/**
+	 * The feature id for the '<em><b>License Uri</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DCAT_PUBLICATION__LICENSE_URI = 11;
+
+	/**
+	 * The number of structural features of the '<em>Dcat Publication</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DCAT_PUBLICATION_FEATURE_COUNT = 12;
+
+	/**
+	 * The number of operations of the '<em>Dcat Publication</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DCAT_PUBLICATION_OPERATION_COUNT = 0;
+
+	/**
 	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.JdbcDataSourceImpl <em>Jdbc Data Source</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2278,7 +2513,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getJdbcDataSource()
 	 * @generated
 	 */
-	int JDBC_DATA_SOURCE = 27;
+	int JDBC_DATA_SOURCE = 28;
 
 	/**
 	 * The feature id for the '<em><b>Filter</b></em>' attribute.
@@ -2425,6 +2660,17 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	EReference getDataAtlasConfiguration_Transformations();
 
 	/**
+	 * Returns the meta object for the containment reference list '{@link org.eclipse.fennec.data.atlas.configuration.DataAtlasConfiguration#getPublications <em>Publications</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Publications</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DataAtlasConfiguration#getPublications()
+	 * @see #getDataAtlasConfiguration()
+	 * @generated
+	 */
+	EReference getDataAtlasConfiguration_Publications();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.DataProvider <em>Data Provider</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2499,6 +2745,17 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 */
 	EReference getDataProvider_DistributionExport();
+
+	/**
+	 * Returns the meta object for the reference '{@link org.eclipse.fennec.data.atlas.configuration.DataProvider#getPublication <em>Publication</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Publication</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DataProvider#getPublication()
+	 * @see #getDataProvider()
+	 * @generated
+	 */
+	EReference getDataProvider_Publication();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.DataInput <em>Data Input</em>}'.
@@ -3244,6 +3501,148 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	EAttribute getTransformation_Description();
 
 	/**
+	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication <em>Dcat Publication</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Dcat Publication</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DcatPublication
+	 * @generated
+	 */
+	EClass getDcatPublication();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getId <em>Id</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Id</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DcatPublication#getId()
+	 * @see #getDcatPublication()
+	 * @generated
+	 */
+	EAttribute getDcatPublication_Id();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getCatalog <em>Catalog</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Catalog</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DcatPublication#getCatalog()
+	 * @see #getDcatPublication()
+	 * @generated
+	 */
+	EAttribute getDcatPublication_Catalog();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getPortal <em>Portal</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Portal</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DcatPublication#getPortal()
+	 * @see #getDcatPublication()
+	 * @generated
+	 */
+	EAttribute getDcatPublication_Portal();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getIdentifier <em>Identifier</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Identifier</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DcatPublication#getIdentifier()
+	 * @see #getDcatPublication()
+	 * @generated
+	 */
+	EAttribute getDcatPublication_Identifier();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getTitle <em>Title</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Title</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DcatPublication#getTitle()
+	 * @see #getDcatPublication()
+	 * @generated
+	 */
+	EAttribute getDcatPublication_Title();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getDescription <em>Description</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Description</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DcatPublication#getDescription()
+	 * @see #getDcatPublication()
+	 * @generated
+	 */
+	EAttribute getDcatPublication_Description();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getLanguage <em>Language</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Language</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DcatPublication#getLanguage()
+	 * @see #getDcatPublication()
+	 * @generated
+	 */
+	EAttribute getDcatPublication_Language();
+
+	/**
+	 * Returns the meta object for the attribute list '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getKeywords <em>Keywords</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Keywords</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DcatPublication#getKeywords()
+	 * @see #getDcatPublication()
+	 * @generated
+	 */
+	EAttribute getDcatPublication_Keywords();
+
+	/**
+	 * Returns the meta object for the attribute list '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getThemes <em>Themes</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Themes</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DcatPublication#getThemes()
+	 * @see #getDcatPublication()
+	 * @generated
+	 */
+	EAttribute getDcatPublication_Themes();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getPublisherName <em>Publisher Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Publisher Name</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DcatPublication#getPublisherName()
+	 * @see #getDcatPublication()
+	 * @generated
+	 */
+	EAttribute getDcatPublication_PublisherName();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getPublisherUri <em>Publisher Uri</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Publisher Uri</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DcatPublication#getPublisherUri()
+	 * @see #getDcatPublication()
+	 * @generated
+	 */
+	EAttribute getDcatPublication_PublisherUri();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getLicenseUri <em>License Uri</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>License Uri</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DcatPublication#getLicenseUri()
+	 * @see #getDcatPublication()
+	 * @generated
+	 */
+	EAttribute getDcatPublication_LicenseUri();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.JdbcDataSource <em>Jdbc Data Source</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3384,6 +3783,14 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		EReference DATA_ATLAS_CONFIGURATION__TRANSFORMATIONS = eINSTANCE.getDataAtlasConfiguration_Transformations();
 
 		/**
+		 * The meta object literal for the '<em><b>Publications</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference DATA_ATLAS_CONFIGURATION__PUBLICATIONS = eINSTANCE.getDataAtlasConfiguration_Publications();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DataProviderImpl <em>Data Provider</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -3440,6 +3847,14 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		 * @generated
 		 */
 		EReference DATA_PROVIDER__DISTRIBUTION_EXPORT = eINSTANCE.getDataProvider_DistributionExport();
+
+		/**
+		 * The meta object literal for the '<em><b>Publication</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference DATA_PROVIDER__PUBLICATION = eINSTANCE.getDataProvider_Publication();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DataInputImpl <em>Data Input</em>}' class.
@@ -4050,6 +4465,112 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		 * @generated
 		 */
 		EAttribute TRANSFORMATION__DESCRIPTION = eINSTANCE.getTransformation_Description();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DcatPublicationImpl <em>Dcat Publication</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DcatPublicationImpl
+		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDcatPublication()
+		 * @generated
+		 */
+		EClass DCAT_PUBLICATION = eINSTANCE.getDcatPublication();
+
+		/**
+		 * The meta object literal for the '<em><b>Id</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DCAT_PUBLICATION__ID = eINSTANCE.getDcatPublication_Id();
+
+		/**
+		 * The meta object literal for the '<em><b>Catalog</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DCAT_PUBLICATION__CATALOG = eINSTANCE.getDcatPublication_Catalog();
+
+		/**
+		 * The meta object literal for the '<em><b>Portal</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DCAT_PUBLICATION__PORTAL = eINSTANCE.getDcatPublication_Portal();
+
+		/**
+		 * The meta object literal for the '<em><b>Identifier</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DCAT_PUBLICATION__IDENTIFIER = eINSTANCE.getDcatPublication_Identifier();
+
+		/**
+		 * The meta object literal for the '<em><b>Title</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DCAT_PUBLICATION__TITLE = eINSTANCE.getDcatPublication_Title();
+
+		/**
+		 * The meta object literal for the '<em><b>Description</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DCAT_PUBLICATION__DESCRIPTION = eINSTANCE.getDcatPublication_Description();
+
+		/**
+		 * The meta object literal for the '<em><b>Language</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DCAT_PUBLICATION__LANGUAGE = eINSTANCE.getDcatPublication_Language();
+
+		/**
+		 * The meta object literal for the '<em><b>Keywords</b></em>' attribute list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DCAT_PUBLICATION__KEYWORDS = eINSTANCE.getDcatPublication_Keywords();
+
+		/**
+		 * The meta object literal for the '<em><b>Themes</b></em>' attribute list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DCAT_PUBLICATION__THEMES = eINSTANCE.getDcatPublication_Themes();
+
+		/**
+		 * The meta object literal for the '<em><b>Publisher Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DCAT_PUBLICATION__PUBLISHER_NAME = eINSTANCE.getDcatPublication_PublisherName();
+
+		/**
+		 * The meta object literal for the '<em><b>Publisher Uri</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DCAT_PUBLICATION__PUBLISHER_URI = eINSTANCE.getDcatPublication_PublisherUri();
+
+		/**
+		 * The meta object literal for the '<em><b>License Uri</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DCAT_PUBLICATION__LICENSE_URI = eINSTANCE.getDcatPublication_LicenseUri();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.JdbcDataSourceImpl <em>Jdbc Data Source</em>}' class.

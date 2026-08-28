@@ -35,6 +35,7 @@ import org.eclipse.fennec.data.atlas.configuration.DataAtlasConfiguration;
 import org.eclipse.fennec.data.atlas.configuration.DataInput;
 import org.eclipse.fennec.data.atlas.configuration.DataService;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
+import org.eclipse.fennec.data.atlas.configuration.DcatPublication;
 import org.eclipse.fennec.data.atlas.configuration.DistributionExport;
 import org.eclipse.fennec.data.atlas.configuration.JdbcDataSource;
 import org.eclipse.fennec.data.atlas.configuration.Transformation;
@@ -55,6 +56,7 @@ import org.eclipse.fennec.data.atlas.configuration.Transformation;
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DataAtlasConfigurationImpl#getServices <em>Services</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DataAtlasConfigurationImpl#getExports <em>Exports</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DataAtlasConfigurationImpl#getTransformations <em>Transformations</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DataAtlasConfigurationImpl#getPublications <em>Publications</em>}</li>
  * </ul>
  *
  * @generated
@@ -159,6 +161,16 @@ public class DataAtlasConfigurationImpl extends MinimalEObjectImpl.Container imp
 	 * @ordered
 	 */
 	protected EList<Transformation> transformations;
+
+	/**
+	 * The cached value of the '{@link #getPublications() <em>Publications</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getPublications()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<DcatPublication> publications;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -309,6 +321,19 @@ public class DataAtlasConfigurationImpl extends MinimalEObjectImpl.Container imp
 	 * @generated
 	 */
 	@Override
+	public EList<DcatPublication> getPublications() {
+		if (publications == null) {
+			publications = new EObjectContainmentEList<DcatPublication>(DcatPublication.class, this, DAConfigPackage.DATA_ATLAS_CONFIGURATION__PUBLICATIONS);
+		}
+		return publications;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case DAConfigPackage.DATA_ATLAS_CONFIGURATION__DATA_SOURCES:
@@ -323,6 +348,8 @@ public class DataAtlasConfigurationImpl extends MinimalEObjectImpl.Container imp
 				return ((InternalEList<?>)getExports()).basicRemove(otherEnd, msgs);
 			case DAConfigPackage.DATA_ATLAS_CONFIGURATION__TRANSFORMATIONS:
 				return ((InternalEList<?>)getTransformations()).basicRemove(otherEnd, msgs);
+			case DAConfigPackage.DATA_ATLAS_CONFIGURATION__PUBLICATIONS:
+				return ((InternalEList<?>)getPublications()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -351,6 +378,8 @@ public class DataAtlasConfigurationImpl extends MinimalEObjectImpl.Container imp
 				return getExports();
 			case DAConfigPackage.DATA_ATLAS_CONFIGURATION__TRANSFORMATIONS:
 				return getTransformations();
+			case DAConfigPackage.DATA_ATLAS_CONFIGURATION__PUBLICATIONS:
+				return getPublications();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -394,6 +423,10 @@ public class DataAtlasConfigurationImpl extends MinimalEObjectImpl.Container imp
 				getTransformations().clear();
 				getTransformations().addAll((Collection<? extends Transformation>)newValue);
 				return;
+			case DAConfigPackage.DATA_ATLAS_CONFIGURATION__PUBLICATIONS:
+				getPublications().clear();
+				getPublications().addAll((Collection<? extends DcatPublication>)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -430,6 +463,9 @@ public class DataAtlasConfigurationImpl extends MinimalEObjectImpl.Container imp
 			case DAConfigPackage.DATA_ATLAS_CONFIGURATION__TRANSFORMATIONS:
 				getTransformations().clear();
 				return;
+			case DAConfigPackage.DATA_ATLAS_CONFIGURATION__PUBLICATIONS:
+				getPublications().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -458,6 +494,8 @@ public class DataAtlasConfigurationImpl extends MinimalEObjectImpl.Container imp
 				return exports != null && !exports.isEmpty();
 			case DAConfigPackage.DATA_ATLAS_CONFIGURATION__TRANSFORMATIONS:
 				return transformations != null && !transformations.isEmpty();
+			case DAConfigPackage.DATA_ATLAS_CONFIGURATION__PUBLICATIONS:
+				return publications != null && !publications.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

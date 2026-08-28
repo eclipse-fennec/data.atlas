@@ -10,6 +10,9 @@
 	bnd.identity;id='org.eclipse.fennec.data.atlas.transformation',\
 	bnd.identity;id='org.eclipse.fennec.m2x.qvto.engine',\
 	bnd.identity;id='org.eclipse.fennec.data.atlas.rest',\
+	bnd.identity;id='org.eclipse.fennec.data.atlas.publication.dcat',\
+	bnd.identity;id='org.eclipse.fennec.dcat.atlas.client.osgi',\
+	bnd.identity;id='org.eclipse.fennec.dcat.atlas.client.impl',\
 	bnd.identity;id='org.eclipse.fennec.codec',\
 	bnd.identity;id='org.eclipse.fennec.codec.rest',\
 	bnd.identity;id='org.eclipse.fennec.codec.csv',\

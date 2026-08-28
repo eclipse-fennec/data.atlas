@@ -90,6 +90,7 @@ public class DAConfigFactoryImpl extends EFactoryImpl implements DAConfigFactory
 			case DAConfigPackage.ODATA_DATA_SERVICE_CONFIGURATION: return createODataDataServiceConfiguration();
 			case DAConfigPackage.DISTRIBUTION_EXPORT: return createDistributionExport();
 			case DAConfigPackage.CSV_DISTRIBUTION_EXPORT: return createCSVDistributionExport();
+			case DAConfigPackage.DCAT_PUBLICATION: return createDcatPublication();
 			case DAConfigPackage.JDBC_DATA_SOURCE: return createJdbcDataSource();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
@@ -336,6 +337,17 @@ public class DAConfigFactoryImpl extends EFactoryImpl implements DAConfigFactory
 	public CSVDistributionExport createCSVDistributionExport() {
 		CSVDistributionExportImpl csvDistributionExport = new CSVDistributionExportImpl();
 		return csvDistributionExport;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public DcatPublication createDcatPublication() {
+		DcatPublicationImpl dcatPublication = new DcatPublicationImpl();
+		return dcatPublication;
 	}
 
 	/**

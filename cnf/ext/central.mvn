@@ -161,4 +161,10 @@ org.eclipse.fennec.m2x:org.eclipse.fennec.m2x.qvto.api:0.1.1-SNAPSHOT
 org.eclipse.fennec.m2x:org.eclipse.fennec.m2x.qvto.parser:0.1.1-SNAPSHOT
 org.eclipse.fennec.m2x:org.eclipse.fennec.m2x.qvto.engine:0.1.1-SNAPSHOT
 org.eclipse.fennec.persistence:org.eclipse.fennec.persistence.workspace.library:0.1.0-SNAPSHOT
+# fennec DCAT.Atlas portal client + DCAT-AP.de model (Milestone 8: DCAT publication) —
+# used ONLY by the omittable publication.dcat bundle, never by the core bundles (DA-DCAT-1)
+org.eclipse.fennec.dcat:org.eclipse.fennec.dcat.atlas.client.api:1.0.0-SNAPSHOT
+org.eclipse.fennec.dcat:org.eclipse.fennec.dcat.atlas.client.impl:1.0.0-SNAPSHOT
+org.eclipse.fennec.dcat:org.eclipse.fennec.dcat.atlas.client.osgi:1.0.0-SNAPSHOT
+org.eclipse.fennec.dcat:org.eclipse.fennec.dcat.atlas.dcatap.de.model:1.0.0-SNAPSHOT
 org.eclipse.fennec.models:org.eclipse.fennec.common.models.library:0.0.1-SNAPSHOT

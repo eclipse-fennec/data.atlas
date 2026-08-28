@@ -42,6 +42,7 @@ import org.osgi.annotation.versioning.ProviderType;
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DataProvider#getDataInput <em>Data Input</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DataProvider#getTransformation <em>Transformation</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DataProvider#getDistributionExport <em>Distribution Export</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DataProvider#getPublication <em>Publication</em>}</li>
  * </ul>
  *
  * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getDataProvider()
@@ -192,5 +193,32 @@ public interface DataProvider extends EObject {
 	 * @generated
 	 */
 	EList<DistributionExport> getDistributionExport();
+
+	/**
+	 * Returns the value of the '<em><b>Publication</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Opt-in open-data publication of this provider: references a DcatPublication declaration (defined in the publications registry). Absent means the provider is not published - nothing is published implicitly.
+	 * Follows the override-else-default rule: what a DataService declares applies to its DataSets unless a DataSet references a DcatPublication of its own.
+	 * Deliberately plain data - the mapping to a DCAT model lives in the omittable publication bundle, never in this model (see data.atlas issue #4, DA-DCAT-1).
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Publication</em>' reference.
+	 * @see #setPublication(DcatPublication)
+	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getDataProvider_Publication()
+	 * @model
+	 * @generated
+	 */
+	DcatPublication getPublication();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.fennec.data.atlas.configuration.DataProvider#getPublication <em>Publication</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Publication</em>' reference.
+	 * @see #getPublication()
+	 * @generated
+	 */
+	void setPublication(DcatPublication value);
 
 } // DataProvider

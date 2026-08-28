@@ -44,6 +44,7 @@ import org.osgi.annotation.versioning.ProviderType;
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DataAtlasConfiguration#getServices <em>Services</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DataAtlasConfiguration#getExports <em>Exports</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DataAtlasConfiguration#getTransformations <em>Transformations</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DataAtlasConfiguration#getPublications <em>Publications</em>}</li>
  * </ul>
  *
  * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getDataAtlasConfiguration()
@@ -191,5 +192,20 @@ public interface DataAtlasConfiguration extends EObject {
 	 * @generated
 	 */
 	EList<Transformation> getTransformations();
+
+	/**
+	 * Returns the value of the '<em><b>Publications</b></em>' containment reference list.
+	 * The list contents are of type {@link org.eclipse.fennec.data.atlas.configuration.DcatPublication}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Registry of reusable DcatPublication declarations, referenced from DataServices and DataSets (via DataProvider.publication).
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Publications</em>' containment reference list.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getDataAtlasConfiguration_Publications()
+	 * @model containment="true"
+	 * @generated
+	 */
+	EList<DcatPublication> getPublications();
 
 } // DataAtlasConfiguration

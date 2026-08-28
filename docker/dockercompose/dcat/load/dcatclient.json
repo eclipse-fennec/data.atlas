@@ -1,0 +1,9 @@
+{
+	":configurator:resource-version": 1,
+	":configurator:symbolic-name": "org.eclipse.fennec.data.atlas.dcat.client.config",
+	":configurator:version": "1.0.0",
+	"org.eclipse.fennec.dcat.atlas.client~portal": {
+		"dcat.portal": "portal",
+		"base.uri": "http://dcatatlas:8080/rest/"
+	}
+}

@@ -23,5 +23,9 @@
 		"atlas.object.id": "$[env:DATA_ATLAS_OBJECT_ID;default=dataatlas]",
 		"refresh.interval.ms": "$[env:DATA_ATLAS_REFRESH_INTERVAL;default=300000]",
 		"scopeService.target": "(atlas.scope=$[env:DATA_ATLAS_SCOPE;default=dataatlas])"
+	},
+	"org.eclipse.fennec.data.atlas.publication.dcat": {
+		"public.base.url": "$[env:DATA_ATLAS_PUBLIC_BASE_URL;default=]",
+		"retry.interval.ms": "$[env:DATA_ATLAS_DCAT_RETRY_INTERVAL;default=30000]"
 	}
 }

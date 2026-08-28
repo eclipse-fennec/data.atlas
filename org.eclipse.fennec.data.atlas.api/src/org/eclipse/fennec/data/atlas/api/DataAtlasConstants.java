@@ -40,6 +40,16 @@ public final class DataAtlasConstants {
 	 */
 	public static final String TRANSFORMATION_ID = "data.atlas.transformation.id";
 
+	/**
+	 * Marker service property a publication handler bundle registers (value: the
+	 * kind of publication it handles, e.g. {@code "dcat"}). The bootstrap uses it
+	 * to diagnose a configuration that declares publications while no handler is
+	 * installed — the declaration would otherwise be silently ignored, which is
+	 * as wrong as refusing to start (data.atlas issue #4, DA-DCAT-3). The core
+	 * stays free of any publication-kind dependency: this is a plain marker.
+	 */
+	public static final String PUBLICATION_HANDLER = "data.atlas.publication.handler";
+
 	private DataAtlasConstants() {
 	}
 }

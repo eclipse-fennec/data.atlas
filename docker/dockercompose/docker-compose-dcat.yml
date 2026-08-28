@@ -1,0 +1,62 @@
+# DCAT publication setup (Milestone 8, data.atlas#4): a DCAT.Atlas portal and a
+# file-mode Data Atlas whose example configuration declares its REST service for
+# open-data publication. The Data Atlas registers the service, its dataset and
+# the distributions with the portal and keeps them in sync; taking the portal
+# down does not disturb the served data.
+#
+#   docker compose -f docker-compose-dcat.yml up
+#
+#   Data Atlas:   http://localhost:8082/rest/example/persons
+#   DCAT.Atlas:   http://localhost:8084/rest
+#
+#   # the published dataset, as the portal serves it
+#   curl -H "Accept: application/rdf+xml" http://localhost:8084/rest/datasets/persons
+#   # its distribution URL points back at the Data Atlas endpoint
+#   curl -H "Accept: application/json" http://localhost:8082/rest/example/persons
+#
+# The portal runs WITHOUT the DCAT-AP.de SHACL shapes here: they are AGPL-3.0
+# and deliberately not distributed with either project (see the dcat.atlas
+# NOTICE). SHACL enforcement is off, the model validation stays on. A real
+# deployment mounts the GovData shapes and drops the two SHACL_* overrides.
+services:
+  dcatatlas:
+    image: eclipsefennec/dcat.atlas:snapshot
+    ports:
+      - "8084:8080"
+    environment:
+      - SHACL_SHAPES_DIR=
+      - SHACL_VOCAB_DIR=
+      - SHACL_ENFORCE=false
+      # the base the portal renders stored identities under - the address its
+      # consumers reach it at, not the container-internal one
+      - PUBLIC_BASE_URL=http://localhost:8084/rest/
+
+  # one-shot: waits for the portal and creates the target catalog. The catalog
+  # is expected to exist - creating it is not the Data Atlas's job.
+  catalog-seed:
+    image: curlimages/curl:8.10.1
+    depends_on:
+      - dcatatlas
+    volumes:
+      - ./dcat/seed.sh:/seed/seed.sh:ro
+      - ./dcat/catalog.xmi:/seed/catalog.xmi:ro
+    entrypoint: ["/bin/sh", "/seed/seed.sh"]
+
+  dataatlas:
+    image: eclipsefennec/data.atlas:file-snapshot
+    ports:
+      - "8082:8080"
+    environment:
+      - DATA_ATLAS_CONFIG_URI=/opt/dataatlas/runtime/data/dataatlas-dcat.xmi
+      # the public base the portal's consumers reach this Data Atlas under -
+      # it becomes the endpoint and distribution URLs in the portal
+      - DATA_ATLAS_PUBLIC_BASE_URL=http://localhost:8082/rest
+      # the portal endpoint is deployment configuration (the dcat.atlas
+      # client's factory config), mounted rather than baked into the image
+      - JAVA_TOOL_OPTIONS=-Dconfigurator.initial=file:///opt/dataatlas/runtime/load/dcatclient.json
+    volumes:
+      - ../../org.eclipse.fennec.data.atlas.configuration.model/example:/opt/dataatlas/runtime/data:ro
+      - ./dcat/load:/opt/dataatlas/runtime/load:ro
+    depends_on:
+      catalog-seed:
+        condition: service_completed_successfully

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    name="dcat-example" description="Milestone 8 fixture: the example persons, declared for DCAT publication.">
+  <dataInputs xsi:type="configuration:FileDataInput" id="dcat-persons-file" uri="data/persons.xmi">
+    <supportedEClasses href="model/person.ecore#//Person"/>
+  </dataInputs>
+  <dataSets id="dcat-persons" name="persons" description="All persons of the example data set." dataInput="dcat-persons-file">
+    <inputType href="model/person.ecore#//Person"/>
+    <outputType href="model/person.ecore#//Person"/>
+  </dataSets>
+  <services xsi:type="configuration:RestDataService" id="dcat-persons-rest" name="Persons REST"
+      description="REST endpoint publishing the example persons." urlContext="/dcat-example" openAPI="false"
+      publication="dcat-open-data">
+    <configuration id="dcat-persons-rest-config" dataSet="dcat-persons" path="persons"/>
+  </services>
+  <publications id="dcat-open-data" catalog="test-catalog" publisherName="Data Atlas integration suite"
+      licenseUri="http://dcat-ap.de/def/licenses/dl-by-de/2.0">
+    <keywords>persons</keywords>
+    <keywords>example</keywords>
+  </publications>
+</configuration:DataAtlasConfiguration>

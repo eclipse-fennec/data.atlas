@@ -188,6 +188,10 @@ public class DAConfigAdapterFactory extends AdapterFactoryImpl {
 				return createTransformationAdapter();
 			}
 			@Override
+			public Adapter caseDcatPublication(DcatPublication object) {
+				return createDcatPublicationAdapter();
+			}
+			@Override
 			public Adapter caseJdbcDataSource(JdbcDataSource object) {
 				return createJdbcDataSourceAdapter();
 			}
@@ -586,6 +590,20 @@ public class DAConfigAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createTransformationAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication <em>Dcat Publication</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DcatPublication
+	 * @generated
+	 */
+	public Adapter createDcatPublicationAdapter() {
 		return null;
 	}
 

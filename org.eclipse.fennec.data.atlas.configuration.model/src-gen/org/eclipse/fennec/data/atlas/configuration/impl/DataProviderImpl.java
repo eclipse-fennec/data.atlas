@@ -31,6 +31,7 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 import org.eclipse.fennec.data.atlas.configuration.DAConfigPackage;
 import org.eclipse.fennec.data.atlas.configuration.DataInput;
 import org.eclipse.fennec.data.atlas.configuration.DataProvider;
+import org.eclipse.fennec.data.atlas.configuration.DcatPublication;
 import org.eclipse.fennec.data.atlas.configuration.DistributionExport;
 import org.eclipse.fennec.data.atlas.configuration.Transformation;
 
@@ -48,6 +49,7 @@ import org.eclipse.fennec.data.atlas.configuration.Transformation;
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DataProviderImpl#getDataInput <em>Data Input</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DataProviderImpl#getTransformation <em>Transformation</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DataProviderImpl#getDistributionExport <em>Distribution Export</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DataProviderImpl#getPublication <em>Publication</em>}</li>
  * </ul>
  *
  * @generated
@@ -142,6 +144,16 @@ public abstract class DataProviderImpl extends MinimalEObjectImpl.Container impl
 	 * @ordered
 	 */
 	protected EList<DistributionExport> distributionExport;
+
+	/**
+	 * The cached value of the '{@link #getPublication() <em>Publication</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getPublication()
+	 * @generated
+	 * @ordered
+	 */
+	protected DcatPublication publication;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -330,6 +342,46 @@ public abstract class DataProviderImpl extends MinimalEObjectImpl.Container impl
 	 * @generated
 	 */
 	@Override
+	public DcatPublication getPublication() {
+		if (publication != null && publication.eIsProxy()) {
+			InternalEObject oldPublication = (InternalEObject)publication;
+			publication = (DcatPublication)eResolveProxy(oldPublication);
+			if (publication != oldPublication) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, DAConfigPackage.DATA_PROVIDER__PUBLICATION, oldPublication, publication));
+			}
+		}
+		return publication;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public DcatPublication basicGetPublication() {
+		return publication;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setPublication(DcatPublication newPublication) {
+		DcatPublication oldPublication = publication;
+		publication = newPublication;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DAConfigPackage.DATA_PROVIDER__PUBLICATION, oldPublication, publication));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case DAConfigPackage.DATA_PROVIDER__ID:
@@ -346,6 +398,9 @@ public abstract class DataProviderImpl extends MinimalEObjectImpl.Container impl
 				return basicGetTransformation();
 			case DAConfigPackage.DATA_PROVIDER__DISTRIBUTION_EXPORT:
 				return getDistributionExport();
+			case DAConfigPackage.DATA_PROVIDER__PUBLICATION:
+				if (resolve) return getPublication();
+				return basicGetPublication();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -378,6 +433,9 @@ public abstract class DataProviderImpl extends MinimalEObjectImpl.Container impl
 				getDistributionExport().clear();
 				getDistributionExport().addAll((Collection<? extends DistributionExport>)newValue);
 				return;
+			case DAConfigPackage.DATA_PROVIDER__PUBLICATION:
+				setPublication((DcatPublication)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -408,6 +466,9 @@ public abstract class DataProviderImpl extends MinimalEObjectImpl.Container impl
 			case DAConfigPackage.DATA_PROVIDER__DISTRIBUTION_EXPORT:
 				getDistributionExport().clear();
 				return;
+			case DAConfigPackage.DATA_PROVIDER__PUBLICATION:
+				setPublication((DcatPublication)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -432,6 +493,8 @@ public abstract class DataProviderImpl extends MinimalEObjectImpl.Container impl
 				return transformation != null;
 			case DAConfigPackage.DATA_PROVIDER__DISTRIBUTION_EXPORT:
 				return distributionExport != null && !distributionExport.isEmpty();
+			case DAConfigPackage.DATA_PROVIDER__PUBLICATION:
+				return publication != null;
 		}
 		return super.eIsSet(featureID);
 	}

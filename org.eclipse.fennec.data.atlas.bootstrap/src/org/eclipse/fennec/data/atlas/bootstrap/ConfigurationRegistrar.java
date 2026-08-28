@@ -22,6 +22,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
@@ -40,6 +43,7 @@ import org.eclipse.fennec.emf.osgi.configurator.EPackageConfigurator;
 import org.eclipse.fennec.emf.osgi.constants.EMFNamespaces;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.PrototypeServiceFactory;
 import org.osgi.framework.ServiceRegistration;
 
@@ -74,6 +78,9 @@ import org.osgi.framework.ServiceRegistration;
 class ConfigurationRegistrar {
 
 	private static final Logger LOG = System.getLogger(ConfigurationRegistrar.class.getName());
+
+	/** Grace period before "publications declared, no handler installed" warns. */
+	private static final long PUBLICATION_HANDLER_GRACE_SECONDS = 30;
 
 	private record PackageEntry(EPackage ePackage, ServiceRegistration<?> configuratorRegistration,
 			ServiceRegistration<?> packageRegistration) {
@@ -111,10 +118,48 @@ class ConfigurationRegistrar {
 	synchronized void apply(DataAtlasConfiguration configuration) {
 		Set<String> replacedNsUris = applyEPackages(configuration);
 		applyConfigurationObjects(configuration, replacedNsUris);
+		diagnosePublicationDeclarations(configuration);
 		LOG.log(Level.INFO,
 				() -> "Data Atlas instance '" + configuration.getName() + "' published ("
 						+ configuration.getServices().size() + " service(s), "
 						+ configuration.getDataInputs().size() + " input(s)).");
+	}
+
+	/**
+	 * A configuration that declares publications while no publication handler
+	 * bundle is installed is a diagnosed configuration error, not a silently
+	 * ignored declaration (data.atlas issue #4, DA-DCAT-3). The affected
+	 * providers still start and serve — this only warns, keyed on the abstract
+	 * {@link DataAtlasConstants#PUBLICATION_HANDLER} marker so the core stays
+	 * free of any publication-kind dependency. The check is repeated once after
+	 * a grace period, because the handler bundle may simply start later.
+	 */
+	private void diagnosePublicationDeclarations(DataAtlasConfiguration configuration) {
+		long declared = Stream.concat(configuration.getServices().stream(), configuration.getDataSets().stream())
+				.filter(provider -> provider.getPublication() != null).count();
+		if (declared == 0 || publicationHandlerPresent()) {
+			return;
+		}
+		String name = configuration.getName();
+		CompletableFuture.delayedExecutor(PUBLICATION_HANDLER_GRACE_SECONDS, TimeUnit.SECONDS).execute(() -> {
+			if (!publicationHandlerPresent()) {
+				LOG.log(Level.WARNING, () -> "Data Atlas instance '" + name + "' declares " + declared
+						+ " publication(s), but no publication handler is installed — the declarations are NOT "
+						+ "published. Install the publication bundle (e.g. "
+						+ "org.eclipse.fennec.data.atlas.publication.dcat) or remove the declarations. "
+						+ "The data services serve regardless.");
+			}
+		});
+	}
+
+	private boolean publicationHandlerPresent() {
+		try {
+			var references = bundleContext.getAllServiceReferences(null,
+					"(" + DataAtlasConstants.PUBLICATION_HANDLER + "=*)");
+			return references != null && references.length > 0;
+		} catch (InvalidSyntaxException unreachable) {
+			return true;
+		}
 	}
 
 	synchronized void unregisterAll() {

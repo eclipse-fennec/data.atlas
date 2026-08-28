@@ -45,7 +45,7 @@ public class DAConfigEPackageConfigurator implements EPackageConfigurator {
 	 * service property.
 	 * @generated
 	 */
-	public static final String FINGERPRINT = "fp1:d99568a78f61f6393a17f67baf4ac1e0d9ee5d84f3f4c36d658b3907da6f8068";
+	public static final String FINGERPRINT = "fp1:d0b6f20f9168e50c25644c86805d31b81c7a64ed9c3e14cd253cc675efc0cb0d";
 
 	private DAConfigPackage ePackage;
 

@@ -18,6 +18,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//DataAtlasConfiguration/services"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//DataAtlasConfiguration/exports"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//DataAtlasConfiguration/transformations"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//DataAtlasConfiguration/publications"/>
     </genClasses>
     <genClasses image="false" ecoreClass="configuration.ecore#//DataProvider">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DataProvider/id"/>
@@ -26,6 +27,7 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//DataProvider/dataInput"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//DataProvider/transformation"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//DataProvider/distributionExport"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//DataProvider/publication"/>
     </genClasses>
     <genClasses image="false" ecoreClass="configuration.ecore#//DataInput">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DataInput/id"/>
@@ -115,6 +117,20 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//Transformation/id"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//Transformation/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//Transformation/description"/>
+    </genClasses>
+    <genClasses ecoreClass="configuration.ecore#//DcatPublication">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/id"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/catalog"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/portal"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/identifier"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/title"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/description"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/language"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/keywords"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/themes"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/publisherName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/publisherUri"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/licenseUri"/>
     </genClasses>
     <genClasses ecoreClass="configuration.ecore#//JdbcDataSource">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//JdbcDataSource/filter"/>

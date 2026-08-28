@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    name="dcat-example" description="Example Data Atlas instance whose REST service is published to a DCAT.Atlas portal (Milestone 8).">
+  <dataInputs xsi:type="configuration:FileDataInput" id="persons-file" uri="data/persons.xmi">
+    <supportedEClasses href="model/person.ecore#//Person"/>
+  </dataInputs>
+  <dataSets id="persons" name="persons" description="All persons of the example data set." dataInput="persons-file">
+    <inputType href="model/person.ecore#//Person"/>
+    <outputType href="model/person.ecore#//Person"/>
+  </dataSets>
+  <services xsi:type="configuration:RestDataService" id="persons-rest" name="Persons REST"
+      description="REST endpoint publishing the example persons." urlContext="/example" openAPI="false"
+      publication="open-data">
+    <configuration id="persons-rest-config" dataSet="persons" path="persons"/>
+  </services>
+  <publications id="open-data" catalog="example" publisherName="Eclipse Fennec Data Atlas example"
+      licenseUri="http://dcat-ap.de/def/licenses/dl-by-de/2.0">
+    <keywords>persons</keywords>
+    <keywords>example</keywords>
+  </publications>
+</configuration:DataAtlasConfiguration>

@@ -70,7 +70,7 @@ flowchart TB
 
 ## Current state vs. target
 
-Implemented today (roadmap Milestones 0–4 and 7):
+Implemented today (roadmap Milestones 0–4, 7 and 8):
 
 - **Model bundle**: `configuration.model` — `DataAtlasConfiguration` root with
   containment registries (data sources, inputs, data sets, services, exports,
@@ -109,6 +109,23 @@ Implemented today (roadmap Milestones 0–4 and 7):
   `ReadableScopeService`) and feeds the same registrar pipeline; the
   `runtime.config.atlas` Configurator wires the client (env-var driven), and
   the `_docker_atlas` bndrun / `docker/dataatlas-atlas` image package it.
+- **DCAT publication** (Milestone 8, data.atlas#4): the omittable
+  `publication.dcat` bundle tracks `DataService` configuration services whose
+  configuration references a `DcatPublication` and keeps them registered with a
+  DCAT.Atlas portal through the dcat.atlas client — DataService-first
+  (`dcat:DataService` with the public endpoint URL), its DataSets as
+  `dcat:Dataset`, one `dcat:Distribution` per resolved export, and the
+  membership links re-asserted on every sync (the portal's PUT replaces).
+  Providers that disappear from the configuration are withdrawn. The portal is
+  never on the critical path: all portal I/O runs off the config events on one
+  worker, transient failures retry, portal-side refusals become a non-retried
+  configuration-error state. One `PublicationStatus` service per published
+  provider makes the outcome observable; a configuration that declares
+  publications with no handler installed is diagnosed by the bootstrap (a
+  marker-keyed check — the core has no DCAT dependency, DA-DCAT-1/3). The
+  portal endpoint is deployment configuration (the client's Config-Admin
+  factory PID); the public base URL comes from
+  `DATA_ATLAS_PUBLIC_BASE_URL`.
 - **Runtime assembly**: bndruns (`_base`/`_local`/`_docker`/`_docker_atlas`)
   including the JPA/EclipseLink stack, distroless docker images (`file-*` and
   `atlas-*` tags). The images deliberately contain **no** models, configuration
@@ -123,7 +140,7 @@ Implemented today (roadmap Milestones 0–4 and 7):
   `none`). OSGi integration tests (`tests`, H2-backed for the JPA slice,
   docker-gated for the compose setups and for the PostgreSQL + CSV example).
 
-Not yet implemented: DCAT, the other DataService kinds,
+Not yet implemented: the other DataService kinds,
 importers/transformations (see the [roadmap](roadmap.md)).
 
 ## Configuration lifecycle

@@ -33,6 +33,7 @@ import org.eclipse.fennec.data.atlas.configuration.DataService;
 import org.eclipse.fennec.data.atlas.configuration.DataServiceConfiguration;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
 import org.eclipse.fennec.data.atlas.configuration.DataTransformation;
+import org.eclipse.fennec.data.atlas.configuration.DcatPublication;
 import org.eclipse.fennec.data.atlas.configuration.DistributionExport;
 import org.eclipse.fennec.data.atlas.configuration.FileDataInput;
 import org.eclipse.fennec.data.atlas.configuration.GraphQLDataService;
@@ -262,6 +263,13 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	private EClass dcatPublicationEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	private EClass jdbcDataSourceEClass = null;
 
 	/**
@@ -426,6 +434,16 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
+	public EReference getDataAtlasConfiguration_Publications() {
+		return (EReference)dataAtlasConfigurationEClass.getEStructuralFeatures().get(8);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getDataProvider() {
 		return dataProviderEClass;
 	}
@@ -488,6 +506,16 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	@Override
 	public EReference getDataProvider_DistributionExport() {
 		return (EReference)dataProviderEClass.getEStructuralFeatures().get(5);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getDataProvider_Publication() {
+		return (EReference)dataProviderEClass.getEStructuralFeatures().get(6);
 	}
 
 	/**
@@ -1196,6 +1224,136 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
+	public EClass getDcatPublication() {
+		return dcatPublicationEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getDcatPublication_Id() {
+		return (EAttribute)dcatPublicationEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getDcatPublication_Catalog() {
+		return (EAttribute)dcatPublicationEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getDcatPublication_Portal() {
+		return (EAttribute)dcatPublicationEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getDcatPublication_Identifier() {
+		return (EAttribute)dcatPublicationEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getDcatPublication_Title() {
+		return (EAttribute)dcatPublicationEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getDcatPublication_Description() {
+		return (EAttribute)dcatPublicationEClass.getEStructuralFeatures().get(5);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getDcatPublication_Language() {
+		return (EAttribute)dcatPublicationEClass.getEStructuralFeatures().get(6);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getDcatPublication_Keywords() {
+		return (EAttribute)dcatPublicationEClass.getEStructuralFeatures().get(7);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getDcatPublication_Themes() {
+		return (EAttribute)dcatPublicationEClass.getEStructuralFeatures().get(8);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getDcatPublication_PublisherName() {
+		return (EAttribute)dcatPublicationEClass.getEStructuralFeatures().get(9);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getDcatPublication_PublisherUri() {
+		return (EAttribute)dcatPublicationEClass.getEStructuralFeatures().get(10);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getDcatPublication_LicenseUri() {
+		return (EAttribute)dcatPublicationEClass.getEStructuralFeatures().get(11);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getJdbcDataSource() {
 		return jdbcDataSourceEClass;
 	}
@@ -1268,6 +1426,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		createEReference(dataAtlasConfigurationEClass, DATA_ATLAS_CONFIGURATION__SERVICES);
 		createEReference(dataAtlasConfigurationEClass, DATA_ATLAS_CONFIGURATION__EXPORTS);
 		createEReference(dataAtlasConfigurationEClass, DATA_ATLAS_CONFIGURATION__TRANSFORMATIONS);
+		createEReference(dataAtlasConfigurationEClass, DATA_ATLAS_CONFIGURATION__PUBLICATIONS);
 
 		dataProviderEClass = createEClass(DATA_PROVIDER);
 		createEAttribute(dataProviderEClass, DATA_PROVIDER__ID);
@@ -1276,6 +1435,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		createEReference(dataProviderEClass, DATA_PROVIDER__DATA_INPUT);
 		createEReference(dataProviderEClass, DATA_PROVIDER__TRANSFORMATION);
 		createEReference(dataProviderEClass, DATA_PROVIDER__DISTRIBUTION_EXPORT);
+		createEReference(dataProviderEClass, DATA_PROVIDER__PUBLICATION);
 
 		dataInputEClass = createEClass(DATA_INPUT);
 		createEAttribute(dataInputEClass, DATA_INPUT__ID);
@@ -1372,6 +1532,20 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		createEAttribute(transformationEClass, TRANSFORMATION__NAME);
 		createEAttribute(transformationEClass, TRANSFORMATION__DESCRIPTION);
 
+		dcatPublicationEClass = createEClass(DCAT_PUBLICATION);
+		createEAttribute(dcatPublicationEClass, DCAT_PUBLICATION__ID);
+		createEAttribute(dcatPublicationEClass, DCAT_PUBLICATION__CATALOG);
+		createEAttribute(dcatPublicationEClass, DCAT_PUBLICATION__PORTAL);
+		createEAttribute(dcatPublicationEClass, DCAT_PUBLICATION__IDENTIFIER);
+		createEAttribute(dcatPublicationEClass, DCAT_PUBLICATION__TITLE);
+		createEAttribute(dcatPublicationEClass, DCAT_PUBLICATION__DESCRIPTION);
+		createEAttribute(dcatPublicationEClass, DCAT_PUBLICATION__LANGUAGE);
+		createEAttribute(dcatPublicationEClass, DCAT_PUBLICATION__KEYWORDS);
+		createEAttribute(dcatPublicationEClass, DCAT_PUBLICATION__THEMES);
+		createEAttribute(dcatPublicationEClass, DCAT_PUBLICATION__PUBLISHER_NAME);
+		createEAttribute(dcatPublicationEClass, DCAT_PUBLICATION__PUBLISHER_URI);
+		createEAttribute(dcatPublicationEClass, DCAT_PUBLICATION__LICENSE_URI);
+
 		jdbcDataSourceEClass = createEClass(JDBC_DATA_SOURCE);
 		createEAttribute(jdbcDataSourceEClass, JDBC_DATA_SOURCE__FILTER);
 		createEAttribute(jdbcDataSourceEClass, JDBC_DATA_SOURCE__ID);
@@ -1443,6 +1617,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		initEReference(getDataAtlasConfiguration_Services(), this.getDataService(), null, "services", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDataAtlasConfiguration_Exports(), this.getDistributionExport(), null, "exports", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDataAtlasConfiguration_Transformations(), this.getTransformation(), null, "transformations", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getDataAtlasConfiguration_Publications(), this.getDcatPublication(), null, "publications", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(dataProviderEClass, DataProvider.class, "DataProvider", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getDataProvider_Id(), ecorePackage.getEString(), "id", null, 1, 1, DataProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1451,6 +1626,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		initEReference(getDataProvider_DataInput(), this.getDataInput(), null, "dataInput", null, 0, 1, DataProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDataProvider_Transformation(), this.getTransformation(), null, "transformation", null, 0, 1, DataProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDataProvider_DistributionExport(), this.getDistributionExport(), null, "distributionExport", null, 0, -1, DataProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getDataProvider_Publication(), this.getDcatPublication(), null, "publication", null, 0, 1, DataProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(dataInputEClass, DataInput.class, "DataInput", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getDataInput_Id(), ecorePackage.getEString(), "id", null, 1, 1, DataInput.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1548,6 +1724,20 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		initEAttribute(getTransformation_Id(), ecorePackage.getEString(), "id", null, 1, 1, Transformation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getTransformation_Name(), ecorePackage.getEString(), "name", null, 1, 1, Transformation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getTransformation_Description(), ecorePackage.getEString(), "description", null, 1, 1, Transformation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(dcatPublicationEClass, DcatPublication.class, "DcatPublication", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getDcatPublication_Id(), ecorePackage.getEString(), "id", null, 1, 1, DcatPublication.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDcatPublication_Catalog(), ecorePackage.getEString(), "catalog", null, 1, 1, DcatPublication.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDcatPublication_Portal(), ecorePackage.getEString(), "portal", null, 0, 1, DcatPublication.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDcatPublication_Identifier(), ecorePackage.getEString(), "identifier", null, 0, 1, DcatPublication.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDcatPublication_Title(), ecorePackage.getEString(), "title", null, 0, 1, DcatPublication.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDcatPublication_Description(), ecorePackage.getEString(), "description", null, 0, 1, DcatPublication.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDcatPublication_Language(), ecorePackage.getEString(), "language", "en", 0, 1, DcatPublication.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDcatPublication_Keywords(), ecorePackage.getEString(), "keywords", null, 0, -1, DcatPublication.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDcatPublication_Themes(), ecorePackage.getEString(), "themes", null, 0, -1, DcatPublication.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDcatPublication_PublisherName(), ecorePackage.getEString(), "publisherName", null, 0, 1, DcatPublication.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDcatPublication_PublisherUri(), ecorePackage.getEString(), "publisherUri", null, 0, 1, DcatPublication.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDcatPublication_LicenseUri(), ecorePackage.getEString(), "licenseUri", null, 0, 1, DcatPublication.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(jdbcDataSourceEClass, JdbcDataSource.class, "JdbcDataSource", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getJdbcDataSource_Filter(), ecorePackage.getEString(), "filter", null, 0, 1, JdbcDataSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1657,6 +1847,12 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 			   "documentation", "Registry of the Transformations of this instance, referenced from DataProviders and BridgeRepositories."
 		   });
 		addAnnotation
+		  (getDataAtlasConfiguration_Publications(),
+		   source,
+		   new String[] {
+			   "documentation", "Registry of reusable DcatPublication declarations, referenced from DataServices and DataSets (via DataProvider.publication)."
+		   });
+		addAnnotation
 		  (dataProviderEClass,
 		   source,
 		   new String[] {
@@ -1697,6 +1893,12 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		   source,
 		   new String[] {
 			   "documentation", "References reusable DistributionExport templates (defined in the export registry) describing the formats this provider can be serialized to.\nOn a DataService this is the set of available/default exports. On a DataSet, if it defines its own exports they fully replace the service\'s; if left empty, the service\'s exports apply (override-else-default)."
+		   });
+		addAnnotation
+		  (getDataProvider_Publication(),
+		   source,
+		   new String[] {
+			   "documentation", "Opt-in open-data publication of this provider: references a DcatPublication declaration (defined in the publications registry). Absent means the provider is not published - nothing is published implicitly.\nFollows the override-else-default rule: what a DataService declares applies to its DataSets unless a DataSet references a DcatPublication of its own.\nDeliberately plain data - the mapping to a DCAT model lives in the omittable publication bundle, never in this model (see data.atlas issue #4, DA-DCAT-1)."
 		   });
 		addAnnotation
 		  (dataInputEClass,
@@ -2117,6 +2319,84 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		   source,
 		   new String[] {
 			   "documentation", "Derives from the model annotation by default"
+		   });
+		addAnnotation
+		  (dcatPublicationEClass,
+		   source,
+		   new String[] {
+			   "documentation", "Declares that a DataProvider referencing this element is published as open data to a DCAT portal (DCAT.Atlas). Defined once in the publications registry and referenced from DataServices and DataSets (via DataProvider.publication), so the same target catalog and metadata defaults are not duplicated per provider.\n\nDeliberately plain data: an id, a catalog name and a handful of metadata overrides. The mapping to dcat:Dataset / dcat:DataService lives in the omittable publication bundle - this model must never depend on a DCAT model (data.atlas issue #4, DA-DCAT-1). Metadata left unset here is derived from the provider (name, description, model annotations); an explicit value wins over a derived one (DA-DCAT-8).\n\nThe portal endpoint itself (base URL, credentials, timeouts) is a deployment concern and is NOT configured here: it is the Config-Admin configuration of the dcat.atlas client (DA-DCAT-6)."
+		   });
+		addAnnotation
+		  (getDcatPublication_Id(),
+		   source,
+		   new String[] {
+			   "documentation", "Unique identifier of this publication declaration."
+		   });
+		addAnnotation
+		  (getDcatPublication_Catalog(),
+		   source,
+		   new String[] {
+			   "documentation", "Identifier of the target catalog in the portal the published entries are linked into. The catalog is expected to exist - catalog creation is out of scope (DA-DCAT-5)."
+		   });
+		addAnnotation
+		  (getDcatPublication_Portal(),
+		   source,
+		   new String[] {
+			   "documentation", "Logical name of the portal to publish to, matching the \'dcat.portal\' service property of a configured dcat.atlas client. Unset means the single configured client; with more than one client configured, an unset portal is a configuration error. This is the link between the deployment-owned client configuration and this model (DA-DCAT-5/6)."
+		   });
+		addAnnotation
+		  (getDcatPublication_Identifier(),
+		   source,
+		   new String[] {
+			   "documentation", "Optional override of the DCAT identifier (the last PUT path segment). Unset means the id of the published provider. Must be stable and deterministic - it survives restarts, configuration reloads and redeployments (DA-DCAT-10/11)."
+		   });
+		addAnnotation
+		  (getDcatPublication_Title(),
+		   source,
+		   new String[] {
+			   "documentation", "Explicit dct:title override. Unset derives from the provider\'s name."
+		   });
+		addAnnotation
+		  (getDcatPublication_Description(),
+		   source,
+		   new String[] {
+			   "documentation", "Explicit dct:description override. Unset derives from the provider\'s description, else from the GenModel documentation annotation of the provider\'s model type."
+		   });
+		addAnnotation
+		  (getDcatPublication_Language(),
+		   source,
+		   new String[] {
+			   "documentation", "Language tag of the published plain literals (title, description, keywords)."
+		   });
+		addAnnotation
+		  (getDcatPublication_Keywords(),
+		   source,
+		   new String[] {
+			   "documentation", "dcat:keyword entries of the published dataset(s)."
+		   });
+		addAnnotation
+		  (getDcatPublication_Themes(),
+		   source,
+		   new String[] {
+			   "documentation", "dcat:theme IRIs of the published dataset(s), e.g. an EU data theme vocabulary entry."
+		   });
+		addAnnotation
+		  (getDcatPublication_PublisherName(),
+		   source,
+		   new String[] {
+			   "documentation", "Name of the dct:publisher (a foaf:Agent). Mandatory for publication by the portal\'s shapes and not derivable from the data model - a publication without one is a diagnosed configuration error (DA-DCAT-9)."
+		   });
+		addAnnotation
+		  (getDcatPublication_PublisherUri(),
+		   source,
+		   new String[] {
+			   "documentation", "Optional IRI identifying the publisher agent."
+		   });
+		addAnnotation
+		  (getDcatPublication_LicenseUri(),
+		   source,
+		   new String[] {
+			   "documentation", "License IRI of the published distributions (e.g. a dcat-ap.de license vocabulary entry). Mandatory for a distribution by the portal\'s shapes - a publication whose provider serves distributions needs one (DA-DCAT-9)."
 		   });
 		addAnnotation
 		  (jdbcDataSourceEClass,

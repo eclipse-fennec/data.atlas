@@ -15,5 +15,9 @@
 	},
 	"DataAtlasBootstrap": {
 		"config.uri": "$[env:DATA_ATLAS_CONFIG_URI;default=$[prop:data;default=/opt/dataatlas/runtime/data]/dataatlas.xmi]"
+	},
+	"org.eclipse.fennec.data.atlas.publication.dcat": {
+		"public.base.url": "$[env:DATA_ATLAS_PUBLIC_BASE_URL;default=]",
+		"retry.interval.ms": "$[env:DATA_ATLAS_DCAT_RETRY_INTERVAL;default=30000]"
 	}
 }

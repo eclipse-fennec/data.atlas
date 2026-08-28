@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dcat:Catalog xmlns:xmi="http://www.omg.org/XMI" xmlns:dcat="http://www.w3.org/ns/dcat#"
+              xmi:version="2.0">
+  <title lang="en" value="Example Catalog"/>
+  <description lang="en" value="Catalog the Data Atlas example publishes into. Created by the compose seeder - catalog creation is deliberately not the Data Atlas's job."/>
+  <publisher>
+    <name lang="en" value="Eclipse Fennec Data Atlas example"/>
+  </publisher>
+</dcat:Catalog>

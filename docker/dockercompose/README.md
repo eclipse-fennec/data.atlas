@@ -151,6 +151,56 @@ so the two cannot drift apart unnoticed. If your existing schema does not follow
 that derivation, pin the names explicitly with a `JPADataInput.persistenceConfig`
 instead of hand-tuning the SQL.
 
+## docker-compose-dcat.yml — publishing to a DCAT.Atlas portal
+
+Milestone 8 (data.atlas#4): the file-mode example, with its REST service
+declared for open-data publication. The Data Atlas registers the service, its
+dataset and the distributions with a DCAT.Atlas portal and keeps them in sync.
+
+```bash
+docker compose -f docker-compose-dcat.yml up
+```
+
+| Service | URL |
+|---|---|
+| `dcatatlas` | http://localhost:8084/rest |
+| `dataatlas` | http://localhost:8082/rest/example/persons |
+
+```bash
+# the published dataset, as the portal serves it (RDF/XML)
+curl -H "Accept: application/rdf+xml" http://localhost:8084/rest/datasets/persons
+
+# its distribution's accessURL points back at the Data Atlas endpoint …
+curl -H "Accept: application/rdf+xml" http://localhost:8084/rest/datasets/persons/distributions/json
+
+# … and that URL resolves to the data
+curl -H "Accept: application/json" http://localhost:8082/rest/example/persons
+
+# taking the portal down does not disturb the Data Atlas
+docker compose -f docker-compose-dcat.yml stop dcatatlas
+curl -H "Accept: application/json" http://localhost:8082/rest/example/persons   # still 200
+```
+
+The configuration is
+`org.eclipse.fennec.data.atlas.configuration.model/example/dataatlas-dcat.xmi` —
+the plain example plus a `DcatPublication` (target catalog, publisher, license)
+referenced from the `RestDataService`. Removing that one reference from the
+mounted file withdraws the entries from the portal at runtime; adding it back
+re-publishes them.
+
+Three deployment pieces sit outside the configuration model, as they should:
+the **portal client** (`dcat/load/dcatclient.json`, the dcat.atlas client's
+factory configuration, injected via `configurator.initial`), the **public base
+URL** (`DATA_ATLAS_PUBLIC_BASE_URL` — the address the portal's consumers reach
+the Data Atlas under), and the **target catalog**, which is expected to exist:
+the one-shot `catalog-seed` service creates it (`dcat/catalog.xmi`).
+
+The portal runs **without the DCAT-AP.de SHACL shapes** here — they are
+AGPL-3.0 and not distributed with either project. SHACL enforcement is off,
+the portal's model validation stays on. A real deployment mounts the GovData
+shapes and drops the two `SHACL_*` overrides (see the dcat.atlas compose
+setup).
+
 ## docker-compose-history.yml — the SensiNact history database as CSV
 
 ```bash
