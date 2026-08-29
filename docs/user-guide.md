@@ -502,6 +502,10 @@ docker compose -f docker/dockercompose/docker-compose-postgres.yml up -d
 curl -H "Accept: text/csv"        http://localhost:8081/rest/pg/persons   # CSV, ';' separated
 curl -H "Accept: application/json" http://localhost:8081/rest/pg/persons  # also declared
 curl -i -H "Accept: application/xml" http://localhost:8081/rest/pg/persons  # 406 - not declared
+
+# the service is also declared for DCAT publication (see below): the setup
+# includes a DCAT.Atlas, and the portal entry mirrors exactly the two exports
+curl -H "Accept: application/rdf+xml" http://localhost:8084/rest/datasets/persons
 ```
 
 The `DataSource` is created from a mounted Configurator file, so no credential

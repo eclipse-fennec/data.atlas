@@ -28,10 +28,16 @@
     <outputType href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person"/>
   </dataSets>
   <services xsi:type="configuration:RestDataService" id="persons-pg-rest" name="Persons Postgres REST"
-      description="REST endpoint publishing the database-backed persons." urlContext="/pg" openAPI="false">
+      description="REST endpoint publishing the database-backed persons." urlContext="/pg" openAPI="false"
+      publication="open-data">
     <configuration id="persons-pg-rest-config" dataSet="persons" path="persons"/>
   </services>
   <exports xsi:type="configuration:CSVDistributionExport" id="csv" name="CSV"
       description="Semicolon separated, no SQL-type row." separator=";" includeTypeHeader="false"/>
   <exports id="json" name="JSON" description="Plain JSON, kept alongside the CSV export." mediaType="application/json"/>
+  <publications id="open-data" catalog="example" publisherName="Eclipse Fennec Data Atlas example"
+      licenseUri="http://dcat-ap.de/def/licenses/dl-by-de/2.0">
+    <keywords>persons</keywords>
+    <keywords>postgres</keywords>
+  </publications>
 </configuration:DataAtlasConfiguration>

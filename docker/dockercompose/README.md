@@ -92,6 +92,7 @@ docker compose -f docker-compose-postgres.yml up
 | `postgres` | `localhost:15432` (db/user/password: `dataatlas`) |
 | `modelatlas` | http://localhost:8080/atlas/rest |
 | `dataatlas` | http://localhost:8081/rest/pg/persons |
+| `dcatatlas` | http://localhost:8084/rest |
 
 ```bash
 # CSV, semicolon separated, no SQL-type row — as configured
@@ -116,6 +117,23 @@ plain `DistributionExport` with `mediaType="application/json"`. Because the
 DataSet references exports, **exactly** those two media types are served;
 everything else is a `406`. Remove the JSON export and the same instance serves
 CSV only.
+
+The service is also declared for **DCAT publication** (a `DcatPublication` in
+the same configuration), so the setup brings up a DCAT.Atlas the Data Atlas
+registers with — notably, the declaration travels *inside the configuration
+the Model Atlas delivers*, unlike `docker-compose-dcat.yml` where it comes
+from a file. The portal entry mirrors exactly the declared exports: one
+distribution for CSV, one for JSON, none for XMI, each with the IANA media
+type IRI and the endpoint above as `accessURL`:
+
+```bash
+curl -H "Accept: application/rdf+xml" http://localhost:8084/rest/datasets/persons
+curl -H "Accept: application/rdf+xml" http://localhost:8084/rest/datasets/persons/distributions/csv
+```
+
+The deployment pieces (portal client configuration, catalog seeder, public
+base URL, the missing AGPL shapes) are the same as in
+[docker-compose-dcat.yml](#docker-compose-dcatyml--publishing-to-a-dcatatlas-portal).
 
 ### The two pieces that are not in the configuration model
 

@@ -1,11 +1,15 @@
 # Postgres + CSV setup: a PostgreSQL database, a Model Atlas holding the
 # configuration, and one atlas-mode Data Atlas serving the database table as
-# CSV — the whole path described by the configuration model.
+# CSV — the whole path described by the configuration model. The service is
+# additionally declared for DCAT publication (Milestone 8), so the setup also
+# brings up a DCAT.Atlas portal the Data Atlas registers with: the declaration
+# travels inside the configuration the Model Atlas delivers.
 #
 #   docker compose -f docker-compose-postgres.yml up
 #
 #   Model Atlas:  http://localhost:8080/atlas/rest
 #   Data Atlas:   http://localhost:8081/rest/pg/persons
+#   DCAT.Atlas:   http://localhost:8084/rest
 #   PostgreSQL:   localhost:15432 (user/password/db: dataatlas)
 #
 #   # CSV, semicolon separated, no SQL-type row — as configured
@@ -14,6 +18,13 @@
 #   curl -H "Accept: application/json" http://localhost:8081/rest/pg/persons
 #   # XMI is NOT declared, so it is refused
 #   curl -i -H "Accept: application/xml" http://localhost:8081/rest/pg/persons   # 406
+#
+#   # the published dataset in the portal: one distribution per declared
+#   # export (CSV and JSON), each pointing back at the endpoint above
+#   curl -H "Accept: application/rdf+xml" http://localhost:8084/rest/datasets/persons
+#
+# The portal runs WITHOUT the AGPL DCAT-AP.de SHACL shapes (see
+# docker-compose-dcat.yml for the details); a real deployment mounts them.
 services:
   postgres:
     image: postgres:16-alpine
@@ -59,6 +70,27 @@ services:
       - ../../org.eclipse.fennec.data.atlas.configuration.model/example/dataatlas-postgres-atlas.xmi:/seed/dataatlas-postgres-atlas.xmi:ro
     entrypoint: ["/bin/sh", "/seed/seed.sh"]
 
+  dcatatlas:
+    image: eclipsefennec/dcat.atlas:snapshot
+    ports:
+      - "8084:8080"
+    environment:
+      - SHACL_SHAPES_DIR=
+      - SHACL_VOCAB_DIR=
+      - SHACL_ENFORCE=false
+      - PUBLIC_BASE_URL=http://localhost:8084/rest/
+
+  # one-shot: waits for the portal and creates the target catalog the
+  # configuration's DcatPublication names - the catalog is expected to exist
+  catalog-seed:
+    image: curlimages/curl:8.10.1
+    depends_on:
+      - dcatatlas
+    volumes:
+      - ./dcat/seed.sh:/seed/seed.sh:ro
+      - ./dcat/catalog.xmi:/seed/catalog.xmi:ro
+    entrypoint: ["/bin/sh", "/seed/seed.sh"]
+
   dataatlas:
     image: eclipsefennec/data.atlas:atlas-snapshot
     ports:
@@ -68,14 +100,20 @@ services:
       - DATA_ATLAS_SCOPE=dataatlas
       - DATA_ATLAS_REGISTRY=configurations
       - DATA_ATLAS_OBJECT_ID=dataatlas
-      # the DataSource the configuration's JdbcDataSource filter selects is
-      # created from a mounted Configurator file, so no credential is baked
-      # into the image
-      - JAVA_TOOL_OPTIONS=-Dconfigurator.initial=file:///opt/dataatlas/runtime/load/datasource.json
+      # the public base the portal's consumers reach this Data Atlas under -
+      # it becomes the endpoint and distribution URLs in the portal
+      - DATA_ATLAS_PUBLIC_BASE_URL=http://localhost:8081/rest
+      # the DataSource the configuration's JdbcDataSource filter selects and
+      # the DCAT portal client are created from mounted Configurator files,
+      # so neither credential nor portal address is baked into the image
+      - JAVA_TOOL_OPTIONS=-Dconfigurator.initial=file:///opt/dataatlas/runtime/load/datasource.json,file:///opt/dataatlas/runtime/load-dcat/dcatclient.json
     volumes:
       - ./dataatlas/load:/opt/dataatlas/runtime/load:ro
+      - ./dcat/load:/opt/dataatlas/runtime/load-dcat:ro
     depends_on:
       postgres:
         condition: service_healthy
       seed:
+        condition: service_completed_successfully
+      catalog-seed:
         condition: service_completed_successfully
