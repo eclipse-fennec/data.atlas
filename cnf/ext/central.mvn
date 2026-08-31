@@ -149,6 +149,7 @@ org.eclipse.fennec.model.atlas:org.eclipse.fennec.model.atlas.scope.api:0.1.0-SN
 # emf.osgi line (1.1.0-SNAPSHOT) to the workspace repos
 org.antlr:antlr4-runtime:4.13.2
 org.eclipse.fennec.m2x:org.eclipse.fennec.m2x.unit:0.1.1-SNAPSHOT
+org.eclipse.fennec.m2x:org.eclipse.fennec.m2x.unit.osgi:0.1.1-SNAPSHOT
 org.eclipse.fennec.m2x:org.eclipse.fennec.m2x.ocl.model:0.1.1-SNAPSHOT
 org.eclipse.fennec.m2x:org.eclipse.fennec.m2x.ocl.api:0.1.1-SNAPSHOT
 org.eclipse.fennec.m2x:org.eclipse.fennec.m2x.ocl.parser:0.1.1-SNAPSHOT
