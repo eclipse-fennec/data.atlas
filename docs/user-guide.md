@@ -706,7 +706,13 @@ model. Two pieces:
    ```
 
    With more than one portal configured, `DcatPublication.portal` selects by
-   the `dcat.portal` name.
+   the `dcat.portal` name. The client has more knobs than this minimal,
+   unauthenticated example — authentication (`auth.type`: bearer token,
+   API key or mTLS, with credentials taken from the environment), timeouts
+   and readiness checks. Until the dcat.atlas user guide grows a client
+   chapter ([dcat.atlas#40](https://github.com/eclipse-fennec/dcat.atlas/issues/40)),
+   the authoritative key reference is the client's metatype,
+   [`DcatAtlasClientConfig`](https://github.com/eclipse-fennec/dcat.atlas/blob/snapshot/org.eclipse.fennec.dcat.atlas.client.osgi/src/org/eclipse/fennec/dcat/atlas/client/osgi/DcatAtlasClientConfig.java).
 
 2. **The public base URL** — `DATA_ATLAS_PUBLIC_BASE_URL`, the address the
    portal's consumers reach this Data Atlas under (behind a reverse proxy
