@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- SensiNact history database served as CSV — file-mode variant.
+<!-- SensiNact history database served as CSV — atlas-mode variant.
 
      The first example in which the Data Atlas reads a schema it does NOT own:
      the TimescaleDB store of SensiNact's history provider (schema `sensinact`,
@@ -10,8 +10,10 @@
        EntityMappings - because the derived naming cannot express lower-case,
        schema-qualified tables, and because the tables have no primary key and
        need a declared composite id.
-     * geo_data is deliberately NOT mapped: geography(POINT,4326) onto an EMF
-       attribute is out of scope here (eclipse-fennec/data.atlas#2).
+     * geo_data is served through a view that projects the PostGIS
+       geography(POINT,4326) column into plain SQL types (WKT text plus
+       longitude/latitude doubles), so the Data Atlas never sees a PostGIS
+       type (eclipse-fennec/data.atlas#2).
 
      Atlas-mode variant: every EClass reference is an nsURI href, resolved
      against the Model Atlas schema registry.

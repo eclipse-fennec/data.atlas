@@ -6,13 +6,14 @@
 > deposited in the Model Atlas. That is why both setups below have `volumes:`
 > entries pointing into `configuration.model/example/`.
 
-Two setups live here:
+The setups that live here:
 
 | File | What it shows |
 |---|---|
 | [`docker-compose-atlas.yml`](#docker-compose-atlasyml--file-mode-vs-model-atlas-mode) | the same file-based example served in both config modes, side by side |
 | [`docker-compose-postgres.yml`](#docker-compose-postgresyml--postgresql-served-as-csv) | a PostgreSQL table served as CSV, configuration delivered by a Model Atlas |
-| [`docker-compose-history.yml`](#docker-compose-historyyml--the-sensinact-history-database-as-csv) | the SensiNact history database - a schema we do **not** own - served as CSV |
+| [`docker-compose-dcat.yml`](#docker-compose-dcatyml--publishing-to-a-dcatatlas-portal) | the file-based example published to a DCAT.Atlas portal |
+| [`docker-compose-history.yml`](#docker-compose-historyyml--the-sensinact-history-database-as-csv) | the SensiNact history database - a schema we do **not** own - served as CSV, configuration (with its explicit JPA mapping) delivered by a Model Atlas |
 
 ## docker-compose-atlas.yml — file mode vs. Model Atlas mode
 
@@ -225,16 +226,30 @@ setup).
 docker compose -f docker-compose-history.yml up
 ```
 
-| Service | URL |
-|---|---|
-| `history-db` | `localhost:15433` (db/user/password: `sensinact`) |
-| `dataatlas` | http://localhost:8081/rest/history/numeric, `…/text` |
+| Service | URL | Config source |
+|---|---|---|
+| `history-db` | `localhost:15433` (db/user/password: `sensinact`) | — |
+| `modelatlas` | http://localhost:8080/atlas/rest | — |
+| `dataatlas` | http://localhost:8081/rest/history/numeric, `…/text`, `…/geo` | retrieved from the Model Atlas |
+| `dataatlas-file` (profile `file`) | http://localhost:8082/rest/history/numeric, `…/text`, `…/geo` | `dataatlas-history.xmi`, mounted |
 
 The difference to the Postgres example: that one serves a schema we invented and
 shaped to fit the derived eorm naming. This one serves the **TimescaleDB store of
 SensiNact's history provider** — lower-case, schema-qualified, hypertables, no
 primary key. That is the realistic shape of "serve an existing database", and it
 is what a production setup gets pointed at.
+
+The configuration comes from the Model Atlas: the one-shot `seed` service uploads
+the referenced schemas (eorm, configuration, person and `sensinact-history.ecore`)
+into the `release` stage and then the instance `dataatlas-history-atlas.xmi`; the
+Data Atlas runs in atlas mode and retrieves it from there. The file-mode twin
+(`dataatlas-history.xmi`, the same configuration with relative `.ecore` hrefs)
+can be started next to it for a side-by-side comparison — both must answer
+identically:
+
+```bash
+docker compose -f docker-compose-history.yml --profile file up
+```
 
 There is deliberately no `event.atlas` here: the example is about *reading* the
 history database, not about producing the data, so the schema and a few
@@ -263,21 +278,24 @@ Note the CSV header: `time;modelPackageUri;model;…` — the **model** attribut
 names, while the database columns are `time, modelpackageuri, model, …`. That gap
 is exactly what the explicit mapping bridges.
 
-### Why file mode here, and not atlas mode
+### What the Model Atlas has to round-trip here
 
-The Postgres example runs in atlas mode; this one cannot yet. A configuration for
-a foreign schema must carry an explicit eorm `EntityMappings`, and the eorm model
-mirrors JPA's `orm.xml`, so it uses `ExtendedMetaData` XML names. The Model Atlas
-cannot round-trip such an object: it accepts the upload (`201`), writes
-`column-definition` to disk, and then fails to read its own file back with
-`FeatureNotFoundException: Feature 'column-definition' not found`
-([model.atlas#213](https://github.com/eclipse-fennec/model.atlas/issues/213)).
+A configuration for a foreign schema must carry an explicit eorm `EntityMappings`,
+and the eorm model mirrors JPA's `orm.xml`, so it uses `ExtendedMetaData` XML
+names (`column-definition` on disk, `columnDefinition` in the model). Until
+[model.atlas#213](https://github.com/eclipse-fennec/model.atlas/issues/213) was
+fixed (2026-08-28), the Model Atlas accepted such an upload (`201`) but failed to
+read its own file back with `FeatureNotFoundException: Feature 'column-definition'
+not found` — which is why this example started out in file mode. The setup needs a
+`model.atlas:file-snapshot` image that carries the fix (any image published from
+the `snapshot` branch after that date).
 
-The atlas-mode instance (`dataatlas-history-atlas.xmi`) is committed and its
-services are kept behind a compose profile, so when #213 is fixed:
+The delivered configuration, inline mapping included, can be inspected in the
+Model Atlas:
 
 ```bash
-docker compose -f docker-compose-history.yml --profile atlas up
+curl -H "Accept: application/xmi" \
+  "http://localhost:8080/atlas/rest/dataatlas/registries/configurations/stages/release/content?objectId=dataatlas"
 ```
 
 ### The three things this example had to solve

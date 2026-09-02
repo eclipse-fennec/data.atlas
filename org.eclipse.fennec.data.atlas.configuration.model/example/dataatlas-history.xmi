@@ -10,8 +10,10 @@
        EntityMappings - because the derived naming cannot express lower-case,
        schema-qualified tables, and because the tables have no primary key and
        need a declared composite id.
-     * geo_data is deliberately NOT mapped: geography(POINT,4326) onto an EMF
-       attribute is out of scope here (eclipse-fennec/data.atlas#2).
+     * geo_data is served through a view that projects the PostGIS
+       geography(POINT,4326) column into plain SQL types (WKT text plus
+       longitude/latitude doubles), so the Data Atlas never sees a PostGIS
+       type (eclipse-fennec/data.atlas#2).
 
      dataatlas-history-atlas.xmi is the atlas-mode twin. -->
 <configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
