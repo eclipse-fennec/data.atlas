@@ -146,13 +146,13 @@ public class DataAtlasBootstrap {
 			LOG.log(Level.INFO, () -> "DataAtlasBootstrap: no configuration file at " + configUri
 					+ " (yet) - nothing is published until one appears");
 			registrar.unregisterAll();
-			registerWatcher();
+			registerWatcher(false);
 			return;
 		}
 		// initial load stays fail-fast: an invalid configuration at startup (or
 		// on a config.uri switch) fails loudly
 		load();
-		registerWatcher();
+		registerWatcher(true);
 	}
 
 	/**
@@ -205,8 +205,14 @@ public class DataAtlasBootstrap {
 	/**
 	 * Registers a {@code io.fs.watcher} whiteboard listener on the config
 	 * file's directory, filtered to exactly this file.
+	 *
+	 * @param initialStateLoaded whether the bootstrap has just loaded the file
+	 *                           itself; if not, a file the watcher reports as
+	 *                           already present when it activates must be loaded
+	 *                           (it appeared between the absence check and the
+	 *                           watcher activation)
 	 */
-	private void registerWatcher() {
+	private void registerWatcher(boolean initialStateLoaded) {
 		if (!configUri.isFile() || configUri.toFileString() == null) {
 			LOG.log(Level.INFO, () -> "DataAtlasBootstrap: " + configUri + " is not a file, no change watching");
 			return;
@@ -218,7 +224,7 @@ public class DataAtlasBootstrap {
 		props.put(FileSystemWatcherWhiteboardConstants.FILESYSTEM_WATCHER_PATTERN,
 				".*" + Pattern.quote(java.io.File.separator + file.getFileName()));
 		watcherRegistration = bundleContext.registerService(FileSystemWatcherListener.class,
-				new ConfigFileListener(file), props);
+				new ConfigFileListener(file, initialStateLoaded), props);
 		LOG.log(Level.INFO, () -> "DataAtlasBootstrap: watching " + file + " for changes");
 	}
 
@@ -250,19 +256,33 @@ public class DataAtlasBootstrap {
 	private final class ConfigFileListener implements FileSystemWatcherListener {
 
 		private final Path file;
+		private final boolean initialStateLoaded;
 
-		ConfigFileListener(Path file) {
+		ConfigFileListener(Path file, boolean initialStateLoaded) {
 			this.file = file;
+			this.initialStateLoaded = initialStateLoaded;
 		}
 
 		@Override
 		public void handleBasePath(Path basePath) {
-			// nothing to do: the initial state was loaded by the bootstrap
+			// nothing to do
 		}
 
 		@Override
 		public void handleInitialPaths(List<Path> paths) {
-			// nothing to do: the initial state was loaded by the bootstrap
+			// The watchservice activates the listener asynchronously: a file that
+			// appears between the bootstrap's absence check and that activation
+			// is reported here as an initial path, not as an event. If the
+			// bootstrap loaded the file itself there is nothing to do; otherwise
+			// this IS the "configuration appeared" signal.
+			if (initialStateLoaded) {
+				return;
+			}
+			if (paths.stream().map(Path::toAbsolutePath).anyMatch(file::equals)) {
+				LOG.log(Level.INFO, () -> "DataAtlasBootstrap: configuration file " + file
+						+ " appeared while the watcher was being activated - loading it");
+				scheduleReload();
+			}
 		}
 
 		@Override
