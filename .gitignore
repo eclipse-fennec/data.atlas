@@ -9,7 +9,6 @@ CLAUDE.local.md
 # Eclipse metadata
 /.metadata/
 /.recommenders/
-/.project
 
 # Docker staging output
 /docker/*/content/
