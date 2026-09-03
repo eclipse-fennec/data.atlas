@@ -32,6 +32,7 @@ Docker images:
 | `…api` | Shared property constants |
 | `…bootstrap` | Loads the configuration (file or Model Atlas mode) and registers the configuration objects as OSGi services, applying updates as a diff |
 | `…input.file` / `…input.jpa` | Translate `FileDataInput`/`JPADataInput` into read-only repository services |
+| `…transformation` / `…input.bridge` | QVT-O `DataTransformer` services and the `BridgeRepository` input serving transformed objects |
 | `…rest` | One Jakarta-RS whiteboard application per `RestDataService` |
 | `…publication.dcat` | Omittable: keeps declared providers registered with a DCAT.Atlas portal |
 | `…runtime.config` / `…runtime.config.atlas` | Configurator resources per config-source flavour |

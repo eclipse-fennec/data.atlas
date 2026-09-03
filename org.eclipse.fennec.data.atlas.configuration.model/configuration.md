@@ -107,9 +107,28 @@ declare both.
 
 ### `Transformation`
 
-`DataTransformation` (model A → model B, QVT script placeholder for now, with
-`supportedEClasses`/`resultEClasses`) and `QueryTransformation` (maps incoming
-queries onto the underlying source).
+`DataTransformation` (model A → model B) and `QueryTransformation` (maps
+incoming queries onto the underlying source; not executed yet — a
+`BridgeRepository` with a configured `queryTrafo` stays down).
+
+A `DataTransformation` references its executable as an **EObject**: the
+`transformation` reference points at the QVT-O AST — an
+`OperationalTransformation` of the fennec m2x `qvtoperational` metamodel —
+inside a **CompiledUnit document** (`#//@unit`). A bare parsed AST is not
+storable (the parser's satellites live outside any resource), so authoring
+compiles the `.qvto` text once into that self-contained document; see
+[`example/trafo/`](example/trafo/) for the source, the generated documents and
+the generator. `supportedEClasses`/`resultEClasses` must name exactly one
+EClass each — Data Atlas transformations are **1:1 by contract** (one source
+object maps to one result object with the same id), which is what makes
+pagination push-down and by-id lookups through a bridge correct.
+
+In file mode the document is referenced relative to the configuration; a
+configuration served by a Model Atlas names it by an **absolute URI** the
+runtime resolves locally (like every `FileDataInput` in that mode). Publishing
+the document into a Model Atlas registry is blocked upstream — the m2x
+metamodels carry workspace-relative cross-references a registry cannot serve
+(emf.m2x#246).
 
 ### `DcatPublication` — opt-in open-data publication
 
@@ -155,6 +174,11 @@ vertical slice: one `FileDataInput`
 ([`example/data/persons.xmi`](example/data/persons.xmi), model
 [`example/model/person.ecore`](example/model/person.ecore)) published by one
 `RestDataService` at `/example/persons`.
+[`example/dataatlas-transformation.xmi`](example/dataatlas-transformation.xmi)
+adds the Milestone 6 slice on the same data: a `BridgeRepository` applies the
+QVT-O transformation
+[`example/trafo/person-to-public.qvto`](example/trafo/person-to-public.qvto)
+and serves `PublicPerson` projections at `/example-public/public-persons`.
 
 ## Open modeling questions
 

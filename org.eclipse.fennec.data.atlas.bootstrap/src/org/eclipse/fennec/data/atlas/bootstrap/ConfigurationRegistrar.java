@@ -100,11 +100,12 @@ class ConfigurationRegistrar {
 	}
 
 	/**
-	 * Fails fast when the (resolved) configuration still contains unresolved
-	 * proxies — a bootstrap must never publish half-resolved config objects.
+	 * Fails fast when the (resolved) object tree still contains unresolved
+	 * proxies — a bootstrap must never publish half-resolved config objects,
+	 * and a referenced transformation document is held to the same standard.
 	 */
-	static void failOnUnresolvedProxies(DataAtlasConfiguration configuration, String source) {
-		Map<EObject, ?> unresolved = EcoreUtil.UnresolvedProxyCrossReferencer.find(configuration);
+	static void failOnUnresolvedProxies(EObject root, String source) {
+		Map<EObject, ?> unresolved = EcoreUtil.UnresolvedProxyCrossReferencer.find(root);
 		if (!unresolved.isEmpty()) {
 			throw new IllegalStateException(
 					"Data Atlas configuration " + source + " has unresolved references: " + unresolved.keySet());

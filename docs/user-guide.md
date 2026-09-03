@@ -36,6 +36,7 @@ instances of those schemas.
   - [Relational Data: JPA Input](#relational-data-jpa-input)
   - [PostgreSQL End to End](#postgresql-end-to-end)
   - [Query-Defined DataSets with Parameters](#query-defined-datasets-with-parameters)
+  - [Transforming Data: QVT-O over a Bridge](#transforming-data-qvt-o-over-a-bridge)
   - [Referencing Schemas](#referencing-schemas)
 - [Configuration Lifecycle](#configuration-lifecycle)
   - [File Mode: Watching the Configuration File](#file-mode-watching-the-configuration-file)
@@ -569,6 +570,79 @@ query parameter:
 `xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"` on the root element;
 references to abstract types like `PropertyPath.segments` need an explicit
 `xsi:type`.)
+
+### Transforming Data: QVT-O over a Bridge
+
+A DataSet can serve **transformed** objects: a `BridgeRepository` wraps
+another input and applies a QVT-O `DataTransformation` to every loaded
+object. The REST layer does not change at all — a bridge is just one more
+input, so it can be cascaded, and a DataSet on a bridge declares the bridge's
+*output* type as its `inputType`.
+
+```xml
+<dataInputs xsi:type="configuration:BridgeRepository" id="public-persons-bridge"
+    source="persons-file" dataTrafo="person-to-public">
+  <supportedEClasses href="model/person-public.ecore#//PublicPerson"/>
+</dataInputs>
+<dataSets id="public-persons" name="public-persons" description="Public projection."
+    dataInput="public-persons-bridge">
+  <inputType href="model/person-public.ecore#//PublicPerson"/>
+  <outputType href="model/person-public.ecore#//PublicPerson"/>
+</dataSets>
+<transformations xsi:type="configuration:DataTransformation" id="person-to-public"
+    name="PersonToPublic" description="Projects a Person onto a PublicPerson.">
+  <transformation href="trafo/person-to-public.xmi#//@unit"/>
+  <supportedEClasses href="model/person.ecore#//Person"/>
+  <resultEClasses href="model/person-public.ecore#//PublicPerson"/>
+</transformations>
+```
+
+**Authoring** happens in QVT-O text, **the runtime executes the compiled
+AST**: the `transformation` reference points at the `OperationalTransformation`
+inside a *CompiledUnit* document (fragment `#//@unit`), produced once from the
+`.qvto` source with the fennec m2x engine's `compile()` — a bare parsed AST is
+not storable. The shipped example
+(`configuration.model/example/trafo/`) carries the source
+(`person-to-public.qvto`), both generated documents and the generator
+(`AstGen.java`) with regeneration instructions in the `.qvto` header:
+
+```qvto
+modeltype PERSON uses 'https://eclipse.org/fennec/data/atlas/example/person/1.0.0';
+modeltype PUB uses 'https://eclipse.org/fennec/data/atlas/example/person/public/1.0.0';
+
+transformation PersonToPublic(in src : PERSON, out tgt : PUB);
+
+main() {
+    src.rootObjects()[Person]->map toPublic();
+}
+
+mapping Person::toPublic() : PublicPerson {
+    id := self.id;
+    displayName := self.firstName + ' ' + self.lastName;
+}
+```
+
+Rules the runtime enforces:
+
+- **Transformations are 1:1 by contract**: exactly one `supportedEClasses`
+  and one `resultEClasses`, one result object per source object, carrying the
+  **same id**. That is what makes pagination push-down and by-id lookups
+  through the bridge correct; anything non-1:1 is refused loudly.
+- **Fail-early gating, M4 lifecycle**: a missing or unresolvable
+  transformation keeps every dependent endpoint down (404) rather than
+  serving untransformed data; fixing the configuration recovers the instance
+  without a restart.
+- The bridge accepts `from`/`skip`/`top` queries only. A DataSet with
+  predicates or a configured `queryTrafo` on a bridge never becomes an
+  endpoint (query transformation is not implemented yet).
+
+In **Model Atlas mode** the configuration — including the
+`DataTransformation` — travels through the Model Atlas; the CompiledUnit
+document itself is named by an **absolute URI** the runtime resolves locally
+(mounted next to the data, like every `FileDataInput` in that mode), using
+the nsURI-referencing variant (`person-to-public-atlas.xmi`). Publishing the
+document into a Model Atlas registry is currently blocked upstream
+([emf.m2x#246](https://github.com/eclipse-fennec/emf.m2x/issues/246)).
 
 ### Referencing Schemas
 

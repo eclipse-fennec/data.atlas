@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.fennec.data.atlas.configuration.DataAtlasConfiguration;
+import org.eclipse.fennec.data.atlas.configuration.DataTransformation;
 import org.eclipse.fennec.model.atlas.scope.api.ReadableScopeService;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -199,9 +200,35 @@ public class ModelAtlasBootstrap {
 		LOG.log(Level.INFO, () -> "ModelAtlasBootstrap: applying Data Atlas configuration from " + source());
 		// resolves EClass references remotely through the client's ResourceSet
 		EcoreUtil.resolveAll(configuration);
+		resolveTransformationDocuments(configuration);
 		ConfigurationRegistrar.failOnUnresolvedProxies(configuration, source());
 		registrar.apply(configuration);
 		lastApplied = object;
+	}
+
+	/**
+	 * {@code EcoreUtil.resolveAll(configuration)} resolves the configuration's
+	 * own cross-references, but a referenced document — a transformation's
+	 * CompiledUnit XMI, loaded from the URI the configuration names (in this
+	 * mode an absolute URI, like {@code FileDataInput}) — keeps its own internal
+	 * proxies. They must resolve here, against the client's Atlas-aware
+	 * ResourceSet, so the transformation binds the same EPackage instances the
+	 * registrar publishes; a proxy left dangling in the document is a broken
+	 * configuration and fails the apply (M4 semantics).
+	 */
+	private void resolveTransformationDocuments(DataAtlasConfiguration configuration) {
+		configuration.getTransformations().stream() //
+				.filter(DataTransformation.class::isInstance).map(DataTransformation.class::cast) //
+				.map(DataTransformation::getTransformation) //
+				.filter(ast -> ast != null && !ast.eIsProxy()) //
+				.forEach(ast -> {
+					EObject root = EcoreUtil.getRootContainer(ast);
+					EcoreUtil.resolveAll(root);
+					ConfigurationRegistrar.failOnUnresolvedProxies(root,
+							source() + " (transformation document " + (root.eResource() != null
+									? String.valueOf(root.eResource().getURI())
+									: "<detached>") + ")");
+				});
 	}
 
 	private String source() {

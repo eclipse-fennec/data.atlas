@@ -12,4 +12,7 @@ Bundle-Description: File-mode configuration source: loads the DataAtlasConfigura
 	org.eclipse.fennec.data.atlas.configuration.model;version=project,\
 	org.eclipse.fennec.data.atlas.api;version=project,\
 	org.eclipse.fennec.model.atlas.scope.api;version=latest,\
-	org.eclipse.daanse.io.fs.watcher.api;version=latest
+	org.eclipse.daanse.io.fs.watcher.api;version=latest,\
+	org.eclipse.fennec.m2x.qvto.model;version=latest,\
+	org.eclipse.fennec.m2x.ocl.model;version=latest,\
+	org.eclipse.fennec.m2x.qvt.model;version=latest

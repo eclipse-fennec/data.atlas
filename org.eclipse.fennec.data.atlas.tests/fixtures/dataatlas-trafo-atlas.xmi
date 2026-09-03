@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Atlas-mode transformation fixture (Milestone 6): EClass references are
+     nsURI-based (resolved against the Model Atlas schema registry); the data
+     file AND the transformation's CompiledUnit document are named by absolute
+     URIs the runtime resolves locally, like every FileDataInput in this mode.
+     The integration test string-replaces the file:///DATA placeholder with its
+     extracted fixture directory. -->
+<configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    name="trafo-atlas" description="Transformation example served from a Model Atlas.">
+  <dataInputs xsi:type="configuration:FileDataInput" id="persons-file" uri="file:///DATA/data/persons.xmi">
+    <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person"/>
+  </dataInputs>
+  <dataInputs xsi:type="configuration:BridgeRepository" id="public-persons-bridge" source="persons-file"
+      dataTrafo="person-to-public">
+    <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/person/public/1.0.0#//PublicPerson"/>
+  </dataInputs>
+  <dataSets id="public-persons" name="public-persons" description="Public projection (id, displayName) of the example persons."
+      dataInput="public-persons-bridge">
+    <inputType href="https://eclipse.org/fennec/data/atlas/example/person/public/1.0.0#//PublicPerson"/>
+    <outputType href="https://eclipse.org/fennec/data/atlas/example/person/public/1.0.0#//PublicPerson"/>
+  </dataSets>
+  <services xsi:type="configuration:RestDataService" id="public-persons-rest" name="Public Persons REST"
+      description="REST endpoint publishing the transformed persons." urlContext="/example-public" openAPI="false">
+    <configuration id="public-persons-rest-config" dataSet="public-persons" path="public-persons"/>
+  </services>
+  <transformations xsi:type="configuration:DataTransformation" id="person-to-public" name="PersonToPublic"
+      description="Projects a Person onto a PublicPerson (id, displayName).">
+    <transformation href="file:///DATA/trafo/person-to-public-atlas.xmi#//@unit"/>
+    <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person"/>
+    <resultEClasses href="https://eclipse.org/fennec/data/atlas/example/person/public/1.0.0#//PublicPerson"/>
+  </transformations>
+</configuration:DataAtlasConfiguration>

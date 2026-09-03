@@ -70,7 +70,7 @@ flowchart TB
 
 ## Current state vs. target
 
-Implemented today (roadmap Milestones 0–4, 7 and 8):
+Implemented today (roadmap Milestones 0–4 and 6–8):
 
 - **Model bundle**: `configuration.model` — `DataAtlasConfiguration` root with
   containment registries (data sources, inputs, data sets, services, exports,
@@ -126,6 +126,24 @@ Implemented today (roadmap Milestones 0–4, 7 and 8):
   portal endpoint is deployment configuration (the client's Config-Admin
   factory PID); the public base URL comes from
   `DATA_ATLAS_PUBLIC_BASE_URL`.
+- **Data transformations** (Milestone 6): the `transformation` bundle turns
+  every `DataTransformation` configuration service into a ready-to-execute
+  `DataTransformer` (fennec m2x QVT-O engine; the compiled AST — the
+  `OperationalTransformation` inside a CompiledUnit document the configuration
+  references — is copied with its whole document at registration), and the
+  `input.bridge` bundle registers one read-only `ReadRepository` per
+  `BridgeRepository` that reads from the source input's repository and
+  transforms — the REST layer is untouched, bridges cascade, and the 1:1
+  contract (one result per source object, same id) keeps `skip`/`top`
+  push-down and by-id lookups correct. Fail-early gating throughout: a
+  missing, unresolvable or non-1:1 transformation keeps every dependent
+  endpoint down, and the M4 lifecycle recovers it. In Model Atlas mode the
+  configuration carries the transformation; the unit document is named by an
+  absolute local URI (publishing it into a Model Atlas registry is blocked by
+  emf.m2x#246). The transformation configurator builds its engines with the
+  package registry of a fresh emf.osgi ResourceSet — the DS QvtoEngine has no
+  registry seam and would bind the unit's carried metamodel copies
+  (emf.m2x#245).
 - **Runtime assembly**: bndruns (`_base`/`_local`/`_docker`/`_docker_atlas`)
   including the JPA/EclipseLink stack, distroless docker images (`file-*` and
   `atlas-*` tags). The images deliberately contain **no** models, configuration
@@ -140,8 +158,9 @@ Implemented today (roadmap Milestones 0–4, 7 and 8):
   `none`). OSGi integration tests (`tests`, H2-backed for the JPA slice,
   docker-gated for the compose setups and for the PostgreSQL + CSV example).
 
-Not yet implemented: the other DataService kinds,
-importers/transformations (see the [roadmap](roadmap.md)).
+Not yet implemented: the other DataService kinds, importers, query
+transformations (a bridge with a configured `queryTrafo` stays down) (see the
+[roadmap](roadmap.md)).
 
 ## Configuration lifecycle
 

@@ -118,7 +118,7 @@ public class TransformationConfigurator {
 		// falls back to the global EPackage.Registry, which never contains the
 		// dynamically registered configuration packages, so the engine would
 		// silently bind the CompiledUnit's carried metamodel COPIES and the
-		// transformation would match no runtime object (emf.m2x#—, filed).
+		// transformation would match no runtime object (emf.m2x#245).
 		// A fresh emf.osgi ResourceSet carries the registry with exactly the
 		// packages the registrar published (they are registered before the
 		// configuration objects, so they are present here).
