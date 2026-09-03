@@ -34,7 +34,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -46,19 +49,26 @@ import org.osgi.test.junit5.context.BundleContextExtension;
 import org.osgi.test.junit5.service.ServiceExtension;
 
 /**
- * Milestone 6 in Model Atlas mode: the configuration — including the
- * {@code DataTransformation} and the bridge — travels through the Model Atlas,
- * and the served objects are transformed. The transformation's CompiledUnit
- * document is named by an absolute URI the runtime resolves locally, exactly
- * like every {@code FileDataInput} in this mode; publishing the document into
- * a Model Atlas registry additionally is blocked upstream — the m2x metamodels
- * carry relative cross-repository references a Model Atlas cannot serve (the
- * configuration.ecore lesson of the history example, this time upstream).
+ * Milestone 6 in Model Atlas mode, both hosting conventions:
+ *
+ * <ol>
+ * <li>the transformation's CompiledUnit document named by an <b>absolute local
+ * URI</b> (the {@code FileDataInput} convention of this mode), and</li>
+ * <li>the WP-DA-7 target picture (issue #7): the document lives in a Model
+ * Atlas <b>{@code transformations} registry</b>, reaches the runtime through
+ * the model.atlas {@code AtlasEObjectProvider} feeding a local emf.osgi
+ * {@code EObjectRegistry}, and the configuration references it with an
+ * {@code eobject-registry://transformations/<key>#//@unit} URI the bootstrap
+ * resolves against that registry. The m2x metamodels are seeded into the
+ * Model Atlas — possible since emf.m2x#246 made their cross-references
+ * nsURI-based.</li>
+ * </ol>
  *
  * <p>Skipped when docker (or the image) is not available.</p>
  */
 @ExtendWith(BundleContextExtension.class)
 @ExtendWith(ServiceExtension.class)
+@TestMethodOrder(OrderAnnotation.class)
 public class TransformationAtlasModeIntegrationTest {
 
 	private static final String IMAGE = "eclipsefennec/model.atlas:file-snapshot";
@@ -74,7 +84,12 @@ public class TransformationAtlasModeIntegrationTest {
 	private static Configuration whiteboardConfig;
 	private static Configuration clientConfig;
 	private static Configuration bootstrapConfig;
+	private static Configuration initialProviderConfig;
+	private static Configuration eObjectRegistryConfig;
+	private static Configuration atlasProviderConfig;
 	private static boolean containerStarted;
+	private static String seededInstance;
+	private static Path fixtureDir;
 
 	@BeforeAll
 	static void setup(@InjectBundleContext BundleContext bundleContext,
@@ -82,6 +97,7 @@ public class TransformationAtlasModeIntegrationTest {
 		assumeTrue(docker("version") == 0, "docker is not available");
 
 		Path dir = extract(bundleContext);
+		fixtureDir = dir;
 
 		docker("rm", "-f", CONTAINER);
 		int started = docker("run", "-d", "--name", CONTAINER, "-p", MODEL_ATLAS_PORT + ":8080",
@@ -128,8 +144,8 @@ public class TransformationAtlasModeIntegrationTest {
 
 	@AfterAll
 	static void tearDown() throws Exception {
-		for (Configuration configuration : new Configuration[] { bootstrapConfig, clientConfig, whiteboardConfig,
-				httpConfig }) {
+		for (Configuration configuration : new Configuration[] { bootstrapConfig, atlasProviderConfig,
+				eObjectRegistryConfig, initialProviderConfig, clientConfig, whiteboardConfig, httpConfig }) {
 			if (configuration != null) {
 				configuration.delete();
 			}
@@ -140,6 +156,7 @@ public class TransformationAtlasModeIntegrationTest {
 	}
 
 	@Test
+	@Order(1)
 	void servesTransformedObjectsFromAtlasConfiguration() throws Exception {
 		HttpResponse<String> list = awaitOk(BASE_URL, "application/json", 120_000);
 		assertEquals(200, list.statusCode());
@@ -151,6 +168,102 @@ public class TransformationAtlasModeIntegrationTest {
 		HttpResponse<String> byId = get(BASE_URL + "/p3", "application/json");
 		assertEquals(200, byId.statusCode());
 		assertTrue(byId.body().contains("Margaret Hamilton"), byId.body());
+	}
+
+	/**
+	 * The WP-DA-7 picture (issue #7): the CompiledUnit document is uploaded
+	 * into the Model Atlas {@code transformations} registry (its m2x
+	 * metamodels seeded first), synced into a local emf.osgi
+	 * {@code EObjectRegistry} by the model.atlas {@code AtlasEObjectProvider},
+	 * and a new configuration version referencing
+	 * {@code eobject-registry://transformations/person-to-public#//@unit}
+	 * reaches the running instance through the stage workflow — proven by the
+	 * second endpoint that version adds, serving transformed objects.
+	 */
+	@Test
+	@Order(2)
+	void servesTransformationsFromTheModelAtlasRegistry(@InjectService ConfigurationAdmin configAdmin,
+			@InjectBundleContext BundleContext bundleContext) throws Exception {
+		awaitOk(BASE_URL, "application/json", 120_000);
+
+		// the m2x schema closure, dependencies first (nsURI-based since emf.m2x#246)
+		seedBundleSchema(bundleContext, "org.eclipse.fennec.m2x.qvt.model", "model/qvtbase.ecore");
+		seedBundleSchema(bundleContext, "org.eclipse.fennec.m2x.ocl.model", "model/ocl.ecore");
+		seedBundleSchema(bundleContext, "org.eclipse.fennec.m2x.qvto.model", "model/imperativeocl.ecore");
+		seedBundleSchema(bundleContext, "org.eclipse.fennec.m2x.qvto.model", "model/qvtoperational.ecore");
+		seedBundleSchema(bundleContext, "org.eclipse.fennec.m2x.unit", "model/compiledunit.ecore");
+
+		// the unit document into the transformations registry (final stage)
+		HttpResponse<String> stored = CLIENT.send(HttpRequest
+				.newBuilder(java.net.URI.create(ATLAS_BASE
+						+ "/dataatlas/registries/transformations/stages/release/person-to-public?name=person-to-public&override=true"))
+				.header("Content-Type", "application/xmi")
+				.header("Accept", "application/json")
+				.POST(HttpRequest.BodyPublishers
+						.ofByteArray(Files.readAllBytes(fixtureDir.resolve("data/trafo/person-to-public-atlas.xmi"))))
+				.build(), HttpResponse.BodyHandlers.ofString());
+		assertTrue(stored.statusCode() == 201 || stored.statusCode() == 409,
+				() -> "unit upload failed: " + stored.statusCode() + " " + stored.body());
+
+		// the local registry chain: empty initial provider -> EObjectRegistry
+		// 'transformations' -> AtlasEObjectProvider syncing the atlas registry
+		initialProviderConfig = configAdmin.getFactoryConfiguration("FileEObjectProvider", "trafoAtlasTest", "?");
+		Dictionary<String, Object> initProps = new Hashtable<>();
+		initProps.put("emf.eobject.provider.name", "trafoAtlasTestInit");
+		initialProviderConfig.update(initProps);
+
+		eObjectRegistryConfig = configAdmin.getFactoryConfiguration("EObjectRegistry", "trafoAtlasTest", "?");
+		Dictionary<String, Object> registryProps = new Hashtable<>();
+		registryProps.put("name", "transformations");
+		registryProps.put("initialProvider.target", "(emf.eobject.provider.name=trafoAtlasTestInit)");
+		eObjectRegistryConfig.update(registryProps);
+
+		atlasProviderConfig = configAdmin.getFactoryConfiguration("AtlasEObjectProvider", "trafoAtlasTest", "?");
+		Dictionary<String, Object> providerProps = new Hashtable<>();
+		providerProps.put("emf.eobject.provider.name", "trafoAtlasTestSync");
+		providerProps.put("registries", new String[] { "transformations" });
+		providerProps.put("writer.target", "(emf.eobject.registry.name=transformations)");
+		providerProps.put("atlasScope.target", "(atlas.scope=dataatlas)");
+		providerProps.put("refresh.interval.ms", 2000L);
+		atlasProviderConfig.update(providerProps);
+
+		// the new configuration version: the transformation now comes from the
+		// registry, and a second endpoint makes the applied version observable
+		String registryVersion = seededInstance
+				.replaceFirst("<transformation href=\"[^\"]+\"/>",
+						"<transformation href=\"eobject-registry://transformations/person-to-public#//@unit\"/>")
+				.replace("<configuration id=\"public-persons-rest-config\" dataSet=\"public-persons\" path=\"public-persons\"/>",
+						"<configuration id=\"public-persons-rest-config\" dataSet=\"public-persons\" path=\"public-persons\"/>\n"
+								+ "    <configuration id=\"public-persons2-config\" dataSet=\"public-persons\" path=\"public-persons2\"/>");
+		assertTrue(registryVersion.contains("eobject-registry://"), "href rewrite failed:\n" + registryVersion);
+		assertTrue(registryVersion.contains("path=\"public-persons2\""), "second endpoint insert failed:\n" + registryVersion);
+		publishVersion(registryVersion);
+
+		HttpResponse<String> added = awaitOk(BASE_URL + "2", "application/json", 120_000);
+		assertEquals(200, added.statusCode());
+		assertTrue(added.body().contains("Ada Lovelace"), added.body());
+		assertFalse(added.body().contains("firstName"),
+				() -> "source features must not leak through the bridge: " + added.body());
+		// and the first endpoint keeps serving through the registry-resolved unit
+		assertTrue(get(BASE_URL + "/p2", "application/json").body().contains("Grace Hopper"));
+	}
+
+	/** Uploads one metamodel taken from an installed bundle into both stages. */
+	private static void seedBundleSchema(BundleContext bundleContext, String symbolicName, String entryPath)
+			throws Exception {
+		Bundle bundle = java.util.Arrays.stream(bundleContext.getBundles())
+				.filter(b -> symbolicName.equals(b.getSymbolicName())).findFirst()
+				.orElseThrow(() -> new AssertionError("bundle " + symbolicName + " is not installed"));
+		URL entry = bundle.getEntry(entryPath);
+		assertTrue(entry != null, () -> "bundle " + symbolicName + " has no entry " + entryPath);
+		byte[] content;
+		try (InputStream in = entry.openStream()) {
+			content = in.readAllBytes();
+		}
+		String text = new String(content, StandardCharsets.UTF_8);
+		java.util.regex.Matcher matcher = java.util.regex.Pattern.compile("nsURI=\"([^\"]+)\"").matcher(text);
+		assertTrue(matcher.find(), () -> entryPath + " declares no nsURI");
+		postSchema(content, matcher.group(1), entryPath.replaceAll(".*/|\\.ecore$", ""));
 	}
 
 	// --- plumbing (the ModelAtlasModeIntegrationTest pattern) ---------------
@@ -190,24 +303,45 @@ public class TransformationAtlasModeIntegrationTest {
 				"https://eclipse.org/fennec/data/atlas/example/person/public/1.0.0");
 
 		String dataBase = dir.resolve("data").toUri().toString();
-		String instance = Files.readString(dir.resolve("data/dataatlas-trafo-atlas.xmi"), StandardCharsets.UTF_8)
+		seededInstance = Files.readString(dir.resolve("data/dataatlas-trafo-atlas.xmi"), StandardCharsets.UTF_8)
 				.replace("file:///DATA/", dataBase);
-		HttpResponse<String> seeded = postInstance(instance);
+		HttpResponse<String> seeded = postInstance("release", seededInstance);
 		assertTrue(seeded.statusCode() == 201 || seeded.statusCode() == 409,
 				() -> "instance seed failed: " + seeded.statusCode() + " " + seeded.body());
 	}
 
-	private static HttpResponse<String> postInstance(String body) throws Exception {
+	private static HttpResponse<String> postInstance(String stage, String body) throws Exception {
 		return CLIENT.send(HttpRequest
-				.newBuilder(java.net.URI.create(ATLAS_BASE
-						+ "/dataatlas/registries/configurations/stages/release/dataatlas?name=dataatlas&override=true"))
+				.newBuilder(java.net.URI.create(ATLAS_BASE + "/dataatlas/registries/configurations/stages/" + stage
+						+ "/dataatlas?name=dataatlas&override=true"))
 				.header("Content-Type", "application/xmi")
 				.header("Accept", "application/json")
 				.POST(HttpRequest.BodyPublishers.ofString(body))
 				.build(), HttpResponse.BodyHandlers.ofString());
 	}
 
+	/** Publishes a new configuration version through the stage workflow. */
+	private static void publishVersion(String body) throws Exception {
+		HttpResponse<String> posted = postInstance("draft", body);
+		assertTrue(posted.statusCode() == 201 || posted.statusCode() == 200,
+				() -> "draft upload failed: " + posted.statusCode() + " " + posted.body());
+		HttpResponse<String> transitioned = CLIENT.send(HttpRequest
+				.newBuilder(java.net.URI.create(
+						ATLAS_BASE + "/dataatlas/registries/configurations/stages/draft/actions/transition"))
+				.header("Content-Type", "application/json")
+				.header("Accept", "application/json")
+				.POST(HttpRequest.BodyPublishers
+						.ofString("{\"objectId\": \"dataatlas\", \"targetStage\": \"release\"}"))
+				.build(), HttpResponse.BodyHandlers.ofString());
+		assertTrue(transitioned.statusCode() >= 200 && transitioned.statusCode() < 300,
+				() -> "transition failed: " + transitioned.statusCode() + " " + transitioned.body());
+	}
+
 	private static void postSchema(Path file, String nsUri) throws Exception {
+		postSchema(Files.readAllBytes(file), nsUri, String.valueOf(file.getFileName()));
+	}
+
+	private static void postSchema(byte[] content, String nsUri, String name) throws Exception {
 		String enc = URLEncoder.encode(nsUri, StandardCharsets.UTF_8);
 		for (String stage : new String[] { "release", "draft" }) {
 			HttpResponse<String> response = CLIENT.send(HttpRequest
@@ -215,10 +349,10 @@ public class TransformationAtlasModeIntegrationTest {
 							+ enc + "&version=1.0.0"))
 					.header("Content-Type", "application/xmi")
 					.header("Accept", "application/json")
-					.POST(HttpRequest.BodyPublishers.ofByteArray(Files.readAllBytes(file)))
+					.POST(HttpRequest.BodyPublishers.ofByteArray(content))
 					.build(), HttpResponse.BodyHandlers.ofString());
 			assertTrue(response.statusCode() == 201 || response.statusCode() == 409,
-					() -> "schema seed " + file.getFileName() + " (" + stage + ") failed: " + response.statusCode()
+					() -> "schema seed " + name + " (" + stage + ") failed: " + response.statusCode()
 							+ " " + response.body());
 		}
 	}

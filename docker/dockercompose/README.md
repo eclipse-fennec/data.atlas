@@ -565,8 +565,12 @@ Deployment configuration stays outside the model, mounted or set per
 environment: the DataSource credentials (`dataatlas/load/datasource.json`),
 the DCAT portal client (`dcat/load/dcatclient.json`), the public base URL
 (`DATA_ATLAS_PUBLIC_BASE_URL`), the target catalog (one-shot `catalog-seed`) —
-and the transformation's CompiledUnit document, which the configuration names
-by its absolute container path (`/opt/dataatlas/runtime/data/trafo/…`, mounted
-from `configuration.model/example/trafo/`): publishing it into a Model Atlas
-registry instead is blocked upstream by
-[emf.m2x#246](https://github.com/eclipse-fennec/emf.m2x/issues/246).
+and the transformation's CompiledUnit document, which this example names by
+its absolute container path (`/opt/dataatlas/runtime/data/trafo/…`, mounted
+from `configuration.model/example/trafo/`). The alternative — publishing the
+document into a Model Atlas registry and referencing it as
+`eobject-registry://transformations/person-to-public#//@unit` (the m2x
+metamodels seeded as schemas, an `AtlasEObjectProvider` + local
+`EObjectRegistry` on the Data Atlas side) — works too; see the transformation
+chapter of the [user guide](../../docs/user-guide.md). The example stays on
+the mounted file to keep its moving parts down.

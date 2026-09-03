@@ -14,16 +14,28 @@ package org.eclipse.fennec.data.atlas.bootstrap;
 
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
+import org.eclipse.fennec.data.atlas.configuration.DAConfigPackage;
 import org.eclipse.fennec.data.atlas.configuration.DataAtlasConfiguration;
 import org.eclipse.fennec.data.atlas.configuration.DataTransformation;
+import org.eclipse.fennec.emf.osgi.eobject.registry.EObjectRegistry;
+import org.eclipse.fennec.emf.osgi.eobject.registry.EObjectRegistryEntry;
+import org.eclipse.fennec.emf.osgi.eobject.registry.EObjectRegistryListener;
+import org.eclipse.fennec.m2x.model.qvtoperational.OperationalTransformation;
 import org.eclipse.fennec.model.atlas.scope.api.ReadableScopeService;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -32,6 +44,8 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
@@ -92,8 +106,20 @@ public class ModelAtlasBootstrap {
 		long refresh_interval_ms() default 300_000L;
 	}
 
+	/**
+	 * URI scheme of a transformation reference resolved against a local
+	 * {@link EObjectRegistry} (fed from a Model Atlas registry by the
+	 * model.atlas {@code AtlasEObjectProvider}):
+	 * {@code eobject-registry://<registry-name>/<key>#<fragment>} — e.g.
+	 * {@code eobject-registry://transformations/person-to-public#//@unit}.
+	 */
+	public static final String REGISTRY_URI_SCHEME = "eobject-registry";
+
 	private final ReadableScopeService<EObject> scopeService;
 	private final ConfigurationRegistrar registrar;
+	// guarded by this; a registry appearing or disappearing re-applies
+	private final Map<String, EObjectRegistry> eObjectRegistries = new HashMap<>();
+	private boolean initialized;
 	private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(runnable -> {
 		Thread thread = new Thread(runnable, "dataatlas-config-refresh");
 		thread.setDaemon(true);
@@ -113,11 +139,64 @@ public class ModelAtlasBootstrap {
 		this.registrar = new ConfigurationRegistrar(bundleContext);
 		synchronized (this) {
 			configure(config);
-			// initial load stays fail-fast: an invalid configuration at startup
-			// fails the component activation
-			apply(fetch().orElseThrow(() -> new IllegalStateException(
-					"ModelAtlasBootstrap: no object found at " + source())));
+			// initial load stays fail-fast for a BROKEN configuration: it fails
+			// the component activation. A configuration that is fine but whose
+			// transformation registry has not synced yet is pending, not broken
+			// - the registry binding (or the poll) applies it once it is there.
+			try {
+				apply(fetch().orElseThrow(() -> new IllegalStateException(
+						"ModelAtlasBootstrap: no object found at " + source())));
+			} catch (TransientDependencyException pending) {
+				LOG.log(Level.INFO, () -> "ModelAtlasBootstrap: " + pending.getMessage()
+						+ " - publishing nothing until it appears");
+				lastApplied = null;
+			}
 			reschedule(config.refresh_interval_ms());
+			initialized = true;
+		}
+	}
+
+	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
+	synchronized void addEObjectRegistry(EObjectRegistry eObjectRegistry) {
+		eObjectRegistries.put(eObjectRegistry.getName(), eObjectRegistry);
+		// registry CONTENT changes never rebind the service, but a pending
+		// configuration may be waiting for exactly one entry to be synced in -
+		// so listen, and re-apply on every change (a no-change re-apply is a
+		// client cache hit and costs nothing)
+		eObjectRegistry.addListener(registryListener);
+		if (initialized) {
+			refresh();
+		}
+	}
+
+	synchronized void removeEObjectRegistry(EObjectRegistry eObjectRegistry) {
+		eObjectRegistry.removeListener(registryListener);
+		if (eObjectRegistries.remove(eObjectRegistry.getName()) != null && initialized) {
+			refresh();
+		}
+	}
+
+	private final EObjectRegistryListener registryListener = new EObjectRegistryListener() {
+
+		@Override
+		public void entryAdded(EObjectRegistryEntry entry) {
+			onRegistryChange();
+		}
+
+		@Override
+		public void entryUpdated(EObjectRegistryEntry entry, EObjectRegistryEntry oldEntry) {
+			onRegistryChange();
+		}
+
+		@Override
+		public void entryRemoved(EObjectRegistryEntry entry) {
+			onRegistryChange();
+		}
+	};
+
+	private synchronized void onRegistryChange() {
+		if (initialized) {
+			refresh();
 		}
 	}
 
@@ -180,6 +259,14 @@ public class ModelAtlasBootstrap {
 		}
 		try {
 			apply(fetched.get());
+		} catch (TransientDependencyException pending) {
+			// a dependency (a transformation registry) is not there right now:
+			// like an unreachable Model Atlas this keeps the current state -
+			// nothing is torn down, the poll (or the registry binding) retries
+			LOG.log(lastApplied == null ? Level.INFO : Level.WARNING,
+					() -> "ModelAtlasBootstrap: " + pending.getMessage()
+							+ (lastApplied == null ? " - publishing nothing until it appears"
+									: " - keeping the current configuration"));
 		} catch (RuntimeException e) {
 			LOG.log(Level.ERROR, () -> "ModelAtlasBootstrap: the new configuration at " + source()
 					+ " is broken - tearing the published configuration down", e);
@@ -200,10 +287,96 @@ public class ModelAtlasBootstrap {
 		LOG.log(Level.INFO, () -> "ModelAtlasBootstrap: applying Data Atlas configuration from " + source());
 		// resolves EClass references remotely through the client's ResourceSet
 		EcoreUtil.resolveAll(configuration);
+		resolveRegistryTransformations(configuration);
 		resolveTransformationDocuments(configuration);
 		ConfigurationRegistrar.failOnUnresolvedProxies(configuration, source());
 		registrar.apply(configuration);
 		lastApplied = object;
+	}
+
+	/**
+	 * Resolves {@code DataTransformation.transformation} proxies of the
+	 * {@link #REGISTRY_URI_SCHEME} scheme against the named local
+	 * {@link EObjectRegistry} — the WP-DA-7 picture: the CompiledUnit documents
+	 * live in a Model Atlas {@code transformations} registry and reach this
+	 * runtime through the model.atlas {@code AtlasEObjectProvider} feeding the
+	 * local registry. The registry entry is copied (registries lend their
+	 * instances), hosted in the client's ResourceSet under the reference's
+	 * document URI so its remaining proxies resolve like every other document,
+	 * and the reference's fragment is applied to find the AST inside it.
+	 *
+	 * <p>
+	 * A registry that is not there (yet) is a <em>pending</em> condition — the
+	 * provider syncs asynchronously, so this is the repository-waiting
+	 * situation, not a broken configuration. A present registry without the
+	 * named key, or a key resolving to something that is no
+	 * {@code OperationalTransformation} under the fragment, IS a broken
+	 * configuration and fails the apply.
+	 * </p>
+	 */
+	private void resolveRegistryTransformations(DataAtlasConfiguration configuration) {
+		for (DataTransformation transformation : configuration.getTransformations().stream()
+				.filter(DataTransformation.class::isInstance).map(DataTransformation.class::cast).toList()) {
+			Object raw = transformation.eGet(DAConfigPackage.eINSTANCE.getDataTransformation_Transformation(), false);
+			if (!(raw instanceof InternalEObject proxy) || !proxy.eIsProxy()) {
+				continue;
+			}
+			URI proxyUri = proxy.eProxyURI();
+			if (proxyUri == null || !REGISTRY_URI_SCHEME.equals(proxyUri.scheme())) {
+				continue;
+			}
+			String registryName = proxyUri.authority();
+			String key = String.join("/", proxyUri.segmentsList());
+			EObjectRegistry registry;
+			synchronized (this) {
+				registry = eObjectRegistries.get(registryName);
+			}
+			if (registry == null) {
+				throw new TransientDependencyException("transformation '" + transformation.getId()
+						+ "' needs the EObject registry '" + registryName + "', which is not available (yet)");
+			}
+			// a missing key is transient too: the registry content syncs
+			// asynchronously (the atlas provider), so the entry may simply not
+			// have arrived yet - the listener re-applies the moment it does. A
+			// permanently wrong key therefore stays pending, WARNed on every
+			// attempt, rather than tearing the instance down.
+			EObject stored = registry.get(key)
+					.orElseThrow(() -> new TransientDependencyException("transformation '"
+							+ transformation.getId() + "' references key '" + key + "' in EObject registry '"
+							+ registryName + "', which holds no such entry (yet)"));
+			// copy: the registry lends its instance, and this document becomes
+			// part of the applied configuration's lifecycle
+			EObject copy = EcoreUtil.copy(stored);
+			ResourceSet resourceSet = configuration.eResource().getResourceSet();
+			URI documentUri = proxyUri.trimFragment();
+			Resource previous = resourceSet.getResource(documentUri, false);
+			if (previous != null) {
+				previous.unload();
+				resourceSet.getResources().remove(previous);
+			}
+			Resource holder = new XMIResourceImpl(documentUri);
+			resourceSet.getResources().add(holder);
+			holder.getContents().add(copy);
+			String fragment = proxyUri.fragment();
+			EObject target = fragment == null || fragment.isBlank() ? copy : holder.getEObject(fragment);
+			if (!(target instanceof OperationalTransformation ast)) {
+				throw new IllegalStateException("ModelAtlasBootstrap: transformation '" + transformation.getId()
+						+ "': '" + proxyUri + "' does not address an OperationalTransformation (found "
+						+ (target == null ? "nothing" : target.eClass().getName()) + ")");
+			}
+			transformation.setTransformation(ast);
+			LOG.log(Level.INFO, () -> "ModelAtlasBootstrap: resolved transformation '" + transformation.getId()
+					+ "' from EObject registry '" + registryName + "' (key '" + key + "')");
+		}
+	}
+
+	/** A dependency that is expected to appear — wait, do not tear down. */
+	private static final class TransientDependencyException extends RuntimeException {
+		private static final long serialVersionUID = 1L;
+
+		TransientDependencyException(String message) {
+			super(message);
+		}
 	}
 
 	/**

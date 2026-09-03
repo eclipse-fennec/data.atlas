@@ -149,12 +149,17 @@ Implemented today (roadmap Milestones 0–8):
   push-down and by-id lookups correct. Fail-early gating throughout: a
   missing, unresolvable or non-1:1 transformation keeps every dependent
   endpoint down, and the M4 lifecycle recovers it. In Model Atlas mode the
-  configuration carries the transformation; the unit document is named by an
-  absolute local URI (publishing it into a Model Atlas registry is blocked by
-  emf.m2x#246). The transformation configurator builds its engines with the
-  package registry of a fresh emf.osgi ResourceSet — the DS QvtoEngine has no
-  registry seam and would bind the unit's carried metamodel copies
-  (emf.m2x#245).
+  configuration carries the transformation; the unit document is named either
+  by an absolute local URI or by
+  `eobject-registry://<registry>/<key>#<fragment>` — the document then lives
+  in a Model Atlas registry, synced into a local emf.osgi `EObjectRegistry`
+  by the model.atlas `AtlasEObjectProvider`, and the atlas bootstrap resolves
+  the reference against that registry (a missing registry or key is
+  transient: keep the last good state, re-apply on the registry's change
+  events). The transformation configurator binds the DS `QvtoEngine` — since
+  emf.m2x#245 every engine component uses the shared emf.osgi ResourceSet's
+  package registry, so registrar-registered EPackages and the engine agree on
+  type identity.
 - **Runtime assembly**: bndruns (`_base`/`_local`/`_docker`/`_docker_atlas`)
   including the JPA/EclipseLink stack, distroless docker images (`file-*` and
   `atlas-*` tags). The images deliberately contain **no** models, configuration

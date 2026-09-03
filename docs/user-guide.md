@@ -625,12 +625,23 @@ Rules the runtime enforces:
   endpoint (query transformation is not implemented yet).
 
 In **Model Atlas mode** the configuration — including the
-`DataTransformation` — travels through the Model Atlas; the CompiledUnit
-document itself is named by an **absolute URI** the runtime resolves locally
-(mounted next to the data, like every `FileDataInput` in that mode), using
-the nsURI-referencing variant (`person-to-public-atlas.xmi`). Publishing the
-document into a Model Atlas registry is currently blocked upstream
-([emf.m2x#246](https://github.com/eclipse-fennec/emf.m2x/issues/246)).
+`DataTransformation` — travels through the Model Atlas. The CompiledUnit
+document can be named two ways:
+
+- by an **absolute URI** the runtime resolves locally (mounted next to the
+  data, like every `FileDataInput` in that mode), using the nsURI-referencing
+  variant (`person-to-public-atlas.xmi`), or
+- by an **EObject registry reference**
+  `eobject-registry://<registry>/<key>#<fragment>` (typically
+  `eobject-registry://transformations/person-to-public#//@unit`): the
+  document lives in a Model Atlas **registry** (its m2x metamodels seeded as
+  schemas first), the model.atlas `AtlasEObjectProvider` syncs it into a
+  local emf.osgi `EObjectRegistry`, and the bootstrap resolves the reference
+  against that registry. A registry or key that is not there **yet** is a
+  transient condition — the bootstrap keeps the last good configuration (or
+  publishes nothing on first start) and re-applies as soon as the entry
+  appears; a reference of the wrong type fails hard like any broken
+  configuration.
 
 ### Serving GeoJSON
 

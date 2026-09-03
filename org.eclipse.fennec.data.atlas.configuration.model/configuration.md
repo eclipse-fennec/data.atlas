@@ -137,12 +137,18 @@ EClass each — Data Atlas transformations are **1:1 by contract** (one source
 object maps to one result object with the same id), which is what makes
 pagination push-down and by-id lookups through a bridge correct.
 
-In file mode the document is referenced relative to the configuration; a
-configuration served by a Model Atlas names it by an **absolute URI** the
-runtime resolves locally (like every `FileDataInput` in that mode). Publishing
-the document into a Model Atlas registry is blocked upstream — the m2x
-metamodels carry workspace-relative cross-references a registry cannot serve
-(emf.m2x#246).
+In file mode the document is referenced relative to the configuration. A
+configuration served by a Model Atlas names it either by an **absolute URI**
+the runtime resolves locally (like every `FileDataInput` in that mode) or by
+an **EObject registry reference**
+`eobject-registry://<registry>/<key>#<fragment>`: the document lives in a
+Model Atlas registry (the m2x metamodels seeded as schemas — their
+cross-references are nsURI-based since emf.m2x#246), reaches the runtime
+through the model.atlas `AtlasEObjectProvider` feeding a local emf.osgi
+`EObjectRegistry`, and the atlas bootstrap resolves the reference against
+that registry. A registry or key that does not exist *yet* is transient —
+the bootstrap keeps the last good configuration and re-applies when the
+entry appears.
 
 ### `DcatPublication` — opt-in open-data publication
 

@@ -24,6 +24,7 @@
 	bnd.identity;id='org.eclipse.fennec.model.atlas.rest.client.impl',\
 	bnd.identity;id='org.eclipse.fennec.model.atlas.rest.client.api',\
 	bnd.identity;id='org.eclipse.fennec.model.atlas.scope.api',\
+	bnd.identity;id='org.eclipse.fennec.model.atlas.eobject.provider',\
 	bnd.identity;id='org.eclipse.osgitech.rest.servlet.whiteboard',\
 	bnd.identity;id='org.apache.felix.http.jetty12',\
 	bnd.identity;id='org.apache.felix.configadmin',\
