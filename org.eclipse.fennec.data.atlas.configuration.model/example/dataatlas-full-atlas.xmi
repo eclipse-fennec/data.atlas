@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The full example, served from a Model Atlas: every implemented feature in
+     one configuration.
+
+     - JPADataInput over PostgreSQL (JdbcDataSource selected by filter, derived
+       eorm mapping - the schema is created by the database init script)
+     - BridgeRepository applying the QVT-O transformation PersonToPublic, so a
+       second DataSet serves PublicPerson projections of the same rows
+     - DistributionExports: CSV (semicolon, no SQL-type row) and JSON - exactly
+       those are served, anything else is a 406
+     - DcatPublication: the service, its DataSets and their distributions are
+       registered with a DCAT.Atlas portal and kept in sync
+
+     Atlas-mode conventions: EClass references are nsURI-based (resolved
+     against the Model Atlas schema registry); the transformation's
+     CompiledUnit document is named by the absolute container path it is
+     mounted at, like every file the runtime reads in this mode. -->
+<configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    name="example-full" description="Full example: PostgreSQL persons, raw and QVT-O-transformed, as CSV and JSON, published to a DCAT portal - configuration delivered by a Model Atlas.">
+  <dataSources id="persons-db" name="Persons DB" filter="(dataSourceName=personsDs)"/>
+  <dataInputs xsi:type="configuration:JPADataInput" id="persons-jpa" dataSource="persons-db">
+    <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person"/>
+  </dataInputs>
+  <dataInputs xsi:type="configuration:BridgeRepository" id="public-persons-bridge" source="persons-jpa"
+      dataTrafo="person-to-public">
+    <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/person/public/1.0.0#//PublicPerson"/>
+  </dataInputs>
+  <dataSets id="persons" name="persons" description="All persons from the database, as CSV or JSON."
+      dataInput="persons-jpa" distributionExport="csv json">
+    <inputType href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person"/>
+    <outputType href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person"/>
+  </dataSets>
+  <dataSets id="public-persons" name="public-persons" description="Public projection (id, displayName) of the same rows, computed by the QVT-O bridge."
+      dataInput="public-persons-bridge" distributionExport="csv json">
+    <inputType href="https://eclipse.org/fennec/data/atlas/example/person/public/1.0.0#//PublicPerson"/>
+    <outputType href="https://eclipse.org/fennec/data/atlas/example/person/public/1.0.0#//PublicPerson"/>
+  </dataSets>
+  <services xsi:type="configuration:RestDataService" id="full-rest" name="Full Example REST"
+      description="REST endpoint publishing the database-backed persons, raw and transformed." urlContext="/full"
+      openAPI="false" publication="open-data">
+    <configuration id="full-persons-config" dataSet="persons" path="persons"/>
+    <configuration id="full-public-config" dataSet="public-persons" path="public-persons"/>
+  </services>
+  <exports xsi:type="configuration:CSVDistributionExport" id="csv" name="CSV"
+      description="Semicolon separated, no SQL-type row." separator=";" includeTypeHeader="false"/>
+  <exports id="json" name="JSON" description="Plain JSON, kept alongside the CSV export." mediaType="application/json"/>
+  <transformations xsi:type="configuration:DataTransformation" id="person-to-public" name="PersonToPublic"
+      description="Projects a Person onto a PublicPerson (id, displayName).">
+    <transformation href="file:///opt/dataatlas/runtime/data/trafo/person-to-public-atlas.xmi#//@unit"/>
+    <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person"/>
+    <resultEClasses href="https://eclipse.org/fennec/data/atlas/example/person/public/1.0.0#//PublicPerson"/>
+  </transformations>
+  <publications id="open-data" catalog="example" publisherName="Eclipse Fennec Data Atlas example"
+      licenseUri="http://dcat-ap.de/def/licenses/dl-by-de/2.0">
+    <keywords>persons</keywords>
+    <keywords>postgres</keywords>
+    <keywords>public</keywords>
+  </publications>
+</configuration:DataAtlasConfiguration>

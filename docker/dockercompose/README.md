@@ -14,6 +14,7 @@ The setups that live here:
 | [`docker-compose-postgres.yml`](#docker-compose-postgresyml--postgresql-served-as-csv) | a PostgreSQL table served as CSV, configuration delivered by a Model Atlas |
 | [`docker-compose-dcat.yml`](#docker-compose-dcatyml--publishing-to-a-dcatatlas-portal) | the file-based example published to a DCAT.Atlas portal |
 | [`docker-compose-history.yml`](#docker-compose-historyyml--the-sensinact-history-database-as-csv) | the SensiNact history database - a schema we do **not** own - served as CSV, configuration (with its explicit JPA mapping) delivered by a Model Atlas |
+| [`docker-compose-full.yml`](#docker-compose-fullyml--the-full-setup) | **the full setup**: PostgreSQL, raw and QVT-O-transformed DataSets, CSV+JSON exports, DCAT publication - one configuration, delivered by a Model Atlas |
 
 ## docker-compose-atlas.yml — file mode vs. Model Atlas mode
 
@@ -499,3 +500,64 @@ guessing:
 | `406` | the media type is not among the DataSet's declared exports |
 | `500` | logged with its cause; a wrong table or column name in the mapping surfaces here |
 | endpoint serves nothing | the view's time window excludes all rows — check `select count(*)` on the *view*, not the table |
+
+## docker-compose-full.yml — the full setup
+
+Every implemented feature in one configuration, delivered by a Model Atlas:
+
+```
+PostgreSQL --> JPADataInput --> DataSet "persons"          (CSV + JSON)
+                    |
+                    +--> QVT-O bridge --> "public-persons" (CSV + JSON)
+
+and the whole service published to a DCAT.Atlas portal.
+```
+
+```bash
+docker compose -f docker-compose-full.yml up
+```
+
+| Service | URL |
+|---|---|
+| `postgres` | `localhost:15432` (db/user/password: `dataatlas`) |
+| `modelatlas` | http://localhost:8080/atlas/rest |
+| `dataatlas` | http://localhost:8083/rest/full/persons |
+| `dcatatlas` | http://localhost:8084/rest |
+
+```bash
+# the raw persons, straight from the database
+curl -H "Accept: text/csv"         http://localhost:8083/rest/full/persons
+# id;firstName;lastName
+# p1;Ada;Lovelace
+
+# the QVT-O-transformed projection of the same rows
+curl -H "Accept: text/csv"         http://localhost:8083/rest/full/public-persons
+# id;displayName
+# p1;Ada Lovelace
+
+# XMI is not declared, so it is refused
+curl -i -H "Accept: application/xml" http://localhost:8083/rest/full/persons   # 406
+
+# the published entries in the portal, each distribution pointing back at
+# the endpoint that serves it
+curl -H "Accept: application/rdf+xml" http://localhost:8084/rest/data-services/full-rest
+curl -H "Accept: application/rdf+xml" http://localhost:8084/rest/datasets/public-persons
+```
+
+The configuration is
+`org.eclipse.fennec.data.atlas.configuration.model/example/dataatlas-full-atlas.xmi` —
+one `JdbcDataSource`, a `JPADataInput`, the `BridgeRepository` with the
+`PersonToPublic` QVT-O transformation, two DataSets, the CSV/JSON export
+templates and the `DcatPublication`. The seeder uploads the schemas (including
+the `PublicPerson` projection model, via the seeder's extra-schema slot) and
+the instance; the Data Atlas fetches everything from the Model Atlas.
+
+Deployment configuration stays outside the model, mounted or set per
+environment: the DataSource credentials (`dataatlas/load/datasource.json`),
+the DCAT portal client (`dcat/load/dcatclient.json`), the public base URL
+(`DATA_ATLAS_PUBLIC_BASE_URL`), the target catalog (one-shot `catalog-seed`) —
+and the transformation's CompiledUnit document, which the configuration names
+by its absolute container path (`/opt/dataatlas/runtime/data/trafo/…`, mounted
+from `configuration.model/example/trafo/`): publishing it into a Model Atlas
+registry instead is blocked upstream by
+[emf.m2x#246](https://github.com/eclipse-fennec/emf.m2x/issues/246).
