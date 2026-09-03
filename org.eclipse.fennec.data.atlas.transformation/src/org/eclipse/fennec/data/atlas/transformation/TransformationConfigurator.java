@@ -20,15 +20,19 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.fennec.data.atlas.api.DataAtlasConstants;
 import org.eclipse.fennec.data.atlas.api.DataTransformer;
 import org.eclipse.fennec.data.atlas.configuration.DataTransformation;
+import org.eclipse.fennec.emf.osgi.ResourceSetFactory;
 import org.eclipse.fennec.m2x.model.qvtoperational.OperationalTransformation;
+import org.eclipse.fennec.m2x.qvto.api.QvtoConfiguration;
 import org.eclipse.fennec.m2x.qvto.api.QvtoEngine;
+import org.eclipse.fennec.m2x.qvto.engine.QvtoEngines;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.component.ComponentServiceObjects;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -58,18 +62,17 @@ public class TransformationConfigurator {
 	private static final Logger LOG = System.getLogger(TransformationConfigurator.class.getName());
 
 	private final BundleContext bundleContext;
-	private final ComponentServiceObjects<QvtoEngine> engines;
+	private final ResourceSetFactory resourceSetFactory;
 
-	private record Registered(QvtoEngine engine, ServiceRegistration<?> registration) {
+	private record Registered(ServiceRegistration<?> registration) {
 	}
 
 	private final Map<DataTransformation, Registered> registrations = new IdentityHashMap<>();
 
 	@Activate
-	public TransformationConfigurator(BundleContext bundleContext,
-			@Reference ComponentServiceObjects<QvtoEngine> engines) {
+	public TransformationConfigurator(BundleContext bundleContext, @Reference ResourceSetFactory resourceSetFactory) {
 		this.bundleContext = bundleContext;
-		this.engines = engines;
+		this.resourceSetFactory = resourceSetFactory;
 	}
 
 	@Deactivate
@@ -102,9 +105,25 @@ public class TransformationConfigurator {
 		}
 		EClass inputType = transformation.getSupportedEClasses().get(0);
 		EClass outputType = transformation.getResultEClasses().get(0);
-		// own copy: the AST must not dangle into a replaced configuration
-		OperationalTransformation astCopy = EcoreUtil.copy(ast);
-		QvtoEngine engine = engines.getService();
+		// own copy: the AST must not dangle into a replaced configuration. The
+		// AST lives inside a CompiledUnit document whose satellites (variables,
+		// type instances - the parser's leftovers a bare AST dangles on) sit
+		// OUTSIDE the AST subtree, so the whole root container is copied and
+		// the AST is picked out of the copy - copying only the AST would leave
+		// its satellite references pointing into the replaced configuration.
+		OperationalTransformation astCopy = copyWithDocument(ast);
+		// the engine is built here rather than taken as the DS QvtoEngine
+		// service: at execution the engine binds a unit's model types against
+		// ITS package registry, and the DS component has no registry seam - it
+		// falls back to the global EPackage.Registry, which never contains the
+		// dynamically registered configuration packages, so the engine would
+		// silently bind the CompiledUnit's carried metamodel COPIES and the
+		// transformation would match no runtime object (emf.m2x#—, filed).
+		// A fresh emf.osgi ResourceSet carries the registry with exactly the
+		// packages the registrar published (they are registered before the
+		// configuration objects, so they are present here).
+		EPackage.Registry packageRegistry = resourceSetFactory.createResourceSet().getPackageRegistry();
+		QvtoEngine engine = QvtoEngines.create(QvtoConfiguration.builder().packageRegistry(packageRegistry).build());
 		QvtoDataTransformer transformer = new QvtoDataTransformer(id, inputType, outputType, astCopy, engine);
 		Dictionary<String, Object> props = new Hashtable<>();
 		props.put(DataAtlasConstants.TRANSFORMATION_ID, id);
@@ -115,7 +134,7 @@ public class TransformationConfigurator {
 		ServiceRegistration<?> registration = bundleContext.registerService(DataTransformer.class.getName(),
 				transformer, props);
 		synchronized (registrations) {
-			registrations.put(transformation, new Registered(engine, registration));
+			registrations.put(transformation, new Registered(registration));
 		}
 		LOG.log(Level.INFO, () -> "Registered QVT-O DataTransformer for DataTransformation '" + id + "' ("
 				+ typeName(inputType) + " -> " + typeName(outputType) + ")");
@@ -133,7 +152,18 @@ public class TransformationConfigurator {
 
 	private void unregister(Registered registered) {
 		registered.registration().unregister();
-		engines.ungetService(registered.engine());
+	}
+
+	/**
+	 * Copies the AST together with its containing document (the CompiledUnit
+	 * with the satellites) and returns the copied AST.
+	 */
+	private static OperationalTransformation copyWithDocument(OperationalTransformation ast) {
+		EObject root = EcoreUtil.getRootContainer(ast);
+		EcoreUtil.Copier copier = new EcoreUtil.Copier();
+		copier.copy(root);
+		copier.copyReferences();
+		return (OperationalTransformation) copier.getOrDefault(ast, ast);
 	}
 
 	private String typeName(EClass eClass) {

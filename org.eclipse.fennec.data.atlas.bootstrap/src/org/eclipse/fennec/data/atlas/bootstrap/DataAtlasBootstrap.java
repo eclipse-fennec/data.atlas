@@ -177,7 +177,14 @@ public class DataAtlasBootstrap {
 			throw new IllegalStateException(
 					"DataAtlasBootstrap: " + configUri + " does not contain a DataAtlasConfiguration root");
 		}
-		EcoreUtil.resolveAll(resource);
+		// resolve the WHOLE resource set, not only the configuration resource:
+		// a referenced document (e.g. a transformation's CompiledUnit XMI) has
+		// internal proxies of its own, and those must resolve against the
+		// file-URI resources NOW - the registrar renames the EPackage resources
+		// to their nsURIs on apply, after which a file-relative proxy would
+		// demand-load a SECOND package instance and the transformation would
+		// silently match no runtime object (type identity split)
+		EcoreUtil.resolveAll(resourceSet);
 		ConfigurationRegistrar.failOnUnresolvedProxies(configuration, configUri.toString());
 		absolutizeFileInputUris(configuration, resource.getURI());
 		registrar.apply(configuration);

@@ -7,9 +7,14 @@
 -- SPDX-License-Identifier: EPL-2.0
 
 -- The authoring source of the example transformation. The runtime references
--- the parsed AST (person-to-public.xmi) - regenerate it with
--- PersonToPublicAstGenerator in org.eclipse.fennec.data.atlas.transformation
--- after changing this file.
+-- the compiled AST inside the CompiledUnit documents next to this file
+-- (person-to-public.xmi for file mode, person-to-public-atlas.xmi with
+-- nsURI-based references for Model Atlas mode; the configuration points at
+-- the OperationalTransformation via the fragment #//@unit). Regenerate both
+-- after changing this file: run AstGen.java (in this folder) with the m2x
+-- qvto/ocl/unit jars, antlr4-runtime, EMF and emf.osgi component.minimal on
+-- the classpath, e.g.
+--   java -cp <jars> AstGen.java <path to the example folder>
 modeltype PERSON uses 'https://eclipse.org/fennec/data/atlas/example/person/1.0.0';
 modeltype PUB uses 'https://eclipse.org/fennec/data/atlas/example/person/public/1.0.0';
 

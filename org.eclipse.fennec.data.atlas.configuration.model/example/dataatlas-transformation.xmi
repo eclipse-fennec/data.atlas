@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Transformation example (Milestone 6): the persons are served through a
+     BridgeRepository that applies the QVT-O transformation PersonToPublic to
+     every loaded object, so the endpoint publishes PublicPerson projections
+     (id + displayName) of the Person source objects.
+
+     The transformation is referenced as an EObject: the parsed AST inside the
+     CompiledUnit document trafo/person-to-public.xmi (fragment #//@unit).
+     Authoring happens in trafo/person-to-public.qvto; regenerate the XMI after
+     changing it (see the header of the .qvto). -->
+<configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    name="transformation-example" description="Example Data Atlas instance serving QVT-O-transformed objects through a BridgeRepository.">
+  <dataInputs xsi:type="configuration:FileDataInput" id="persons-file" uri="data/persons.xmi">
+    <supportedEClasses href="model/person.ecore#//Person"/>
+  </dataInputs>
+  <dataInputs xsi:type="configuration:BridgeRepository" id="public-persons-bridge" source="persons-file"
+      dataTrafo="person-to-public">
+    <supportedEClasses href="model/person-public.ecore#//PublicPerson"/>
+  </dataInputs>
+  <dataSets id="public-persons" name="public-persons" description="Public projection (id, displayName) of the example persons."
+      dataInput="public-persons-bridge">
+    <inputType href="model/person-public.ecore#//PublicPerson"/>
+    <outputType href="model/person-public.ecore#//PublicPerson"/>
+  </dataSets>
+  <services xsi:type="configuration:RestDataService" id="public-persons-rest" name="Public Persons REST"
+      description="REST endpoint publishing the transformed persons." urlContext="/example-public" openAPI="false">
+    <configuration id="public-persons-rest-config" dataSet="public-persons" path="public-persons"/>
+  </services>
+  <transformations xsi:type="configuration:DataTransformation" id="person-to-public" name="PersonToPublic"
+      description="Projects a Person onto a PublicPerson (id, displayName).">
+    <transformation href="trafo/person-to-public.xmi#//@unit"/>
+    <supportedEClasses href="model/person.ecore#//Person"/>
+    <resultEClasses href="model/person-public.ecore#//PublicPerson"/>
+  </transformations>
+</configuration:DataAtlasConfiguration>

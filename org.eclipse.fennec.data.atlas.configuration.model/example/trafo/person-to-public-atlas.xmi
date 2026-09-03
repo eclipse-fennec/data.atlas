@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="ASCII"?>
+<compiled:CompiledUnit xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:compiled="http://www.eclipse.org/fennec/m2x/compiled/1.0" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:imperativeocl="http://www.eclipse.org/fennec/m2x/qvto/imperativeocl/1.0" xmlns:ocl="http://www.eclipse.org/fennec/m2x/ocl/1.0" xmlns:qvtoperational="http://www.eclipse.org/fennec/m2x/qvto/qvtoperational/1.0" id="c862137e-94a4-4e19-9de0-39b1d1a26489">
+  <manifest formatVersion="1.0" producedBy="org.eclipse.fennec.m2x.unit" language="qvto" qualifiedName="PersonToPublic" unitFingerprint="m2x1:cdfc5d4246e800a1b408abd6078d5148f95d0e99f9dfabc54936e384d6b6781e" sourceFingerprint="m2x1:7097c9977fbda8bd86b55dbd4a3bf74c2ac1bb8e94f380e3bbad64a0477daf16" dependencyMode="pin">
+    <packageEntry nsURI="https://eclipse.org/fennec/data/atlas/example/person/1.0.0" fingerprint="fp1:9cf6f430a7ae727f5dc577cfec72cedeb1f608790fc99854fad1cd083773c3b9" scheme="fp1" role="embedded"/>
+    <packageEntry nsURI="https://eclipse.org/fennec/data/atlas/example/person/public/1.0.0" fingerprint="fp1:ca2831c7f141bddd3e85a8a2ba92b84520e096d48a966e23ac653845441a8da9" scheme="fp1" role="embedded"/>
+  </manifest>
+  <unit xsi:type="qvtoperational:OperationalTransformation" name="PersonToPublic" entry="//@unit/PersonToPublic/main" usedModelType="//@satellite.0 //@satellite.1">
+    <eClassifiers xsi:type="ecore:EClass" name="PersonToPublic">
+      <eOperations xsi:type="qvtoperational:EntryOperation" name="main">
+        <body>
+          <content xsi:type="ocl:IteratorExp" isArrow="true" name="collect">
+            <ownedSource xsi:type="imperativeocl:ImperativeIterateExp" name="xselect">
+              <ownedSource xsi:type="ocl:OperationCallExp" name="rootObjects">
+                <ownedSource xsi:type="ocl:VariableExp" referredVariable="//@satellite.2"/>
+              </ownedSource>
+              <ownedIterators name="_xsel_it"/>
+              <condition xsi:type="ocl:OperationCallExp" name="oclIsKindOf">
+                <ownedSource xsi:type="ocl:VariableExp" referredVariable="//@unit/PersonToPublic/main/@body/@content.0/@ownedSource/@ownedIterators.0"/>
+                <ownedArguments xsi:type="ocl:TypeExp">
+                  <referredType xsi:type="ecore:EClass" href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person"/>
+                </ownedArguments>
+              </condition>
+            </ownedSource>
+            <ownedBody xsi:type="qvtoperational:MappingCallExp" name="toPublic">
+              <ownedSource xsi:type="ocl:VariableExp" referredVariable="//@unit/PersonToPublic/main/@body/@content.0/@ownedIterators.0"/>
+            </ownedBody>
+            <ownedIterators name="_xmap_it"/>
+          </content>
+        </body>
+      </eOperations>
+      <eOperations xsi:type="qvtoperational:MappingOperation" name="toPublic">
+        <body xsi:type="qvtoperational:MappingBody">
+          <content xsi:type="imperativeocl:AssignExp" isReset="true">
+            <left xsi:type="ocl:VariableExp" referredVariable="//@satellite.3"/>
+            <value xsi:type="ocl:PropertyCallExp">
+              <type xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+              <ownedSource xsi:type="ocl:VariableExp" referredVariable="//@satellite.4">
+                <type xsi:type="ecore:EClass" href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person"/>
+              </ownedSource>
+              <referredProperty xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person/id"/>
+            </value>
+          </content>
+          <content xsi:type="imperativeocl:AssignExp" isReset="true">
+            <left xsi:type="ocl:VariableExp" referredVariable="//@satellite.5"/>
+            <value xsi:type="ocl:OperationCallExp" name="+">
+              <ownedSource xsi:type="ocl:OperationCallExp" name="+">
+                <ownedSource xsi:type="ocl:PropertyCallExp">
+                  <type xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+                  <ownedSource xsi:type="ocl:VariableExp" referredVariable="//@satellite.4">
+                    <type xsi:type="ecore:EClass" href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person"/>
+                  </ownedSource>
+                  <referredProperty xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person/firstName"/>
+                </ownedSource>
+                <ownedArguments xsi:type="ocl:StringLiteralExp" stringSymbol=" "/>
+              </ownedSource>
+              <ownedArguments xsi:type="ocl:PropertyCallExp">
+                <type xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+                <ownedSource xsi:type="ocl:VariableExp" referredVariable="//@satellite.4">
+                  <type xsi:type="ecore:EClass" href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person"/>
+                </ownedSource>
+                <referredProperty xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person/lastName"/>
+              </ownedArguments>
+            </value>
+          </content>
+        </body>
+        <context name="self">
+          <eType xsi:type="ecore:EClass" href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person"/>
+        </context>
+        <result name="result">
+          <eType xsi:type="ecore:EClass" href="https://eclipse.org/fennec/data/atlas/example/person/public/1.0.0#//PublicPerson"/>
+        </result>
+      </eOperations>
+    </eClassifiers>
+    <modelParameter name="src" eType="//@satellite.0"/>
+    <modelParameter name="tgt" eType="//@satellite.1" kind="out"/>
+  </unit>
+  <satellite xsi:type="qvtoperational:ModelType" name="PERSON">
+    <metamodel href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#/"/>
+  </satellite>
+  <satellite xsi:type="qvtoperational:ModelType" name="PUB">
+    <metamodel href="https://eclipse.org/fennec/data/atlas/example/person/public/1.0.0#/"/>
+  </satellite>
+  <satellite xsi:type="ocl:Variable" name="src"/>
+  <satellite xsi:type="ocl:Variable" name="id"/>
+  <satellite xsi:type="ocl:Variable" name="self">
+    <type xsi:type="ecore:EClass" href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person"/>
+  </satellite>
+  <satellite xsi:type="ocl:Variable" name="displayName"/>
+  <packages name="person" nsURI="https://eclipse.org/fennec/data/atlas/example/person/1.0.0" nsPrefix="person">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Minimal example domain model used by the example DataAtlasConfiguration and the Milestone 1 vertical slice."/>
+    </eAnnotations>
+    <eClassifiers xsi:type="ecore:EClass" name="Person">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" lowerBound="1" iD="true">
+        <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="firstName">
+        <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="lastName" lowerBound="1">
+        <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eStructuralFeatures>
+    </eClassifiers>
+  </packages>
+  <packages name="personpublic" nsURI="https://eclipse.org/fennec/data/atlas/example/person/public/1.0.0" nsPrefix="personpublic">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Public projection of the example person model: the target type of the example QVT-O transformation (Milestone 6 bridge slice)."/>
+    </eAnnotations>
+    <eClassifiers xsi:type="ecore:EClass" name="PublicPerson">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" lowerBound="1" iD="true">
+        <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="displayName">
+        <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eStructuralFeatures>
+    </eClassifiers>
+  </packages>
+</compiled:CompiledUnit>
