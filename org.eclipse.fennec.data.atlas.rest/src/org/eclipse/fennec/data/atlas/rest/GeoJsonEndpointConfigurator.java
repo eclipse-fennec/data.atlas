@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.fennec.codec.geojson.annotation.RequireCodecGeoJson;
 import org.eclipse.fennec.data.atlas.api.DataAtlasConstants;
 import org.eclipse.fennec.data.atlas.configuration.DataInput;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
@@ -59,14 +60,15 @@ import jakarta.ws.rs.core.Application;
  *
  * <p>
  * The GeoJSON codec bundle registers the content types the message body writer
- * resolves the factory by (emf.codec#168); it is pulled into the runtime at
- * assembly level — the codec offers no {@code @RequireCodecGeoJson}
- * meta-annotation (yet) that would turn this into a bundle-level requirement.
+ * resolves the factory by (emf.codec#168); {@code @RequireCodecGeoJson}
+ * (emf.codec#201) turns that into a real OSGi requirement, so a runtime
+ * missing the codec fails to resolve instead of failing per request.
  * </p>
  */
 @Component(immediate = true)
 @RequireJakartarsWhiteboard
 @RequireHttpWhiteboard
+@RequireCodecGeoJson
 public class GeoJsonEndpointConfigurator {
 
 	private static final Logger LOG = System.getLogger(GeoJsonEndpointConfigurator.class.getName());

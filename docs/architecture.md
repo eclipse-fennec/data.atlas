@@ -135,7 +135,8 @@ Implemented today (roadmap Milestones 0–8):
   `org.geojson.model` geometry feature; remaining attributes become
   `properties`), validated at endpoint registration. Serialization goes
   through the fennec GeoJSON codec, whose content-type registration was
-  emf.codec#168.
+  emf.codec#168; `@RequireCodecGeoJson` (emf.codec#201) makes the codec a
+  resolve-time requirement of the `rest` bundle, like its CSV/JSON siblings.
 - **Data transformations** (Milestone 6): the `transformation` bundle turns
   every `DataTransformation` configuration service into a ready-to-execute
   `DataTransformer` (fennec m2x QVT-O engine; the compiled AST — the
