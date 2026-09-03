@@ -5,7 +5,9 @@
 #                       |
 #                       +--> QVT-O bridge --> "public-persons" (CSV + JSON)
 #
-#   and the whole service published to a DCAT.Atlas portal.
+#   file input --> DataSet "pois" --> GeoJSON FeatureCollection at /geo/pois
+#
+#   and the REST service published to a DCAT.Atlas portal.
 #
 #   docker compose -f docker-compose-full.yml up
 #
@@ -18,6 +20,8 @@
 #   curl -H "Accept: text/csv"         http://localhost:8083/rest/full/persons
 #   # the QVT-O-transformed projection of the same rows
 #   curl -H "Accept: application/json" http://localhost:8083/rest/full/public-persons
+#   # the points of interest as RFC 7946 GeoJSON
+#   curl -H "Accept: application/geo+json" http://localhost:8083/rest/geo/pois
 #   # XMI is not declared, so it is refused
 #   curl -i -H "Accept: application/xml" http://localhost:8083/rest/full/persons   # 406
 #   # the published entries in the portal
@@ -56,7 +60,8 @@ services:
       - ./modelatlas/load:/opt/modelatlas/runtime/load:ro
 
   # one-shot: uploads the schemas (incl. the PublicPerson projection model the
-  # transformation targets) and then the full example instance
+  # transformation targets and the POI model of the GeoJSON service) and then
+  # the full example instance
   seed:
     image: curlimages/curl:8.10.1
     depends_on:
@@ -66,12 +71,16 @@ services:
       - SEED_EXTRA_SCHEMA=/seed/models/person-public.ecore
       - SEED_EXTRA_NSURI=https://eclipse.org/fennec/data/atlas/example/person/public/1.0.0
       - SEED_EXTRA_NAME=person-public
+      - SEED_EXTRA_SCHEMA_2=/seed/models/poi.ecore
+      - SEED_EXTRA_NSURI_2=https://eclipse.org/fennec/data/atlas/example/poi/1.0.0
+      - SEED_EXTRA_NAME_2=poi
     volumes:
       - ./seed/seed.sh:/seed/seed.sh:ro
       - ./seed/models/eorm.ecore:/seed/models/eorm.ecore:ro
       - ../../org.eclipse.fennec.data.atlas.configuration.model/model/configuration.ecore:/seed/models/configuration.ecore:ro
       - ../../org.eclipse.fennec.data.atlas.configuration.model/example/model/person.ecore:/seed/models/person.ecore:ro
       - ../../org.eclipse.fennec.data.atlas.configuration.model/example/model/person-public.ecore:/seed/models/person-public.ecore:ro
+      - ../../org.eclipse.fennec.data.atlas.configuration.model/example/model/poi.ecore:/seed/models/poi.ecore:ro
       - ../../org.eclipse.fennec.data.atlas.configuration.model/example/dataatlas-full-atlas.xmi:/seed/dataatlas-full-atlas.xmi:ro
     entrypoint: ["/bin/sh", "/seed/seed.sh"]
 
@@ -112,10 +121,11 @@ services:
     volumes:
       - ./dataatlas/load:/opt/dataatlas/runtime/load:ro
       - ./dcat/load:/opt/dataatlas/runtime/load-dcat:ro
-      # the transformation's CompiledUnit document, at the absolute path the
-      # configuration names (the runtime resolves it locally, like every file
-      # in atlas mode)
+      # the transformation's CompiledUnit document and the POI data, at the
+      # absolute paths the configuration names (the runtime resolves them
+      # locally, like every file in atlas mode)
       - ../../org.eclipse.fennec.data.atlas.configuration.model/example/trafo:/opt/dataatlas/runtime/data/trafo:ro
+      - ../../org.eclipse.fennec.data.atlas.configuration.model/example/data:/opt/dataatlas/runtime/data/data:ro
     depends_on:
       postgres:
         condition: service_healthy

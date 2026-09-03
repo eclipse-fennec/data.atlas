@@ -54,10 +54,17 @@ upload_schema /seed/models/eorm.ecore "https://eclipse.org/fennec/persistence/eo
 upload_schema /seed/models/configuration.ecore "https://eclipse.org/fennec/data/atlas/configuration/1.0.0" configuration
 upload_schema /seed/models/person.ecore "https://eclipse.org/fennec/data/atlas/example/person/1.0.0" person
 
-# optional extra domain schema (e.g. the SensiNact history model)
-if [ -n "${SEED_EXTRA_SCHEMA:-}" ] && [ -f "$SEED_EXTRA_SCHEMA" ]; then
-  upload_schema "$SEED_EXTRA_SCHEMA" "$SEED_EXTRA_NSURI" "$SEED_EXTRA_NAME"
-fi
+# optional extra domain schemas (e.g. the SensiNact history model, or the
+# projection/POI models of the full example): SEED_EXTRA_SCHEMA/_NSURI/_NAME,
+# further ones with a numeric suffix (SEED_EXTRA_SCHEMA_2, ...)
+for suffix in "" _2 _3 _4; do
+  eval "FILE=\${SEED_EXTRA_SCHEMA$suffix:-}"
+  eval "NSURI=\${SEED_EXTRA_NSURI$suffix:-}"
+  eval "NAME=\${SEED_EXTRA_NAME$suffix:-}"
+  if [ -n "$FILE" ] && [ -f "$FILE" ]; then
+    upload_schema "$FILE" "$NSURI" "$NAME"
+  fi
+done
 
 echo "seed: uploading the DataAtlasConfiguration instance $INSTANCE..."
 # A freshly uploaded schema is not necessarily resolvable for an instance upload

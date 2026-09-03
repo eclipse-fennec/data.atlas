@@ -510,7 +510,9 @@ PostgreSQL --> JPADataInput --> DataSet "persons"          (CSV + JSON)
                     |
                     +--> QVT-O bridge --> "public-persons" (CSV + JSON)
 
-and the whole service published to a DCAT.Atlas portal.
+file input --> DataSet "pois" --> GeoJSON FeatureCollection at /geo/pois
+
+and the REST service published to a DCAT.Atlas portal.
 ```
 
 ```bash
@@ -538,6 +540,11 @@ curl -H "Accept: text/csv"         http://localhost:8083/rest/full/public-person
 # XMI is not declared, so it is refused
 curl -i -H "Accept: application/xml" http://localhost:8083/rest/full/persons   # 406
 
+# the points of interest as RFC 7946 GeoJSON
+curl -H "Accept: application/geo+json" http://localhost:8083/rest/geo/pois
+# {"type":"FeatureCollection","features":[{"id":"jentower","type":"Feature",
+#   "geometry":{"type":"Point","coordinates":[11.5858,50.9296,0.0]}, …}]}
+
 # the published entries in the portal, each distribution pointing back at
 # the endpoint that serves it
 curl -H "Accept: application/rdf+xml" http://localhost:8084/rest/data-services/full-rest
@@ -547,10 +554,12 @@ curl -H "Accept: application/rdf+xml" http://localhost:8084/rest/datasets/public
 The configuration is
 `org.eclipse.fennec.data.atlas.configuration.model/example/dataatlas-full-atlas.xmi` —
 one `JdbcDataSource`, a `JPADataInput`, the `BridgeRepository` with the
-`PersonToPublic` QVT-O transformation, two DataSets, the CSV/JSON export
-templates and the `DcatPublication`. The seeder uploads the schemas (including
-the `PublicPerson` projection model, via the seeder's extra-schema slot) and
-the instance; the Data Atlas fetches everything from the Model Atlas.
+`PersonToPublic` QVT-O transformation, a file input for the points of
+interest, three DataSets, the CSV/JSON export templates, the
+`GeoJsonDataService` (longitude/latitude mapping) and the `DcatPublication`.
+The seeder uploads the schemas (the `PublicPerson` projection and the POI
+model ride in the seeder's numbered extra-schema slots) and the instance; the
+Data Atlas fetches everything from the Model Atlas.
 
 Deployment configuration stays outside the model, mounted or set per
 environment: the DataSource credentials (`dataatlas/load/datasource.json`),

@@ -10,6 +10,8 @@
        those are served, anything else is a 406
      - DcatPublication: the service, its DataSets and their distributions are
        registered with a DCAT.Atlas portal and kept in sync
+     - GeoJsonDataService: points of interest (a mounted file input) served as
+       an RFC 7946 FeatureCollection at /geo/pois (application/geo+json)
 
      Atlas-mode conventions: EClass references are nsURI-based (resolved
      against the Model Atlas schema registry); the transformation's
@@ -27,6 +29,9 @@
       dataTrafo="person-to-public">
     <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/person/public/1.0.0#//PublicPerson"/>
   </dataInputs>
+  <dataInputs xsi:type="configuration:FileDataInput" id="pois-file" uri="file:///opt/dataatlas/runtime/data/data/pois.xmi">
+    <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/poi/1.0.0#//PointOfInterest"/>
+  </dataInputs>
   <dataSets id="persons" name="persons" description="All persons from the database, as CSV or JSON."
       dataInput="persons-jpa" distributionExport="csv json">
     <inputType href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person"/>
@@ -37,6 +42,16 @@
     <inputType href="https://eclipse.org/fennec/data/atlas/example/person/public/1.0.0#//PublicPerson"/>
     <outputType href="https://eclipse.org/fennec/data/atlas/example/person/public/1.0.0#//PublicPerson"/>
   </dataSets>
+  <dataSets id="pois" name="pois" description="All points of interest of the example data set."
+      dataInput="pois-file">
+    <inputType href="https://eclipse.org/fennec/data/atlas/example/poi/1.0.0#//PointOfInterest"/>
+    <outputType href="https://eclipse.org/fennec/data/atlas/example/poi/1.0.0#//PointOfInterest"/>
+  </dataSets>
+  <services xsi:type="configuration:GeoJsonDataService" id="pois-geo" name="POI GeoJSON"
+      description="GeoJSON endpoint publishing the example points of interest." urlContext="/geo">
+    <configuration id="pois-geo-config" dataSet="pois" path="pois" longitudeFeature="longitude"
+        latitudeFeature="latitude"/>
+  </services>
   <services xsi:type="configuration:RestDataService" id="full-rest" name="Full Example REST"
       description="REST endpoint publishing the database-backed persons, raw and transformed." urlContext="/full"
       openAPI="false" publication="open-data">
