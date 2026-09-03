@@ -11,7 +11,6 @@ Bundle-Description: Transformation configurator: tracks DataTransformation confi
 	org.eclipse.fennec.data.atlas.configuration.model;version=project,\
 	org.eclipse.fennec.data.atlas.api;version=project,\
 	org.eclipse.fennec.m2x.qvto.api;version=latest,\
-	org.eclipse.fennec.m2x.qvto.engine;version=latest,\
 	org.eclipse.fennec.m2x.qvto.model;version=latest,\
 	org.eclipse.fennec.m2x.ocl.model;version=latest,\
 	org.eclipse.fennec.m2x.qvt.model;version=latest
