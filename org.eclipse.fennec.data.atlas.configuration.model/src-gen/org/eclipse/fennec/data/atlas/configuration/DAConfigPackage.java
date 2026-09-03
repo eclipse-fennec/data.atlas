@@ -49,7 +49,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * @generated
  */
 @ProviderType
-@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:d0b6f20f9168e50c25644c86805d31b81c7a64ed9c3e14cd253cc675efc0cb0d", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
+@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:41f045f112eaf378037cbcc296e352ee76ac8a043f92c346b45f728a15e40909", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
 public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	/**
 	 * The package name.
@@ -939,6 +939,260 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	int REST_DATA_SERVICE_CONFIGURATION_OPERATION_COUNT = DATA_SERVICE_CONFIGURATION_OPERATION_COUNT + 0;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.GeoJsonDataServiceImpl <em>Geo Json Data Service</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.fennec.data.atlas.configuration.impl.GeoJsonDataServiceImpl
+	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getGeoJsonDataService()
+	 * @generated
+	 */
+	int GEO_JSON_DATA_SERVICE = 9;
+
+	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE__ID = DATA_SERVICE__ID;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE__NAME = DATA_SERVICE__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE__DESCRIPTION = DATA_SERVICE__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Data Input</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE__DATA_INPUT = DATA_SERVICE__DATA_INPUT;
+
+	/**
+	 * The feature id for the '<em><b>Transformation</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE__TRANSFORMATION = DATA_SERVICE__TRANSFORMATION;
+
+	/**
+	 * The feature id for the '<em><b>Distribution Export</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_SERVICE__DISTRIBUTION_EXPORT;
+
+	/**
+	 * The feature id for the '<em><b>Publication</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE__PUBLICATION = DATA_SERVICE__PUBLICATION;
+
+	/**
+	 * The feature id for the '<em><b>Url Context</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE__URL_CONTEXT = DATA_SERVICE__URL_CONTEXT;
+
+	/**
+	 * The feature id for the '<em><b>Configuration</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE__CONFIGURATION = DATA_SERVICE_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Pagination Offset Parameter Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE__PAGINATION_OFFSET_PARAMETER_NAME = DATA_SERVICE_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Pagination Size Parameter Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE__PAGINATION_SIZE_PARAMETER_NAME = DATA_SERVICE_FEATURE_COUNT + 2;
+
+	/**
+	 * The number of structural features of the '<em>Geo Json Data Service</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE_FEATURE_COUNT = DATA_SERVICE_FEATURE_COUNT + 3;
+
+	/**
+	 * The operation id for the '<em>Get Distributions</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE___GET_DISTRIBUTIONS = DATA_SERVICE___GET_DISTRIBUTIONS;
+
+	/**
+	 * The number of operations of the '<em>Geo Json Data Service</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE_OPERATION_COUNT = DATA_SERVICE_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.GeoJsonDataServiceConfigurationImpl <em>Geo Json Data Service Configuration</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.fennec.data.atlas.configuration.impl.GeoJsonDataServiceConfigurationImpl
+	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getGeoJsonDataServiceConfiguration()
+	 * @generated
+	 */
+	int GEO_JSON_DATA_SERVICE_CONFIGURATION = 10;
+
+	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE_CONFIGURATION__ID = DATA_SERVICE_CONFIGURATION__ID;
+
+	/**
+	 * The feature id for the '<em><b>Data Set</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE_CONFIGURATION__DATA_SET = DATA_SERVICE_CONFIGURATION__DATA_SET;
+
+	/**
+	 * The feature id for the '<em><b>Path</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE_CONFIGURATION__PATH = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Batch Size</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE_CONFIGURATION__BATCH_SIZE = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Batch Size Limit</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE_CONFIGURATION__BATCH_SIZE_LIMIT = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>Longitude Feature</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE_CONFIGURATION__LONGITUDE_FEATURE = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 3;
+
+	/**
+	 * The feature id for the '<em><b>Latitude Feature</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE_CONFIGURATION__LATITUDE_FEATURE = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 4;
+
+	/**
+	 * The feature id for the '<em><b>Elevation Feature</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE_CONFIGURATION__ELEVATION_FEATURE = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 5;
+
+	/**
+	 * The feature id for the '<em><b>Geometry Feature</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE_CONFIGURATION__GEOMETRY_FEATURE = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 6;
+
+	/**
+	 * The feature id for the '<em><b>Id Feature</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE_CONFIGURATION__ID_FEATURE = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 7;
+
+	/**
+	 * The number of structural features of the '<em>Geo Json Data Service Configuration</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE_CONFIGURATION_FEATURE_COUNT = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 8;
+
+	/**
+	 * The number of operations of the '<em>Geo Json Data Service Configuration</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE_CONFIGURATION_OPERATION_COUNT = DATA_SERVICE_CONFIGURATION_OPERATION_COUNT + 0;
+
+	/**
 	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.XMLADataServiceImpl <em>XMLA Data Service</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -946,7 +1200,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getXMLADataService()
 	 * @generated
 	 */
-	int XMLA_DATA_SERVICE = 9;
+	int XMLA_DATA_SERVICE = 11;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1064,7 +1318,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getXMLADataServiceConfiguration()
 	 * @generated
 	 */
-	int XMLA_DATA_SERVICE_CONFIGURATION = 10;
+	int XMLA_DATA_SERVICE_CONFIGURATION = 12;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1119,7 +1373,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getGraphQLDataService()
 	 * @generated
 	 */
-	int GRAPH_QL_DATA_SERVICE = 11;
+	int GRAPH_QL_DATA_SERVICE = 13;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1237,7 +1491,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getQGisDataService()
 	 * @generated
 	 */
-	int QGIS_DATA_SERVICE = 12;
+	int QGIS_DATA_SERVICE = 14;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1355,7 +1609,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getQGisDataServiceConfiguration()
 	 * @generated
 	 */
-	int QGIS_DATA_SERVICE_CONFIGURATION = 13;
+	int QGIS_DATA_SERVICE_CONFIGURATION = 15;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1410,7 +1664,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getGraphQLDataServiceConfiguration()
 	 * @generated
 	 */
-	int GRAPH_QL_DATA_SERVICE_CONFIGURATION = 14;
+	int GRAPH_QL_DATA_SERVICE_CONFIGURATION = 16;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1456,7 +1710,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getOgcFeaturesDataService()
 	 * @generated
 	 */
-	int OGC_FEATURES_DATA_SERVICE = 15;
+	int OGC_FEATURES_DATA_SERVICE = 17;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1565,7 +1819,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getOgcSensorThingsDataService()
 	 * @generated
 	 */
-	int OGC_SENSOR_THINGS_DATA_SERVICE = 16;
+	int OGC_SENSOR_THINGS_DATA_SERVICE = 18;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1674,7 +1928,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getMongoRepository()
 	 * @generated
 	 */
-	int MONGO_REPOSITORY = 17;
+	int MONGO_REPOSITORY = 19;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1729,7 +1983,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getFileDataInput()
 	 * @generated
 	 */
-	int FILE_DATA_INPUT = 18;
+	int FILE_DATA_INPUT = 20;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1793,7 +2047,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getJPADataInput()
 	 * @generated
 	 */
-	int JPA_DATA_INPUT = 19;
+	int JPA_DATA_INPUT = 21;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1866,7 +2120,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getTransformation()
 	 * @generated
 	 */
-	int TRANSFORMATION = 26;
+	int TRANSFORMATION = 28;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1921,7 +2175,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDataTransformation()
 	 * @generated
 	 */
-	int DATA_TRANSFORMATION = 20;
+	int DATA_TRANSFORMATION = 22;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2003,7 +2257,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getQueryTransformation()
 	 * @generated
 	 */
-	int QUERY_TRANSFORMATION = 21;
+	int QUERY_TRANSFORMATION = 23;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2058,7 +2312,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getODataDataService()
 	 * @generated
 	 */
-	int ODATA_DATA_SERVICE = 22;
+	int ODATA_DATA_SERVICE = 24;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2176,7 +2430,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getODataDataServiceConfiguration()
 	 * @generated
 	 */
-	int ODATA_DATA_SERVICE_CONFIGURATION = 23;
+	int ODATA_DATA_SERVICE_CONFIGURATION = 25;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2222,7 +2476,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDistributionExport()
 	 * @generated
 	 */
-	int DISTRIBUTION_EXPORT = 24;
+	int DISTRIBUTION_EXPORT = 26;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2286,7 +2540,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getCSVDistributionExport()
 	 * @generated
 	 */
-	int CSV_DISTRIBUTION_EXPORT = 25;
+	int CSV_DISTRIBUTION_EXPORT = 27;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2377,7 +2631,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDcatPublication()
 	 * @generated
 	 */
-	int DCAT_PUBLICATION = 27;
+	int DCAT_PUBLICATION = 29;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2513,7 +2767,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getJdbcDataSource()
 	 * @generated
 	 */
-	int JDBC_DATA_SOURCE = 28;
+	int JDBC_DATA_SOURCE = 30;
 
 	/**
 	 * The feature id for the '<em><b>Filter</b></em>' attribute.
@@ -3077,6 +3331,147 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 */
 	EAttribute getRestDataServiceConfiguration_BatchSizeLimit();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataService <em>Geo Json Data Service</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Geo Json Data Service</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.GeoJsonDataService
+	 * @generated
+	 */
+	EClass getGeoJsonDataService();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataService#getConfiguration <em>Configuration</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Configuration</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.GeoJsonDataService#getConfiguration()
+	 * @see #getGeoJsonDataService()
+	 * @generated
+	 */
+	EReference getGeoJsonDataService_Configuration();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataService#getPaginationOffsetParameterName <em>Pagination Offset Parameter Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Pagination Offset Parameter Name</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.GeoJsonDataService#getPaginationOffsetParameterName()
+	 * @see #getGeoJsonDataService()
+	 * @generated
+	 */
+	EAttribute getGeoJsonDataService_PaginationOffsetParameterName();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataService#getPaginationSizeParameterName <em>Pagination Size Parameter Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Pagination Size Parameter Name</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.GeoJsonDataService#getPaginationSizeParameterName()
+	 * @see #getGeoJsonDataService()
+	 * @generated
+	 */
+	EAttribute getGeoJsonDataService_PaginationSizeParameterName();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration <em>Geo Json Data Service Configuration</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Geo Json Data Service Configuration</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration
+	 * @generated
+	 */
+	EClass getGeoJsonDataServiceConfiguration();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getPath <em>Path</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Path</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getPath()
+	 * @see #getGeoJsonDataServiceConfiguration()
+	 * @generated
+	 */
+	EAttribute getGeoJsonDataServiceConfiguration_Path();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getBatchSize <em>Batch Size</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Batch Size</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getBatchSize()
+	 * @see #getGeoJsonDataServiceConfiguration()
+	 * @generated
+	 */
+	EAttribute getGeoJsonDataServiceConfiguration_BatchSize();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getBatchSizeLimit <em>Batch Size Limit</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Batch Size Limit</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getBatchSizeLimit()
+	 * @see #getGeoJsonDataServiceConfiguration()
+	 * @generated
+	 */
+	EAttribute getGeoJsonDataServiceConfiguration_BatchSizeLimit();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getLongitudeFeature <em>Longitude Feature</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Longitude Feature</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getLongitudeFeature()
+	 * @see #getGeoJsonDataServiceConfiguration()
+	 * @generated
+	 */
+	EAttribute getGeoJsonDataServiceConfiguration_LongitudeFeature();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getLatitudeFeature <em>Latitude Feature</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Latitude Feature</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getLatitudeFeature()
+	 * @see #getGeoJsonDataServiceConfiguration()
+	 * @generated
+	 */
+	EAttribute getGeoJsonDataServiceConfiguration_LatitudeFeature();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getElevationFeature <em>Elevation Feature</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Elevation Feature</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getElevationFeature()
+	 * @see #getGeoJsonDataServiceConfiguration()
+	 * @generated
+	 */
+	EAttribute getGeoJsonDataServiceConfiguration_ElevationFeature();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getGeometryFeature <em>Geometry Feature</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Geometry Feature</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getGeometryFeature()
+	 * @see #getGeoJsonDataServiceConfiguration()
+	 * @generated
+	 */
+	EAttribute getGeoJsonDataServiceConfiguration_GeometryFeature();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getIdFeature <em>Id Feature</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Id Feature</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getIdFeature()
+	 * @see #getGeoJsonDataServiceConfiguration()
+	 * @generated
+	 */
+	EAttribute getGeoJsonDataServiceConfiguration_IdFeature();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.XMLADataService <em>XMLA Data Service</em>}'.
@@ -4109,6 +4504,114 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		 * @generated
 		 */
 		EAttribute REST_DATA_SERVICE_CONFIGURATION__BATCH_SIZE_LIMIT = eINSTANCE.getRestDataServiceConfiguration_BatchSizeLimit();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.GeoJsonDataServiceImpl <em>Geo Json Data Service</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.fennec.data.atlas.configuration.impl.GeoJsonDataServiceImpl
+		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getGeoJsonDataService()
+		 * @generated
+		 */
+		EClass GEO_JSON_DATA_SERVICE = eINSTANCE.getGeoJsonDataService();
+
+		/**
+		 * The meta object literal for the '<em><b>Configuration</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference GEO_JSON_DATA_SERVICE__CONFIGURATION = eINSTANCE.getGeoJsonDataService_Configuration();
+
+		/**
+		 * The meta object literal for the '<em><b>Pagination Offset Parameter Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute GEO_JSON_DATA_SERVICE__PAGINATION_OFFSET_PARAMETER_NAME = eINSTANCE.getGeoJsonDataService_PaginationOffsetParameterName();
+
+		/**
+		 * The meta object literal for the '<em><b>Pagination Size Parameter Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute GEO_JSON_DATA_SERVICE__PAGINATION_SIZE_PARAMETER_NAME = eINSTANCE.getGeoJsonDataService_PaginationSizeParameterName();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.GeoJsonDataServiceConfigurationImpl <em>Geo Json Data Service Configuration</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.fennec.data.atlas.configuration.impl.GeoJsonDataServiceConfigurationImpl
+		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getGeoJsonDataServiceConfiguration()
+		 * @generated
+		 */
+		EClass GEO_JSON_DATA_SERVICE_CONFIGURATION = eINSTANCE.getGeoJsonDataServiceConfiguration();
+
+		/**
+		 * The meta object literal for the '<em><b>Path</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute GEO_JSON_DATA_SERVICE_CONFIGURATION__PATH = eINSTANCE.getGeoJsonDataServiceConfiguration_Path();
+
+		/**
+		 * The meta object literal for the '<em><b>Batch Size</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute GEO_JSON_DATA_SERVICE_CONFIGURATION__BATCH_SIZE = eINSTANCE.getGeoJsonDataServiceConfiguration_BatchSize();
+
+		/**
+		 * The meta object literal for the '<em><b>Batch Size Limit</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute GEO_JSON_DATA_SERVICE_CONFIGURATION__BATCH_SIZE_LIMIT = eINSTANCE.getGeoJsonDataServiceConfiguration_BatchSizeLimit();
+
+		/**
+		 * The meta object literal for the '<em><b>Longitude Feature</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute GEO_JSON_DATA_SERVICE_CONFIGURATION__LONGITUDE_FEATURE = eINSTANCE.getGeoJsonDataServiceConfiguration_LongitudeFeature();
+
+		/**
+		 * The meta object literal for the '<em><b>Latitude Feature</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute GEO_JSON_DATA_SERVICE_CONFIGURATION__LATITUDE_FEATURE = eINSTANCE.getGeoJsonDataServiceConfiguration_LatitudeFeature();
+
+		/**
+		 * The meta object literal for the '<em><b>Elevation Feature</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute GEO_JSON_DATA_SERVICE_CONFIGURATION__ELEVATION_FEATURE = eINSTANCE.getGeoJsonDataServiceConfiguration_ElevationFeature();
+
+		/**
+		 * The meta object literal for the '<em><b>Geometry Feature</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute GEO_JSON_DATA_SERVICE_CONFIGURATION__GEOMETRY_FEATURE = eINSTANCE.getGeoJsonDataServiceConfiguration_GeometryFeature();
+
+		/**
+		 * The meta object literal for the '<em><b>Id Feature</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute GEO_JSON_DATA_SERVICE_CONFIGURATION__ID_FEATURE = eINSTANCE.getGeoJsonDataServiceConfiguration_IdFeature();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.XMLADataServiceImpl <em>XMLA Data Service</em>}' class.

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:poi="https://eclipse.org/fennec/data/atlas/example/poi/1.0.0">
+  <poi:PointOfInterest id="jentower" name="JenTower" category="landmark" longitude="11.5858" latitude="50.9296"/>
+  <poi:PointOfInterest id="planetarium" name="Zeiss-Planetarium" category="culture" longitude="11.5847" latitude="50.9331"/>
+  <poi:PointOfInterest id="botanical-garden" name="Botanischer Garten" category="park" longitude="11.5833" latitude="50.9333"/>
+</xmi:XMI>

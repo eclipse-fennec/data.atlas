@@ -138,6 +138,21 @@ public class DAConfigSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case DAConfigPackage.GEO_JSON_DATA_SERVICE: {
+				GeoJsonDataService geoJsonDataService = (GeoJsonDataService)theEObject;
+				T result = caseGeoJsonDataService(geoJsonDataService);
+				if (result == null) result = caseDataService(geoJsonDataService);
+				if (result == null) result = caseDataProvider(geoJsonDataService);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case DAConfigPackage.GEO_JSON_DATA_SERVICE_CONFIGURATION: {
+				GeoJsonDataServiceConfiguration geoJsonDataServiceConfiguration = (GeoJsonDataServiceConfiguration)theEObject;
+				T result = caseGeoJsonDataServiceConfiguration(geoJsonDataServiceConfiguration);
+				if (result == null) result = caseDataServiceConfiguration(geoJsonDataServiceConfiguration);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case DAConfigPackage.XMLA_DATA_SERVICE: {
 				XMLADataService xmlaDataService = (XMLADataService)theEObject;
 				T result = caseXMLADataService(xmlaDataService);
@@ -416,6 +431,36 @@ public class DAConfigSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseRestDataServiceConfiguration(RestDataServiceConfiguration object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Geo Json Data Service</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Geo Json Data Service</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseGeoJsonDataService(GeoJsonDataService object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Geo Json Data Service Configuration</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Geo Json Data Service Configuration</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseGeoJsonDataServiceConfiguration(GeoJsonDataServiceConfiguration object) {
 		return null;
 	}
 

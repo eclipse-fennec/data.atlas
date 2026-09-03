@@ -70,7 +70,7 @@ flowchart TB
 
 ## Current state vs. target
 
-Implemented today (roadmap Milestones 0–4 and 6–8):
+Implemented today (roadmap Milestones 0–8):
 
 - **Model bundle**: `configuration.model` — `DataAtlasConfiguration` root with
   containment registries (data sources, inputs, data sets, services, exports,
@@ -126,6 +126,16 @@ Implemented today (roadmap Milestones 0–4 and 6–8):
   portal endpoint is deployment configuration (the client's Config-Admin
   factory PID); the public base URL comes from
   `DATA_ATLAS_PUBLIC_BASE_URL`.
+- **GeoJSON serving** (Milestone 5): a `GeoJsonDataService` publishes DataSets
+  as RFC 7946 GeoJSON (`application/geo+json`) — `GET {path}` a
+  `FeatureCollection`, `{path}/{id}` a `Feature` — through its own
+  configurator/resource pair in the `rest` bundle, sharing the repository
+  lease, query and pagination plumbing. The Feature mapping is configuration
+  (longitude/latitude attributes → `Point`, or a passthrough
+  `org.geojson.model` geometry feature; remaining attributes become
+  `properties`), validated at endpoint registration. Serialization goes
+  through the fennec GeoJSON codec, whose content-type registration was
+  emf.codec#168.
 - **Data transformations** (Milestone 6): the `transformation` bundle turns
   every `DataTransformation` configuration service into a ready-to-execute
   `DataTransformer` (fennec m2x QVT-O engine; the compiled AST — the

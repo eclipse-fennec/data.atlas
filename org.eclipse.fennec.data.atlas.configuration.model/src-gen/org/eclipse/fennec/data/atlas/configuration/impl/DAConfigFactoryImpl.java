@@ -73,6 +73,8 @@ public class DAConfigFactoryImpl extends EFactoryImpl implements DAConfigFactory
 			case DAConfigPackage.DATA_SET: return createDataSet();
 			case DAConfigPackage.REST_DATA_SERVICE: return createRestDataService();
 			case DAConfigPackage.REST_DATA_SERVICE_CONFIGURATION: return createRestDataServiceConfiguration();
+			case DAConfigPackage.GEO_JSON_DATA_SERVICE: return createGeoJsonDataService();
+			case DAConfigPackage.GEO_JSON_DATA_SERVICE_CONFIGURATION: return createGeoJsonDataServiceConfiguration();
 			case DAConfigPackage.XMLA_DATA_SERVICE: return createXMLADataService();
 			case DAConfigPackage.XMLA_DATA_SERVICE_CONFIGURATION: return createXMLADataServiceConfiguration();
 			case DAConfigPackage.GRAPH_QL_DATA_SERVICE: return createGraphQLDataService();
@@ -150,6 +152,28 @@ public class DAConfigFactoryImpl extends EFactoryImpl implements DAConfigFactory
 	public RestDataServiceConfiguration createRestDataServiceConfiguration() {
 		RestDataServiceConfigurationImpl restDataServiceConfiguration = new RestDataServiceConfigurationImpl();
 		return restDataServiceConfiguration;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public GeoJsonDataService createGeoJsonDataService() {
+		GeoJsonDataServiceImpl geoJsonDataService = new GeoJsonDataServiceImpl();
+		return geoJsonDataService;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public GeoJsonDataServiceConfiguration createGeoJsonDataServiceConfiguration() {
+		GeoJsonDataServiceConfigurationImpl geoJsonDataServiceConfiguration = new GeoJsonDataServiceConfigurationImpl();
+		return geoJsonDataServiceConfiguration;
 	}
 
 	/**

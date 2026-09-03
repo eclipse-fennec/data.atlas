@@ -116,6 +116,14 @@ public class DAConfigAdapterFactory extends AdapterFactoryImpl {
 				return createRestDataServiceConfigurationAdapter();
 			}
 			@Override
+			public Adapter caseGeoJsonDataService(GeoJsonDataService object) {
+				return createGeoJsonDataServiceAdapter();
+			}
+			@Override
+			public Adapter caseGeoJsonDataServiceConfiguration(GeoJsonDataServiceConfiguration object) {
+				return createGeoJsonDataServiceConfigurationAdapter();
+			}
+			@Override
 			public Adapter caseXMLADataService(XMLADataService object) {
 				return createXMLADataServiceAdapter();
 			}
@@ -338,6 +346,34 @@ public class DAConfigAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createRestDataServiceConfigurationAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataService <em>Geo Json Data Service</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.fennec.data.atlas.configuration.GeoJsonDataService
+	 * @generated
+	 */
+	public Adapter createGeoJsonDataServiceAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration <em>Geo Json Data Service Configuration</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration
+	 * @generated
+	 */
+	public Adapter createGeoJsonDataServiceConfigurationAdapter() {
 		return null;
 	}
 

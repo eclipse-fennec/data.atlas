@@ -289,6 +289,83 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="GeoJsonDataService" eSuperTypes="#//DataService">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="DataService that publishes DataSets as RFC 7946 GeoJSON: GET {path} returns a FeatureCollection, GET {path}/{id} a single Feature, media type application/geo+json.&#xA;A dedicated service kind rather than a media type on RestDataService, because serving GeoJSON needs mapping configuration (which features carry the geometry, what becomes the Feature id) that has no place on the generic REST service. Coordinates are assumed to be WGS 84 (RFC 7946 mandates it); coordinate transformation is a Transformation concern, not a serving one."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="configuration" ordered="false"
+        upperBound="-1" eType="#//GeoJsonDataServiceConfiguration" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The per-DataSet GeoJSON configurations provided by this service."/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/OCL/Collection">
+        <details key="nullFree" value="false"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="paginationOffsetParameterName"
+        lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="offset">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="configurable parameter name for the start offset for pagination"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="paginationSizeParameterName"
+        lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="limit">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="configurable parameter name for the batch limit for pagination"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="GeoJsonDataServiceConfiguration" eSuperTypes="#//DataServiceConfiguration">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Per-DataSet configuration for a GeoJsonDataService: the path plus the mapping of the domain type onto a GeoJSON Feature.&#xA;The geometry source is EITHER geometryFeature (a feature already holding a org.geojson.model Geometry, passed through) OR the longitudeFeature/latitudeFeature pair of numeric attributes (mapped to a Point, elevationFeature optionally third) - declaring both, or neither, is a configuration error and the endpoint stays down. All attributes not consumed by the mapping become the Feature's properties."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="path" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="derives by default from the Dataset name"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="batchSize" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"
+        defaultValueLiteral="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="the page size for pagination. -1 means no pagination"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="batchSizeLimit" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"
+        defaultValueLiteral="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="the page size limit for pagination, so the server will not be overtaxed"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="longitudeFeature" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Name of the numeric attribute of the DataSet's type carrying the WGS 84 longitude. Used together with latitudeFeature to build a Point geometry; mutually exclusive with geometryFeature."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="latitudeFeature" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Name of the numeric attribute carrying the WGS 84 latitude; see longitudeFeature."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="elevationFeature" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optional name of the numeric attribute carrying the elevation, emitted as the Point's third coordinate."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="geometryFeature" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Name of the feature already holding a org.geojson.model Geometry, passed through as the Feature's geometry; mutually exclusive with longitudeFeature/latitudeFeature."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="idFeature" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optional name of the attribute used as the Feature id. Unset falls back to the type's EMF id attribute; without either the Feature carries no id."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="XMLADataService" eSuperTypes="#//DataService">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="DataService that exposes DataSets via the XML for Analysis (XMLA) protocol, e.g. for OLAP / Daanse cubes."/>

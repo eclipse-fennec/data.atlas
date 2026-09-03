@@ -17,6 +17,8 @@
 	bnd.identity;id='org.eclipse.fennec.codec',\
 	bnd.identity;id='org.eclipse.fennec.codec.rest',\
 	bnd.identity;id='org.eclipse.fennec.codec.csv',\
+	bnd.identity;id='org.eclipse.fennec.codec.geojson',\
+	bnd.identity;id='org.geojson.model',\
 	bnd.identity;id='org.eclipse.daanse.jdbc.datasource.postgresql',\
 	bnd.identity;id='org.postgresql.jdbc',\
 	bnd.identity;id='org.eclipse.fennec.emf.osgi.component.minimal',\

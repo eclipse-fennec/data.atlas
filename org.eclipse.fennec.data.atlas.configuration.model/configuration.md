@@ -72,10 +72,24 @@ Every configuration of a DataService must result in a DCAT Distribution.
 
 Concrete services: `RestDataService` (with `openAPI` marker and configurable
 pagination parameter names; per-dataset `RestDataServiceConfiguration` with
-`path`, `batchSize`, `batchSizeLimit`), plus placeholders for `ODataDataService`,
-`GraphQLDataService`, `XMLADataService` (OLAP/Daanse), `QGisDataService`
-(generated QGis layer configuration), `OgcFeaturesDataService` and
-`OgcSensorThingsDataService`.
+`path`, `batchSize`, `batchSizeLimit`) and `GeoJsonDataService` (see below),
+plus placeholders for `ODataDataService`, `GraphQLDataService`,
+`XMLADataService` (OLAP/Daanse), `QGisDataService` (generated QGis layer
+configuration), `OgcFeaturesDataService` and `OgcSensorThingsDataService`.
+
+**`GeoJsonDataService`** publishes DataSets as RFC 7946 GeoJSON
+(`application/geo+json`): `GET {path}` returns a `FeatureCollection`,
+`GET {path}/{id}` a single `Feature`. It is a dedicated kind because GeoJSON
+needs mapping configuration the generic REST service has no place for: the
+per-dataset `GeoJsonDataServiceConfiguration` names the geometry source —
+**either** `geometryFeature` (a feature already holding a `org.geojson.model`
+`Geometry`, passed through) **or** the `longitudeFeature`/`latitudeFeature`
+attribute pair (mapped to a `Point`, `elevationFeature` optionally third) —
+plus an optional `idFeature` (default: the type's EMF id attribute). All
+attributes not consumed by the geometry become the Feature's `properties`.
+Coordinates are WGS 84 (RFC 7946 mandates it); transforming them is a
+`Transformation` concern. A mapping that names missing or non-numeric
+features is a diagnosed configuration error — the endpoint stays down.
 
 ### `DistributionExport` — reusable serialization templates
 
@@ -179,6 +193,10 @@ adds the Milestone 6 slice on the same data: a `BridgeRepository` applies the
 QVT-O transformation
 [`example/trafo/person-to-public.qvto`](example/trafo/person-to-public.qvto)
 and serves `PublicPerson` projections at `/example-public/public-persons`.
+[`example/dataatlas-geo.xmi`](example/dataatlas-geo.xmi) is the Milestone 5
+slice: points of interest ([`example/model/poi.ecore`](example/model/poi.ecore),
+[`example/data/pois.xmi`](example/data/pois.xmi)) served as a GeoJSON
+`FeatureCollection` at `/geo/pois`.
 
 ## Open modeling questions
 

@@ -82,6 +82,24 @@ public interface DAConfigFactory extends EFactory {
 	RestDataServiceConfiguration createRestDataServiceConfiguration();
 
 	/**
+	 * Returns a new object of class '<em>Geo Json Data Service</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Geo Json Data Service</em>'.
+	 * @generated
+	 */
+	GeoJsonDataService createGeoJsonDataService();
+
+	/**
+	 * Returns a new object of class '<em>Geo Json Data Service Configuration</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Geo Json Data Service Configuration</em>'.
+	 * @generated
+	 */
+	GeoJsonDataServiceConfiguration createGeoJsonDataServiceConfiguration();
+
+	/**
 	 * Returns a new object of class '<em>XMLA Data Service</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

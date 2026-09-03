@@ -37,6 +37,7 @@ instances of those schemas.
   - [PostgreSQL End to End](#postgresql-end-to-end)
   - [Query-Defined DataSets with Parameters](#query-defined-datasets-with-parameters)
   - [Transforming Data: QVT-O over a Bridge](#transforming-data-qvt-o-over-a-bridge)
+  - [Serving GeoJSON](#serving-geojson)
   - [Referencing Schemas](#referencing-schemas)
 - [Configuration Lifecycle](#configuration-lifecycle)
   - [File Mode: Watching the Configuration File](#file-mode-watching-the-configuration-file)
@@ -630,6 +631,46 @@ document itself is named by an **absolute URI** the runtime resolves locally
 the nsURI-referencing variant (`person-to-public-atlas.xmi`). Publishing the
 document into a Model Atlas registry is currently blocked upstream
 ([emf.m2x#246](https://github.com/eclipse-fennec/emf.m2x/issues/246)).
+
+### Serving GeoJSON
+
+A `GeoJsonDataService` publishes DataSets as RFC 7946 GeoJSON: `GET {path}`
+returns a `FeatureCollection`, `GET {path}/{id}` a single `Feature`, media
+type `application/geo+json` (plus the pre-RFC `application/vnd.geo+json`
+alias) — anything else is a `406`. It is its own service kind because the
+mapping of the domain type onto a `Feature` is configuration:
+
+```xml
+<services xsi:type="configuration:GeoJsonDataService" id="pois-geo" name="POI GeoJSON"
+    description="GeoJSON endpoint publishing the example points of interest." urlContext="/geo">
+  <configuration id="pois-geo-config" dataSet="pois" path="pois"
+      longitudeFeature="longitude" latitudeFeature="latitude"/>
+</services>
+```
+
+- The **geometry source** is either the `longitudeFeature`/`latitudeFeature`
+  pair of numeric attributes (→ a `Point`; `elevationFeature` optionally
+  adds the third coordinate) or `geometryFeature`, a feature already holding
+  a `org.geojson.model` `Geometry`, passed through — for example one filled
+  by a QVT-O transformation. Declaring both, or neither, keeps the endpoint
+  down (a diagnosed configuration error).
+- The **Feature id** comes from `idFeature`, defaulting to the type's EMF id
+  attribute; the whole object minus the geometry-consumed attributes becomes
+  the Feature's `properties`.
+- Coordinates are **WGS 84** — RFC 7946 mandates it. Transforming from
+  another CRS is a `Transformation` concern, not a serving option.
+- Pagination, the canonical query with bound parameters, and the M4
+  lifecycle work exactly as on the REST service.
+
+```bash
+curl -H "Accept: application/geo+json" http://localhost:8080/rest/geo/pois
+# {"type":"FeatureCollection","features":[{"type":"Feature","id":"jentower",
+#   "geometry":{"type":"Point","coordinates":[11.5858,50.9296]},
+#   "properties":{"id":"jentower","name":"JenTower","category":"landmark"}}, …]}
+```
+
+The shipped example is `configuration.model/example/dataatlas-geo.xmi`
+(points of interest with WGS 84 coordinates).
 
 ### Referencing Schemas
 

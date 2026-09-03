@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GeoJSON example (Milestone 5): points of interest with WGS 84 coordinates,
+     served as an RFC 7946 FeatureCollection at /geo/pois (media type
+     application/geo+json). The mapping is configuration: longitude/latitude
+     name the numeric attributes that become the Point geometry, the remaining
+     attributes become the Feature's properties, the EMF id attribute the
+     Feature id. -->
+<configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    name="geo-example" description="Example Data Atlas instance serving points of interest as GeoJSON.">
+  <dataInputs xsi:type="configuration:FileDataInput" id="pois-file" uri="data/pois.xmi">
+    <supportedEClasses href="model/poi.ecore#//PointOfInterest"/>
+  </dataInputs>
+  <dataSets id="pois" name="pois" description="All points of interest of the example data set."
+      dataInput="pois-file">
+    <inputType href="model/poi.ecore#//PointOfInterest"/>
+    <outputType href="model/poi.ecore#//PointOfInterest"/>
+  </dataSets>
+  <services xsi:type="configuration:GeoJsonDataService" id="pois-geo" name="POI GeoJSON"
+      description="GeoJSON endpoint publishing the example points of interest." urlContext="/geo">
+    <configuration id="pois-geo-config" dataSet="pois" path="pois" longitudeFeature="longitude"
+        latitudeFeature="latitude"/>
+  </services>
+</configuration:DataAtlasConfiguration>

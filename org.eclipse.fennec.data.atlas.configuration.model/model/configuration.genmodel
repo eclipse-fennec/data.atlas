@@ -66,6 +66,21 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//RestDataServiceConfiguration/batchSize"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//RestDataServiceConfiguration/batchSizeLimit"/>
     </genClasses>
+    <genClasses ecoreClass="configuration.ecore#//GeoJsonDataService">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//GeoJsonDataService/configuration"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//GeoJsonDataService/paginationOffsetParameterName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//GeoJsonDataService/paginationSizeParameterName"/>
+    </genClasses>
+    <genClasses ecoreClass="configuration.ecore#//GeoJsonDataServiceConfiguration">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//GeoJsonDataServiceConfiguration/path"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//GeoJsonDataServiceConfiguration/batchSize"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//GeoJsonDataServiceConfiguration/batchSizeLimit"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//GeoJsonDataServiceConfiguration/longitudeFeature"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//GeoJsonDataServiceConfiguration/latitudeFeature"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//GeoJsonDataServiceConfiguration/elevationFeature"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//GeoJsonDataServiceConfiguration/geometryFeature"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//GeoJsonDataServiceConfiguration/idFeature"/>
+    </genClasses>
     <genClasses ecoreClass="configuration.ecore#//XMLADataService">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//XMLADataService/configuration"/>
     </genClasses>

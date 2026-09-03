@@ -36,6 +36,8 @@ import org.eclipse.fennec.data.atlas.configuration.DataTransformation;
 import org.eclipse.fennec.data.atlas.configuration.DcatPublication;
 import org.eclipse.fennec.data.atlas.configuration.DistributionExport;
 import org.eclipse.fennec.data.atlas.configuration.FileDataInput;
+import org.eclipse.fennec.data.atlas.configuration.GeoJsonDataService;
+import org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration;
 import org.eclipse.fennec.data.atlas.configuration.GraphQLDataService;
 import org.eclipse.fennec.data.atlas.configuration.GraphQLDataServiceConfiguration;
 import org.eclipse.fennec.data.atlas.configuration.JPADataInput;
@@ -131,6 +133,20 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	private EClass restDataServiceConfigurationEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass geoJsonDataServiceEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass geoJsonDataServiceConfigurationEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -824,6 +840,136 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
+	public EClass getGeoJsonDataService() {
+		return geoJsonDataServiceEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getGeoJsonDataService_Configuration() {
+		return (EReference)geoJsonDataServiceEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getGeoJsonDataService_PaginationOffsetParameterName() {
+		return (EAttribute)geoJsonDataServiceEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getGeoJsonDataService_PaginationSizeParameterName() {
+		return (EAttribute)geoJsonDataServiceEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EClass getGeoJsonDataServiceConfiguration() {
+		return geoJsonDataServiceConfigurationEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getGeoJsonDataServiceConfiguration_Path() {
+		return (EAttribute)geoJsonDataServiceConfigurationEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getGeoJsonDataServiceConfiguration_BatchSize() {
+		return (EAttribute)geoJsonDataServiceConfigurationEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getGeoJsonDataServiceConfiguration_BatchSizeLimit() {
+		return (EAttribute)geoJsonDataServiceConfigurationEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getGeoJsonDataServiceConfiguration_LongitudeFeature() {
+		return (EAttribute)geoJsonDataServiceConfigurationEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getGeoJsonDataServiceConfiguration_LatitudeFeature() {
+		return (EAttribute)geoJsonDataServiceConfigurationEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getGeoJsonDataServiceConfiguration_ElevationFeature() {
+		return (EAttribute)geoJsonDataServiceConfigurationEClass.getEStructuralFeatures().get(5);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getGeoJsonDataServiceConfiguration_GeometryFeature() {
+		return (EAttribute)geoJsonDataServiceConfigurationEClass.getEStructuralFeatures().get(6);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getGeoJsonDataServiceConfiguration_IdFeature() {
+		return (EAttribute)geoJsonDataServiceConfigurationEClass.getEStructuralFeatures().get(7);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getXMLADataService() {
 		return xmlaDataServiceEClass;
 	}
@@ -1474,6 +1620,21 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		createEAttribute(restDataServiceConfigurationEClass, REST_DATA_SERVICE_CONFIGURATION__BATCH_SIZE);
 		createEAttribute(restDataServiceConfigurationEClass, REST_DATA_SERVICE_CONFIGURATION__BATCH_SIZE_LIMIT);
 
+		geoJsonDataServiceEClass = createEClass(GEO_JSON_DATA_SERVICE);
+		createEReference(geoJsonDataServiceEClass, GEO_JSON_DATA_SERVICE__CONFIGURATION);
+		createEAttribute(geoJsonDataServiceEClass, GEO_JSON_DATA_SERVICE__PAGINATION_OFFSET_PARAMETER_NAME);
+		createEAttribute(geoJsonDataServiceEClass, GEO_JSON_DATA_SERVICE__PAGINATION_SIZE_PARAMETER_NAME);
+
+		geoJsonDataServiceConfigurationEClass = createEClass(GEO_JSON_DATA_SERVICE_CONFIGURATION);
+		createEAttribute(geoJsonDataServiceConfigurationEClass, GEO_JSON_DATA_SERVICE_CONFIGURATION__PATH);
+		createEAttribute(geoJsonDataServiceConfigurationEClass, GEO_JSON_DATA_SERVICE_CONFIGURATION__BATCH_SIZE);
+		createEAttribute(geoJsonDataServiceConfigurationEClass, GEO_JSON_DATA_SERVICE_CONFIGURATION__BATCH_SIZE_LIMIT);
+		createEAttribute(geoJsonDataServiceConfigurationEClass, GEO_JSON_DATA_SERVICE_CONFIGURATION__LONGITUDE_FEATURE);
+		createEAttribute(geoJsonDataServiceConfigurationEClass, GEO_JSON_DATA_SERVICE_CONFIGURATION__LATITUDE_FEATURE);
+		createEAttribute(geoJsonDataServiceConfigurationEClass, GEO_JSON_DATA_SERVICE_CONFIGURATION__ELEVATION_FEATURE);
+		createEAttribute(geoJsonDataServiceConfigurationEClass, GEO_JSON_DATA_SERVICE_CONFIGURATION__GEOMETRY_FEATURE);
+		createEAttribute(geoJsonDataServiceConfigurationEClass, GEO_JSON_DATA_SERVICE_CONFIGURATION__ID_FEATURE);
+
 		xmlaDataServiceEClass = createEClass(XMLA_DATA_SERVICE);
 		createEReference(xmlaDataServiceEClass, XMLA_DATA_SERVICE__CONFIGURATION);
 
@@ -1590,6 +1751,8 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		dataServiceEClass.getESuperTypes().add(this.getDataProvider());
 		restDataServiceEClass.getESuperTypes().add(this.getDataService());
 		restDataServiceConfigurationEClass.getESuperTypes().add(this.getDataServiceConfiguration());
+		geoJsonDataServiceEClass.getESuperTypes().add(this.getDataService());
+		geoJsonDataServiceConfigurationEClass.getESuperTypes().add(this.getDataServiceConfiguration());
 		xmlaDataServiceEClass.getESuperTypes().add(this.getDataService());
 		xmlaDataServiceConfigurationEClass.getESuperTypes().add(this.getDataServiceConfiguration());
 		graphQLDataServiceEClass.getESuperTypes().add(this.getDataService());
@@ -1666,6 +1829,21 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		initEAttribute(getRestDataServiceConfiguration_Path(), ecorePackage.getEString(), "path", null, 1, 1, RestDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getRestDataServiceConfiguration_BatchSize(), ecorePackage.getEBigInteger(), "batchSize", "-1", 1, 1, RestDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getRestDataServiceConfiguration_BatchSizeLimit(), ecorePackage.getEBigInteger(), "batchSizeLimit", "-1", 1, 1, RestDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(geoJsonDataServiceEClass, GeoJsonDataService.class, "GeoJsonDataService", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getGeoJsonDataService_Configuration(), this.getGeoJsonDataServiceConfiguration(), null, "configuration", null, 0, -1, GeoJsonDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEAttribute(getGeoJsonDataService_PaginationOffsetParameterName(), ecorePackage.getEString(), "paginationOffsetParameterName", "offset", 1, 1, GeoJsonDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getGeoJsonDataService_PaginationSizeParameterName(), ecorePackage.getEString(), "paginationSizeParameterName", "limit", 1, 1, GeoJsonDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(geoJsonDataServiceConfigurationEClass, GeoJsonDataServiceConfiguration.class, "GeoJsonDataServiceConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getGeoJsonDataServiceConfiguration_Path(), ecorePackage.getEString(), "path", null, 1, 1, GeoJsonDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getGeoJsonDataServiceConfiguration_BatchSize(), ecorePackage.getEBigInteger(), "batchSize", "-1", 1, 1, GeoJsonDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getGeoJsonDataServiceConfiguration_BatchSizeLimit(), ecorePackage.getEBigInteger(), "batchSizeLimit", "-1", 1, 1, GeoJsonDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getGeoJsonDataServiceConfiguration_LongitudeFeature(), ecorePackage.getEString(), "longitudeFeature", null, 0, 1, GeoJsonDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getGeoJsonDataServiceConfiguration_LatitudeFeature(), ecorePackage.getEString(), "latitudeFeature", null, 0, 1, GeoJsonDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getGeoJsonDataServiceConfiguration_ElevationFeature(), ecorePackage.getEString(), "elevationFeature", null, 0, 1, GeoJsonDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getGeoJsonDataServiceConfiguration_GeometryFeature(), ecorePackage.getEString(), "geometryFeature", null, 0, 1, GeoJsonDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getGeoJsonDataServiceConfiguration_IdFeature(), ecorePackage.getEString(), "idFeature", null, 0, 1, GeoJsonDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(xmlaDataServiceEClass, XMLADataService.class, "XMLADataService", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getXMLADataService_Configuration(), this.getXMLADataServiceConfiguration(), null, "configuration", null, 0, -1, XMLADataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
@@ -2081,6 +2259,84 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 			   "documentation", "the page size limit for pagination, so the server will not be overtaxed"
 		   });
 		addAnnotation
+		  (geoJsonDataServiceEClass,
+		   source,
+		   new String[] {
+			   "documentation", "DataService that publishes DataSets as RFC 7946 GeoJSON: GET {path} returns a FeatureCollection, GET {path}/{id} a single Feature, media type application/geo+json.\nA dedicated service kind rather than a media type on RestDataService, because serving GeoJSON needs mapping configuration (which features carry the geometry, what becomes the Feature id) that has no place on the generic REST service. Coordinates are assumed to be WGS 84 (RFC 7946 mandates it); coordinate transformation is a Transformation concern, not a serving one."
+		   });
+		addAnnotation
+		  (getGeoJsonDataService_Configuration(),
+		   source,
+		   new String[] {
+			   "documentation", "The per-DataSet GeoJSON configurations provided by this service."
+		   });
+		addAnnotation
+		  (getGeoJsonDataService_PaginationOffsetParameterName(),
+		   source,
+		   new String[] {
+			   "documentation", "configurable parameter name for the start offset for pagination"
+		   });
+		addAnnotation
+		  (getGeoJsonDataService_PaginationSizeParameterName(),
+		   source,
+		   new String[] {
+			   "documentation", "configurable parameter name for the batch limit for pagination"
+		   });
+		addAnnotation
+		  (geoJsonDataServiceConfigurationEClass,
+		   source,
+		   new String[] {
+			   "documentation", "Per-DataSet configuration for a GeoJsonDataService: the path plus the mapping of the domain type onto a GeoJSON Feature.\nThe geometry source is EITHER geometryFeature (a feature already holding a org.geojson.model Geometry, passed through) OR the longitudeFeature/latitudeFeature pair of numeric attributes (mapped to a Point, elevationFeature optionally third) - declaring both, or neither, is a configuration error and the endpoint stays down. All attributes not consumed by the mapping become the Feature\'s properties."
+		   });
+		addAnnotation
+		  (getGeoJsonDataServiceConfiguration_Path(),
+		   source,
+		   new String[] {
+			   "documentation", "derives by default from the Dataset name"
+		   });
+		addAnnotation
+		  (getGeoJsonDataServiceConfiguration_BatchSize(),
+		   source,
+		   new String[] {
+			   "documentation", "the page size for pagination. -1 means no pagination"
+		   });
+		addAnnotation
+		  (getGeoJsonDataServiceConfiguration_BatchSizeLimit(),
+		   source,
+		   new String[] {
+			   "documentation", "the page size limit for pagination, so the server will not be overtaxed"
+		   });
+		addAnnotation
+		  (getGeoJsonDataServiceConfiguration_LongitudeFeature(),
+		   source,
+		   new String[] {
+			   "documentation", "Name of the numeric attribute of the DataSet\'s type carrying the WGS 84 longitude. Used together with latitudeFeature to build a Point geometry; mutually exclusive with geometryFeature."
+		   });
+		addAnnotation
+		  (getGeoJsonDataServiceConfiguration_LatitudeFeature(),
+		   source,
+		   new String[] {
+			   "documentation", "Name of the numeric attribute carrying the WGS 84 latitude; see longitudeFeature."
+		   });
+		addAnnotation
+		  (getGeoJsonDataServiceConfiguration_ElevationFeature(),
+		   source,
+		   new String[] {
+			   "documentation", "Optional name of the numeric attribute carrying the elevation, emitted as the Point\'s third coordinate."
+		   });
+		addAnnotation
+		  (getGeoJsonDataServiceConfiguration_GeometryFeature(),
+		   source,
+		   new String[] {
+			   "documentation", "Name of the feature already holding a org.geojson.model Geometry, passed through as the Feature\'s geometry; mutually exclusive with longitudeFeature/latitudeFeature."
+		   });
+		addAnnotation
+		  (getGeoJsonDataServiceConfiguration_IdFeature(),
+		   source,
+		   new String[] {
+			   "documentation", "Optional name of the attribute used as the Feature id. Unset falls back to the type\'s EMF id attribute; without either the Feature carries no id."
+		   });
+		addAnnotation
 		  (xmlaDataServiceEClass,
 		   source,
 		   new String[] {
@@ -2434,6 +2690,12 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		String source = "http://www.eclipse.org/OCL/Collection";
 		addAnnotation
 		  (getRestDataService_Configuration(),
+		   source,
+		   new String[] {
+			   "nullFree", "false"
+		   });
+		addAnnotation
+		  (getGeoJsonDataService_Configuration(),
 		   source,
 		   new String[] {
 			   "nullFree", "false"
