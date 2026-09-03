@@ -61,10 +61,12 @@ import org.osgi.test.junit5.service.ServiceExtension;
  * is what keeps every pre-export configuration working.</li>
  * </ul>
  *
- * It also covers who wins over the CSV settings: by default the configuration,
- * because the codec's client-option filter is not targeted at our applications —
- * and the client, once a deployment points that filter at them through Config
- * Admin. Both are asserted, so the default and the documented knob stay honest.
+ * It also covers who wins over the CSV settings: the configuration provides
+ * the default, and a client's <em>whitelisted</em> {@code Codec-Options}
+ * override wins over it out of the box — since emf.codec#170 the codec's
+ * client-option filter carries its message body handlers' application select
+ * and merges onto the request property with client keys winning, so it
+ * attaches to every Data Atlas application without any deployment knob.
  */
 @ExtendWith(BundleContextExtension.class)
 @ExtendWith(ServiceExtension.class)
@@ -81,7 +83,6 @@ public class DataAtlasExportFormatIntegrationTest {
 	private static Configuration httpConfig;
 	private static Configuration whiteboardConfig;
 	private static Configuration bootstrapConfig;
-	private static Configuration clientOptionsFilterConfig;
 
 	@BeforeAll
 	static void setup(@InjectBundleContext BundleContext bundleContext,
@@ -111,7 +112,7 @@ public class DataAtlasExportFormatIntegrationTest {
 
 	@AfterAll
 	static void tearDown() throws Exception {
-		for (Configuration configuration : new Configuration[] { clientOptionsFilterConfig, bootstrapConfig,
+		for (Configuration configuration : new Configuration[] { bootstrapConfig,
 				whiteboardConfig, httpConfig }) {
 			if (configuration != null) {
 				configuration.delete();
@@ -190,72 +191,28 @@ public class DataAtlasExportFormatIntegrationTest {
 	}
 
 	/**
-	 * The default: the codec's client-side override (the {@code Codec-Options}
-	 * header of
+	 * Who wins over the CSV settings. Without a header the configured export
+	 * options are what the endpoint serves; a <em>whitelisted</em> client
+	 * {@code Codec-Options} override (the knob of
 	 * <a href="https://github.com/eclipse-fennec/emf.codec/issues/33">emf.codec#33</a>)
-	 * does not reach a Data Atlas endpoint, so the configured settings are
-	 * authoritative out of the box.
-	 *
-	 * <p>
-	 * The reason is a defaulting asymmetry upstream: the codec's message body
-	 * handlers select {@code (|(emf=true)(osgi.jakartars.name=.default))}, its
-	 * {@code ClientCodecOptionsFilter} selects nothing at all, so the whiteboard
-	 * attaches it to the {@code .default} application only — while every Data
-	 * Atlas service is its own application. That default is a deployment
-	 * decision, not a dead end: see
-	 * {@link #aClientCodecOptionWinsOnceTheFilterIsTargetedAtOurApplications()}.
-	 * </p>
+	 * wins over them <b>out of the box</b>: since
+	 * <a href="https://github.com/eclipse-fennec/emf.codec/issues/170">emf.codec#170</a>
+	 * the codec's {@code ClientCodecOptionsFilter} carries its message body
+	 * handlers' application select — so it attaches to every Data Atlas
+	 * application ({@code emf=true}) — and merges onto the shared request
+	 * property with client keys winning; our own option publishing puts the
+	 * configured values underneath, so the client legitimately overrides them.
 	 */
 	@Test
 	@Order(1)
-	void aClientCodecOptionIsIgnoredByDefault() throws Exception {
-		getUntil(BASE_URL + "/both", TEXT_CSV, body -> body.contains("Lovelace"));
+	void aWhitelistedClientCodecOptionWinsOutOfTheBox() throws Exception {
+		HttpResponse<String> configured = getUntil(BASE_URL + "/both", TEXT_CSV, body -> body.contains("Lovelace"));
+		assertTrue(configured.body().lines().findFirst().orElse("").contains(";"),
+				"without a header the configured separator stands: " + configured.body());
 
 		String header = firstRowWithClientDelimiter();
-		assertTrue(header.contains(";"),
-				"by default the configured separator stands: " + header);
-		assertFalse(header.contains("|"), "the client header is not honoured by default: " + header);
-	}
-
-	/**
-	 * The knob: {@code ClientCodecOptionsFilter} is a DS component, so its
-	 * whiteboard target is a component property and can be set through Config
-	 * Admin like any other — no upstream change and no downstream reimplementation
-	 * needed. Pointing it at the same applications the codec's message body
-	 * handlers already select makes the client override work, and our own option
-	 * publishing puts the configured values *underneath* whatever the filter
-	 * deposited, so the client legitimately wins.
-	 *
-	 * <p>
-	 * A deployment that wants the configuration to stay authoritative simply does
-	 * not set this; one that wants clients to tune the whitelisted options sets it
-	 * broadly ({@code (osgi.jakartars.name=*)}) or per application.
-	 * </p>
-	 */
-	@Test
-	@Order(2)
-	void aClientCodecOptionWinsOnceTheFilterIsTargetedAtOurApplications(
-			@InjectService ConfigurationAdmin configAdmin) throws Exception {
-		getUntil(BASE_URL + "/both", TEXT_CSV, body -> body.contains("Lovelace"));
-
-		clientOptionsFilterConfig = configAdmin
-				.getConfiguration("org.eclipse.fennec.codec.rest.jakartas.filter.ClientCodecOptionsFilter", "?");
-		Dictionary<String, Object> props = new Hashtable<>();
-		props.put("osgi.jakartars.application.select", "(|(emf=true)(osgi.jakartars.name=.default))");
-		clientOptionsFilterConfig.update(props);
-
-		// the filter is re-registered and the applications rebuilt asynchronously
-		long deadline = System.currentTimeMillis() + DEADLINE_MS;
-		String header = "";
-		while (System.currentTimeMillis() < deadline) {
-			header = firstRowWithClientDelimiter();
-			if (header.contains("|")) {
-				break;
-			}
-			Thread.sleep(500);
-		}
 		assertTrue(header.contains("|"),
-				"with the filter targeted at our applications the whitelisted client option must win: " + header);
+				"the whitelisted client option must win out of the box: " + header);
 		assertFalse(header.contains(";"), "the configured separator must be replaced, not combined: " + header);
 	}
 

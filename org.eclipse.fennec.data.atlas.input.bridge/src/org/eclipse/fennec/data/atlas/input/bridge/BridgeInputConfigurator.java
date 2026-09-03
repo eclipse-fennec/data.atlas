@@ -60,6 +60,13 @@ public class BridgeInputConfigurator {
 	private final Map<String, ComponentServiceObjects<ReadRepository>> repositories = new HashMap<>();
 	private final Map<String, DataTransformer> transformers = new HashMap<>();
 	private final Map<String, Registered> registrations = new HashMap<>();
+	// re-entrancy guard: registering a bridge repository fires a service event
+	// SYNCHRONOUSLY back into addReadRepository on the same thread (this
+	// configurator deliberately tracks the very type it registers, so bridges
+	// can cascade) - without the guard that nested reconcile registers the
+	// same bridge again before the outer one recorded it: infinite recursion
+	private boolean reconciling;
+	private boolean reconcileAgain;
 
 	private record TrackedBridge(BridgeRepository bridge, Object atlasName) {
 	}
@@ -129,6 +136,22 @@ public class BridgeInputConfigurator {
 	}
 
 	private void reconcile() {
+		if (reconciling) {
+			reconcileAgain = true;
+			return;
+		}
+		reconciling = true;
+		try {
+			do {
+				reconcileAgain = false;
+				doReconcile();
+			} while (reconcileAgain);
+		} finally {
+			reconciling = false;
+		}
+	}
+
+	private void doReconcile() {
 		// tear down bridges whose configuration or dependencies are gone
 		registrations.entrySet().removeIf(entry -> {
 			TrackedBridge tracked = bridges.get(entry.getKey());

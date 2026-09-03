@@ -384,29 +384,13 @@ curl -H "Accept: text/csv" http://localhost:8081/rest/pg/persons
 
 #### Letting clients override the CSV settings
 
-By default the configured settings are authoritative: the codec's client-side
-`Codec-Options` request header does **not** reach a Data Atlas endpoint, because
-the filter implementing it attaches to the default Jakarta-RS application only
-while every Data Atlas service is its own application.
-
-That default is a deployment decision, not a limit. The filter is a DS
-component, so its whiteboard target is a component property and can be set
-through Config Admin:
-
-```json
-"org.eclipse.fennec.codec.rest.jakartas.filter.ClientCodecOptionsFilter": {
-	"osgi.jakartars.application.select": "(|(emf=true)(osgi.jakartars.name=.default))"
-}
-```
-
-That filter is the one the codec's own message body handlers use, so it covers
-every Data Atlas application. Use `(osgi.jakartars.name=*)` for all
-applications, or name individual ones
-(`(osgi.jakartars.name=dataAtlas.persons-pg-rest)`) to open the knob selectively.
-
-Once the filter reaches the endpoint, a whitelisted client option wins over the
-configured one — the Data Atlas puts its configured values *underneath* whatever
-the filter deposited:
+The configuration provides the default; a **whitelisted** client option sent in
+the codec's `Codec-Options` request header wins over it **out of the box**.
+Since [emf.codec#170](https://github.com/eclipse-fennec/emf.codec/issues/170)
+the filter implementing the header attaches to the same applications the
+codec's message body handlers select — which covers every Data Atlas
+application — and merges onto the shared request option property with client
+keys winning; the Data Atlas puts its configured values *underneath*:
 
 ```bash
 curl -H "Accept: text/csv" -H "Codec-Options: codec.csv.delimiter=|"      http://localhost:8081/rest/pg/persons
@@ -415,8 +399,11 @@ curl -H "Accept: text/csv" -H "Codec-Options: codec.csv.delimiter=|"      http:/
 The whitelist is per codec module and deliberately narrow (for CSV:
 `codec.csv.delimiter`, `quoteMode`, `lineEnding`, `charset`,
 `dataTypeInSecondRow`, `codec.tabular.referenceMode`); anything else in the
-header is ignored. Leave the configuration unset if the model should stay the
-only source of truth.
+header is ignored. A deployment that wants the configuration to stay the only
+source of truth narrows the filter's whiteboard target via Config Admin
+(`org.eclipse.fennec.codec.rest.jakartas.filter.ClientCodecOptionsFilter`,
+property `osgi.jakartars.application.select`) to the applications — if any —
+that may be tuned by clients.
 
 ### Error Handling
 
