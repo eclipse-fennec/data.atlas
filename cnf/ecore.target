@@ -12,6 +12,9 @@
   	<location type="BndRepositoryLocation">
     	<repository name="Eclipse Fennec Codec - 0.1.0.202608261429-SNAPSHOT"/>
   	</location>
+  	<location type="BndRepositoryLocation">
+    	<repository name="Central"/>
+  	</location>
 	</locations>
 	<environment>
 		<arch>x86_64</arch>
