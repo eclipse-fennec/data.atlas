@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Atlas-mode twin of dataatlas-dcat.xmi: EClass references are nsURI hrefs
+     (resolved against the Model Atlas schema registry) and the data location is
+     an absolute path the test retargets before seeding. The DataSet carries NO
+     description on purpose: the DCAT description has to come from the GenModel
+     documentation annotation of the output type, which means the annotation
+     must survive the Model Atlas round-trip (the model.atlas#213 class of
+     problem, for EAnnotations instead of ExtendedMetaData). -->
+<configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    name="dcat-example-atlas" description="Milestone 8 fixture in atlas mode: the example persons, declared for DCAT publication.">
+  <dataInputs xsi:type="configuration:FileDataInput" id="dcat-persons-file" uri="/opt/dataatlas/runtime/data/data/persons.xmi">
+    <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person"/>
+  </dataInputs>
+  <dataSets id="dcat-persons" name="persons" dataInput="dcat-persons-file">
+    <inputType href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person"/>
+    <outputType href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person"/>
+  </dataSets>
+  <services xsi:type="configuration:RestDataService" id="dcat-persons-rest" name="Persons REST"
+      description="REST endpoint publishing the example persons." urlContext="/dcat-example" openAPI="false"
+      publication="dcat-open-data">
+    <configuration id="dcat-persons-rest-config" dataSet="dcat-persons" path="persons"/>
+  </services>
+  <publications id="dcat-open-data" catalog="test-catalog" publisherName="Data Atlas integration suite"
+      licenseUri="http://dcat-ap.de/def/licenses/dl-by-de/2.0">
+    <keywords>persons</keywords>
+    <keywords>example</keywords>
+  </publications>
+</configuration:DataAtlasConfiguration>

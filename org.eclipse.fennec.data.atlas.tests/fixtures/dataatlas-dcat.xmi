@@ -6,7 +6,9 @@
   <dataInputs xsi:type="configuration:FileDataInput" id="dcat-persons-file" uri="data/persons.xmi">
     <supportedEClasses href="model/person.ecore#//Person"/>
   </dataInputs>
-  <dataSets id="dcat-persons" name="persons" description="All persons of the example data set." dataInput="dcat-persons-file">
+  <!-- no description on purpose: the DCAT description is derived from the
+       GenModel documentation of the output type (derivation v1) -->
+  <dataSets id="dcat-persons" name="persons" dataInput="dcat-persons-file">
     <inputType href="model/person.ecore#//Person"/>
     <outputType href="model/person.ecore#//Person"/>
   </dataSets>

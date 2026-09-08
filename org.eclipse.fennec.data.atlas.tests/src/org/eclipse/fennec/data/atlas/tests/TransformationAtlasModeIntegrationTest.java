@@ -305,9 +305,27 @@ public class TransformationAtlasModeIntegrationTest {
 		String dataBase = dir.resolve("data").toUri().toString();
 		seededInstance = Files.readString(dir.resolve("data/dataatlas-trafo-atlas.xmi"), StandardCharsets.UTF_8)
 				.replace("file:///DATA/", dataBase);
-		HttpResponse<String> seeded = postInstance("release", seededInstance);
+		HttpResponse<String> seeded = seedInstanceWithRetry(seededInstance);
 		assertTrue(seeded.statusCode() == 201 || seeded.statusCode() == 409,
 				() -> "instance seed failed: " + seeded.statusCode() + " " + seeded.body());
+	}
+
+	/**
+	 * A freshly uploaded schema is not necessarily resolvable for an instance
+	 * upload in the same breath — the stage's package view catches up
+	 * asynchronously, and a too-early POST answers 500 "Error de-serializing
+	 * incoming data". The compose seeder retries for the same reason.
+	 */
+	private static HttpResponse<String> seedInstanceWithRetry(String body) throws Exception {
+		HttpResponse<String> response = null;
+		for (int attempt = 0; attempt < 15; attempt++) {
+			response = postInstance("release", body);
+			if (response.statusCode() != 500) {
+				return response;
+			}
+			Thread.sleep(2000);
+		}
+		return response;
 	}
 
 	private static HttpResponse<String> postInstance(String stage, String body) throws Exception {

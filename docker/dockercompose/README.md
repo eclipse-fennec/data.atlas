@@ -208,6 +208,13 @@ referenced from the `RestDataService`. Removing that one reference from the
 mounted file withdraws the entries from the portal at runtime; adding it back
 re-publishes them.
 
+Three tests back this: `DcatPublicationIntegrationTest` (portal double:
+registrations, links, withdrawal), `DcatPortalIntegrationTest` (the acceptance
+walk against this very portal image) and `DcatPublicationAtlasModeIntegrationTest`
+(the same declaration delivered by a Model Atlas — including the DataSet
+description derived from the GenModel documentation of its type, which has to
+survive the Model Atlas round-trip).
+
 Three deployment pieces sit outside the configuration model, as they should:
 the **portal client** (`dcat/load/dcatclient.json`, the dcat.atlas client's
 factory configuration, injected via `configurator.initial`), the **public base
@@ -337,6 +344,11 @@ alone fails with `function create_hypertable(...) does not exist`.
 files in a docker-gated test, so a drift that breaks the mapping fails the build
 instead of production. That matters more here than in the Postgres example,
 because the reference DDL is upstream and can change.
+`DataAtlasHistoryAtlasModeIntegrationTest` is the twin of this compose setup: a
+TimescaleDB plus a real `model.atlas:file-snapshot` holding the configuration.
+It pins that the Model Atlas hands the inline mapping back with its column
+definitions (the model.atlas#213 case) and that the recordings arrive exactly
+as in file mode.
 
 ### Geodata: it works, and PostGIS stays in the database
 

@@ -64,6 +64,14 @@ public class DcatPublicationIntegrationTest {
 
 	private static final String PUBLIC_BASE = "https://data.example.org";
 	private static final String PUBLICATION_PID = "org.eclipse.fennec.data.atlas.publication.dcat";
+	/**
+	 * The GenModel documentation of {@code Person} in the example
+	 * {@code person.ecore} — what derivation v1 turns into the dataset
+	 * description when the DataSet declares none. The atlas-mode twin
+	 * ({@link DcatPublicationAtlasModeIntegrationTest}) expects the very same
+	 * text after the Model Atlas round-trip.
+	 */
+	static final String PERSON_DOCUMENTATION = "A person of the example data set - id, first name and last name.";
 
 	private static RecordingDcatAtlasClient portal;
 	private static ServiceRegistration<DcatAtlasClient> portalRegistration;
@@ -122,10 +130,13 @@ public class DcatPublicationIntegrationTest {
 		assertNotNull(service.getPublisher(), "expected a publisher");
 		assertEquals("Data Atlas integration suite", service.getPublisher().getName().get(0).getValue());
 
-		// its dataset, with derived metadata and the declared keywords
+		// its dataset, with derived metadata and the declared keywords; the
+		// fixture's DataSet has no description, so it comes from the GenModel
+		// documentation annotation of the output type
 		Dataset dataset = portal.datasets.get("dcat-persons");
 		assertNotNull(dataset, "expected the DataSet to be registered");
 		assertEquals("persons", dataset.getTitle().get(0).getValue());
+		assertEquals(PERSON_DOCUMENTATION, dataset.getDescription().get(0).getValue());
 		assertEquals(2, dataset.getKeyword().size());
 
 		// no exports declared: the runtime defaults JSON and XMI become the
@@ -169,7 +180,8 @@ public class DcatPublicationIntegrationTest {
 				"expected the PublicationStatus of the withdrawn provider to be unregistered");
 	}
 
-	private static void awaitState(BundleContext bundleContext, String providerId, String state, long timeoutMs)
+	/** Polls the provider's {@code PublicationStatus} until it reports the wanted state. */
+	static void awaitState(BundleContext bundleContext, String providerId, String state, long timeoutMs)
 			throws Exception {
 		long deadline = System.currentTimeMillis() + timeoutMs;
 		String last = "<no status service>";
@@ -193,7 +205,7 @@ public class DcatPublicationIntegrationTest {
 		throw new AssertionError("publication of '" + providerId + "' never reached " + state + ", last: " + last);
 	}
 
-	private static ServiceReference<PublicationStatus> statusReference(BundleContext bundleContext,
+	static ServiceReference<PublicationStatus> statusReference(BundleContext bundleContext,
 			String providerId) throws Exception {
 		var references = bundleContext.getServiceReferences(PublicationStatus.class,
 				"(" + DataAtlasConstants.CONFIG_OBJECT_ID + "=" + providerId + ")");
