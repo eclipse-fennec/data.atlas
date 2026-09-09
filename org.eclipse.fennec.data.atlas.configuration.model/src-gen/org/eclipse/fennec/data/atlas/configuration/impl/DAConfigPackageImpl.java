@@ -750,26 +750,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
-	public EAttribute getRestDataService_PaginationOffsetParameterName() {
-		return (EAttribute)restDataServiceEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getRestDataService_PaginationSizeParameterName() {
-		return (EAttribute)restDataServiceEClass.getEStructuralFeatures().get(3);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public EClass getDataServiceConfiguration() {
 		return dataServiceConfigurationEClass;
 	}
@@ -840,6 +820,26 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
+	public EAttribute getRestDataServiceConfiguration_OffsetParameterName() {
+		return (EAttribute)restDataServiceConfigurationEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getRestDataServiceConfiguration_LimitParameterName() {
+		return (EAttribute)restDataServiceConfigurationEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getGeoJsonDataService() {
 		return geoJsonDataServiceEClass;
 	}
@@ -852,26 +852,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	@Override
 	public EReference getGeoJsonDataService_Configuration() {
 		return (EReference)geoJsonDataServiceEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getGeoJsonDataService_PaginationOffsetParameterName() {
-		return (EAttribute)geoJsonDataServiceEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getGeoJsonDataService_PaginationSizeParameterName() {
-		return (EAttribute)geoJsonDataServiceEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -920,7 +900,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
-	public EAttribute getGeoJsonDataServiceConfiguration_LongitudeFeature() {
+	public EAttribute getGeoJsonDataServiceConfiguration_OffsetParameterName() {
 		return (EAttribute)geoJsonDataServiceConfigurationEClass.getEStructuralFeatures().get(3);
 	}
 
@@ -930,7 +910,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
-	public EAttribute getGeoJsonDataServiceConfiguration_LatitudeFeature() {
+	public EAttribute getGeoJsonDataServiceConfiguration_LimitParameterName() {
 		return (EAttribute)geoJsonDataServiceConfigurationEClass.getEStructuralFeatures().get(4);
 	}
 
@@ -940,7 +920,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
-	public EAttribute getGeoJsonDataServiceConfiguration_ElevationFeature() {
+	public EAttribute getGeoJsonDataServiceConfiguration_LongitudeFeature() {
 		return (EAttribute)geoJsonDataServiceConfigurationEClass.getEStructuralFeatures().get(5);
 	}
 
@@ -950,7 +930,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
-	public EAttribute getGeoJsonDataServiceConfiguration_GeometryFeature() {
+	public EAttribute getGeoJsonDataServiceConfiguration_LatitudeFeature() {
 		return (EAttribute)geoJsonDataServiceConfigurationEClass.getEStructuralFeatures().get(6);
 	}
 
@@ -960,8 +940,28 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
-	public EAttribute getGeoJsonDataServiceConfiguration_IdFeature() {
+	public EAttribute getGeoJsonDataServiceConfiguration_ElevationFeature() {
 		return (EAttribute)geoJsonDataServiceConfigurationEClass.getEStructuralFeatures().get(7);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getGeoJsonDataServiceConfiguration_GeometryFeature() {
+		return (EAttribute)geoJsonDataServiceConfigurationEClass.getEStructuralFeatures().get(8);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getGeoJsonDataServiceConfiguration_IdFeature() {
+		return (EAttribute)geoJsonDataServiceConfigurationEClass.getEStructuralFeatures().get(9);
 	}
 
 	/**
@@ -1608,8 +1608,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		restDataServiceEClass = createEClass(REST_DATA_SERVICE);
 		createEReference(restDataServiceEClass, REST_DATA_SERVICE__CONFIGURATION);
 		createEAttribute(restDataServiceEClass, REST_DATA_SERVICE__OPEN_API);
-		createEAttribute(restDataServiceEClass, REST_DATA_SERVICE__PAGINATION_OFFSET_PARAMETER_NAME);
-		createEAttribute(restDataServiceEClass, REST_DATA_SERVICE__PAGINATION_SIZE_PARAMETER_NAME);
 
 		dataServiceConfigurationEClass = createEClass(DATA_SERVICE_CONFIGURATION);
 		createEAttribute(dataServiceConfigurationEClass, DATA_SERVICE_CONFIGURATION__ID);
@@ -1619,16 +1617,18 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		createEAttribute(restDataServiceConfigurationEClass, REST_DATA_SERVICE_CONFIGURATION__PATH);
 		createEAttribute(restDataServiceConfigurationEClass, REST_DATA_SERVICE_CONFIGURATION__BATCH_SIZE);
 		createEAttribute(restDataServiceConfigurationEClass, REST_DATA_SERVICE_CONFIGURATION__BATCH_SIZE_LIMIT);
+		createEAttribute(restDataServiceConfigurationEClass, REST_DATA_SERVICE_CONFIGURATION__OFFSET_PARAMETER_NAME);
+		createEAttribute(restDataServiceConfigurationEClass, REST_DATA_SERVICE_CONFIGURATION__LIMIT_PARAMETER_NAME);
 
 		geoJsonDataServiceEClass = createEClass(GEO_JSON_DATA_SERVICE);
 		createEReference(geoJsonDataServiceEClass, GEO_JSON_DATA_SERVICE__CONFIGURATION);
-		createEAttribute(geoJsonDataServiceEClass, GEO_JSON_DATA_SERVICE__PAGINATION_OFFSET_PARAMETER_NAME);
-		createEAttribute(geoJsonDataServiceEClass, GEO_JSON_DATA_SERVICE__PAGINATION_SIZE_PARAMETER_NAME);
 
 		geoJsonDataServiceConfigurationEClass = createEClass(GEO_JSON_DATA_SERVICE_CONFIGURATION);
 		createEAttribute(geoJsonDataServiceConfigurationEClass, GEO_JSON_DATA_SERVICE_CONFIGURATION__PATH);
 		createEAttribute(geoJsonDataServiceConfigurationEClass, GEO_JSON_DATA_SERVICE_CONFIGURATION__BATCH_SIZE);
 		createEAttribute(geoJsonDataServiceConfigurationEClass, GEO_JSON_DATA_SERVICE_CONFIGURATION__BATCH_SIZE_LIMIT);
+		createEAttribute(geoJsonDataServiceConfigurationEClass, GEO_JSON_DATA_SERVICE_CONFIGURATION__OFFSET_PARAMETER_NAME);
+		createEAttribute(geoJsonDataServiceConfigurationEClass, GEO_JSON_DATA_SERVICE_CONFIGURATION__LIMIT_PARAMETER_NAME);
 		createEAttribute(geoJsonDataServiceConfigurationEClass, GEO_JSON_DATA_SERVICE_CONFIGURATION__LONGITUDE_FEATURE);
 		createEAttribute(geoJsonDataServiceConfigurationEClass, GEO_JSON_DATA_SERVICE_CONFIGURATION__LATITUDE_FEATURE);
 		createEAttribute(geoJsonDataServiceConfigurationEClass, GEO_JSON_DATA_SERVICE_CONFIGURATION__ELEVATION_FEATURE);
@@ -1818,8 +1818,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		initEClass(restDataServiceEClass, RestDataService.class, "RestDataService", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getRestDataService_Configuration(), this.getRestDataServiceConfiguration(), null, "configuration", null, 0, -1, RestDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getRestDataService_OpenAPI(), ecorePackage.getEBoolean(), "openAPI", null, 1, 1, RestDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getRestDataService_PaginationOffsetParameterName(), ecorePackage.getEString(), "paginationOffsetParameterName", "offset", 1, 1, RestDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getRestDataService_PaginationSizeParameterName(), ecorePackage.getEString(), "paginationSizeParameterName", "limit", 1, 1, RestDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(dataServiceConfigurationEClass, DataServiceConfiguration.class, "DataServiceConfiguration", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getDataServiceConfiguration_Id(), ecorePackage.getEString(), "id", null, 1, 1, DataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1829,16 +1827,18 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		initEAttribute(getRestDataServiceConfiguration_Path(), ecorePackage.getEString(), "path", null, 1, 1, RestDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getRestDataServiceConfiguration_BatchSize(), ecorePackage.getEBigInteger(), "batchSize", "-1", 1, 1, RestDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getRestDataServiceConfiguration_BatchSizeLimit(), ecorePackage.getEBigInteger(), "batchSizeLimit", "-1", 1, 1, RestDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getRestDataServiceConfiguration_OffsetParameterName(), ecorePackage.getEString(), "offsetParameterName", "offset", 1, 1, RestDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getRestDataServiceConfiguration_LimitParameterName(), ecorePackage.getEString(), "limitParameterName", "limit", 1, 1, RestDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(geoJsonDataServiceEClass, GeoJsonDataService.class, "GeoJsonDataService", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getGeoJsonDataService_Configuration(), this.getGeoJsonDataServiceConfiguration(), null, "configuration", null, 0, -1, GeoJsonDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEAttribute(getGeoJsonDataService_PaginationOffsetParameterName(), ecorePackage.getEString(), "paginationOffsetParameterName", "offset", 1, 1, GeoJsonDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getGeoJsonDataService_PaginationSizeParameterName(), ecorePackage.getEString(), "paginationSizeParameterName", "limit", 1, 1, GeoJsonDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(geoJsonDataServiceConfigurationEClass, GeoJsonDataServiceConfiguration.class, "GeoJsonDataServiceConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getGeoJsonDataServiceConfiguration_Path(), ecorePackage.getEString(), "path", null, 1, 1, GeoJsonDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getGeoJsonDataServiceConfiguration_BatchSize(), ecorePackage.getEBigInteger(), "batchSize", "-1", 1, 1, GeoJsonDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getGeoJsonDataServiceConfiguration_BatchSizeLimit(), ecorePackage.getEBigInteger(), "batchSizeLimit", "-1", 1, 1, GeoJsonDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getGeoJsonDataServiceConfiguration_OffsetParameterName(), ecorePackage.getEString(), "offsetParameterName", "offset", 1, 1, GeoJsonDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getGeoJsonDataServiceConfiguration_LimitParameterName(), ecorePackage.getEString(), "limitParameterName", "limit", 1, 1, GeoJsonDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getGeoJsonDataServiceConfiguration_LongitudeFeature(), ecorePackage.getEString(), "longitudeFeature", null, 0, 1, GeoJsonDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getGeoJsonDataServiceConfiguration_LatitudeFeature(), ecorePackage.getEString(), "latitudeFeature", null, 0, 1, GeoJsonDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getGeoJsonDataServiceConfiguration_ElevationFeature(), ecorePackage.getEString(), "elevationFeature", null, 0, 1, GeoJsonDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2205,18 +2205,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 			   "documentation", "Marker, if an openAPI definition should be provided"
 		   });
 		addAnnotation
-		  (getRestDataService_PaginationOffsetParameterName(),
-		   source,
-		   new String[] {
-			   "documentation", "configurable parameter names for the start offset for pagination"
-		   });
-		addAnnotation
-		  (getRestDataService_PaginationSizeParameterName(),
-		   source,
-		   new String[] {
-			   "documentation", "configurable parameter names for the batch limit for pagination"
-		   });
-		addAnnotation
 		  (dataServiceConfigurationEClass,
 		   source,
 		   new String[] {
@@ -2238,7 +2226,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		  (restDataServiceConfigurationEClass,
 		   source,
 		   new String[] {
-			   "documentation", "A set of Configuration parameters for a specific DataSet"
+			   "documentation", "Everything the REST runtime needs to serve one DataSet of a RestDataService: its path under the service\'s urlContext, the paging defaults and bounds, and the names of the HTTP query parameters the paging is driven by. Nothing per-DataSet is configured on the service itself."
 		   });
 		addAnnotation
 		  (getRestDataServiceConfiguration_Path(),
@@ -2259,6 +2247,18 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 			   "documentation", "the page size limit for pagination, so the server will not be overtaxed"
 		   });
 		addAnnotation
+		  (getRestDataServiceConfiguration_OffsetParameterName(),
+		   source,
+		   new String[] {
+			   "documentation", "Name of the HTTP query parameter carrying the start offset for pagination of this DataSet."
+		   });
+		addAnnotation
+		  (getRestDataServiceConfiguration_LimitParameterName(),
+		   source,
+		   new String[] {
+			   "documentation", "Name of the HTTP query parameter carrying the page size for pagination of this DataSet."
+		   });
+		addAnnotation
 		  (geoJsonDataServiceEClass,
 		   source,
 		   new String[] {
@@ -2269,18 +2269,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		   source,
 		   new String[] {
 			   "documentation", "The per-DataSet GeoJSON configurations provided by this service."
-		   });
-		addAnnotation
-		  (getGeoJsonDataService_PaginationOffsetParameterName(),
-		   source,
-		   new String[] {
-			   "documentation", "configurable parameter name for the start offset for pagination"
-		   });
-		addAnnotation
-		  (getGeoJsonDataService_PaginationSizeParameterName(),
-		   source,
-		   new String[] {
-			   "documentation", "configurable parameter name for the batch limit for pagination"
 		   });
 		addAnnotation
 		  (geoJsonDataServiceConfigurationEClass,
@@ -2305,6 +2293,18 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		   source,
 		   new String[] {
 			   "documentation", "the page size limit for pagination, so the server will not be overtaxed"
+		   });
+		addAnnotation
+		  (getGeoJsonDataServiceConfiguration_OffsetParameterName(),
+		   source,
+		   new String[] {
+			   "documentation", "Name of the HTTP query parameter carrying the start offset for pagination of this DataSet."
+		   });
+		addAnnotation
+		  (getGeoJsonDataServiceConfiguration_LimitParameterName(),
+		   source,
+		   new String[] {
+			   "documentation", "Name of the HTTP query parameter carrying the page size for pagination of this DataSet."
 		   });
 		addAnnotation
 		  (getGeoJsonDataServiceConfiguration_LongitudeFeature(),

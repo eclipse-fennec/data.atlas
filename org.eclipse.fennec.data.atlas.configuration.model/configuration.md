@@ -70,9 +70,11 @@ standalone — serving its own `dataInput` generically — or contain per-DataSe
 `DataServiceConfiguration`s (the binding service → dataset, containment).
 Every configuration of a DataService must result in a DCAT Distribution.
 
-Concrete services: `RestDataService` (with `openAPI` marker and configurable
-pagination parameter names; per-dataset `RestDataServiceConfiguration` with
-`path`, `batchSize`, `batchSizeLimit`) and `GeoJsonDataService` (see below),
+Concrete services: `RestDataService` (identity, `urlContext` and the `openAPI`
+marker; everything needed to serve a DataSet is on its per-dataset
+`RestDataServiceConfiguration`: `path`, `batchSize`, `batchSizeLimit`,
+`offsetParameterName`, `limitParameterName`) and `GeoJsonDataService` (see below,
+same split),
 plus placeholders for `ODataDataService`, `GraphQLDataService`,
 `XMLADataService` (OLAP/Daanse), `QGisDataService` (generated QGis layer
 configuration), `OgcFeaturesDataService` and `OgcSensorThingsDataService`.

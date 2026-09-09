@@ -49,7 +49,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * @generated
  */
 @ProviderType
-@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:41f045f112eaf378037cbcc296e352ee76ac8a043f92c346b45f728a15e40909", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
+@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:5f3baeb19b1870ff95f5ec7b97b0e7a0ae2e182e85ba3119d9fea7a04fc2135c", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
 public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	/**
 	 * The package name.
@@ -775,31 +775,13 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	int REST_DATA_SERVICE__OPEN_API = DATA_SERVICE_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Pagination Offset Parameter Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int REST_DATA_SERVICE__PAGINATION_OFFSET_PARAMETER_NAME = DATA_SERVICE_FEATURE_COUNT + 2;
-
-	/**
-	 * The feature id for the '<em><b>Pagination Size Parameter Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int REST_DATA_SERVICE__PAGINATION_SIZE_PARAMETER_NAME = DATA_SERVICE_FEATURE_COUNT + 3;
-
-	/**
 	 * The number of structural features of the '<em>Rest Data Service</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int REST_DATA_SERVICE_FEATURE_COUNT = DATA_SERVICE_FEATURE_COUNT + 4;
+	int REST_DATA_SERVICE_FEATURE_COUNT = DATA_SERVICE_FEATURE_COUNT + 2;
 
 	/**
 	 * The operation id for the '<em>Get Distributions</em>' operation.
@@ -921,13 +903,31 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	int REST_DATA_SERVICE_CONFIGURATION__BATCH_SIZE_LIMIT = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 2;
 
 	/**
+	 * The feature id for the '<em><b>Offset Parameter Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int REST_DATA_SERVICE_CONFIGURATION__OFFSET_PARAMETER_NAME = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 3;
+
+	/**
+	 * The feature id for the '<em><b>Limit Parameter Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int REST_DATA_SERVICE_CONFIGURATION__LIMIT_PARAMETER_NAME = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 4;
+
+	/**
 	 * The number of structural features of the '<em>Rest Data Service Configuration</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int REST_DATA_SERVICE_CONFIGURATION_FEATURE_COUNT = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 3;
+	int REST_DATA_SERVICE_CONFIGURATION_FEATURE_COUNT = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 5;
 
 	/**
 	 * The number of operations of the '<em>Rest Data Service Configuration</em>' class.
@@ -1030,31 +1030,13 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	int GEO_JSON_DATA_SERVICE__CONFIGURATION = DATA_SERVICE_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Pagination Offset Parameter Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GEO_JSON_DATA_SERVICE__PAGINATION_OFFSET_PARAMETER_NAME = DATA_SERVICE_FEATURE_COUNT + 1;
-
-	/**
-	 * The feature id for the '<em><b>Pagination Size Parameter Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GEO_JSON_DATA_SERVICE__PAGINATION_SIZE_PARAMETER_NAME = DATA_SERVICE_FEATURE_COUNT + 2;
-
-	/**
 	 * The number of structural features of the '<em>Geo Json Data Service</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int GEO_JSON_DATA_SERVICE_FEATURE_COUNT = DATA_SERVICE_FEATURE_COUNT + 3;
+	int GEO_JSON_DATA_SERVICE_FEATURE_COUNT = DATA_SERVICE_FEATURE_COUNT + 1;
 
 	/**
 	 * The operation id for the '<em>Get Distributions</em>' operation.
@@ -1130,13 +1112,31 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	int GEO_JSON_DATA_SERVICE_CONFIGURATION__BATCH_SIZE_LIMIT = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 2;
 
 	/**
+	 * The feature id for the '<em><b>Offset Parameter Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE_CONFIGURATION__OFFSET_PARAMETER_NAME = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 3;
+
+	/**
+	 * The feature id for the '<em><b>Limit Parameter Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE_CONFIGURATION__LIMIT_PARAMETER_NAME = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 4;
+
+	/**
 	 * The feature id for the '<em><b>Longitude Feature</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int GEO_JSON_DATA_SERVICE_CONFIGURATION__LONGITUDE_FEATURE = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 3;
+	int GEO_JSON_DATA_SERVICE_CONFIGURATION__LONGITUDE_FEATURE = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 5;
 
 	/**
 	 * The feature id for the '<em><b>Latitude Feature</b></em>' attribute.
@@ -1145,7 +1145,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GEO_JSON_DATA_SERVICE_CONFIGURATION__LATITUDE_FEATURE = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 4;
+	int GEO_JSON_DATA_SERVICE_CONFIGURATION__LATITUDE_FEATURE = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 6;
 
 	/**
 	 * The feature id for the '<em><b>Elevation Feature</b></em>' attribute.
@@ -1154,7 +1154,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GEO_JSON_DATA_SERVICE_CONFIGURATION__ELEVATION_FEATURE = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 5;
+	int GEO_JSON_DATA_SERVICE_CONFIGURATION__ELEVATION_FEATURE = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 7;
 
 	/**
 	 * The feature id for the '<em><b>Geometry Feature</b></em>' attribute.
@@ -1163,7 +1163,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GEO_JSON_DATA_SERVICE_CONFIGURATION__GEOMETRY_FEATURE = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 6;
+	int GEO_JSON_DATA_SERVICE_CONFIGURATION__GEOMETRY_FEATURE = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 8;
 
 	/**
 	 * The feature id for the '<em><b>Id Feature</b></em>' attribute.
@@ -1172,7 +1172,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GEO_JSON_DATA_SERVICE_CONFIGURATION__ID_FEATURE = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 7;
+	int GEO_JSON_DATA_SERVICE_CONFIGURATION__ID_FEATURE = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 9;
 
 	/**
 	 * The number of structural features of the '<em>Geo Json Data Service Configuration</em>' class.
@@ -1181,7 +1181,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GEO_JSON_DATA_SERVICE_CONFIGURATION_FEATURE_COUNT = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 8;
+	int GEO_JSON_DATA_SERVICE_CONFIGURATION_FEATURE_COUNT = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 10;
 
 	/**
 	 * The number of operations of the '<em>Geo Json Data Service Configuration</em>' class.
@@ -3236,28 +3236,6 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	EAttribute getRestDataService_OpenAPI();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.RestDataService#getPaginationOffsetParameterName <em>Pagination Offset Parameter Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Pagination Offset Parameter Name</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.RestDataService#getPaginationOffsetParameterName()
-	 * @see #getRestDataService()
-	 * @generated
-	 */
-	EAttribute getRestDataService_PaginationOffsetParameterName();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.RestDataService#getPaginationSizeParameterName <em>Pagination Size Parameter Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Pagination Size Parameter Name</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.RestDataService#getPaginationSizeParameterName()
-	 * @see #getRestDataService()
-	 * @generated
-	 */
-	EAttribute getRestDataService_PaginationSizeParameterName();
-
-	/**
 	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.DataServiceConfiguration <em>Data Service Configuration</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3333,6 +3311,28 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	EAttribute getRestDataServiceConfiguration_BatchSizeLimit();
 
 	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.RestDataServiceConfiguration#getOffsetParameterName <em>Offset Parameter Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Offset Parameter Name</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.RestDataServiceConfiguration#getOffsetParameterName()
+	 * @see #getRestDataServiceConfiguration()
+	 * @generated
+	 */
+	EAttribute getRestDataServiceConfiguration_OffsetParameterName();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.RestDataServiceConfiguration#getLimitParameterName <em>Limit Parameter Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Limit Parameter Name</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.RestDataServiceConfiguration#getLimitParameterName()
+	 * @see #getRestDataServiceConfiguration()
+	 * @generated
+	 */
+	EAttribute getRestDataServiceConfiguration_LimitParameterName();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataService <em>Geo Json Data Service</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3352,28 +3352,6 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 */
 	EReference getGeoJsonDataService_Configuration();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataService#getPaginationOffsetParameterName <em>Pagination Offset Parameter Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Pagination Offset Parameter Name</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.GeoJsonDataService#getPaginationOffsetParameterName()
-	 * @see #getGeoJsonDataService()
-	 * @generated
-	 */
-	EAttribute getGeoJsonDataService_PaginationOffsetParameterName();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataService#getPaginationSizeParameterName <em>Pagination Size Parameter Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Pagination Size Parameter Name</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.GeoJsonDataService#getPaginationSizeParameterName()
-	 * @see #getGeoJsonDataService()
-	 * @generated
-	 */
-	EAttribute getGeoJsonDataService_PaginationSizeParameterName();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration <em>Geo Json Data Service Configuration</em>}'.
@@ -3417,6 +3395,28 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 */
 	EAttribute getGeoJsonDataServiceConfiguration_BatchSizeLimit();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getOffsetParameterName <em>Offset Parameter Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Offset Parameter Name</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getOffsetParameterName()
+	 * @see #getGeoJsonDataServiceConfiguration()
+	 * @generated
+	 */
+	EAttribute getGeoJsonDataServiceConfiguration_OffsetParameterName();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getLimitParameterName <em>Limit Parameter Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Limit Parameter Name</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getLimitParameterName()
+	 * @see #getGeoJsonDataServiceConfiguration()
+	 * @generated
+	 */
+	EAttribute getGeoJsonDataServiceConfiguration_LimitParameterName();
 
 	/**
 	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getLongitudeFeature <em>Longitude Feature</em>}'.
@@ -4430,22 +4430,6 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		EAttribute REST_DATA_SERVICE__OPEN_API = eINSTANCE.getRestDataService_OpenAPI();
 
 		/**
-		 * The meta object literal for the '<em><b>Pagination Offset Parameter Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute REST_DATA_SERVICE__PAGINATION_OFFSET_PARAMETER_NAME = eINSTANCE.getRestDataService_PaginationOffsetParameterName();
-
-		/**
-		 * The meta object literal for the '<em><b>Pagination Size Parameter Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute REST_DATA_SERVICE__PAGINATION_SIZE_PARAMETER_NAME = eINSTANCE.getRestDataService_PaginationSizeParameterName();
-
-		/**
 		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DataServiceConfigurationImpl <em>Data Service Configuration</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -4506,6 +4490,22 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		EAttribute REST_DATA_SERVICE_CONFIGURATION__BATCH_SIZE_LIMIT = eINSTANCE.getRestDataServiceConfiguration_BatchSizeLimit();
 
 		/**
+		 * The meta object literal for the '<em><b>Offset Parameter Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute REST_DATA_SERVICE_CONFIGURATION__OFFSET_PARAMETER_NAME = eINSTANCE.getRestDataServiceConfiguration_OffsetParameterName();
+
+		/**
+		 * The meta object literal for the '<em><b>Limit Parameter Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute REST_DATA_SERVICE_CONFIGURATION__LIMIT_PARAMETER_NAME = eINSTANCE.getRestDataServiceConfiguration_LimitParameterName();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.GeoJsonDataServiceImpl <em>Geo Json Data Service</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -4522,22 +4522,6 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		 * @generated
 		 */
 		EReference GEO_JSON_DATA_SERVICE__CONFIGURATION = eINSTANCE.getGeoJsonDataService_Configuration();
-
-		/**
-		 * The meta object literal for the '<em><b>Pagination Offset Parameter Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute GEO_JSON_DATA_SERVICE__PAGINATION_OFFSET_PARAMETER_NAME = eINSTANCE.getGeoJsonDataService_PaginationOffsetParameterName();
-
-		/**
-		 * The meta object literal for the '<em><b>Pagination Size Parameter Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute GEO_JSON_DATA_SERVICE__PAGINATION_SIZE_PARAMETER_NAME = eINSTANCE.getGeoJsonDataService_PaginationSizeParameterName();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.GeoJsonDataServiceConfigurationImpl <em>Geo Json Data Service Configuration</em>}' class.
@@ -4572,6 +4556,22 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		 * @generated
 		 */
 		EAttribute GEO_JSON_DATA_SERVICE_CONFIGURATION__BATCH_SIZE_LIMIT = eINSTANCE.getGeoJsonDataServiceConfiguration_BatchSizeLimit();
+
+		/**
+		 * The meta object literal for the '<em><b>Offset Parameter Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute GEO_JSON_DATA_SERVICE_CONFIGURATION__OFFSET_PARAMETER_NAME = eINSTANCE.getGeoJsonDataServiceConfiguration_OffsetParameterName();
+
+		/**
+		 * The meta object literal for the '<em><b>Limit Parameter Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute GEO_JSON_DATA_SERVICE_CONFIGURATION__LIMIT_PARAMETER_NAME = eINSTANCE.getGeoJsonDataServiceConfiguration_LimitParameterName();
 
 		/**
 		 * The meta object literal for the '<em><b>Longitude Feature</b></em>' attribute feature.

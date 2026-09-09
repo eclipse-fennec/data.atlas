@@ -89,14 +89,9 @@ public class DataServiceResource {
 			ComponentServiceObjects<ReadRepository> repository, ExportFormats formats) {
 	}
 
-	private final String offsetParameterName;
-	private final String sizeParameterName;
 	private final Map<String, DataSetEndpoint> endpoints;
 
-	public DataServiceResource(String offsetParameterName, String sizeParameterName,
-			Map<String, DataSetEndpoint> endpoints) {
-		this.offsetParameterName = offsetParameterName;
-		this.sizeParameterName = sizeParameterName;
+	public DataServiceResource(Map<String, DataSetEndpoint> endpoints) {
 		this.endpoints = Map.copyOf(endpoints);
 	}
 
@@ -107,7 +102,8 @@ public class DataServiceResource {
 		DataSetEndpoint endpoint = endpoint(dataSetPath);
 		MediaType mediaType = negotiate(endpoint, dataSetPath, request, requestContext);
 		Resource container = newContainer(dataSetPath);
-		int offset = queryParameter(uriInfo, offsetParameterName, 0);
+		// the parameter names are per DataSet configuration, not per service
+		int offset = queryParameter(uriInfo, endpoint.configuration().getOffsetParameterName(), 0);
 		int size = effectiveSize(uriInfo, endpoint.configuration());
 		if (size == 0) {
 			return Response.ok(container).type(mediaType).build();
@@ -251,7 +247,8 @@ public class DataServiceResource {
 	 * {@code batchSizeLimit}; -1 means unlimited.
 	 */
 	private int effectiveSize(UriInfo uriInfo, RestDataServiceConfiguration configuration) {
-		int size = queryParameter(uriInfo, sizeParameterName, intValue(configuration.getBatchSize(), -1));
+		int size = queryParameter(uriInfo, configuration.getLimitParameterName(),
+				intValue(configuration.getBatchSize(), -1));
 		int limit = intValue(configuration.getBatchSizeLimit(), -1);
 		if (limit >= 0 && (size < 0 || size > limit)) {
 			size = limit;

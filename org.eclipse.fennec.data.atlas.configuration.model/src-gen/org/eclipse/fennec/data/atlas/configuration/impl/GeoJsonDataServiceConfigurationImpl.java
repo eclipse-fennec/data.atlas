@@ -36,6 +36,8 @@ import org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfigurati
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.GeoJsonDataServiceConfigurationImpl#getPath <em>Path</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.GeoJsonDataServiceConfigurationImpl#getBatchSize <em>Batch Size</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.GeoJsonDataServiceConfigurationImpl#getBatchSizeLimit <em>Batch Size Limit</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.GeoJsonDataServiceConfigurationImpl#getOffsetParameterName <em>Offset Parameter Name</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.GeoJsonDataServiceConfigurationImpl#getLimitParameterName <em>Limit Parameter Name</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.GeoJsonDataServiceConfigurationImpl#getLongitudeFeature <em>Longitude Feature</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.GeoJsonDataServiceConfigurationImpl#getLatitudeFeature <em>Latitude Feature</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.GeoJsonDataServiceConfigurationImpl#getElevationFeature <em>Elevation Feature</em>}</li>
@@ -105,6 +107,46 @@ public class GeoJsonDataServiceConfigurationImpl extends DataServiceConfiguratio
 	 * @ordered
 	 */
 	protected BigInteger batchSizeLimit = BATCH_SIZE_LIMIT_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getOffsetParameterName() <em>Offset Parameter Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getOffsetParameterName()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String OFFSET_PARAMETER_NAME_EDEFAULT = "offset";
+
+	/**
+	 * The cached value of the '{@link #getOffsetParameterName() <em>Offset Parameter Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getOffsetParameterName()
+	 * @generated
+	 * @ordered
+	 */
+	protected String offsetParameterName = OFFSET_PARAMETER_NAME_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getLimitParameterName() <em>Limit Parameter Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getLimitParameterName()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String LIMIT_PARAMETER_NAME_EDEFAULT = "limit";
+
+	/**
+	 * The cached value of the '{@link #getLimitParameterName() <em>Limit Parameter Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getLimitParameterName()
+	 * @generated
+	 * @ordered
+	 */
+	protected String limitParameterName = LIMIT_PARAMETER_NAME_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getLongitudeFeature() <em>Longitude Feature</em>}' attribute.
@@ -300,6 +342,52 @@ public class GeoJsonDataServiceConfigurationImpl extends DataServiceConfiguratio
 	 * @generated
 	 */
 	@Override
+	public String getOffsetParameterName() {
+		return offsetParameterName;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setOffsetParameterName(String newOffsetParameterName) {
+		String oldOffsetParameterName = offsetParameterName;
+		offsetParameterName = newOffsetParameterName;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DAConfigPackage.GEO_JSON_DATA_SERVICE_CONFIGURATION__OFFSET_PARAMETER_NAME, oldOffsetParameterName, offsetParameterName));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String getLimitParameterName() {
+		return limitParameterName;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setLimitParameterName(String newLimitParameterName) {
+		String oldLimitParameterName = limitParameterName;
+		limitParameterName = newLimitParameterName;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DAConfigPackage.GEO_JSON_DATA_SERVICE_CONFIGURATION__LIMIT_PARAMETER_NAME, oldLimitParameterName, limitParameterName));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public String getLongitudeFeature() {
 		return longitudeFeature;
 	}
@@ -423,6 +511,10 @@ public class GeoJsonDataServiceConfigurationImpl extends DataServiceConfiguratio
 				return getBatchSize();
 			case DAConfigPackage.GEO_JSON_DATA_SERVICE_CONFIGURATION__BATCH_SIZE_LIMIT:
 				return getBatchSizeLimit();
+			case DAConfigPackage.GEO_JSON_DATA_SERVICE_CONFIGURATION__OFFSET_PARAMETER_NAME:
+				return getOffsetParameterName();
+			case DAConfigPackage.GEO_JSON_DATA_SERVICE_CONFIGURATION__LIMIT_PARAMETER_NAME:
+				return getLimitParameterName();
 			case DAConfigPackage.GEO_JSON_DATA_SERVICE_CONFIGURATION__LONGITUDE_FEATURE:
 				return getLongitudeFeature();
 			case DAConfigPackage.GEO_JSON_DATA_SERVICE_CONFIGURATION__LATITUDE_FEATURE:
@@ -453,6 +545,12 @@ public class GeoJsonDataServiceConfigurationImpl extends DataServiceConfiguratio
 				return;
 			case DAConfigPackage.GEO_JSON_DATA_SERVICE_CONFIGURATION__BATCH_SIZE_LIMIT:
 				setBatchSizeLimit((BigInteger)newValue);
+				return;
+			case DAConfigPackage.GEO_JSON_DATA_SERVICE_CONFIGURATION__OFFSET_PARAMETER_NAME:
+				setOffsetParameterName((String)newValue);
+				return;
+			case DAConfigPackage.GEO_JSON_DATA_SERVICE_CONFIGURATION__LIMIT_PARAMETER_NAME:
+				setLimitParameterName((String)newValue);
 				return;
 			case DAConfigPackage.GEO_JSON_DATA_SERVICE_CONFIGURATION__LONGITUDE_FEATURE:
 				setLongitudeFeature((String)newValue);
@@ -490,6 +588,12 @@ public class GeoJsonDataServiceConfigurationImpl extends DataServiceConfiguratio
 			case DAConfigPackage.GEO_JSON_DATA_SERVICE_CONFIGURATION__BATCH_SIZE_LIMIT:
 				setBatchSizeLimit(BATCH_SIZE_LIMIT_EDEFAULT);
 				return;
+			case DAConfigPackage.GEO_JSON_DATA_SERVICE_CONFIGURATION__OFFSET_PARAMETER_NAME:
+				setOffsetParameterName(OFFSET_PARAMETER_NAME_EDEFAULT);
+				return;
+			case DAConfigPackage.GEO_JSON_DATA_SERVICE_CONFIGURATION__LIMIT_PARAMETER_NAME:
+				setLimitParameterName(LIMIT_PARAMETER_NAME_EDEFAULT);
+				return;
 			case DAConfigPackage.GEO_JSON_DATA_SERVICE_CONFIGURATION__LONGITUDE_FEATURE:
 				setLongitudeFeature(LONGITUDE_FEATURE_EDEFAULT);
 				return;
@@ -523,6 +627,10 @@ public class GeoJsonDataServiceConfigurationImpl extends DataServiceConfiguratio
 				return BATCH_SIZE_EDEFAULT == null ? batchSize != null : !BATCH_SIZE_EDEFAULT.equals(batchSize);
 			case DAConfigPackage.GEO_JSON_DATA_SERVICE_CONFIGURATION__BATCH_SIZE_LIMIT:
 				return BATCH_SIZE_LIMIT_EDEFAULT == null ? batchSizeLimit != null : !BATCH_SIZE_LIMIT_EDEFAULT.equals(batchSizeLimit);
+			case DAConfigPackage.GEO_JSON_DATA_SERVICE_CONFIGURATION__OFFSET_PARAMETER_NAME:
+				return OFFSET_PARAMETER_NAME_EDEFAULT == null ? offsetParameterName != null : !OFFSET_PARAMETER_NAME_EDEFAULT.equals(offsetParameterName);
+			case DAConfigPackage.GEO_JSON_DATA_SERVICE_CONFIGURATION__LIMIT_PARAMETER_NAME:
+				return LIMIT_PARAMETER_NAME_EDEFAULT == null ? limitParameterName != null : !LIMIT_PARAMETER_NAME_EDEFAULT.equals(limitParameterName);
 			case DAConfigPackage.GEO_JSON_DATA_SERVICE_CONFIGURATION__LONGITUDE_FEATURE:
 				return LONGITUDE_FEATURE_EDEFAULT == null ? longitudeFeature != null : !LONGITUDE_FEATURE_EDEFAULT.equals(longitudeFeature);
 			case DAConfigPackage.GEO_JSON_DATA_SERVICE_CONFIGURATION__LATITUDE_FEATURE:
@@ -553,6 +661,10 @@ public class GeoJsonDataServiceConfigurationImpl extends DataServiceConfiguratio
 		result.append(batchSize);
 		result.append(", batchSizeLimit: ");
 		result.append(batchSizeLimit);
+		result.append(", offsetParameterName: ");
+		result.append(offsetParameterName);
+		result.append(", limitParameterName: ");
+		result.append(limitParameterName);
 		result.append(", longitudeFeature: ");
 		result.append(longitudeFeature);
 		result.append(", latitudeFeature: ");

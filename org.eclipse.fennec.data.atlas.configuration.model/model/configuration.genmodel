@@ -54,8 +54,6 @@
     <genClasses ecoreClass="configuration.ecore#//RestDataService">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//RestDataService/configuration"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//RestDataService/openAPI"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//RestDataService/paginationOffsetParameterName"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//RestDataService/paginationSizeParameterName"/>
     </genClasses>
     <genClasses image="false" ecoreClass="configuration.ecore#//DataServiceConfiguration">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DataServiceConfiguration/id"/>
@@ -65,16 +63,18 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//RestDataServiceConfiguration/path"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//RestDataServiceConfiguration/batchSize"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//RestDataServiceConfiguration/batchSizeLimit"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//RestDataServiceConfiguration/offsetParameterName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//RestDataServiceConfiguration/limitParameterName"/>
     </genClasses>
     <genClasses ecoreClass="configuration.ecore#//GeoJsonDataService">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//GeoJsonDataService/configuration"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//GeoJsonDataService/paginationOffsetParameterName"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//GeoJsonDataService/paginationSizeParameterName"/>
     </genClasses>
     <genClasses ecoreClass="configuration.ecore#//GeoJsonDataServiceConfiguration">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//GeoJsonDataServiceConfiguration/path"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//GeoJsonDataServiceConfiguration/batchSize"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//GeoJsonDataServiceConfiguration/batchSizeLimit"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//GeoJsonDataServiceConfiguration/offsetParameterName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//GeoJsonDataServiceConfiguration/limitParameterName"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//GeoJsonDataServiceConfiguration/longitudeFeature"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//GeoJsonDataServiceConfiguration/latitudeFeature"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//GeoJsonDataServiceConfiguration/elevationFeature"/>

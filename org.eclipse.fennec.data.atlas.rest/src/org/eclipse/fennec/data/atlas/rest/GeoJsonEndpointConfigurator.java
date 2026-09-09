@@ -224,8 +224,7 @@ public class GeoJsonEndpointConfigurator {
 
 	private ServiceRegistration<Application> register(String id, GeoJsonDataService service,
 			Map<String, GeoJsonEndpoint> endpoints) {
-		GeoJsonServiceResource resource = new GeoJsonServiceResource(service.getPaginationOffsetParameterName(),
-				service.getPaginationSizeParameterName(), endpoints);
+		GeoJsonServiceResource resource = new GeoJsonServiceResource(endpoints);
 		String base = service.getUrlContext() == null || service.getUrlContext().isBlank() ? "/" + id
 				: service.getUrlContext();
 		if (!base.startsWith("/")) {

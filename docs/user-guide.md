@@ -235,11 +235,12 @@ live (and is logged loudly).
 
 A `DataService` exposes DataSets under a `urlContext` (the base path).
 Implemented today: **`RestDataService`** — one REST application per service,
-with one `configuration` entry per served DataSet (`dataSet` reference +
-`path` segment, optional `batchSize`/`batchSizeLimit` pagination defaults).
-The pagination parameter names are configurable per service
-(`paginationOffsetParameterName`, default `offset`;
-`paginationSizeParameterName`, default `limit`).
+with one `configuration` entry per served DataSet. Everything the runtime
+needs for that DataSet is on the configuration entry: the `dataSet` reference,
+the `path` segment, the optional `batchSize`/`batchSizeLimit` pagination
+defaults and the pagination parameter names (`offsetParameterName`, default
+`offset`; `limitParameterName`, default `limit`). The service itself carries
+only its identity and the `urlContext`.
 
 Other service kinds in the model (OData, GraphQL, OGC Features, OGC
 SensorThings, XMLA, QGis) are placeholders for future milestones.
@@ -295,8 +296,8 @@ memory):
 curl "http://localhost:8080/rest/example/persons?offset=10&limit=5"
 ```
 
-The parameter *names* are per-service configurable
-(`paginationOffsetParameterName` / `paginationSizeParameterName`). A
+The parameter *names* are configurable per DataSet configuration
+(`offsetParameterName` / `limitParameterName`). A
 `batchSizeLimit` on the DataSet configuration caps every request — asking for
 more (or for everything) silently returns at most the limit.
 

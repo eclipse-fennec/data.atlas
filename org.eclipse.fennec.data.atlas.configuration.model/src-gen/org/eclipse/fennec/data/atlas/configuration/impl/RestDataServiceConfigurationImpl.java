@@ -36,6 +36,8 @@ import org.eclipse.fennec.data.atlas.configuration.RestDataServiceConfiguration;
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.RestDataServiceConfigurationImpl#getPath <em>Path</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.RestDataServiceConfigurationImpl#getBatchSize <em>Batch Size</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.RestDataServiceConfigurationImpl#getBatchSizeLimit <em>Batch Size Limit</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.RestDataServiceConfigurationImpl#getOffsetParameterName <em>Offset Parameter Name</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.RestDataServiceConfigurationImpl#getLimitParameterName <em>Limit Parameter Name</em>}</li>
  * </ul>
  *
  * @generated
@@ -100,6 +102,46 @@ public class RestDataServiceConfigurationImpl extends DataServiceConfigurationIm
 	 * @ordered
 	 */
 	protected BigInteger batchSizeLimit = BATCH_SIZE_LIMIT_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getOffsetParameterName() <em>Offset Parameter Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getOffsetParameterName()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String OFFSET_PARAMETER_NAME_EDEFAULT = "offset";
+
+	/**
+	 * The cached value of the '{@link #getOffsetParameterName() <em>Offset Parameter Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getOffsetParameterName()
+	 * @generated
+	 * @ordered
+	 */
+	protected String offsetParameterName = OFFSET_PARAMETER_NAME_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getLimitParameterName() <em>Limit Parameter Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getLimitParameterName()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String LIMIT_PARAMETER_NAME_EDEFAULT = "limit";
+
+	/**
+	 * The cached value of the '{@link #getLimitParameterName() <em>Limit Parameter Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getLimitParameterName()
+	 * @generated
+	 * @ordered
+	 */
+	protected String limitParameterName = LIMIT_PARAMETER_NAME_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -195,6 +237,52 @@ public class RestDataServiceConfigurationImpl extends DataServiceConfigurationIm
 	 * @generated
 	 */
 	@Override
+	public String getOffsetParameterName() {
+		return offsetParameterName;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setOffsetParameterName(String newOffsetParameterName) {
+		String oldOffsetParameterName = offsetParameterName;
+		offsetParameterName = newOffsetParameterName;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DAConfigPackage.REST_DATA_SERVICE_CONFIGURATION__OFFSET_PARAMETER_NAME, oldOffsetParameterName, offsetParameterName));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String getLimitParameterName() {
+		return limitParameterName;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setLimitParameterName(String newLimitParameterName) {
+		String oldLimitParameterName = limitParameterName;
+		limitParameterName = newLimitParameterName;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DAConfigPackage.REST_DATA_SERVICE_CONFIGURATION__LIMIT_PARAMETER_NAME, oldLimitParameterName, limitParameterName));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case DAConfigPackage.REST_DATA_SERVICE_CONFIGURATION__PATH:
@@ -203,6 +291,10 @@ public class RestDataServiceConfigurationImpl extends DataServiceConfigurationIm
 				return getBatchSize();
 			case DAConfigPackage.REST_DATA_SERVICE_CONFIGURATION__BATCH_SIZE_LIMIT:
 				return getBatchSizeLimit();
+			case DAConfigPackage.REST_DATA_SERVICE_CONFIGURATION__OFFSET_PARAMETER_NAME:
+				return getOffsetParameterName();
+			case DAConfigPackage.REST_DATA_SERVICE_CONFIGURATION__LIMIT_PARAMETER_NAME:
+				return getLimitParameterName();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -223,6 +315,12 @@ public class RestDataServiceConfigurationImpl extends DataServiceConfigurationIm
 				return;
 			case DAConfigPackage.REST_DATA_SERVICE_CONFIGURATION__BATCH_SIZE_LIMIT:
 				setBatchSizeLimit((BigInteger)newValue);
+				return;
+			case DAConfigPackage.REST_DATA_SERVICE_CONFIGURATION__OFFSET_PARAMETER_NAME:
+				setOffsetParameterName((String)newValue);
+				return;
+			case DAConfigPackage.REST_DATA_SERVICE_CONFIGURATION__LIMIT_PARAMETER_NAME:
+				setLimitParameterName((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -245,6 +343,12 @@ public class RestDataServiceConfigurationImpl extends DataServiceConfigurationIm
 			case DAConfigPackage.REST_DATA_SERVICE_CONFIGURATION__BATCH_SIZE_LIMIT:
 				setBatchSizeLimit(BATCH_SIZE_LIMIT_EDEFAULT);
 				return;
+			case DAConfigPackage.REST_DATA_SERVICE_CONFIGURATION__OFFSET_PARAMETER_NAME:
+				setOffsetParameterName(OFFSET_PARAMETER_NAME_EDEFAULT);
+				return;
+			case DAConfigPackage.REST_DATA_SERVICE_CONFIGURATION__LIMIT_PARAMETER_NAME:
+				setLimitParameterName(LIMIT_PARAMETER_NAME_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -263,6 +367,10 @@ public class RestDataServiceConfigurationImpl extends DataServiceConfigurationIm
 				return BATCH_SIZE_EDEFAULT == null ? batchSize != null : !BATCH_SIZE_EDEFAULT.equals(batchSize);
 			case DAConfigPackage.REST_DATA_SERVICE_CONFIGURATION__BATCH_SIZE_LIMIT:
 				return BATCH_SIZE_LIMIT_EDEFAULT == null ? batchSizeLimit != null : !BATCH_SIZE_LIMIT_EDEFAULT.equals(batchSizeLimit);
+			case DAConfigPackage.REST_DATA_SERVICE_CONFIGURATION__OFFSET_PARAMETER_NAME:
+				return OFFSET_PARAMETER_NAME_EDEFAULT == null ? offsetParameterName != null : !OFFSET_PARAMETER_NAME_EDEFAULT.equals(offsetParameterName);
+			case DAConfigPackage.REST_DATA_SERVICE_CONFIGURATION__LIMIT_PARAMETER_NAME:
+				return LIMIT_PARAMETER_NAME_EDEFAULT == null ? limitParameterName != null : !LIMIT_PARAMETER_NAME_EDEFAULT.equals(limitParameterName);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -283,6 +391,10 @@ public class RestDataServiceConfigurationImpl extends DataServiceConfigurationIm
 		result.append(batchSize);
 		result.append(", batchSizeLimit: ");
 		result.append(batchSizeLimit);
+		result.append(", offsetParameterName: ");
+		result.append(offsetParameterName);
+		result.append(", limitParameterName: ");
+		result.append(limitParameterName);
 		result.append(')');
 		return result.toString();
 	}

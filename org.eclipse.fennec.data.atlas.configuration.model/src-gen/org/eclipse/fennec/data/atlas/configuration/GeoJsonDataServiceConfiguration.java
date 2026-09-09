@@ -35,6 +35,8 @@ import org.osgi.annotation.versioning.ProviderType;
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getPath <em>Path</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getBatchSize <em>Batch Size</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getBatchSizeLimit <em>Batch Size Limit</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getOffsetParameterName <em>Offset Parameter Name</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getLimitParameterName <em>Limit Parameter Name</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getLongitudeFeature <em>Longitude Feature</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getLatitudeFeature <em>Latitude Feature</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getElevationFeature <em>Elevation Feature</em>}</li>
@@ -124,6 +126,58 @@ public interface GeoJsonDataServiceConfiguration extends DataServiceConfiguratio
 	 * @generated
 	 */
 	void setBatchSizeLimit(BigInteger value);
+
+	/**
+	 * Returns the value of the '<em><b>Offset Parameter Name</b></em>' attribute.
+	 * The default value is <code>"offset"</code>.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Name of the HTTP query parameter carrying the start offset for pagination of this DataSet.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Offset Parameter Name</em>' attribute.
+	 * @see #setOffsetParameterName(String)
+	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getGeoJsonDataServiceConfiguration_OffsetParameterName()
+	 * @model default="offset" required="true"
+	 * @generated
+	 */
+	String getOffsetParameterName();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getOffsetParameterName <em>Offset Parameter Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Offset Parameter Name</em>' attribute.
+	 * @see #getOffsetParameterName()
+	 * @generated
+	 */
+	void setOffsetParameterName(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Limit Parameter Name</b></em>' attribute.
+	 * The default value is <code>"limit"</code>.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Name of the HTTP query parameter carrying the page size for pagination of this DataSet.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Limit Parameter Name</em>' attribute.
+	 * @see #setLimitParameterName(String)
+	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getGeoJsonDataServiceConfiguration_LimitParameterName()
+	 * @model default="limit" required="true"
+	 * @generated
+	 */
+	String getLimitParameterName();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration#getLimitParameterName <em>Limit Parameter Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Limit Parameter Name</em>' attribute.
+	 * @see #getLimitParameterName()
+	 * @generated
+	 */
+	void setLimitParameterName(String value);
 
 	/**
 	 * Returns the value of the '<em><b>Longitude Feature</b></em>' attribute.

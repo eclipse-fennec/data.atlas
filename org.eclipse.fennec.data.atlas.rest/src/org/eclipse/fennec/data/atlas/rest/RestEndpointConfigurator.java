@@ -239,8 +239,7 @@ public class RestEndpointConfigurator {
 
 	private ServiceRegistration<Application> register(String id, RestDataService service,
 			Map<String, DataSetEndpoint> endpoints) {
-		DataServiceResource resource = new DataServiceResource(service.getPaginationOffsetParameterName(),
-				service.getPaginationSizeParameterName(), endpoints);
+		DataServiceResource resource = new DataServiceResource(endpoints);
 		String base = service.getUrlContext() == null || service.getUrlContext().isBlank() ? "/" + id
 				: service.getUrlContext();
 		if (!base.startsWith("/")) {

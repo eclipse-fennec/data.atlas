@@ -33,8 +33,6 @@ import org.osgi.annotation.versioning.ProviderType;
  * </p>
  * <ul>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataService#getConfiguration <em>Configuration</em>}</li>
- *   <li>{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataService#getPaginationOffsetParameterName <em>Pagination Offset Parameter Name</em>}</li>
- *   <li>{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataService#getPaginationSizeParameterName <em>Pagination Size Parameter Name</em>}</li>
  * </ul>
  *
  * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getGeoJsonDataService()
@@ -58,57 +56,5 @@ public interface GeoJsonDataService extends DataService {
 	 * @generated
 	 */
 	EList<GeoJsonDataServiceConfiguration> getConfiguration();
-
-	/**
-	 * Returns the value of the '<em><b>Pagination Offset Parameter Name</b></em>' attribute.
-	 * The default value is <code>"offset"</code>.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * configurable parameter name for the start offset for pagination
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Pagination Offset Parameter Name</em>' attribute.
-	 * @see #setPaginationOffsetParameterName(String)
-	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getGeoJsonDataService_PaginationOffsetParameterName()
-	 * @model default="offset" required="true"
-	 * @generated
-	 */
-	String getPaginationOffsetParameterName();
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataService#getPaginationOffsetParameterName <em>Pagination Offset Parameter Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Pagination Offset Parameter Name</em>' attribute.
-	 * @see #getPaginationOffsetParameterName()
-	 * @generated
-	 */
-	void setPaginationOffsetParameterName(String value);
-
-	/**
-	 * Returns the value of the '<em><b>Pagination Size Parameter Name</b></em>' attribute.
-	 * The default value is <code>"limit"</code>.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * configurable parameter name for the batch limit for pagination
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Pagination Size Parameter Name</em>' attribute.
-	 * @see #setPaginationSizeParameterName(String)
-	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getGeoJsonDataService_PaginationSizeParameterName()
-	 * @model default="limit" required="true"
-	 * @generated
-	 */
-	String getPaginationSizeParameterName();
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.fennec.data.atlas.configuration.GeoJsonDataService#getPaginationSizeParameterName <em>Pagination Size Parameter Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Pagination Size Parameter Name</em>' attribute.
-	 * @see #getPaginationSizeParameterName()
-	 * @generated
-	 */
-	void setPaginationSizeParameterName(String value);
 
 } // GeoJsonDataService

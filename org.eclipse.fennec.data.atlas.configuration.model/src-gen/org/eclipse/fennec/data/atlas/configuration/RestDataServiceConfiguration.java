@@ -24,7 +24,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * <!-- end-user-doc -->
  *
  * <!-- begin-model-doc -->
- * A set of Configuration parameters for a specific DataSet
+ * Everything the REST runtime needs to serve one DataSet of a RestDataService: its path under the service's urlContext, the paging defaults and bounds, and the names of the HTTP query parameters the paging is driven by. Nothing per-DataSet is configured on the service itself.
  * <!-- end-model-doc -->
  *
  * <p>
@@ -34,6 +34,8 @@ import org.osgi.annotation.versioning.ProviderType;
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.RestDataServiceConfiguration#getPath <em>Path</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.RestDataServiceConfiguration#getBatchSize <em>Batch Size</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.RestDataServiceConfiguration#getBatchSizeLimit <em>Batch Size Limit</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.RestDataServiceConfiguration#getOffsetParameterName <em>Offset Parameter Name</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.RestDataServiceConfiguration#getLimitParameterName <em>Limit Parameter Name</em>}</li>
  * </ul>
  *
  * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getRestDataServiceConfiguration()
@@ -118,5 +120,57 @@ public interface RestDataServiceConfiguration extends DataServiceConfiguration {
 	 * @generated
 	 */
 	void setBatchSizeLimit(BigInteger value);
+
+	/**
+	 * Returns the value of the '<em><b>Offset Parameter Name</b></em>' attribute.
+	 * The default value is <code>"offset"</code>.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Name of the HTTP query parameter carrying the start offset for pagination of this DataSet.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Offset Parameter Name</em>' attribute.
+	 * @see #setOffsetParameterName(String)
+	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getRestDataServiceConfiguration_OffsetParameterName()
+	 * @model default="offset" required="true"
+	 * @generated
+	 */
+	String getOffsetParameterName();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.fennec.data.atlas.configuration.RestDataServiceConfiguration#getOffsetParameterName <em>Offset Parameter Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Offset Parameter Name</em>' attribute.
+	 * @see #getOffsetParameterName()
+	 * @generated
+	 */
+	void setOffsetParameterName(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Limit Parameter Name</b></em>' attribute.
+	 * The default value is <code>"limit"</code>.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Name of the HTTP query parameter carrying the page size for pagination of this DataSet.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Limit Parameter Name</em>' attribute.
+	 * @see #setLimitParameterName(String)
+	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getRestDataServiceConfiguration_LimitParameterName()
+	 * @model default="limit" required="true"
+	 * @generated
+	 */
+	String getLimitParameterName();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.fennec.data.atlas.configuration.RestDataServiceConfiguration#getLimitParameterName <em>Limit Parameter Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Limit Parameter Name</em>' attribute.
+	 * @see #getLimitParameterName()
+	 * @generated
+	 */
+	void setLimitParameterName(String value);
 
 } // RestDataServiceConfiguration
