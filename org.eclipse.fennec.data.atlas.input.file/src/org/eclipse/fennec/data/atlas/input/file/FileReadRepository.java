@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
@@ -35,11 +36,14 @@ import org.eclipse.fennec.data.atlas.configuration.FileDataInput;
 import org.eclipse.fennec.emf.osgi.ResourceSetFactory;
 import org.eclipse.fennec.model.query.ParameterDecl;
 import org.eclipse.fennec.model.query.Query;
+import org.eclipse.fennec.persistence.capabilities.CommandCapabilitiesBuilder;
 import org.eclipse.fennec.persistence.capabilities.PersistenceCapabilities;
-import org.eclipse.fennec.persistence.query.api.Hit;
+import org.eclipse.fennec.persistence.capabilities.QueryCapabilities;
+import org.eclipse.fennec.persistence.capabilities.StoreCapabilitiesBuilder;
+import org.eclipse.fennec.persistence.query.QueryException;
 import org.eclipse.fennec.persistence.query.api.QueryResult;
-import org.eclipse.fennec.persistence.query.api.QueryResultRow;
-import org.eclipse.fennec.persistence.query.api.QueryShape;
+import org.eclipse.fennec.persistence.query.memory.MemoryQueries;
+import org.eclipse.fennec.persistence.query.memory.MemoryQueryProcessor;
 import org.eclipse.fennec.persistence.repository.api.PreparedQuery;
 import org.eclipse.fennec.persistence.repository.api.ReadRepository;
 
@@ -50,14 +54,26 @@ import org.eclipse.fennec.persistence.repository.api.ReadRepository;
  * the objects it receives and no shared mutable state exists.
  *
  * <p>
- * The query surface is deliberately minimal: {@code find}/{@code prepare}
- * accept only the {@code from} + {@code skip} + {@code top} subset of the
- * canonical query model; everything else (predicates, ordering, projection,
- * pipelines, parameters) is refused with a clear diagnostic — richer queries
- * are a feature of database-backed inputs.
+ * Canonical queries ({@code find}/{@code count}/{@code prepare}) are evaluated
+ * by the fennec persistence stack's reference in-memory engine
+ * ({@link MemoryQueries}) over the loaded objects: predicates, ordering,
+ * projection, aggregation pipelines and bound parameters all work, and the
+ * repository declares exactly the engine's {@link QueryCapabilities}, so a
+ * consumer that gates on capabilities (the OData repository backend, for one)
+ * gets honest answers instead of a refused query. Nothing is pushed anywhere —
+ * every query materializes the file first — which is the nature of a file
+ * input, not a limitation of the query surface.
  * </p>
  */
 public class FileReadRepository implements ReadRepository {
+
+	/**
+	 * The query capabilities are those of the in-memory reference engine that
+	 * evaluates every query; no commands, no store features (read-only).
+	 */
+	static final PersistenceCapabilities CAPABILITIES = PersistenceCapabilities.of(
+			new MemoryQueryProcessor().capabilities(), CommandCapabilitiesBuilder.create().build(),
+			StoreCapabilitiesBuilder.create().build());
 
 	private final FileDataInput input;
 	private final ResourceSetFactory resourceSetFactory;
@@ -84,8 +100,7 @@ public class FileReadRepository implements ReadRepository {
 
 	@Override
 	public PersistenceCapabilities capabilities() {
-		// the file flavour declares no backend capabilities (yet)
-		return null;
+		return CAPABILITIES;
 	}
 
 	@Override
@@ -236,15 +251,14 @@ public class FileReadRepository implements ReadRepository {
 
 	@Override
 	public QueryResult find(Query query, Map<String, Object> parameters, Map<?, ?> options) throws IOException {
-		checkSupported(query);
-		Stream<EObject> stream = contents(query.getFrom());
-		if (query.getSkip() > 0) {
-			stream = stream.skip(query.getSkip());
+		checkFrom(query);
+		List<EObject> candidates = contents(query.getFrom()).toList();
+		try {
+			return MemoryQueries.execute(query, candidates, parameters);
+		} catch (QueryException e) {
+			throw new IOException("file-backed repository '" + id() + "' cannot evaluate the query: " + e.getMessage(),
+					e);
 		}
-		if (query.getTop() > 0) {
-			stream = stream.limit(query.getTop());
-		}
-		return new FileQueryResult(stream.toList());
 	}
 
 	@Override
@@ -254,13 +268,24 @@ public class FileReadRepository implements ReadRepository {
 
 	@Override
 	public long count(Query query) throws IOException {
-		checkSupported(query);
-		return contents(query.getFrom()).count();
+		checkFrom(query);
+		Query countQuery = EcoreUtil.copy(query);
+		countQuery.setCountOnly(true);
+		countQuery.setSkip(0);
+		countQuery.setTop(-1);
+		try (QueryResult result = find(countQuery, null, null)) {
+			return result.count();
+		}
 	}
 
 	@Override
 	public PreparedQuery prepare(Query query) throws IOException {
-		checkSupported(query);
+		checkFrom(query);
+		Diagnostic diagnostic = new MemoryQueryProcessor().validate(query, query.getFrom());
+		if (diagnostic.getSeverity() >= Diagnostic.ERROR) {
+			throw new IOException("file-backed repository '" + id() + "' cannot evaluate the query: "
+					+ diagnosticText(diagnostic));
+		}
 		return new FilePreparedQuery(query);
 	}
 
@@ -269,34 +294,16 @@ public class FileReadRepository implements ReadRepository {
 		throw new IOException("file-backed repository '" + id() + "' has no saved-query catalog");
 	}
 
-	/**
-	 * The supported canonical-query subset is from + skip + top; refuse
-	 * everything else with a diagnostic instead of silently ignoring it.
-	 */
-	private void checkSupported(Query query) throws IOException {
+	private static void checkFrom(Query query) throws IOException {
 		if (query.getFrom() == null) {
 			throw new IOException("query has no from type");
 		}
-		String unsupported = null;
-		if (query.getPredicate() != null) {
-			unsupported = "predicate";
-		} else if (!query.getOrderBy().isEmpty()) {
-			unsupported = "orderBy";
-		} else if (!query.getSelect().isEmpty()) {
-			unsupported = "projection";
-		} else if (query.getApply() != null) {
-			unsupported = "pipeline";
-		} else if (!query.getExpand().isEmpty()) {
-			unsupported = "expand";
-		} else if (query.isDistinct() || query.isCountOnly() || query.isWithScores()) {
-			unsupported = "distinct/countOnly/withScores";
-		} else if (!query.getParameters().isEmpty()) {
-			unsupported = "parameters";
-		}
-		if (unsupported != null) {
-			throw new IOException("file-backed repository '" + id()
-					+ "' supports only from/skip/top queries; unsupported query feature: " + unsupported);
-		}
+	}
+
+	private static String diagnosticText(Diagnostic diagnostic) {
+		StringBuilder text = new StringBuilder(diagnostic.getMessage() == null ? "" : diagnostic.getMessage());
+		diagnostic.getChildren().forEach(child -> text.append("; ").append(child.getMessage()));
+		return text.toString();
 	}
 
 	private EObject findById(EClass eClass, String id) throws IOException {
@@ -347,51 +354,6 @@ public class FileReadRepository implements ReadRepository {
 			target.getContents().addAll(new ArrayList<>(resource.getContents()));
 		}
 		return target;
-	}
-
-	/** OBJECTS-shaped result over an already materialized list. */
-	private static final class FileQueryResult implements QueryResult {
-
-		private final List<EObject> objects;
-
-		FileQueryResult(List<EObject> objects) {
-			this.objects = objects;
-		}
-
-		@Override
-		public QueryShape shape() {
-			return QueryShape.OBJECTS;
-		}
-
-		@Override
-		public Stream<EObject> objects() {
-			return objects.stream();
-		}
-
-		@Override
-		public Stream<QueryResultRow> rows() {
-			throw new IllegalStateException("result shape is OBJECTS, not PROJECTION");
-		}
-
-		@Override
-		public long count() {
-			throw new IllegalStateException("result shape is OBJECTS, not COUNT");
-		}
-
-		@Override
-		public Stream<Hit> hits() {
-			throw new IllegalStateException("result shape is OBJECTS, no scores requested");
-		}
-
-		@Override
-		public Map<String, Double> scores() {
-			throw new IllegalStateException("result shape is OBJECTS, no scores requested");
-		}
-
-		@Override
-		public void close() {
-			// nothing to release: the list is materialized, no backend cursor
-		}
 	}
 
 	/** Trivial prepared query: the subset is validated, execution re-runs find. */

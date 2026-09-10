@@ -1240,6 +1240,26 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
+	public EAttribute getODataDataServiceConfiguration_EntitySetName() {
+		return (EAttribute)oDataDataServiceConfigurationEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getODataDataServiceConfiguration_BatchSizeLimit() {
+		return (EAttribute)oDataDataServiceConfigurationEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getDistributionExport() {
 		return distributionExportEClass;
 	}
@@ -1676,6 +1696,8 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		createEReference(oDataDataServiceEClass, ODATA_DATA_SERVICE__CONFIGURATION);
 
 		oDataDataServiceConfigurationEClass = createEClass(ODATA_DATA_SERVICE_CONFIGURATION);
+		createEAttribute(oDataDataServiceConfigurationEClass, ODATA_DATA_SERVICE_CONFIGURATION__ENTITY_SET_NAME);
+		createEAttribute(oDataDataServiceConfigurationEClass, ODATA_DATA_SERVICE_CONFIGURATION__BATCH_SIZE_LIMIT);
 
 		distributionExportEClass = createEClass(DISTRIBUTION_EXPORT);
 		createEAttribute(distributionExportEClass, DISTRIBUTION_EXPORT__ID);
@@ -1886,6 +1908,8 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		initEReference(getODataDataService_Configuration(), this.getODataDataServiceConfiguration(), null, "configuration", null, 0, -1, ODataDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		initEClass(oDataDataServiceConfigurationEClass, ODataDataServiceConfiguration.class, "ODataDataServiceConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getODataDataServiceConfiguration_EntitySetName(), ecorePackage.getEString(), "entitySetName", null, 0, 1, ODataDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getODataDataServiceConfiguration_BatchSizeLimit(), ecorePackage.getEBigInteger(), "batchSizeLimit", "-1", 1, 1, ODataDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(distributionExportEClass, DistributionExport.class, "DistributionExport", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getDistributionExport_Id(), ecorePackage.getEString(), "id", null, 1, 1, DistributionExport.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2496,7 +2520,19 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		  (oDataDataServiceConfigurationEClass,
 		   source,
 		   new String[] {
-			   "documentation", "Per-DataSet configuration for an ODataDataService. Placeholder - no OData-specific parameters yet."
+			   "documentation", "Everything the OData runtime needs to serve one DataSet of an ODataDataService as an entity set: the DataSet reference, the entity set\'s name under the service root and the server-side $top ceiling. The entity type is the DataSet\'s outputType; it needs an identity (an iD attribute or the idFeatures annotation of the fennec persistence stack), and within one service every outputType is served by exactly one configuration - OData addresses entity sets by type. A DataSet with a query cannot be served as OData (the base predicate would have to be composed with $filter) and keeps the entity set down."
+		   });
+		addAnnotation
+		  (getODataDataServiceConfiguration_EntitySetName(),
+		   source,
+		   new String[] {
+			   "documentation", "The entity set name under the service root (GET {urlContext}/{entitySetName}). Defaults to the name of the DataSet\'s outputType EClass; must be unique within the service."
+		   });
+		addAnnotation
+		  (getODataDataServiceConfiguration_BatchSizeLimit(),
+		   source,
+		   new String[] {
+			   "documentation", "Server-side $top ceiling (applies even without a client $top). -1 means the runtime default (1000). The OData server enforces the ceiling per service root, so the smallest positive limit declared by the service\'s configurations applies to all of its entity sets."
 		   });
 		addAnnotation
 		  (distributionExportEClass,

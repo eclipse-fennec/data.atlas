@@ -25,7 +25,9 @@ import org.eclipse.fennec.emf.osgi.ResourceSetFactory;
 import org.eclipse.fennec.persistence.repository.RepositoryConstants;
 import org.eclipse.fennec.persistence.repository.api.ReadRepository;
 import org.eclipse.fennec.persistence.repository.api.RepositoryService;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.PrototypeServiceFactory;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -48,7 +50,30 @@ public class FileDataInputConfigurator {
 	private final BundleContext bundleContext;
 	private final ResourceSetFactory resourceSetFactory;
 
-	private record Registered(FileReadRepository repository, ServiceRegistration<?> registration) {
+	private record Registered(ServiceRegistration<?> registration) {
+	}
+
+	/** One {@link FileReadRepository} per lease; disposed when the lease ends. */
+	private static final class RepositoryFactory implements PrototypeServiceFactory<FileReadRepository> {
+
+		private final FileDataInput input;
+		private final ResourceSetFactory resourceSetFactory;
+
+		RepositoryFactory(FileDataInput input, ResourceSetFactory resourceSetFactory) {
+			this.input = input;
+			this.resourceSetFactory = resourceSetFactory;
+		}
+
+		@Override
+		public FileReadRepository getService(Bundle bundle, ServiceRegistration<FileReadRepository> registration) {
+			return new FileReadRepository(input, resourceSetFactory);
+		}
+
+		@Override
+		public void ungetService(Bundle bundle, ServiceRegistration<FileReadRepository> registration,
+				FileReadRepository service) {
+			service.dispose();
+		}
 	}
 
 	private final Map<FileDataInput, Registered> registrations = new IdentityHashMap<>();
@@ -73,7 +98,6 @@ public class FileDataInputConfigurator {
 			LOG.log(Level.WARNING, () -> "Ignoring FileDataInput without id or uri: " + input);
 			return;
 		}
-		FileReadRepository repository = new FileReadRepository(input, resourceSetFactory);
 		Dictionary<String, Object> props = new Hashtable<>();
 		props.put(RepositoryConstants.REPOSITORY_ID, input.getId());
 		props.put(RepositoryConstants.REPOSITORY_BASE_URI, input.getUri());
@@ -83,10 +107,13 @@ public class FileDataInputConfigurator {
 		if (atlasName != null) {
 			props.put(DataAtlasConstants.ATLAS_NAME, atlasName);
 		}
+		// prototype scope is the repository facade's contract (a repository instance
+		// owns a ResourceSet); consumers lease one instance per unit of work
 		ServiceRegistration<?> registration = bundleContext.registerService(
-				new String[] { RepositoryService.class.getName(), ReadRepository.class.getName() }, repository, props);
+				new String[] { RepositoryService.class.getName(), ReadRepository.class.getName() },
+				new RepositoryFactory(input, resourceSetFactory), props);
 		synchronized (registrations) {
-			registrations.put(input, new Registered(repository, registration));
+			registrations.put(input, new Registered(registration));
 		}
 		LOG.log(Level.INFO, () -> "Registered file-backed ReadRepository for FileDataInput '" + input.getId() + "' ("
 				+ input.getUri() + ")");
@@ -104,6 +131,5 @@ public class FileDataInputConfigurator {
 
 	private static void unregister(Registered registered) {
 		registered.registration().unregister();
-		registered.repository().dispose();
 	}
 }

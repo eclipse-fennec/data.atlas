@@ -137,6 +137,28 @@ Implemented today (roadmap Milestones 0–8):
   through the fennec GeoJSON codec, whose content-type registration was
   emf.codec#168; `@RequireCodecGeoJson` (emf.codec#201) makes the codec a
   resolve-time requirement of the `rest` bundle, like its CSV/JSON siblings.
+- **OData serving** (Milestone 10, WP-DA-13): the omittable `odata` bundle
+  tracks `ODataDataService` configuration services and the `ReadRepository`s
+  of their inputs like the REST/GeoJSON configurators do, but serves nothing
+  itself — it configures the Fennec OData server (emf.odata) through Config
+  Admin. One service becomes one OData v4.01 *service root*: a factory
+  configuration of the `ODataServlet` mounted at `{urlContext}/*` on the Data
+  Atlas HTTP runtime with the package/entity-set allowlist derived from the
+  configurations (emf.odata#77/#78), a request-limits filter instance, and per
+  `DataInput` one repository-backed `QueryService` (emf.odata#79) over the
+  input's `ReadRepository`, tied to the root by a marker property its
+  `QueryService.target` selects. Query options are thereby pushed through the
+  same facade every service kind reads through. For that the file and bridge
+  repositories became real query repositories: prototype-scoped (the facade's
+  contract — one instance per lease), evaluating canonical queries with the
+  persistence stack's reference in-memory engine (`MemoryQueries`) and
+  declaring its capabilities honestly, which also gives REST/GeoJSON
+  query-defined DataSets over file inputs. Fail-early gating: no key, a
+  query-defined DataSet, colliding set names/types or two inputs for one
+  package keep the entity set down with a loud log; roots follow the M4
+  lifecycle (torn down on removal, rebuilt on change). DCAT publication maps
+  an OData root DataService-first: the root as `endpointURL`, its `$metadata`
+  as `endpointDescription`, one JSON distribution per entity set.
 - **Data transformations** (Milestone 6): the `transformation` bundle turns
   every `DataTransformation` configuration service into a ready-to-execute
   `DataTransformer` (fennec m2x QVT-O engine; the compiled AST — the

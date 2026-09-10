@@ -49,7 +49,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * @generated
  */
 @ProviderType
-@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:5f3baeb19b1870ff95f5ec7b97b0e7a0ae2e182e85ba3119d9fea7a04fc2135c", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
+@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:50ea50f6d7b7d1a436454b1577255a425eef86c2dfc3c703570eff077e2b6f0d", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
 public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	/**
 	 * The package name.
@@ -2451,13 +2451,31 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	int ODATA_DATA_SERVICE_CONFIGURATION__DATA_SET = DATA_SERVICE_CONFIGURATION__DATA_SET;
 
 	/**
+	 * The feature id for the '<em><b>Entity Set Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ODATA_DATA_SERVICE_CONFIGURATION__ENTITY_SET_NAME = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Batch Size Limit</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ODATA_DATA_SERVICE_CONFIGURATION__BATCH_SIZE_LIMIT = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 1;
+
+	/**
 	 * The number of structural features of the '<em>OData Data Service Configuration</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ODATA_DATA_SERVICE_CONFIGURATION_FEATURE_COUNT = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 0;
+	int ODATA_DATA_SERVICE_CONFIGURATION_FEATURE_COUNT = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of operations of the '<em>OData Data Service Configuration</em>' class.
@@ -3756,6 +3774,28 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	EClass getODataDataServiceConfiguration();
 
 	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.ODataDataServiceConfiguration#getEntitySetName <em>Entity Set Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Entity Set Name</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.ODataDataServiceConfiguration#getEntitySetName()
+	 * @see #getODataDataServiceConfiguration()
+	 * @generated
+	 */
+	EAttribute getODataDataServiceConfiguration_EntitySetName();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.ODataDataServiceConfiguration#getBatchSizeLimit <em>Batch Size Limit</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Batch Size Limit</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.ODataDataServiceConfiguration#getBatchSizeLimit()
+	 * @see #getODataDataServiceConfiguration()
+	 * @generated
+	 */
+	EAttribute getODataDataServiceConfiguration_BatchSizeLimit();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.DistributionExport <em>Distribution Export</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4858,6 +4898,22 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		 * @generated
 		 */
 		EClass ODATA_DATA_SERVICE_CONFIGURATION = eINSTANCE.getODataDataServiceConfiguration();
+
+		/**
+		 * The meta object literal for the '<em><b>Entity Set Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute ODATA_DATA_SERVICE_CONFIGURATION__ENTITY_SET_NAME = eINSTANCE.getODataDataServiceConfiguration_EntitySetName();
+
+		/**
+		 * The meta object literal for the '<em><b>Batch Size Limit</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute ODATA_DATA_SERVICE_CONFIGURATION__BATCH_SIZE_LIMIT = eINSTANCE.getODataDataServiceConfiguration_BatchSizeLimit();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DistributionExportImpl <em>Distribution Export</em>}' class.

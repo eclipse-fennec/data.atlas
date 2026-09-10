@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Milestone 10 fixture: three OData service roots over the three input kinds.
+     /odata-file serves the example persons file, /odata-jpa the same persons
+     from the H2 database the test seeds (with a $top ceiling of 2 to show the
+     limit), /odata-public the QVT-O-transformed PublicPerson projections through
+     the bridge. Every root publishes exactly one entity set, all of them named
+     by configuration (Persons / PublicPersons). -->
+<configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    name="odata" description="OData test fixture: persons served as OData entity sets from a file, a database and a bridge.">
+  <dataSources id="odata-persons-db" name="Persons DB" filter="(dataatlas.test.ds=odata-persons)"/>
+  <dataInputs xsi:type="configuration:FileDataInput" id="odata-persons-file" uri="data/persons.xmi">
+    <supportedEClasses href="model/person.ecore#//Person"/>
+  </dataInputs>
+  <dataInputs xsi:type="configuration:JPADataInput" id="odata-persons-jpa" dataSource="odata-persons-db">
+    <supportedEClasses href="model/person.ecore#//Person"/>
+  </dataInputs>
+  <dataInputs xsi:type="configuration:BridgeRepository" id="odata-public-bridge" source="odata-persons-file"
+      dataTrafo="odata-person-to-public">
+    <supportedEClasses href="model/person-public.ecore#//PublicPerson"/>
+  </dataInputs>
+  <dataSets id="odata-persons" name="persons" description="All persons of the example file." dataInput="odata-persons-file">
+    <inputType href="model/person.ecore#//Person"/>
+    <outputType href="model/person.ecore#//Person"/>
+  </dataSets>
+  <dataSets id="odata-persons-db-set" name="persons-db" description="All persons from the database." dataInput="odata-persons-jpa">
+    <inputType href="model/person.ecore#//Person"/>
+    <outputType href="model/person.ecore#//Person"/>
+  </dataSets>
+  <dataSets id="odata-public-persons" name="public-persons" description="Public projection of the example persons."
+      dataInput="odata-public-bridge">
+    <inputType href="model/person-public.ecore#//PublicPerson"/>
+    <outputType href="model/person-public.ecore#//PublicPerson"/>
+  </dataSets>
+  <services xsi:type="configuration:ODataDataService" id="persons-odata" name="Persons OData"
+      description="OData service root publishing the example persons file." urlContext="/odata-file">
+    <configuration id="persons-odata-config" dataSet="odata-persons" entitySetName="Persons"/>
+  </services>
+  <services xsi:type="configuration:ODataDataService" id="persons-odata-jpa" name="Persons OData (JPA)"
+      description="OData service root publishing the database-backed persons." urlContext="/odata-jpa">
+    <configuration id="persons-odata-jpa-config" dataSet="odata-persons-db-set" entitySetName="Persons" batchSizeLimit="2"/>
+  </services>
+  <services xsi:type="configuration:ODataDataService" id="public-persons-odata" name="Public Persons OData"
+      description="OData service root publishing the transformed persons." urlContext="/odata-public">
+    <configuration id="public-persons-odata-config" dataSet="odata-public-persons" entitySetName="PublicPersons"/>
+  </services>
+  <transformations xsi:type="configuration:DataTransformation" id="odata-person-to-public" name="PersonToPublic"
+      description="Projects a Person onto a PublicPerson (id, displayName).">
+    <transformation href="trafo/person-to-public.xmi#//@unit"/>
+    <supportedEClasses href="model/person.ecore#//Person"/>
+    <resultEClasses href="model/person-public.ecore#//PublicPerson"/>
+  </transformations>
+</configuration:DataAtlasConfiguration>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- OData example (Milestone 10): the example persons served as an OData v4.01
+     service root at /odata/persons (service document), /odata/persons/$metadata
+     (CSDL) and the entity set /odata/persons/Persons - read-only, with
+     $filter/$orderby/$top/$skip/$count/$select/$apply evaluated through the
+     DataInput's repository. The entity type is the DataSet's outputType, the
+     entity set name is configuration (default: the type name). -->
+<configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    name="odata-example" description="Example Data Atlas instance serving persons as an OData entity set.">
+  <dataInputs xsi:type="configuration:FileDataInput" id="persons-file" uri="data/persons.xmi">
+    <supportedEClasses href="model/person.ecore#//Person"/>
+  </dataInputs>
+  <dataSets id="persons" name="persons" description="All persons of the example data set."
+      dataInput="persons-file">
+    <inputType href="model/person.ecore#//Person"/>
+    <outputType href="model/person.ecore#//Person"/>
+  </dataSets>
+  <services xsi:type="configuration:ODataDataService" id="persons-odata" name="Persons OData"
+      description="OData service root publishing the example persons." urlContext="/odata/persons">
+    <configuration id="persons-odata-config" dataSet="persons" entitySetName="Persons"/>
+  </services>
+</configuration:DataAtlasConfiguration>

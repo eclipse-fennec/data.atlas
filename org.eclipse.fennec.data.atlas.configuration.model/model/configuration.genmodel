@@ -116,7 +116,10 @@
     <genClasses ecoreClass="configuration.ecore#//ODataDataService">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//ODataDataService/configuration"/>
     </genClasses>
-    <genClasses ecoreClass="configuration.ecore#//ODataDataServiceConfiguration"/>
+    <genClasses ecoreClass="configuration.ecore#//ODataDataServiceConfiguration">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//ODataDataServiceConfiguration/entitySetName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//ODataDataServiceConfiguration/batchSizeLimit"/>
+    </genClasses>
     <genClasses ecoreClass="configuration.ecore#//DistributionExport">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DistributionExport/id"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DistributionExport/name"/>

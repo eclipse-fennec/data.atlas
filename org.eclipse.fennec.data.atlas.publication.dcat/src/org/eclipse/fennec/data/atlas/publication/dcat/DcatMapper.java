@@ -24,6 +24,8 @@ import org.eclipse.fennec.data.atlas.configuration.DataService;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
 import org.eclipse.fennec.data.atlas.configuration.DcatPublication;
 import org.eclipse.fennec.data.atlas.configuration.DistributionExport;
+import org.eclipse.fennec.data.atlas.configuration.ODataDataService;
+import org.eclipse.fennec.data.atlas.configuration.ODataDataServiceConfiguration;
 import org.eclipse.fennec.data.atlas.configuration.RestDataService;
 import org.eclipse.fennec.data.atlas.configuration.RestDataServiceConfiguration;
 
@@ -41,7 +43,10 @@ import terms.TermsFactory;
  * unit that owns the endpoint — into the DCAT entities the portal expects:
  * the service as {@code dcat:DataService}, each of its DataSets as
  * {@code dcat:Dataset} with one {@code dcat:Distribution} per resolved
- * {@code DistributionExport}.
+ * {@code DistributionExport} (REST) or one per entity set (OData — the
+ * textbook {@code dcat:DataService}: the service root is the
+ * {@code endpointURL}, its {@code $metadata} document the
+ * {@code endpointDescription}, each entity set a JSON distribution).
  *
  * <p>
  * Metadata is derived by default and overridden explicitly (DA-DCAT-8): an
@@ -103,31 +108,55 @@ final class DcatMapper {
 			problems.add("no public base URL is configured (set " + DcatPublicationConfigurator.PID
 					+ " / public.base.url, e.g. via DATA_ATLAS_PUBLIC_BASE_URL)");
 		}
-		if (!(service instanceof RestDataService rest)) {
+		if (!(service instanceof RestDataService) && !(service instanceof ODataDataService)) {
 			throw new PublicationConfigException("DataService '" + service.getId() + "': publication of a "
-					+ service.eClass().getName() + " is not supported (only RestDataService in this version)");
+					+ service.eClass().getName()
+					+ " is not supported (only RestDataService and ODataDataService in this version)");
 		}
 		if (publication.getCatalog() == null || publication.getCatalog().isBlank()) {
 			problems.add("publication '" + publication.getId() + "' names no target catalog");
 		}
 
-		String endpointUrl = problems.isEmpty() ? join(publicBaseUrl, basePath(rest)) : null;
+		String endpointUrl = problems.isEmpty() ? join(publicBaseUrl, basePath(service)) : null;
 		dcat.DataService dcatService = DcatFactory.eINSTANCE.createDataService();
 		if (endpointUrl != null) {
 			dcatService.getEndpointURL().add(endpointUrl);
+			if (service instanceof ODataDataService) {
+				// the CSDL document describes the service (DCAT-AP: endpointDescription)
+				dcatService.getEndpointDescription().add(endpointUrl + "/$metadata");
+			}
 		}
 		applyResourceMetadata(dcatService, publication, service.getName(), service.getDescription(), null,
 				"DataService '" + service.getId() + "'", problems);
 
 		List<DatasetPlan> datasets = new ArrayList<>();
-		Map<String, RestDataServiceConfiguration> byDataSet = new LinkedHashMap<>();
-		for (RestDataServiceConfiguration configuration : rest.getConfiguration()) {
-			if (configuration.getDataSet() != null) {
-				byDataSet.putIfAbsent(configuration.getDataSet().getId(), configuration);
+		if (service instanceof RestDataService rest) {
+			Map<String, RestDataServiceConfiguration> byDataSet = new LinkedHashMap<>();
+			for (RestDataServiceConfiguration configuration : rest.getConfiguration()) {
+				if (configuration.getDataSet() != null) {
+					byDataSet.putIfAbsent(configuration.getDataSet().getId(), configuration);
+				}
 			}
-		}
-		for (RestDataServiceConfiguration configuration : byDataSet.values()) {
-			datasets.add(planDataSet(rest, configuration, publication, endpointUrl, problems));
+			for (RestDataServiceConfiguration configuration : byDataSet.values()) {
+				DataSet dataSet = configuration.getDataSet();
+				String path = configuration.getPath() != null ? configuration.getPath() : dataSet.getName();
+				datasets.add(planDataSet(service, dataSet, path, false, publication, endpointUrl, problems));
+			}
+		} else {
+			Map<String, ODataDataServiceConfiguration> byDataSet = new LinkedHashMap<>();
+			for (ODataDataServiceConfiguration configuration : ((ODataDataService) service).getConfiguration()) {
+				if (configuration.getDataSet() != null) {
+					byDataSet.putIfAbsent(configuration.getDataSet().getId(), configuration);
+				}
+			}
+			for (ODataDataServiceConfiguration configuration : byDataSet.values()) {
+				DataSet dataSet = configuration.getDataSet();
+				// the entity set name mirrors the odata bundle's derivation
+				String entitySet = configuration.getEntitySetName() != null
+						&& !configuration.getEntitySetName().isBlank() ? configuration.getEntitySetName().trim()
+								: dataSet.getOutputType() != null ? dataSet.getOutputType().getName() : null;
+				datasets.add(planDataSet(service, dataSet, entitySet, true, publication, endpointUrl, problems));
+			}
 		}
 
 		if (!problems.isEmpty()) {
@@ -138,9 +167,13 @@ final class DcatMapper {
 		return new ProviderPlan(publication.getPortal(), publication.getCatalog(), serviceId, dcatService, datasets);
 	}
 
-	private static DatasetPlan planDataSet(RestDataService service, RestDataServiceConfiguration configuration,
+	/**
+	 * Plans one served DataSet: {@code path} is the segment under the service
+	 * endpoint it is reachable at (REST path or OData entity set name);
+	 * {@code odata} selects the distribution shape.
+	 */
+	private static DatasetPlan planDataSet(DataService service, DataSet dataSet, String path, boolean odata,
 			DcatPublication servicePublication, String endpointUrl, List<String> problems) {
-		DataSet dataSet = configuration.getDataSet();
 		// override-else-default (DA-DCAT-7): a DataSet's own declaration wins
 		DcatPublication publication = dataSet.getPublication() != null ? dataSet.getPublication()
 				: servicePublication;
@@ -159,16 +192,22 @@ final class DcatMapper {
 		publication.getKeywords().forEach(keyword -> dcatDataset.getKeyword().add(literal(keyword, language)));
 		publication.getThemes().forEach(theme -> dcatDataset.getTheme().add(theme));
 
-		String path = configuration.getPath() != null ? configuration.getPath() : dataSet.getName();
 		String dataSetUrl = endpointUrl == null || path == null ? null : endpointUrl + "/" + path;
 		if (path == null) {
-			problems.add(where + ": neither a configured path nor a name to derive one from");
+			problems.add(where + ": neither a configured " + (odata ? "entity set name" : "path")
+					+ " nor a name to derive one from");
 		}
 
 		List<DistributionPlan> distributions = new ArrayList<>();
-		for (Map.Entry<String, String> entry : mediaTypesOf(dataSet, service, where, problems).entrySet()) {
-			distributions.add(planDistribution(entry.getKey(), entry.getValue(), dataSetUrl, publication, where,
+		if (odata) {
+			// one entity set = one distribution: OData JSON is the protocol's format
+			distributions.add(planDistribution("odata", "application/json", dataSetUrl, publication, where,
 					problems));
+		} else {
+			for (Map.Entry<String, String> entry : mediaTypesOf(dataSet, service, where, problems).entrySet()) {
+				distributions.add(planDistribution(entry.getKey(), entry.getValue(), dataSetUrl, publication,
+						where, problems));
+			}
 		}
 		String catalog = publication.getCatalog();
 		return new DatasetPlan(identifier(publication == servicePublication ? null : publication, dataSet.getId()),

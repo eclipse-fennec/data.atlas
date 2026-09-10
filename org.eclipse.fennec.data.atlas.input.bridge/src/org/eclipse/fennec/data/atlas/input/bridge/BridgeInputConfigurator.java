@@ -27,7 +27,9 @@ import org.eclipse.fennec.emf.osgi.ResourceSetFactory;
 import org.eclipse.fennec.persistence.repository.RepositoryConstants;
 import org.eclipse.fennec.persistence.repository.api.ReadRepository;
 import org.eclipse.fennec.persistence.repository.api.RepositoryService;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.PrototypeServiceFactory;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentServiceObjects;
 import org.osgi.service.component.annotations.Activate;
@@ -71,7 +73,32 @@ public class BridgeInputConfigurator {
 	private record TrackedBridge(BridgeRepository bridge, Object atlasName) {
 	}
 
-	private record Registered(BridgeReadRepository repository, ServiceRegistration<?> registration) {
+	private record Registered(ServiceRegistration<?> registration) {
+	}
+
+	/** One {@link BridgeReadRepository} per lease; disposed when the lease ends. */
+	private static final class RepositoryFactory implements PrototypeServiceFactory<BridgeReadRepository> {
+
+		private final String id;
+		private final Resolved resolved;
+		private final ResourceSetFactory resourceSetFactory;
+
+		RepositoryFactory(String id, Resolved resolved, ResourceSetFactory resourceSetFactory) {
+			this.id = id;
+			this.resolved = resolved;
+			this.resourceSetFactory = resourceSetFactory;
+		}
+
+		@Override
+		public BridgeReadRepository getService(Bundle bundle, ServiceRegistration<BridgeReadRepository> registration) {
+			return new BridgeReadRepository(id, resolved.source(), resolved.transformer(), resourceSetFactory);
+		}
+
+		@Override
+		public void ungetService(Bundle bundle, ServiceRegistration<BridgeReadRepository> registration,
+				BridgeReadRepository service) {
+			service.dispose();
+		}
 	}
 
 	@Activate
@@ -227,26 +254,26 @@ public class BridgeInputConfigurator {
 	}
 
 	private Registered register(String id, TrackedBridge tracked, Resolved resolved) {
-		BridgeReadRepository repository = new BridgeReadRepository(id, resolved.source(), resolved.transformer(),
-				resourceSetFactory);
 		Dictionary<String, Object> props = new Hashtable<>();
 		props.put(RepositoryConstants.REPOSITORY_ID, id);
-		props.put(RepositoryConstants.REPOSITORY_BASE_URI, repository.baseUri().toString());
+		props.put(RepositoryConstants.REPOSITORY_BASE_URI, "bridge:/" + id);
 		props.put(RepositoryConstants.REPOSITORY_BACKEND, "bridge");
 		props.put(RepositoryConstants.REPOSITORY_READ_ONLY, Boolean.TRUE);
 		if (tracked.atlasName() != null) {
 			props.put(DataAtlasConstants.ATLAS_NAME, tracked.atlasName());
 		}
+		// prototype scope is the repository facade's contract (a repository instance
+		// owns a ResourceSet); consumers lease one instance per unit of work
 		ServiceRegistration<?> registration = bundleContext.registerService(
-				new String[] { RepositoryService.class.getName(), ReadRepository.class.getName() }, repository, props);
+				new String[] { RepositoryService.class.getName(), ReadRepository.class.getName() },
+				new RepositoryFactory(id, resolved, resourceSetFactory), props);
 		LOG.log(Level.INFO, () -> "Registered bridge ReadRepository '" + id + "' (source '"
 				+ tracked.bridge().getSource().getId() + "', transformation '" + tracked.bridge().getDataTrafo().getId()
 				+ "')");
-		return new Registered(repository, registration);
+		return new Registered(registration);
 	}
 
 	private static void unregister(Registered registered) {
 		registered.registration().unregister();
-		registered.repository().dispose();
 	}
 }

@@ -11,6 +11,10 @@
 	bnd.identity;id='org.eclipse.fennec.m2x.qvto.engine',\
 	bnd.identity;id='org.eclipse.fennec.data.atlas.rest',\
 	bnd.identity;id='org.eclipse.fennec.data.atlas.publication.dcat',\
+	bnd.identity;id='org.eclipse.fennec.data.atlas.odata',\
+	bnd.identity;id='org.eclipse.fennec.odata.runtime',\
+	bnd.identity;id='org.eclipse.fennec.odata.persistence',\
+	bnd.identity;id='org.eclipse.fennec.odata.metadata',\
 	bnd.identity;id='org.eclipse.fennec.dcat.atlas.client.osgi',\
 	bnd.identity;id='org.eclipse.fennec.dcat.atlas.client.impl',\
 	bnd.identity;id='org.apache.aries.spifly.dynamic.bundle',\

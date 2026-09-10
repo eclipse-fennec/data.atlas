@@ -38,6 +38,7 @@ instances of those schemas.
   - [Query-Defined DataSets with Parameters](#query-defined-datasets-with-parameters)
   - [Transforming Data: QVT-O over a Bridge](#transforming-data-qvt-o-over-a-bridge)
   - [Serving GeoJSON](#serving-geojson)
+  - [Serving OData](#serving-odata)
   - [Referencing Schemas](#referencing-schemas)
 - [Configuration Lifecycle](#configuration-lifecycle)
   - [File Mode: Watching the Configuration File](#file-mode-watching-the-configuration-file)
@@ -242,8 +243,11 @@ defaults and the pagination parameter names (`offsetParameterName`, default
 `offset`; `limitParameterName`, default `limit`). The service itself carries
 only its identity and the `urlContext`.
 
-Other service kinds in the model (OData, GraphQL, OGC Features, OGC
-SensorThings, XMLA, QGis) are placeholders for future milestones.
+Also implemented: **`GeoJsonDataService`** (RFC 7946 FeatureCollections, see
+[Serving GeoJSON](#serving-geojson)) and **`ODataDataService`** (one OData
+v4.01 service root per service, see [Serving OData](#serving-odata)). The
+other service kinds in the model (GraphQL, OGC Features, OGC SensorThings,
+XMLA, QGis) are placeholders for future milestones.
 
 ### Configuration Sources: File vs. Model Atlas
 
@@ -683,6 +687,68 @@ curl -H "Accept: application/geo+json" http://localhost:8080/rest/geo/pois
 
 The shipped example is `configuration.model/example/dataatlas-geo.xmi`
 (points of interest with WGS 84 coordinates).
+
+### Serving OData
+
+An `ODataDataService` publishes DataSets as **one OData v4.01 service root**
+served by the [Fennec OData server](https://github.com/eclipse-fennec/emf.odata):
+`GET {urlContext}/` is the service document, `{urlContext}/$metadata` the
+CSDL (XML, or JSON via `$format=json`), and every configuration entry one
+entity set at `{urlContext}/{entitySetName}`. The root is read-only (writes
+answer `405`) and publishes exactly the configured sets — an unlisted set is a
+`404`, and neither the Data Atlas configuration model nor other roots' types
+appear in its `$metadata`.
+
+```xml
+<services xsi:type="configuration:ODataDataService" id="persons-odata" name="Persons OData"
+    description="OData service root publishing the example persons." urlContext="/odata/persons">
+  <configuration id="persons-odata-config" dataSet="persons" entitySetName="Persons" batchSizeLimit="500"/>
+</services>
+```
+
+- The **entity type** is the DataSet's `outputType`, the **entity set name**
+  comes from `entitySetName` (default: the type's name). OData addresses sets
+  by type, so a root serves each type once; because the backend scopes by
+  package, all types of one package in a root must come from the same
+  `DataInput`.
+- The type needs an **entity key**: an `iD` attribute, or — for composite keys
+  — the `idFeatures` detail of the `http://eclipse.org/fennec/persistence/1.0`
+  annotation on the EClass (the SensiNact history model, for example, has
+  neither and cannot be served as OData until it declares one).
+- `batchSizeLimit` is the root's **server-side `$top` ceiling** (default 1000):
+  a larger page is cut and continued through `@odata.nextLink`. The smallest
+  limit declared by the root's configurations applies to all of its sets.
+- The **query options** (`$filter`, `$orderby`, `$top`/`$skip`, `$count`,
+  `$select`, `$expand`, `$apply`, `$search`) are translated to the canonical
+  fennec query and executed through the DataInput's repository: a JPA input
+  pushes them into the database, file and bridge inputs evaluate them in
+  memory. Whatever a repository cannot do answers an honest `501`.
+- A DataSet with a `query` **cannot** be served as OData yet (the base
+  predicate would have to be composed with `$filter`); it is a diagnosed
+  configuration error and the entity set stays down.
+- The root mounts **directly on the HTTP runtime**, not under the REST
+  whiteboard's `/rest` prefix — with the docker images the example root is
+  `http://localhost:8080/odata/persons`, next to `/rest/...`. The M4
+  lifecycle applies: removing the service from the configuration takes the
+  root down.
+
+```bash
+curl http://localhost:8080/odata/persons/                # service document
+curl http://localhost:8080/odata/persons/\$metadata      # CSDL
+curl "http://localhost:8080/odata/persons/Persons?\$filter=lastName%20eq%20'Hopper'&\$select=firstName"
+# {"@odata.context":"…/$metadata#Persons(firstName)","value":[{"firstName":"Grace"}]}
+curl "http://localhost:8080/odata/persons/Persons('p1')"
+curl "http://localhost:8080/odata/persons/Persons?\$apply=aggregate(\$count%20as%20Total)"
+```
+
+The shipped example is `configuration.model/example/dataatlas-odata.xmi`.
+Deployment-wide OData limits and CORS (the `odata.*` keys of the server's
+servlet PID, e.g. `odata.cors.origin`) are configuration of the Data Atlas
+PID `org.eclipse.fennec.data.atlas.odata`, which passes them to every root it
+creates; the same PID names the HTTP runtime the roots mount on
+(`http.whiteboard.target`, set to the Data Atlas instance by the runtime
+Configurator). A Data Atlas without the `odata` bundle serves no OData and is
+otherwise unchanged; a declared `ODataDataService` is then ignored.
 
 ### Referencing Schemas
 

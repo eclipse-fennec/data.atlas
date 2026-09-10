@@ -1,0 +1,20 @@
+Bundle-Name: Fennec Data Atlas - OData Endpoint Configurator
+Bundle-Description: Tracks ODataDataService configuration services and turns every service \
+	into one OData v4.01 service root of the Fennec OData server (emf.odata): a servlet/filter \
+	instance under the service's urlContext publishing exactly the configured entity sets, \
+	backed by the repository QueryService over the ReadRepositories realizing the DataInputs. \
+	Omittable: a Data Atlas without it serves no OData and is otherwise unchanged.
+
+-library: enableEMF
+
+-buildpath: \
+	org.osgi.service.component.annotations;version=latest,\
+	org.osgi.service.component;version=latest,\
+	org.osgi.service.cm;version=latest,\
+	org.osgi.service.servlet;version=latest,\
+	org.eclipse.fennec.data.atlas.configuration.model;version=project,\
+	org.eclipse.fennec.data.atlas.api;version=project,\
+	org.eclipse.fennec.persistence.repository;version=latest,\
+	org.eclipse.fennec.persistence;version=latest,\
+	org.eclipse.fennec.query.model;version=latest,\
+	org.eclipse.fennec.expression.model;version=latest

@@ -7,6 +7,8 @@
 #
 #   file input --> DataSet "pois" --> GeoJSON FeatureCollection at /geo/pois
 #
+#   both person DataSets also as the OData service root /odata/full
+#   (mounted directly on the HTTP runtime, not under /rest),
 #   and the REST service published to a DCAT.Atlas portal.
 #
 #   docker compose -f docker-compose-full.yml up
@@ -22,6 +24,11 @@
 #   curl -H "Accept: application/json" http://localhost:8083/rest/full/public-persons
 #   # the points of interest as RFC 7946 GeoJSON
 #   curl -H "Accept: application/geo+json" http://localhost:8083/rest/geo/pois
+#   # the same persons as OData: service document, $metadata, a filtered entity set
+#   curl http://localhost:8083/odata/full/
+#   curl http://localhost:8083/odata/full/\$metadata
+#   curl "http://localhost:8083/odata/full/Persons?\$filter=lastName%20eq%20'Hopper'"
+#   curl "http://localhost:8083/odata/full/PublicPersons?\$orderby=displayName&\$top=2"
 #   # XMI is not declared, so it is refused
 #   curl -i -H "Accept: application/xml" http://localhost:8083/rest/full/persons   # 406
 #   # the published entries in the portal

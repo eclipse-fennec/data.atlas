@@ -520,8 +520,20 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ODataDataServiceConfiguration" eSuperTypes="#//DataServiceConfiguration">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Per-DataSet configuration for an ODataDataService. Placeholder - no OData-specific parameters yet."/>
+      <details key="documentation" value="Everything the OData runtime needs to serve one DataSet of an ODataDataService as an entity set: the DataSet reference, the entity set's name under the service root and the server-side $top ceiling. The entity type is the DataSet's outputType; it needs an identity (an iD attribute or the idFeatures annotation of the fennec persistence stack), and within one service every outputType is served by exactly one configuration - OData addresses entity sets by type. A DataSet with a query cannot be served as OData (the base predicate would have to be composed with $filter) and keeps the entity set down."/>
     </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="entitySetName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The entity set name under the service root (GET {urlContext}/{entitySetName}). Defaults to the name of the DataSet's outputType EClass; must be unique within the service."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="batchSizeLimit" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"
+        defaultValueLiteral="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Server-side $top ceiling (applies even without a client $top). -1 means the runtime default (1000). The OData server enforces the ceiling per service root, so the smallest positive limit declared by the service's configurations applies to all of its entity sets."/>
+      </eAnnotations>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DistributionExport">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

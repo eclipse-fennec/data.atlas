@@ -524,6 +524,7 @@ PostgreSQL --> JPADataInput --> DataSet "persons"          (CSV + JSON)
 
 file input --> DataSet "pois" --> GeoJSON FeatureCollection at /geo/pois
 
+both person DataSets also as the OData service root /odata/full,
 and the REST service published to a DCAT.Atlas portal.
 ```
 
@@ -535,7 +536,7 @@ docker compose -f docker-compose-full.yml up
 |---|---|
 | `postgres` | `localhost:15432` (db/user/password: `dataatlas`) |
 | `modelatlas` | http://localhost:8080/atlas/rest |
-| `dataatlas` | http://localhost:8083/rest/full/persons |
+| `dataatlas` | http://localhost:8083/rest/full/persons, OData root http://localhost:8083/odata/full/ |
 | `dcatatlas` | http://localhost:8084/rest |
 
 ```bash
@@ -556,6 +557,14 @@ curl -i -H "Accept: application/xml" http://localhost:8083/rest/full/persons   #
 curl -H "Accept: application/geo+json" http://localhost:8083/rest/geo/pois
 # {"type":"FeatureCollection","features":[{"id":"jentower","type":"Feature",
 #   "geometry":{"type":"Point","coordinates":[11.5858,50.9296,0.0]}, …}]}
+
+# the same DataSets as OData v4.01 - the root mounts directly on the HTTP
+# runtime (no /rest prefix); $filter/$orderby/$top push down into PostgreSQL
+# for Persons and are evaluated over the transformed objects for PublicPersons
+curl http://localhost:8083/odata/full/\$metadata
+curl "http://localhost:8083/odata/full/Persons?\$filter=lastName%20eq%20'Hopper'&\$select=firstName"
+# {"@odata.context":"http://localhost:8083/odata/full/$metadata#Persons(firstName)","value":[{"firstName":"Grace"}]}
+curl "http://localhost:8083/odata/full/PublicPersons?\$orderby=displayName&\$top=2"
 
 # the published entries in the portal, each distribution pointing back at
 # the endpoint that serves it

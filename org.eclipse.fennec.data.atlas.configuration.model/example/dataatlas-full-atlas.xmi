@@ -52,6 +52,11 @@
     <configuration id="pois-geo-config" dataSet="pois" path="pois" longitudeFeature="longitude"
         latitudeFeature="latitude"/>
   </services>
+  <services xsi:type="configuration:ODataDataService" id="full-odata" name="Full Example OData"
+      description="OData service root publishing the database-backed persons, raw and transformed." urlContext="/odata/full">
+    <configuration id="full-odata-persons" dataSet="persons" entitySetName="Persons"/>
+    <configuration id="full-odata-public" dataSet="public-persons" entitySetName="PublicPersons"/>
+  </services>
   <services xsi:type="configuration:RestDataService" id="full-rest" name="Full Example REST"
       description="REST endpoint publishing the database-backed persons, raw and transformed." urlContext="/full"
       openAPI="false" publication="open-data">

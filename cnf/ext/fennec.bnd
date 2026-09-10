@@ -20,11 +20,14 @@
 # jakartaREST (org.eclipse.osgitech.rest.bnd.library) and fennecCodec
 # (org.eclipse.fennec.codec.workspace.library) contribute the repository indexes for
 # the Jakarta-RS whiteboard stack and the fennec codec (EMF serialization over REST).
+# fennecEMFModels (org.eclipse.fennec.common.models.library) contributes the shared
+# EMF models index; the OData server stack needs its org.odata.csdl.model bundle.
 -library: \
 	fennec,\
 	fennecTest,\
 	fennecJacoco,\
 	fennecEMF,\
+	fennecEMFModels,\
 	fennecPersistence,\
 	jakartaREST,\
 	fennecCodec

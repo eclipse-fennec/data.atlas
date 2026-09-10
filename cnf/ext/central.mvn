@@ -168,6 +168,21 @@ org.eclipse.fennec.m2x:org.eclipse.fennec.m2x.qvto.parser:0.1.1-SNAPSHOT
 org.eclipse.fennec.m2x:org.eclipse.fennec.m2x.qvto.engine:0.1.1-SNAPSHOT
 org.eclipse.fennec.persistence:org.eclipse.fennec.persistence.workspace.library:0.1.0-SNAPSHOT
 # fennec DCAT.Atlas portal client + DCAT-AP.de model (Milestone 8: DCAT publication) —
+# the Fennec OData server (eclipse-fennec/emf.odata), used ONLY by the omittable odata
+# bundle's runtime wiring: the servlet/filter (runtime), the repository-backed QueryService
+# over the ReadRepository facade (persistence) and their dependencies
+org.eclipse.fennec.odata:org.eclipse.fennec.odata.runtime:0.1.0-SNAPSHOT
+org.eclipse.fennec.odata:org.eclipse.fennec.odata.persistence:0.1.0-SNAPSHOT
+org.eclipse.fennec.odata:org.eclipse.fennec.odata.persistence.api:0.1.0-SNAPSHOT
+org.eclipse.fennec.odata:org.eclipse.fennec.odata.query:0.1.0-SNAPSHOT
+org.eclipse.fennec.odata:org.eclipse.fennec.odata.csdl:0.1.0-SNAPSHOT
+org.eclipse.fennec.odata:org.eclipse.fennec.odata.codec.json:0.1.0-SNAPSHOT
+org.eclipse.fennec.odata:org.eclipse.fennec.odata.metadata:0.1.0-SNAPSHOT
+org.eclipse.fennec.odata:org.eclipse.fennec.odata.ocl.evaluator:0.1.0-SNAPSHOT
+org.eclipse.fennec.odata:org.eclipse.fennec.odata.operation.api:0.1.0-SNAPSHOT
+org.eclipse.fennec.odata:org.eclipse.fennec.odata.schema.api:0.1.0-SNAPSHOT
+org.eclipse.fennec.odata:org.eclipse.fennec.odata.vocabularies:0.1.0-SNAPSHOT
+
 # used ONLY by the omittable publication.dcat bundle, never by the core bundles (DA-DCAT-1)
 org.eclipse.fennec.dcat:org.eclipse.fennec.dcat.atlas.client.api:1.0.0-SNAPSHOT
 org.eclipse.fennec.dcat:org.eclipse.fennec.dcat.atlas.client.impl:1.0.0-SNAPSHOT

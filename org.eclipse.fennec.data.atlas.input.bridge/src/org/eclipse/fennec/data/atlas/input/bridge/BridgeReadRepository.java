@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
@@ -31,11 +32,16 @@ import org.eclipse.fennec.emf.osgi.ResourceSetFactory;
 import org.eclipse.fennec.model.query.ParameterDecl;
 import org.eclipse.fennec.model.query.Query;
 import org.eclipse.fennec.model.query.builder.QueryBuilder;
+import org.eclipse.fennec.persistence.capabilities.CommandCapabilitiesBuilder;
 import org.eclipse.fennec.persistence.capabilities.PersistenceCapabilities;
+import org.eclipse.fennec.persistence.capabilities.StoreCapabilitiesBuilder;
+import org.eclipse.fennec.persistence.query.QueryException;
 import org.eclipse.fennec.persistence.query.api.Hit;
 import org.eclipse.fennec.persistence.query.api.QueryResult;
 import org.eclipse.fennec.persistence.query.api.QueryResultRow;
 import org.eclipse.fennec.persistence.query.api.QueryShape;
+import org.eclipse.fennec.persistence.query.memory.MemoryQueries;
+import org.eclipse.fennec.persistence.query.memory.MemoryQueryProcessor;
 import org.eclipse.fennec.persistence.repository.api.PreparedQuery;
 import org.eclipse.fennec.persistence.repository.api.ReadRepository;
 import org.osgi.service.component.ComponentServiceObjects;
@@ -47,18 +53,30 @@ import org.osgi.service.component.ComponentServiceObjects;
  * their 1:1 transformation (instances of the transformer's output type).
  *
  * <p>
- * The query surface without a {@code QueryTransformation} is deliberately the
- * {@code from} + {@code skip} + {@code top} subset on the <em>output</em>
- * type: the bridge rewrites {@code from} to the source type and delegates, so
- * pagination pushes down to the source — correct because the transformation
- * contract is 1:1. Everything else (predicates, ordering, projection,
- * parameters) is refused with a clear diagnostic until the
- * {@code QueryTransformation} exists. By-id lookups rely on the 1:1 contract
- * preserving the id: the source object is fetched by the requested id and
- * transformed.
+ * Queries are phrased against the <em>output</em> type. A plain
+ * {@code from} + {@code skip} + {@code top} query is rewritten to the source
+ * type and pushed down, so pagination happens at the source — correct because
+ * the transformation contract is 1:1. Anything richer (predicates, ordering,
+ * projection, pipelines, bound parameters) cannot be translated to the source
+ * type without a {@code QueryTransformation}; until one exists the bridge
+ * fetches and transforms every source object and evaluates the query in
+ * memory with the fennec persistence stack's reference engine
+ * ({@link MemoryQueries}) — correct, not pushed down. The declared
+ * capabilities are the engine's, so capability-gating consumers (the OData
+ * repository backend) get honest answers. By-id lookups rely on the 1:1
+ * contract preserving the id: the source object is fetched by the requested
+ * id and transformed.
  * </p>
  */
 public class BridgeReadRepository implements ReadRepository {
+
+	/**
+	 * The query capabilities are those of the in-memory reference engine that
+	 * evaluates every non-plain query; no commands, no store features.
+	 */
+	static final PersistenceCapabilities CAPABILITIES = PersistenceCapabilities.of(
+			new MemoryQueryProcessor().capabilities(), CommandCapabilitiesBuilder.create().build(),
+			StoreCapabilitiesBuilder.create().build());
 
 	private final String id;
 	private final ComponentServiceObjects<ReadRepository> source;
@@ -90,8 +108,7 @@ public class BridgeReadRepository implements ReadRepository {
 
 	@Override
 	public PersistenceCapabilities capabilities() {
-		// the bridge flavour declares no backend capabilities (yet)
-		return null;
+		return CAPABILITIES;
 	}
 
 	@Override
@@ -259,8 +276,21 @@ public class BridgeReadRepository implements ReadRepository {
 	@Override
 	public QueryResult find(Query query, Map<String, Object> parameters, Map<?, ?> options) throws IOException {
 		checkNotDisposed();
-		checkSupported(query);
-		Query sourceQuery = rewrite(query);
+		checkOutputQuery(query);
+		if (isPlain(query)) {
+			// from + skip + top pushes down to the source (1:1 contract)
+			return new BridgeQueryResult(transformAll(rewrite(query)));
+		}
+		List<EObject> candidates = transformAll(rewrite(QueryBuilder.from(transformer.outputType()).build()));
+		try {
+			return MemoryQueries.execute(query, candidates, parameters);
+		} catch (QueryException e) {
+			throw new IOException("bridge repository '" + id + "' cannot evaluate the query: " + e.getMessage(), e);
+		}
+	}
+
+	/** Fetches the source objects the (source-typed) query selects and transforms them. */
+	private List<EObject> transformAll(Query sourceQuery) throws IOException {
 		List<EObject> sources = leased(repository -> {
 			try (QueryResult result = repository.find(sourceQuery, null, null)) {
 				// copy before the lease is released: the objects may live in
@@ -268,7 +298,7 @@ public class BridgeReadRepository implements ReadRepository {
 				return List.copyOf(EcoreUtil.copyAll(result.objects().toList()));
 			}
 		});
-		return new BridgeQueryResult(transformer.transform(sources));
+		return transformer.transform(sources);
 	}
 
 	@Override
@@ -279,15 +309,31 @@ public class BridgeReadRepository implements ReadRepository {
 	@Override
 	public long count(Query query) throws IOException {
 		checkNotDisposed();
-		checkSupported(query);
-		Query sourceQuery = rewrite(query);
-		return leased(repository -> repository.count(sourceQuery));
+		checkOutputQuery(query);
+		if (isPlain(query)) {
+			Query sourceQuery = rewrite(query);
+			return leased(repository -> repository.count(sourceQuery));
+		}
+		Query countQuery = EcoreUtil.copy(query);
+		countQuery.setCountOnly(true);
+		countQuery.setSkip(0);
+		countQuery.setTop(-1);
+		try (QueryResult result = find(countQuery, null, null)) {
+			return result.count();
+		}
 	}
 
 	@Override
 	public PreparedQuery prepare(Query query) throws IOException {
 		checkNotDisposed();
-		checkSupported(query);
+		checkOutputQuery(query);
+		if (!isPlain(query)) {
+			Diagnostic diagnostic = new MemoryQueryProcessor().validate(query, query.getFrom());
+			if (diagnostic.getSeverity() >= Diagnostic.ERROR) {
+				throw new IOException("bridge repository '" + id + "' cannot evaluate the query: "
+						+ diagnosticText(diagnostic));
+			}
+		}
 		// gate downstream too: the source repository must accept the rewrite
 		Query sourceQuery = rewrite(query);
 		leased(repository -> repository.prepare(sourceQuery));
@@ -299,12 +345,8 @@ public class BridgeReadRepository implements ReadRepository {
 		throw new IOException("bridge repository '" + id + "' has no saved-query catalog");
 	}
 
-	/**
-	 * The supported canonical-query subset without a QueryTransformation is
-	 * from + skip + top on the output type; refuse everything else with a
-	 * diagnostic instead of silently ignoring it.
-	 */
-	private void checkSupported(Query query) throws IOException {
+	/** Every query must address the output type. */
+	private void checkOutputQuery(Query query) throws IOException {
 		if (query.getFrom() == null) {
 			throw new IOException("query has no from type");
 		}
@@ -312,27 +354,22 @@ public class BridgeReadRepository implements ReadRepository {
 			throw new IOException("bridge repository '" + id + "' serves '" + typeName(transformer.outputType())
 					+ "', not '" + typeName(query.getFrom()) + "'");
 		}
-		String unsupported = null;
-		if (query.getPredicate() != null) {
-			unsupported = "predicate";
-		} else if (!query.getOrderBy().isEmpty()) {
-			unsupported = "orderBy";
-		} else if (!query.getSelect().isEmpty()) {
-			unsupported = "projection";
-		} else if (query.getApply() != null) {
-			unsupported = "pipeline";
-		} else if (!query.getExpand().isEmpty()) {
-			unsupported = "expand";
-		} else if (query.isDistinct() || query.isCountOnly() || query.isWithScores()) {
-			unsupported = "distinct/countOnly/withScores";
-		} else if (!query.getParameters().isEmpty()) {
-			unsupported = "parameters";
-		}
-		if (unsupported != null) {
-			throw new IOException("bridge repository '" + id
-					+ "' supports only from/skip/top queries until a QueryTransformation is configured; "
-					+ "unsupported query feature: " + unsupported);
-		}
+	}
+
+	/**
+	 * Whether the query is the from + skip + top subset that the 1:1 contract
+	 * lets the bridge push down to the source.
+	 */
+	private static boolean isPlain(Query query) {
+		return query.getPredicate() == null && query.getOrderBy().isEmpty() && query.getSelect().isEmpty()
+				&& query.getApply() == null && query.getExpand().isEmpty() && !query.isDistinct()
+				&& !query.isCountOnly() && !query.isWithScores() && query.getParameters().isEmpty();
+	}
+
+	private static String diagnosticText(Diagnostic diagnostic) {
+		StringBuilder text = new StringBuilder(diagnostic.getMessage() == null ? "" : diagnostic.getMessage());
+		diagnostic.getChildren().forEach(child -> text.append("; ").append(child.getMessage()));
+		return text.toString();
 	}
 
 	/** Rewrites the output-type query to the source type, keeping skip/top. */

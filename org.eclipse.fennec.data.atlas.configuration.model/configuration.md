@@ -73,9 +73,9 @@ Every configuration of a DataService must result in a DCAT Distribution.
 Concrete services: `RestDataService` (identity, `urlContext` and the `openAPI`
 marker; everything needed to serve a DataSet is on its per-dataset
 `RestDataServiceConfiguration`: `path`, `batchSize`, `batchSizeLimit`,
-`offsetParameterName`, `limitParameterName`) and `GeoJsonDataService` (see below,
-same split),
-plus placeholders for `ODataDataService`, `GraphQLDataService`,
+`offsetParameterName`, `limitParameterName`), `GeoJsonDataService` and
+`ODataDataService` (both see below, same split),
+plus placeholders for `GraphQLDataService`,
 `XMLADataService` (OLAP/Daanse), `QGisDataService` (generated QGis layer
 configuration), `OgcFeaturesDataService` and `OgcSensorThingsDataService`.
 
@@ -92,6 +92,25 @@ attributes not consumed by the geometry become the Feature's `properties`.
 Coordinates are WGS 84 (RFC 7946 mandates it); transforming them is a
 `Transformation` concern. A mapping that names missing or non-numeric
 features is a diagnosed configuration error — the endpoint stays down.
+
+**`ODataDataService`** publishes DataSets as one OData v4.01 **service root**
+(OData Part 2 §3: any URL the provider chooses — here the `urlContext`):
+`GET {urlContext}/` is the service document, `{urlContext}/$metadata` the
+CSDL, `{urlContext}/{entitySetName}` an entity set with the full read query
+surface (`$filter`, `$orderby`, `$top`/`$skip`, `$count`, `$select`,
+`$expand`, `$apply`, `$search`), read-only. One root publishes one entity
+data model: exactly the sets its configurations declare, nothing else that
+happens to be registered in the runtime. The per-dataset
+`ODataDataServiceConfiguration` carries `entitySetName` (default: the
+`outputType`'s EClass name — OData addresses sets by type, so one
+configuration per type) and `batchSizeLimit` (the root's server-side `$top`
+ceiling; the smallest declared limit wins). The entity type is the DataSet's
+`outputType`; it needs an entity key — an `iD` attribute or the
+`idFeatures` annotation of the fennec persistence stack (composite keys) —
+and a DataSet with a `query` cannot be served (its base predicate would have
+to be composed with `$filter`): both are diagnosed configuration errors that
+keep the entity set down. Because the OData backend scopes by package, all
+types of one package served by one root must come from the same `DataInput`.
 
 ### `DistributionExport` — reusable serialization templates
 
@@ -205,6 +224,9 @@ and serves `PublicPerson` projections at `/example-public/public-persons`.
 slice: points of interest ([`example/model/poi.ecore`](example/model/poi.ecore),
 [`example/data/pois.xmi`](example/data/pois.xmi)) served as a GeoJSON
 `FeatureCollection` at `/geo/pois`.
+[`example/dataatlas-odata.xmi`](example/dataatlas-odata.xmi) is the Milestone
+10 slice: the persons served as the OData entity set `Persons` of the service
+root `/odata/persons`.
 
 ## Open modeling questions
 
