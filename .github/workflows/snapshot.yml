@@ -42,23 +42,35 @@ jobs:
         org.eclipse.fennec.data.atlas.runtime/generated/org.eclipse.fennec.data.atlas.runtime.jar
     secrets: inherit
 
-  # image tagging follows the model.atlas scheme: file-snapshot / atlas-snapshot
+  # The images are built from the release-jars artifact of the release job
+  # above, so the jars they embed are the jars published to Maven in that same
+  # Gradle invocation. Tagging follows the model.atlas scheme: file-snapshot /
+  # atlas-snapshot plus the Bundle-Version pair (eclipse-fennec/.github,
+  # docs/ci-cd-reusable-workflows.md §5.7).
   container-file:
     needs: release
-    uses: ./.github/workflows/reusable-container.yml
+    uses: eclipse-fennec/.github/.github/workflows/reusable-container.yml@074409595cdb7f4afc3c3ab521fe720b05f913b3 # eclipse-fennec/.github#43
     with:
+      image-name: data.atlas
       docker-label: snapshot
       variant: file
+      docker-context: docker/dataatlas
+      # No runtime-jar-target: the Dockerfile COPYs this variant's jar name.
       runtime-jar: dataatlas.runtime_docker.jar
-      docker-context: docker/dataatlas/
+      runtime-dir: org.eclipse.fennec.data.atlas.runtime/runtime
+      version-jar: org.eclipse.fennec.data.atlas.runtime.jar
     secrets: inherit
 
   container-atlas:
     needs: release
-    uses: ./.github/workflows/reusable-container.yml
+    uses: eclipse-fennec/.github/.github/workflows/reusable-container.yml@074409595cdb7f4afc3c3ab521fe720b05f913b3 # eclipse-fennec/.github#43
     with:
+      image-name: data.atlas
       docker-label: snapshot
       variant: atlas
+      docker-context: docker/dataatlas-atlas
+      # No runtime-jar-target: the Dockerfile COPYs this variant's jar name.
       runtime-jar: dataatlas.runtime_docker_atlas.jar
-      docker-context: docker/dataatlas-atlas/
+      runtime-dir: org.eclipse.fennec.data.atlas.runtime/runtime
+      version-jar: org.eclipse.fennec.data.atlas.runtime.jar
     secrets: inherit
