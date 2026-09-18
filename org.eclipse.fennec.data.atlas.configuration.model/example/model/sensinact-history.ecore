@@ -3,26 +3,33 @@
      Event Atlas writes twin updates into).
 
      This model describes a schema the Data Atlas does NOT own: it belongs to
-     SensiNact's TimescaleHistoricalStore, which creates schema `sensinact` with
-     the hypertables `numeric_data`, `text_data` and `geo_data` (verified against
-     TimescaleHistoricalStore#setupTables). The attribute names here are EMF-side
-     names; the mapping onto the real lower-case, schema-qualified column names
-     is pinned explicitly in the inline persistenceConfig of the configuration
-     (dataatlas-history.xmi), because the derived eorm naming would expect an
-     upper-cased, unqualified table.
+     SensiNact's history provider, which creates schema `sensinact` with ONE
+     hypertable `history` (verified against TimescaleSql, sensiNact 12ee7d94f):
+     the kind of a recorded value is the discriminator column value_kind
+     (0 NUMBER, 1 BOOLEAN, 2 STRING, 3 GEOJSON, 4 OBJECT), a number lives in
+     value_num, everything else as JSON in value_json. The three EClasses here
+     are the per-kind READING of that table: each is mapped onto a view
+     (numeric_data_recent, text_data_recent, geo_data_recent, see
+     docker/dockercompose/history/init/01-schema.sql) that selects one group of
+     kinds and projects the value into one typed column. The attribute names
+     here are EMF-side names; the mapping onto the real lower-case,
+     schema-qualified column names is pinned explicitly in the inline
+     persistenceConfig of the configuration (dataatlas-history.xmi), because the
+     derived eorm naming would expect an upper-cased, unqualified table.
 
-     GeoData is the geo_data case. Its column is geography(POINT,4326), which has
-     no JDBC representation the persistence stack knows - so the view projects it
-     into ordinary SQL types (ST_AsText, ST_X/ST_Y) and this EClass needs neither
-     a PostGIS-aware EMF type nor a TypeConverter.
+     GeoData is the GEOJSON case. Its value is a GeoJSON document in a JSONB
+     column, which has no representation the persistence stack knows - so the
+     view projects it into ordinary SQL types (ST_AsText, ST_X/ST_Y of the
+     centroid) and this EClass needs neither a JSON- or geometry-aware EMF type
+     nor a TypeConverter.
 
      The EClasses repeat their common attributes instead of sharing an
      abstract supertype. That is deliberate: an abstract EMF supertype that is
      not itself an entity puts EClass inheritance in front of the EclipseLink
      dynamic type builder, which then has to be told an inheritance strategy for
-     something that is not one. The tables are independent, so the model says so.
+     something that is not one. The views are independent, so the model says so.
 
-     The tables carry no primary key. JPA needs an identity, so the mapping
+     The table carries no primary key. JPA needs an identity, so the mapping
      declares a composite id over (time, provider, service, resource) - the
      natural reading of a time series per resource. -->
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
@@ -33,7 +40,7 @@
     nsPrefix="history">
   <eClassifiers xsi:type="ecore:EClass" name="NumericData">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A recorded numeric value - table sensinact.numeric_data, column data of type NUMERIC. Served through the bounded view sensinact.numeric_data_recent."/>
+      <details key="documentation" value="A recorded numeric value - the NUMBER rows (value_kind 0) of table sensinact.history, column value_num of type NUMERIC. Served through the bounded view sensinact.numeric_data_recent, which exposes value_num as data."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="time" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate">
@@ -79,7 +86,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TextData">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A recorded textual value - table sensinact.text_data, column data of type text. Served through the bounded view sensinact.text_data_recent."/>
+      <details key="documentation" value="A recorded textual value - the STRING, BOOLEAN and OBJECT rows (value_kind 2, 1, 4) of table sensinact.history, column value_json of type JSONB. Served through the bounded view sensinact.text_data_recent, which exposes the value as text: a STRING unwrapped to its bare text, a BOOLEAN or OBJECT as its JSON text."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="time" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate">
@@ -125,7 +132,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="GeoData">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A recorded location - table sensinact.geo_data, column data of type geography(POINT,4326). Served through the view sensinact.geo_data_recent, which PROJECTS the PostGIS value into ordinary SQL types (ST_AsText, ST_X/ST_Y). That is why this EClass needs no PostGIS-aware EMF type and no TypeConverter: the geometry work happens in the database, where the geometry already lives."/>
+      <details key="documentation" value="A recorded location - the GEOJSON rows (value_kind 3) of table sensinact.history, column value_json holding a GeoJSON document (a bare geometry or a Feature). Served through the view sensinact.geo_data_recent, which PROJECTS the GeoJSON with PostGIS into ordinary SQL types (ST_AsText, ST_X/ST_Y of the centroid). That is why this EClass needs no JSON- or geometry-aware EMF type and no TypeConverter: the geometry work happens in the database, where the value already lives."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="time" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate">

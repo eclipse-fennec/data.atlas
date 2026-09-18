@@ -13,6 +13,7 @@
 package org.eclipse.fennec.data.atlas.tests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -46,9 +47,10 @@ import org.osgi.test.junit5.service.ServiceExtension;
 
 /**
  * Docker-gated end-to-end test of the SensiNact history example: a real
- * TimescaleDB, initialised with the very SQL the compose setup mounts —
- * transcribed verbatim from SensiNact's {@code TimescaleHistoricalStore} — served
- * as CSV through the Data Atlas.
+ * TimescaleDB, initialised with the very SQL the compose setup mounts — the
+ * unified {@code sensinact.history} table transcribed verbatim from SensiNact's
+ * {@code TimescaleSql}, plus our per-kind views over it — served as CSV through
+ * the Data Atlas.
  *
  * <p>
  * This is the first case in which the Data Atlas reads a schema it does not own,
@@ -177,15 +179,25 @@ public class DataAtlasHistoryIntegrationTest {
 
 		assertTrue(response.body().contains("maintenance"),
 				"expected the seeded textual recordings: " + response.body());
+		// a STRING is a JSON string in value_json; the view unwraps it, so the
+		// CSV must carry the bare text and not the JSON quotes
+		assertFalse(response.body().contains("\"ok\""),
+				"expected the STRING value unwrapped from its JSON quotes: " + response.body());
+		// a BOOLEAN shares the text view and is served as its JSON text
+		assertTrue(response.body().contains("online") && response.body().contains("true"),
+				"expected the seeded boolean recording in the text view: " + response.body());
 	}
 
 	/**
 	 * The geo case, and the answer to "would geodata work": yes, without teaching
-	 * the Data Atlas about PostGIS. The column is {@code geography(POINT,4326)},
-	 * which has no JDBC representation the persistence stack knows — so the view
-	 * projects it with {@code ST_AsText} and {@code ST_X}/{@code ST_Y} into text
-	 * and double precision. PostGIS does the geometry work in the database, where
-	 * the geometry already lives, and the mapping stays plain.
+	 * the Data Atlas about JSON or geometries. A location is a GeoJSON document in
+	 * the JSONB column {@code value_json} (a bare geometry or a Feature), which has
+	 * no representation the persistence stack knows — so the view projects it with
+	 * PostGIS ({@code ST_GeomFromGeoJSON}, {@code ST_AsText}, {@code ST_X}/{@code
+	 * ST_Y} of the centroid) into text and double precision. The geometry work
+	 * happens in the database, and the mapping stays plain. Both seeded shapes must
+	 * arrive: the bare Point of station-1 and the Feature-wrapped Point of
+	 * station-2.
 	 */
 	@Test
 	void servesTheGeographyColumnThroughTheProjectingView() throws Exception {
@@ -199,6 +211,8 @@ public class DataAtlasHistoryIntegrationTest {
 				"expected the WKT of the seeded point: " + response.body());
 		assertTrue(response.body().contains("11.582") && response.body().contains("50.927"),
 				"expected longitude and latitude as numbers: " + response.body());
+		assertTrue(response.body().contains("POINT(11.606 50.941)"),
+				"expected the Feature-wrapped point to be unwrapped by the view: " + response.body());
 	}
 
 	@Test

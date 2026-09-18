@@ -243,9 +243,10 @@ docker compose -f docker-compose-history.yml up
 
 The difference to the Postgres example: that one serves a schema we invented and
 shaped to fit the derived eorm naming. This one serves the **TimescaleDB store of
-SensiNact's history provider** — lower-case, schema-qualified, hypertables, no
-primary key. That is the realistic shape of "serve an existing database", and it
-is what a production setup gets pointed at.
+SensiNact's history provider** — lower-case, schema-qualified, one hypertable
+`sensinact.history` holding every kind of value behind a `value_kind`
+discriminator, no primary key. That is the realistic shape of "serve an existing
+database", and it is what a production setup gets pointed at.
 
 The configuration comes from the Model Atlas: the one-shot `seed` service uploads
 the referenced schemas (eorm, configuration, person and `sensinact-history.ecore`)
@@ -306,6 +307,32 @@ curl -H "Accept: application/xmi" \
   "http://localhost:8080/atlas/rest/dataatlas/registries/configurations/stages/release/content?objectId=dataatlas"
 ```
 
+### The schema: one table, discriminated by kind
+
+Since sensiNact `12ee7d94f` ("Rework the history provider onto a
+`HistoryProvider` service with query pushdown", 2026-09-07; in the event.atlas
+images since 2026-09-16) the provider writes **one** hypertable instead of the
+former three (`numeric_data`, `text_data`, `geo_data`):
+
+```sql
+CREATE TABLE sensinact.history (
+  time TIMESTAMPTZ NOT NULL,
+  modelpackageuri VARCHAR(128), model VARCHAR(128),
+  provider VARCHAR(128) NOT NULL, service VARCHAR(128) NOT NULL, resource VARCHAR(128) NOT NULL,
+  value_kind SMALLINT NOT NULL,   -- 0 NUMBER, 1 BOOLEAN, 2 STRING, 3 GEOJSON, 4 OBJECT
+  java_type VARCHAR(128),
+  value_num NUMERIC,              -- NUMBER
+  value_json JSONB);              -- everything else; a location is a GeoJSON document
+```
+
+The example keeps the **per-kind reading** on top of it: three views
+(`numeric_data_recent`, `text_data_recent`, `geo_data_recent`) each select one
+group of `value_kind` values and project the value into one typed column, and
+the three EClasses of `sensinact-history.ecore` are mapped onto those views. The
+view names and column types are the ones the example had before the unified
+schema, so the configuration and the domain model did not change with it — and
+a deployment that migrates can `CREATE OR REPLACE` its views in place.
+
 ### The three things this example had to solve
 
 **1. The names.** The derived eorm mapping expects an upper-cased, unqualified
@@ -315,71 +342,77 @@ pinning table, schema and every column name. It is **inline** in the
 configuration, not an href to a file: `persistenceConfig` is a containment
 reference precisely so the mapping travels with the configuration.
 
-**2. No primary key.** The hypertables have none — upstream defines them that way,
-and it is not our schema to change. JPA needs an identity, so the mapping declares
-a **composite id** over `(time, provider, service, resource)`, the natural reading
+**2. No primary key.** The table has none — upstream defines it that way, and it
+is not our schema to change. JPA needs an identity, so the mapping declares a
+**composite id** over `(time, provider, service, resource)`, the natural reading
 of a time series per resource. Four `<id>` elements; the model allows it
 (`Attributes.id` is `[0..*]`).
 
-**3. Unbounded tables.** A hypertable that has been recording for a month must not
-become one CSV response. The endpoint stays a plain dump (no query filters), so
-the bound lives in SQL: the entities are mapped onto the views
-`sensinact.numeric_data_recent` / `text_data_recent` (7-day window, `LIMIT 1000`).
-Pointing `<table>` at `numeric_data` / `text_data` serves the raw tables instead.
+**3. Unbounded, and untyped.** A hypertable that has been recording for a month
+must not become one CSV response, and a `value_json` column is not one typed
+attribute. The endpoint stays a plain dump (no query filters), so both live in
+SQL: the entities are mapped onto the views (7-day window, `LIMIT 1000`, one
+`value_kind` group each). Mapping `sensinact.history` directly (one entity with
+`value_kind`, `value_num` and `value_json` as text) is possible but not what this
+example shows; the JSONB column would need a text projection the views sidestep.
 
 ### Keeping the seeded schema honest
 
-`history/init/01-schema.sql` is a **verbatim** transcription of the statements
-`TimescaleHistoricalStore#setupTables` executes (verified against `75f1f45`,
-including the nine indexes). It is not ours to change — if it drifts from
-upstream, upstream wins.
+The first part of `history/init/01-schema.sql` is a **verbatim** transcription
+of the statements SensiNact's `TimescaleSql` declares (`CREATE TABLE`, the one
+index, `create_hypertable`; verified against `12ee7d94f`). It is not ours to
+change — if it drifts from upstream, upstream wins. The views below it are ours.
 
-What the store *presupposes* rather than creates lives separately in
-`00-extensions.sql`: it calls `create_hypertable()` but never creates the
-`timescaledb` extension, because a real deployment's database already has it. A
-database freshly created by `POSTGRES_DB` does not, so seeding the store's DDL
-alone fails with `function create_hypertable(...) does not exist`.
+What the seed *presupposes* rather than creates lives separately in
+`00-extensions.sql`. The provider calls `create_hypertable()` but never creates
+the `timescaledb` extension, because a real deployment's database already has
+it; a database freshly created by `POSTGRES_DB` does not, so seeding the DDL
+alone fails with `function create_hypertable(...) does not exist`. PostGIS is
+**our** requirement now, not the provider's: the geo view uses it to turn the
+GeoJSON into WKT and coordinates.
 
 `DataAtlasHistoryIntegrationTest` runs the real eorm mapping against these very
-files in a docker-gated test, so a drift that breaks the mapping fails the build
-instead of production. That matters more here than in the Postgres example,
-because the reference DDL is upstream and can change.
+files in a docker-gated test, so a seed that no longer fits the mapping fails
+the build instead of production. It cannot see an upstream change on its own —
+the transcription has to be re-verified by hand, which is why the file records
+the commit it was checked against.
 `DataAtlasHistoryAtlasModeIntegrationTest` is the twin of this compose setup: a
 TimescaleDB plus a real `model.atlas:file-snapshot` holding the configuration.
 It pins that the Model Atlas hands the inline mapping back with its column
 definitions (the model.atlas#213 case) and that the recordings arrive exactly
 as in file mode.
 
-### Geodata: it works, and PostGIS stays in the database
+### Geodata: it works, and the geometry stays in the database
 
-`geo_data` is served too — `http://localhost:8081/rest/history/geo`:
+Locations are served too — `http://localhost:8081/rest/history/geo`:
 
 ```bash
 curl -H "Accept: text/csv" http://localhost:8081/rest/history/geo
 # time;modelPackageUri;model;provider;service;resource;location;longitude;latitude
-# 2026-08-27 …;…;weather;station-1;admin;location;POINT(11.582 50.927);11.582;50.927
+# 2026-09-18 …;…;weather;station-1;admin;location;POINT(11.582 50.927);11.582;50.927
 ```
 
-Its column is `geography(POINT,4326)`, a PostGIS type with no JDBC
-representation the persistence stack knows. Rather than teaching the Data Atlas
-about PostGIS, the view projects it into ordinary SQL types:
+A location is a GeoJSON document in `value_json` — a bare geometry or a
+`Feature` wrapping one — which has no representation the persistence stack
+knows. Rather than teaching the Data Atlas about JSON or geometries, the view
+projects it into ordinary SQL types with PostGIS:
 
 ```sql
-ST_AsText(data)            AS location   -- text
-ST_X(data::geometry)       AS longitude  -- double precision
-ST_Y(data::geometry)       AS latitude   -- double precision
+ST_GeomFromGeoJSON((CASE WHEN value_json->>'type' = 'Feature'
+                         THEN value_json->'geometry' ELSE value_json END)::text) AS g
+ST_AsText(g)              AS location   -- text, WKT
+ST_X(ST_Centroid(g))      AS longitude  -- double precision
+ST_Y(ST_Centroid(g))      AS latitude   -- double precision
 ```
 
 Those map to plain `EString`/`EDoubleObject` attributes with **no type converter
-at all**. The geometry work happens in the database, where the geometry already
-lives — and the lon/lat pair is exactly the shape a future GeoJSON service wants.
+at all**. The geometry work happens in the database — and the lon/lat pair is
+exactly the shape the GeoJSON service wants.
 
-Serving the raw `geography` column instead would need three things the runtime
-does not have today: a modelled `EDataType` for the geometry, a `TypeConverter`
-(`org.eclipse.fennec.persistence.api`, matched by the attribute's instance type
-name) turning the driver's `PGobject`/EWKB into it, and either PostGIS JDBC types
-or WKB parsing — no PostGIS JDBC artefact is in any of our repository indexes.
-Worth doing when a service needs real geometry objects; not worth doing to
+Serving the raw `value_json` column instead would need a modelled `EDataType`
+for the geometry plus a `TypeConverter` (`org.eclipse.fennec.persistence.api`,
+matched by the attribute's instance type name) parsing the GeoJSON text into
+it. Worth doing when a service needs real geometry objects; not worth doing to
 produce CSV.
 
 ---
@@ -401,20 +434,37 @@ database. Nothing here depends on the compose file.
 ### 2. Bound what you serve
 
 The Data Atlas never creates or changes anything in the database — it stays
-read-only, and `eclipselink.ddl-generation` stays `none`. Create views next to the
-hypertables and point the mapping at them, so a response can never be unbounded:
+read-only, and `eclipselink.ddl-generation` stays `none`. Create views next to
+`sensinact.history` and point the mapping at them, so a response can never be
+unbounded and every entity sees one typed value column. The three views of
+`history/init/01-schema.sql` are the reference; the numeric one:
 
 ```sql
 CREATE OR REPLACE VIEW sensinact.numeric_data_recent AS
-    SELECT time, modelpackageuri, model, provider, service, resource, data
-    FROM sensinact.numeric_data
-    WHERE time > now() - INTERVAL '7 days'
-    ORDER BY time DESC
-    LIMIT 1000;
+    SELECT time, modelpackageuri, model, provider, service, resource, value_num AS data
+    FROM (SELECT * FROM sensinact.history
+          WHERE time > now() - INTERVAL '7 days' AND value_kind = 0
+          ORDER BY time DESC
+          LIMIT 1000) h;
 ```
 
-Adjust the window and the limit to the deployment. If you prefer no views, point
-the `<table>` elements at the hypertables and accept the consequence.
+The window and the limit sit in the **inner** query, on the raw rows, so the
+plan stays an index-backed chunk scan that stops after `LIMIT` rows. Adjust
+both to the deployment. The text view takes `value_kind IN (1, 2, 4)` and
+unwraps a `STRING` with `value_json #>> '{}'`; the geo view takes `value_kind =
+3` and needs PostGIS (`CREATE EXTENSION postgis`) for the projection. If you
+prefer no views, point the `<table>` elements at `sensinact.history` and map
+`value_kind`/`value_num`/`value_json` yourself, and accept the consequence.
+
+**Migrating a deployment that already had the three-table views.** On its first
+start the new provider copies the legacy rows into `sensinact.history` and
+renames `numeric_data`, `text_data` and `geo_data` to `*_migrated`. A
+PostgreSQL view references its table by **OID**, so a view created on
+`numeric_data` *follows the rename* and silently keeps reading the frozen
+`numeric_data_migrated` copy. Nothing errors; the endpoint just goes empty once
+the time window has passed. Re-create the views as above after the first start
+of the new provider — the names and column types are unchanged, so `CREATE OR
+REPLACE VIEW` succeeds over the old definitions and the mapping keeps working.
 
 ### 3. Provide the DataSource
 

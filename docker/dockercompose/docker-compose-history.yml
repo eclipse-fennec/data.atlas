@@ -49,9 +49,11 @@ services:
     ports:
       - "15433:5432"
     volumes:
-      # 00-extensions.sql supplies what the store presupposes (the timescaledb
-      # extension), 01-schema.sql is a verbatim transcription of what the store
-      # creates, 02-data.sql seeds a few recordings
+      # 00-extensions.sql supplies what the seed presupposes (timescaledb for
+      # the provider, postgis for our geo view), 01-schema.sql is a verbatim
+      # transcription of the unified sensinact.history table the provider
+      # creates plus our per-kind views over it, 02-data.sql seeds a few
+      # recordings
       - ./history/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
       # the seeded view, not pg_isready: initdb.d runs while the server is
