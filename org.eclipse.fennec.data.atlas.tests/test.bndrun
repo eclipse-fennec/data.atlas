@@ -6,7 +6,11 @@
 	bnd.identity;id='org.eclipse.daanse.io.fs.watcher.watchservice',\
 	bnd.identity;id='org.eclipse.fennec.data.atlas.input.file',\
 	bnd.identity;id='org.eclipse.fennec.data.atlas.input.jpa',\
+	bnd.identity;id='org.eclipse.fennec.data.atlas.input.mongo',\
 	bnd.identity;id='org.eclipse.fennec.data.atlas.input.bridge',\
+	bnd.identity;id='org.eclipse.fennec.data.atlas.datasource',\
+	bnd.identity;id='org.eclipse.daanse.jdbc.datasource.h2',\
+	bnd.identity;id='org.apache.felix.configadmin.plugin.interpolation',\
 	bnd.identity;id='org.eclipse.fennec.data.atlas.transformation',\
 	bnd.identity;id='org.eclipse.fennec.m2x.qvto.engine',\
 	bnd.identity;id='org.eclipse.fennec.data.atlas.rest',\
@@ -34,6 +38,8 @@
 	bnd.identity;id='org.apache.felix.configadmin',\
 	bnd.identity;id='org.eclipse.fennec.persistence.eclipselink',\
 	bnd.identity;id='org.eclipse.fennec.persistence.repository.jpa',\
+	bnd.identity;id='org.eclipse.fennec.persistence.repository.mongo',\
+	bnd.identity;id='org.eclipse.fennec.persistence.mongo',\
 	bnd.identity;id='org.eclipse.persistence.jpa.jpql'
 
 # only one emf.osgi runtime stack: the codec bundles are built against the
@@ -54,8 +60,12 @@
 
 -runee: JavaSE-21
 
+# the interpolation plugin resolves the $[secret:NAME] credential placeholders
+# of the materialized-data-source fixture against the checked-in test secrets
 -runproperties: \
 	org.osgi.service.http.port=-1,\
+	felix.cm.config.plugins=org.apache.felix.configadmin.plugin.interpolation,\
+	org.apache.felix.configadmin.plugin.interpolation.secretsdir=${workspace}/org.eclipse.fennec.data.atlas.tests/secrets,\
 	${if;${is;${driver};gradle};gosh.args=--nointeractive}
 
 # Ensure clean environment

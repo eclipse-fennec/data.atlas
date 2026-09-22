@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- MongoDB fixture: a MATERIALIZED MongoDataSource (credentials as
+     $[secret:NAME] placeholders, resolved inside the connection string by the
+     interpolation plugin) and a MongoDataInput over it, served over REST. -->
+<configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    name="mongo" description="MongoDB test fixture: persons served from a materialized Mongo data source.">
+  <dataSources xsi:type="configuration:MongoDataSource" id="mongo-db" name="Materialized MongoDB"
+      host="localhost" port="18099" database="dataatlas" authSource="admin"
+      user="$[secret:dataatlas-db-user]" password="$[secret:dataatlas-db-password]">
+    <properties key="liveness.checkInterval" value="2"/>
+  </dataSources>
+  <dataInputs xsi:type="configuration:MongoDataInput" id="persons-mongo-input" dataSource="mongo-db">
+    <supportedEClasses href="model/person.ecore#//Person"/>
+  </dataInputs>
+  <dataSets id="persons-mongo" name="Persons (MongoDB)" dataInput="persons-mongo-input">
+    <inputType href="model/person.ecore#//Person"/>
+    <outputType href="model/person.ecore#//Person"/>
+  </dataSets>
+  <services xsi:type="configuration:RestDataService" id="persons-mongo-rest" name="Persons Mongo REST"
+      urlContext="/mongo" openAPI="false">
+    <configuration id="persons-mongo-config" dataSet="persons-mongo" path="persons"/>
+  </services>
+</configuration:DataAtlasConfiguration>

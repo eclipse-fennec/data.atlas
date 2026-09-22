@@ -35,7 +35,8 @@ instances of those schemas.
   - [Minimal Example: File Input over REST](#minimal-example-file-input-over-rest)
   - [Relational Data: JPA Input](#relational-data-jpa-input)
   - [PostgreSQL End to End](#postgresql-end-to-end)
-  - [MongoDB: Hand-Wired Repository](#mongodb-hand-wired-repository)
+  - [Data Sources: Bound or Materialized](#data-sources-bound-or-materialized)
+  - [MongoDB Input](#mongodb-input)
   - [Query-Defined DataSets with Parameters](#query-defined-datasets-with-parameters)
   - [Transforming Data: QVT-O over a Bridge](#transforming-data-qvt-o-over-a-bridge)
   - [Serving GeoJSON](#serving-geojson)
@@ -182,7 +183,7 @@ there exactly once and are referenced from the rest of the model:
 
 | Registry | Type | Purpose |
 |---|---|---|
-| `dataSources` | `JdbcDataSource` | Reusable data source definitions, bound at runtime to OSGi `DataSource` services via an LDAP target filter |
+| `dataSources` | `DataSource` (`JdbcDataSource`, `MongoDataSource`) | Reusable data source definitions: bound to a backend service the deployment configured (LDAP `filter`), or materialized by the Data Atlas from their connection coordinates |
 | `dataInputs` | `DataInput` | The inputs that provide EObjects to the instance |
 | `dataSets` | `DataSet` | The published datasets |
 | `services` | `DataService` | The endpoints this instance publishes |
@@ -214,10 +215,10 @@ the model types it can deliver. Implemented today:
   model (the `eorm` model of the fennec persistence stack) describing how
   model types map to the relational schema. Without an explicit mapping, a
   default mapping is derived from `supportedEClasses`.
-- **`MongoRepository`** — placeholder for a MongoDB-backed input. The image
-  ships the fennec Mongo persistence backend, but there is no configurator
-  for this type yet: the repository has to be wired by hand through
-  Config Admin (see [MongoDB: Hand-Wired Repository](#mongodb-hand-wired-repository)).
+- **`MongoDataInput`** — reads from a MongoDB database: references a
+  `MongoDataSource` from the registry. No mapping is involved — the fennec Mongo
+  backend reads the collections through its BSON codec from the registered
+  model types (see [MongoDB Input](#mongodb-input)).
 
 Every input materializes as a read-only repository service inside the
 instance; all inputs are **read-only** — the Data Atlas serves data, it does
@@ -462,14 +463,16 @@ and can be mounted anywhere.
 
 ### Relational Data: JPA Input
 
-A `JdbcDataSource` binds to an OSGi `DataSource` service by LDAP filter; the
-`JPADataInput` references it. The deployment provides the actual `DataSource`
-service — the image ships the daanse **PostgreSQL** provider and the driver, so
-for PostgreSQL it is configuration only (see the next section); other databases
-need their own provider bundle.
+A `JPADataInput` references a `JdbcDataSource` from the registry. In its
+*bound* form (shown here, the original one) the definition carries only an
+LDAP filter and the deployment provides the actual `DataSource` service — the
+image ships the daanse **PostgreSQL** provider and the driver, so for PostgreSQL
+it is configuration only (see the next section). The definition can instead
+carry the connection coordinates itself and let the Data Atlas create the
+service — see [Data Sources: Bound or Materialized](#data-sources-bound-or-materialized).
 
 ```xml
-<dataSources id="persons-db" name="Persons DB" filter="(dataSourceName=personsDs)"/>
+<dataSources xsi:type="configuration:JdbcDataSource" id="persons-db" name="Persons DB" filter="(dataSourceName=personsDs)"/>
 <dataInputs xsi:type="configuration:JPADataInput" id="persons-jpa" dataSource="persons-db">
   <supportedEClasses href="model/person.ecore#//Person"/>
 </dataInputs>
@@ -538,64 +541,115 @@ There is no `url` key — the URL is assembled from host/port/dbname. The
 component wraps a `PGSimpleDataSource`, i.e. **no connection pool**; pooling is
 EclipseLink's (`fennec.jpa.ext.eclipselink.jdbc.connection-pool.*`).
 
-### MongoDB: Hand-Wired Repository
+### Data Sources: Bound or Materialized
 
-The image contains the fennec Mongo persistence backend
-(`org.eclipse.fennec.persistence.mongo`, `…persistence.repository.mongo`, the
-BSON codec and the MongoDB driver), but the `MongoRepository` input type is
-still a placeholder without features and without a configurator. What exists is
-the *runtime* half: the endpoints find an input solely through the repository
-service property `persistence.repository.id` = the input's `id`, so a Mongo
-repository registered by hand serves DataSets exactly like a JPA one.
+Every database input references a `DataSource` definition from the
+`dataSources` registry — a `JdbcDataSource` for `JPADataInput`, a
+`MongoDataSource` for `MongoDataInput`. A definition is realized in exactly one
+of two ways:
 
-Declare the input in the configuration — its `id` is the contract:
+**Bound** — the definition carries only a `filter`. The deployment configures
+the backend service itself (as in the PostgreSQL example above) and the filter
+selects it. Nothing else may be set.
 
 ```xml
-<dataInputs xsi:type="configuration:MongoRepository" id="assets-mongo">
+<dataSources xsi:type="configuration:JdbcDataSource" id="persons-db" name="Persons DB"
+    filter="(dataSourceName=personsDs)"/>
+```
+
+**Materialized** — the definition carries the connection coordinates and the
+Data Atlas creates the backend service from them: for JDBC a
+`daanse.jdbc.datasource.<driver>.DataSource` factory configuration, for MongoDB
+a fennec Mongo client + database. No Configurator file is needed for the
+connection any more; it travels with the configuration (file or Model Atlas).
+
+```xml
+<dataSources xsi:type="configuration:JdbcDataSource" id="persons-db" name="Persons DB"
+    driver="postgresql" host="postgres" port="5432" database="dataatlas" schema="public"
+    user="$[env:DATA_ATLAS_DB_USER]" password="$[secret:dataatlas-db-password]">
+  <properties key="sslMode" value="prefer"/>
+</dataSources>
+```
+
+| Attribute | JDBC | MongoDB |
+|---|---|---|
+| `driver` | `postgresql` (default) or `h2` — the runtime must carry that provider; the image ships PostgreSQL | — |
+| `host`, `port` | database host, port (default 5432) | host, port (default 27017) |
+| `database` | database name (H2: the identifier) | database name |
+| `schema` | default schema (`currentSchema`) | — |
+| `authSource`, `flavor` | — | authentication database; server flavor (`mongo`, `ferretdb`, `documentdb-pg`) |
+| `user`, `password` | **placeholders only**, see below | **placeholders only**, see below |
+| `properties` | driver keys passed through verbatim (`sslMode`, `connectTimeout`, …) | client keys passed through (`liveness.*`, …) |
+
+Declaring both a `filter` and coordinates, or neither, is a configuration
+error: the definition is logged as `ERROR` and skipped, and every input over it
+stays down until a corrected configuration arrives (the usual lifecycle — no
+restart needed).
+
+**Credentials are never part of the configuration.** `user` and `password`
+must each be exactly one placeholder — `$[env:NAME]` for an environment
+variable of the runtime, or `$[secret:NAME]` for a file `NAME` in the mounted
+secrets directory (`/opt/dataatlas/runtime/secrets` in the images, the
+Kubernetes/Podman secret-mount pattern). A literal value, or a placeholder with
+a `;default=`, is refused. The placeholder is written verbatim into the factory
+configuration and substituted by the Felix Config Admin interpolation plugin
+only when the backend component receives it — so the secret never exists in
+the XMI, in a Model Atlas registry, or in Config Admin's store, and the same
+definition resolves against each deployment's own secrets. The Data Atlas
+checks at registration that the variable is set / the file exists and reports
+a missing one loudly instead of failing later with an opaque connection error.
+
+Other attributes may use placeholders as well (`host="$[env:DB_HOST]"`), but
+do not have to.
+
+**Restricting where a materialized definition may connect.** In Model Atlas
+mode the configuration arrives over the network, so whoever writes the
+registry could point this runtime — with its local credentials — at any host.
+The datasource configurator's PID `org.eclipse.fennec.data.atlas.datasource`
+takes `host.allowlist` (comma-separated host names); with a list configured,
+any other host and any placeholder host is refused. Unset means unrestricted,
+which is the sensible default for a mounted configuration file.
+
+```json
+"org.eclipse.fennec.data.atlas.datasource": {
+	"host.allowlist": "postgres,mongo.internal.example.org"
+}
+```
+
+### MongoDB Input
+
+A `MongoDataInput` serves collections of a MongoDB database through the fennec
+Mongo persistence backend (shipped in the image). It references a
+`MongoDataSource`, bound or materialized exactly like the JDBC case:
+
+```xml
+<dataSources xsi:type="configuration:MongoDataSource" id="assets-db" name="Assets"
+    host="mongo" database="assets" authSource="admin"
+    user="$[secret:mongo-user]" password="$[secret:mongo-password]"/>
+<dataInputs xsi:type="configuration:MongoDataInput" id="assets-mongo" dataSource="assets-db">
   <supportedEClasses href="model/asset.ecore#//Asset"/>
 </dataInputs>
 ```
 
-and create the three upstream factory configurations in a mounted Configurator
-file, the same way the PostgreSQL `DataSource` is provided above:
+Everything downstream is identical to the other inputs. Two things to know:
 
-```json
-"persistence.mongo.client~main": {
-	"ident": "main",
-	"connectionString": "mongodb://mongo:27017"
-},
-"persistence.mongo.database~assets": {
-	"alias": "assets",
-	"database": "assets",
-	"client.target": "(mongo.client.ident=main)"
-},
-"fennec.repository.mongo~assets-mongo": {
-	"repositoryId": "assets-mongo",
-	"database.target": "(mongo.database.alias=assets)",
-	"readOnly": true
-}
-```
-
-The client service is liveness-gated: it appears only after a successful
-`ping` and disappears when the connection breaks, and the database and
-repository services follow it (DS cascade). Until MongoDB is reachable the
-DataSets of that input simply stay down — no configuration error is reported.
-Put credentials into the connection string via the secrets interpolation
-(`$[secret:mongo-uri]`, see the compose setups) rather than into the file.
-
-Two things to know before pointing this at an existing database:
-
-- Documents are read through the fennec **BSON codec**, i.e. they have to
-  follow its layout (`_id` from the EMF id, `_type` discriminator, references
-  as URIs). Collections written by the same backend do; arbitrary foreign
-  collections may not. The layout and its knobs are described in the upstream
+- **No mapping**, but a document layout: the backend (de)serializes through the
+  fennec BSON codec directly from the Ecore metadata, so documents have to
+  follow its layout — the EMF id as `_id` (a composite id as a structured
+  sub-document), the concrete type as `_type` URI, references as URIs.
+  Collections written by the same backend do; arbitrary foreign collections may
+  not. The layout and its knobs are described in the upstream
   [MongoDB user guide](https://github.com/eclipse-fennec/emf.persistence-jpa/blob/snapshot/docs/mongo-user-guide.md).
-- This path is **not yet covered by an integration test** in this repository;
-  it is the documented upstream recipe, made available in the image so it can
-  be tried. A proper `MongoRepository` configurator (deriving these
-  configurations from the model, like `JPADataInput` does) is tracked
-  separately; the model side — where the database selector lives — is an open
-  design question at the time of writing.
+- **Liveness gating**: the Mongo client appears only after a successful `ping`
+  and disappears when the connection breaks; the database service, the input's
+  repository and its DataSets follow. Until MongoDB is reachable the endpoints
+  answer 404 — no configuration error is reported, recovery is automatic.
+
+For a bound definition the deployment provides the `MongoDatabase` service
+through the upstream PIDs `persistence.mongo.client` (`ident`,
+`connectionString`) and `persistence.mongo.database` (`alias`, `database`,
+`client.target`), and the definition's filter selects it, e.g.
+`filter="(mongo.database.alias=assets)"`.
 
 ### Query-Defined DataSets with Parameters
 

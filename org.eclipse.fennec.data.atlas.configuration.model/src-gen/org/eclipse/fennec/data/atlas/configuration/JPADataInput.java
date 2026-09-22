@@ -72,7 +72,7 @@ public interface JPADataInput extends DataInput {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * The JDBC data source definition providing the database connection for this input.
+	 * The JDBC data source definition providing the database connection for this input - bound by filter or materialized from its connection definition, the input does not care which.
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Data Source</em>' reference.
 	 * @see #setDataSource(JdbcDataSource)

@@ -50,6 +50,14 @@ public final class DataAtlasConstants {
 	 */
 	public static final String PUBLICATION_HANDLER = "data.atlas.publication.handler";
 
+	/**
+	 * Service property of a backend service (e.g. a {@code javax.sql.DataSource})
+	 * the datasource configurator MATERIALIZED from a {@code DataSource}
+	 * definition: the definition's id. A {@code DataSource} without a
+	 * {@code filter} is addressed by {@code (data.atlas.datasource.id=<id>)}.
+	 */
+	public static final String DATASOURCE_ID = "data.atlas.datasource.id";
+
 	private DataAtlasConstants() {
 	}
 }

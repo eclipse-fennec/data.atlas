@@ -38,6 +38,7 @@ import org.eclipse.fennec.data.atlas.configuration.DataAtlasConfiguration;
 import org.eclipse.fennec.data.atlas.configuration.DataInput;
 import org.eclipse.fennec.data.atlas.configuration.DataService;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
+import org.eclipse.fennec.data.atlas.configuration.DataSource;
 import org.eclipse.fennec.data.atlas.configuration.Transformation;
 import org.eclipse.fennec.emf.osgi.configurator.EPackageConfigurator;
 import org.eclipse.fennec.emf.osgi.constants.EMFNamespaces;
@@ -249,6 +250,11 @@ class ConfigurationRegistrar {
 		Map<String, EObject> desired = new LinkedHashMap<>();
 		for (DataService service : configuration.getServices()) {
 			addObject(desired, service, service.getId());
+		}
+		// data sources before the inputs referencing them: the datasource
+		// configurator materializes a backend the input configurators target
+		for (DataSource dataSource : configuration.getDataSources()) {
+			addObject(desired, dataSource, dataSource.getId());
 		}
 		for (DataInput input : configuration.getDataInputs()) {
 			addObject(desired, input, input.getId());

@@ -1,0 +1,12 @@
+Bundle-Name: Fennec Data Atlas - MongoDB Input
+Bundle-Description: Input configurator: translates MongoDataInput configuration services into the \
+	read-only fennec.repository.mongo factory configuration over the input's MongoDataSource, so \
+	the fennec Mongo persistence backend realizes the input.
+
+-library: enableEMF
+
+-buildpath: \
+	org.osgi.service.component.annotations;version=latest,\
+	org.osgi.service.cm;version=latest,\
+	org.eclipse.fennec.data.atlas.configuration.model;version=project,\
+	org.eclipse.fennec.data.atlas.api;version=project

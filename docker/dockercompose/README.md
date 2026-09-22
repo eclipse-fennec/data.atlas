@@ -139,8 +139,11 @@ base URL, the missing AGPL shapes) are the same as in
 
 ### The two pieces that are not in the configuration model
 
-**The DataSource service.** A `JdbcDataSource` only carries an OSGi filter — the
-deployment provides the actual `javax.sql.DataSource`. Here
+**The DataSource service.** This setup uses the *bound* form of a
+`JdbcDataSource` — it carries only an OSGi filter and the deployment provides
+the actual `javax.sql.DataSource` (the alternative, a definition with
+connection coordinates and `$[env:…]`/`$[secret:…]` credential placeholders
+that the Data Atlas materializes itself, is described in the user guide). Here
 `org.eclipse.daanse.jdbc.datasource.postgresql` does, configured through the
 mounted [`dataatlas/load/datasource.json`](dataatlas/load/datasource.json) and
 injected with `-Dconfigurator.initial=…`, so no credential is baked into the

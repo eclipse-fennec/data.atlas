@@ -214,10 +214,10 @@ public class DAConfigSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case DAConfigPackage.MONGO_REPOSITORY: {
-				MongoRepository mongoRepository = (MongoRepository)theEObject;
-				T result = caseMongoRepository(mongoRepository);
-				if (result == null) result = caseDataInput(mongoRepository);
+			case DAConfigPackage.MONGO_DATA_INPUT: {
+				MongoDataInput mongoDataInput = (MongoDataInput)theEObject;
+				T result = caseMongoDataInput(mongoDataInput);
+				if (result == null) result = caseDataInput(mongoDataInput);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -289,9 +289,38 @@ public class DAConfigSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case DAConfigPackage.DATA_SOURCE: {
+				DataSource dataSource = (DataSource)theEObject;
+				T result = caseDataSource(dataSource);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case DAConfigPackage.DATABASE_DATA_SOURCE: {
+				DatabaseDataSource databaseDataSource = (DatabaseDataSource)theEObject;
+				T result = caseDatabaseDataSource(databaseDataSource);
+				if (result == null) result = caseDataSource(databaseDataSource);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case DAConfigPackage.CONNECTION_PROPERTY: {
+				ConnectionProperty connectionProperty = (ConnectionProperty)theEObject;
+				T result = caseConnectionProperty(connectionProperty);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case DAConfigPackage.JDBC_DATA_SOURCE: {
 				JdbcDataSource jdbcDataSource = (JdbcDataSource)theEObject;
 				T result = caseJdbcDataSource(jdbcDataSource);
+				if (result == null) result = caseDatabaseDataSource(jdbcDataSource);
+				if (result == null) result = caseDataSource(jdbcDataSource);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case DAConfigPackage.MONGO_DATA_SOURCE: {
+				MongoDataSource mongoDataSource = (MongoDataSource)theEObject;
+				T result = caseMongoDataSource(mongoDataSource);
+				if (result == null) result = caseDatabaseDataSource(mongoDataSource);
+				if (result == null) result = caseDataSource(mongoDataSource);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -585,17 +614,17 @@ public class DAConfigSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Mongo Repository</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Mongo Data Input</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Mongo Repository</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Mongo Data Input</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseMongoRepository(MongoRepository object) {
+	public T caseMongoDataInput(MongoDataInput object) {
 		return null;
 	}
 
@@ -750,6 +779,51 @@ public class DAConfigSwitch<T> extends Switch<T> {
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Data Source</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Data Source</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseDataSource(DataSource object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Database Data Source</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Database Data Source</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseDatabaseDataSource(DatabaseDataSource object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Connection Property</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Connection Property</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseConnectionProperty(ConnectionProperty object) {
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Jdbc Data Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -761,6 +835,21 @@ public class DAConfigSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseJdbcDataSource(JdbcDataSource object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Mongo Data Source</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Mongo Data Source</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseMongoDataSource(MongoDataSource object) {
 		return null;
 	}
 

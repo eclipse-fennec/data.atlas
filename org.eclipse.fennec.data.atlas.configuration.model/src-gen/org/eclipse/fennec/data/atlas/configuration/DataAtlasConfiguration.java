@@ -105,18 +105,19 @@ public interface DataAtlasConfiguration extends EObject {
 
 	/**
 	 * Returns the value of the '<em><b>Data Sources</b></em>' containment reference list.
-	 * The list contents are of type {@link org.eclipse.fennec.data.atlas.configuration.JdbcDataSource}.
+	 * The list contents are of type {@link org.eclipse.fennec.data.atlas.configuration.DataSource}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * Registry of reusable data source definitions, referenced from DataInputs.
+	 * Registry of reusable data source definitions (JdbcDataSource, MongoDataSource), referenced from DataInputs.
+	 * A data source either BINDS to a service the deployment configured (filter set) or is MATERIALIZED from its connection definition by the Data Atlas (host and database set) - never both.
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Data Sources</em>' containment reference list.
 	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getDataAtlasConfiguration_DataSources()
 	 * @model containment="true"
 	 * @generated
 	 */
-	EList<JdbcDataSource> getDataSources();
+	EList<DataSource> getDataSources();
 
 	/**
 	 * Returns the value of the '<em><b>Data Inputs</b></em>' containment reference list.

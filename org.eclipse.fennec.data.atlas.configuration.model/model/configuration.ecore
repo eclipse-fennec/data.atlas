@@ -29,9 +29,9 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="dataSources" upperBound="-1"
-        eType="#//JdbcDataSource" containment="true">
+        eType="#//DataSource" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Registry of reusable data source definitions, referenced from DataInputs."/>
+        <details key="documentation" value="Registry of reusable data source definitions (JdbcDataSource, MongoDataSource), referenced from DataInputs.&#xA;A data source either BINDS to a service the deployment configured (filter set) or is MATERIALIZED from its connection definition by the Data Atlas (host and database set) - never both."/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="dataInputs" upperBound="-1"
@@ -116,7 +116,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DataInput" abstract="true">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Base type for any data source that can stream EObjects into the Data-Atlas.&#xA;A DataInput can be backed by a database (JPADataInput), MongoDB (MongoRepository), EMF files (FileDataInput) or another input wrapped and transformed by a BridgeRepository.&#xA;&#xA;Intended as an abstract base - it is not meant to be instantiated directly."/>
+      <details key="documentation" value="Base type for any data source that can stream EObjects into the Data-Atlas.&#xA;A DataInput can be backed by a database (JPADataInput), MongoDB (MongoDataInput), EMF files (FileDataInput) or another input wrapped and transformed by a BridgeRepository.&#xA;&#xA;Intended as an abstract base - it is not meant to be instantiated directly."/>
     </eAnnotations>
     <eOperations name="streamData">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -444,10 +444,16 @@
       <details key="documentation" value="DataService that exposes DataSets via the OGC SensorThings API."/>
     </eAnnotations>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="MongoRepository" eSuperTypes="#//DataInput">
+  <eClassifiers xsi:type="ecore:EClass" name="MongoDataInput" eSuperTypes="#//DataInput">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="DataInput backed by MongoDB as a source."/>
+      <details key="documentation" value="DataInput backed by a MongoDB database: the fennec Mongo persistence backend reads the collections through the BSON codec, so documents have to follow its layout (EMF id as _id, type discriminator, references as URIs). No mapping is needed - a registered EPackage is all the backend requires."/>
     </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dataSource" lowerBound="1"
+        eType="#//MongoDataSource">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The MongoDB data source definition providing the database for this input."/>
+      </eAnnotations>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FileDataInput" eSuperTypes="#//DataInput">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -472,7 +478,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="dataSource" lowerBound="1"
         eType="#//JdbcDataSource">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The JDBC data source definition providing the database connection for this input."/>
+        <details key="documentation" value="The JDBC data source definition providing the database connection for this input - bound by filter or materialized from its connection definition, the input does not care which."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
@@ -674,24 +680,109 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="JdbcDataSource">
+  <eClassifiers xsi:type="ecore:EClass" name="DataSource" abstract="true">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A reusable JDBC data source definition. At runtime it is bound to a pooled OSGi DataSource service that is selected via the OSGi target filter. Meant to live in a shared data source registry so it can be reused across DataInputs and tenants."/>
+      <details key="documentation" value="A reusable data source definition, living in the root's dataSources registry so it can be shared across DataInputs (and tenants).&#xA;&#xA;A data source is realized in exactly one of two modes:&#xA;- BIND: filter is set. The deployment configured the backend service itself (e.g. a daanse DataSource factory configuration); the filter selects it. Nothing else may be set.&#xA;- MATERIALIZE: the connection definition of the concrete subtype is set (at least host and database). The Data Atlas creates the backend service from it.&#xA;Setting both, or neither, is a configuration error - the source is reported and skipped.&#xA;&#xA;Credential rule: the configuration model never carries a credential value. user and password are placeholders resolved in the consuming runtime only: $[env:NAME] for an environment variable or $[secret:NAME] for a file in the runtime's secrets directory. A literal value is rejected."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="filter" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="OSGi target filter (LDAP-style) used to select the actual DataSource service to bind to, e.g. (datasource.name=Derby_MDO)."/>
-      </eAnnotations>
-    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         iD="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Unique identifier of this data source definition."/>
+        <details key="documentation" value="Unique identifier of this data source definition. A materialized source is selectable by the service property data.atlas.datasource.id=&lt;id&gt;."/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Derives from the model annotation by default"/>
+        <details key="documentation" value="Human-readable name of the data source."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optional description: what the database holds, who owns it."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="filter" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="BIND mode: OSGi target filter (LDAP-style) selecting the backend service the deployment configured - a javax.sql.DataSource for JDBC (e.g. (dataSourceName=personsDs)), a MongoDatabase for MongoDB (e.g. (mongo.database.alias=assets)). Mutually exclusive with the connection definition."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DatabaseDataSource" abstract="true" eSuperTypes="#//DataSource">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A data source addressed by network coordinates: the connection definition shared by all database kinds (MATERIALIZE mode). host and database are the minimum; the rest is optional."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="host" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Database host name or address. May be a $[env:NAME] placeholder."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="port" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Database port; unset = the driver's default (5432 for PostgreSQL, 27017 for MongoDB)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="database" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Name of the database (for H2: the database identifier - a name or path)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="user" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Login user - a $[env:NAME] or $[secret:NAME] placeholder ONLY, never a literal (see DataSource). Unset for databases without authentication."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="password" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Login password - a $[env:NAME] or $[secret:NAME] placeholder ONLY, never a literal (see DataSource)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" upperBound="-1"
+        eType="#//ConnectionProperty" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Additional driver-specific settings, passed through verbatim to the backend's factory configuration (e.g. sslMode=require for PostgreSQL, dbCloseDelay=-1 for H2, flavor=ferretdb for MongoDB). They cannot override the keys derived from the coordinate attributes."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ConnectionProperty">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="One driver-specific key/value setting of a DatabaseDataSource. The value is a string; the backend's metatype decides the target type."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="JdbcDataSource" eSuperTypes="#//DatabaseDataSource">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A relational data source realized as a javax.sql.DataSource service.&#xA;BIND: filter selects the DataSource service the deployment configured.&#xA;MATERIALIZE: the Data Atlas creates a daanse.jdbc.datasource.&lt;driver&gt;.DataSource factory configuration from host/port/database/schema/user/password/properties (no connection pool - pooling is EclipseLink's), registered with the service property data.atlas.datasource.id=&lt;id&gt;."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="driver" eType="#//JdbcDriver">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The database kind the materialized DataSource connects to; selects the daanse provider (MATERIALIZE only, default PostgreSQL). The runtime has to carry the provider and driver bundles of that kind."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="schema" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optional default schema of the connection (PostgreSQL currentSchema)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="JdbcDriver">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The relational database kinds a JdbcDataSource can be materialized for. The literal is the daanse provider infix: daanse.jdbc.datasource.&lt;literal&gt;.DataSource."/>
+    </eAnnotations>
+    <eLiterals name="POSTGRESQL" literal="postgresql"/>
+    <eLiterals name="H2" value="1" literal="h2"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MongoDataSource" eSuperTypes="#//DatabaseDataSource">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A MongoDB data source realized as a com.mongodb.client.MongoDatabase service of the fennec Mongo persistence backend.&#xA;BIND: filter selects the MongoDatabase service the deployment configured (e.g. (mongo.database.alias=assets)).&#xA;MATERIALIZE: the Data Atlas creates one persistence.mongo.client (connection string assembled from host/port/user/password/authSource, liveness-gated) and one persistence.mongo.database configuration (alias dataAtlas.&lt;id&gt;) from the definition."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="authSource" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optional authentication database (the connection string's authSource option); unset = the driver's default."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="flavor" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optional server flavor behind the wire protocol as understood by the fennec Mongo backend (mongo, ferretdb, documentdb-pg); unset = mongo."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>

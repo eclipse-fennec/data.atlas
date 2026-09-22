@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Modeled data sources fixture: one MATERIALIZED H2 JdbcDataSource whose
+     credentials are $[secret:NAME] placeholders (resolved by the interpolation
+     plugin against the test secrets directory), plus two definitions that must
+     be refused - a literal credential and a filter combined with coordinates.
+     The inputs over the refused definitions must stay down. -->
+<configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    name="datasources" description="Modeled data sources: materialized H2 with placeholder credentials, plus refused definitions.">
+  <dataSources xsi:type="configuration:JdbcDataSource" id="h2-materialized" name="Materialized H2"
+      driver="h2" database="dataatlas-materialized"
+      user="$[secret:dataatlas-db-user]" password="$[secret:dataatlas-db-password]">
+    <properties key="plugableFilesystem" value="mem"/>
+    <properties key="dbCloseDelay" value="-1"/>
+  </dataSources>
+  <dataSources xsi:type="configuration:JdbcDataSource" id="bad-literal" name="Literal credential"
+      driver="h2" database="dataatlas-bad-literal" user="sa" password="$[secret:dataatlas-db-password]">
+    <properties key="plugableFilesystem" value="mem"/>
+  </dataSources>
+  <dataSources xsi:type="configuration:JdbcDataSource" id="bad-both" name="Filter and coordinates"
+      filter="(dataatlas.test.ds=nowhere)" host="db.example.org" database="dataatlas-bad-both"/>
+  <dataInputs xsi:type="configuration:JPADataInput" id="persons-materialized-jpa" dataSource="h2-materialized">
+    <supportedEClasses href="model/person.ecore#//Person"/>
+  </dataInputs>
+  <dataInputs xsi:type="configuration:JPADataInput" id="persons-bad-literal-jpa" dataSource="bad-literal">
+    <supportedEClasses href="model/person.ecore#//Person"/>
+  </dataInputs>
+  <dataInputs xsi:type="configuration:JPADataInput" id="persons-bad-both-jpa" dataSource="bad-both">
+    <supportedEClasses href="model/person.ecore#//Person"/>
+  </dataInputs>
+  <dataSets id="persons-materialized" name="Persons (materialized)" dataInput="persons-materialized-jpa">
+    <inputType href="model/person.ecore#//Person"/>
+    <outputType href="model/person.ecore#//Person"/>
+  </dataSets>
+  <dataSets id="persons-bad-literal" name="Persons (refused: literal)" dataInput="persons-bad-literal-jpa">
+    <inputType href="model/person.ecore#//Person"/>
+    <outputType href="model/person.ecore#//Person"/>
+  </dataSets>
+  <dataSets id="persons-bad-both" name="Persons (refused: both)" dataInput="persons-bad-both-jpa">
+    <inputType href="model/person.ecore#//Person"/>
+    <outputType href="model/person.ecore#//Person"/>
+  </dataSets>
+  <services xsi:type="configuration:RestDataService" id="datasources-rest" name="Data sources REST"
+      urlContext="/ds" openAPI="false">
+    <configuration id="persons-materialized-config" dataSet="persons-materialized" path="persons"/>
+  </services>
+  <!-- a REST application is published only once every DataSet of the service is
+       servable, so the refused inputs get a service of their own that stays down -->
+  <services xsi:type="configuration:RestDataService" id="datasources-refused-rest" name="Refused data sources REST"
+      urlContext="/ds-refused" openAPI="false">
+    <configuration id="persons-bad-literal-config" dataSet="persons-bad-literal" path="bad-literal"/>
+    <configuration id="persons-bad-both-config" dataSet="persons-bad-both" path="bad-both"/>
+  </services>
+</configuration:DataAtlasConfiguration>

@@ -35,9 +35,9 @@ import org.eclipse.fennec.data.atlas.configuration.DataAtlasConfiguration;
 import org.eclipse.fennec.data.atlas.configuration.DataInput;
 import org.eclipse.fennec.data.atlas.configuration.DataService;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
+import org.eclipse.fennec.data.atlas.configuration.DataSource;
 import org.eclipse.fennec.data.atlas.configuration.DcatPublication;
 import org.eclipse.fennec.data.atlas.configuration.DistributionExport;
-import org.eclipse.fennec.data.atlas.configuration.JdbcDataSource;
 import org.eclipse.fennec.data.atlas.configuration.Transformation;
 
 /**
@@ -110,7 +110,7 @@ public class DataAtlasConfigurationImpl extends MinimalEObjectImpl.Container imp
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<JdbcDataSource> dataSources;
+	protected EList<DataSource> dataSources;
 
 	/**
 	 * The cached value of the '{@link #getDataInputs() <em>Data Inputs</em>}' containment reference list.
@@ -243,9 +243,9 @@ public class DataAtlasConfigurationImpl extends MinimalEObjectImpl.Container imp
 	 * @generated
 	 */
 	@Override
-	public EList<JdbcDataSource> getDataSources() {
+	public EList<DataSource> getDataSources() {
 		if (dataSources == null) {
-			dataSources = new EObjectContainmentEList<JdbcDataSource>(JdbcDataSource.class, this, DAConfigPackage.DATA_ATLAS_CONFIGURATION__DATA_SOURCES);
+			dataSources = new EObjectContainmentEList<DataSource>(DataSource.class, this, DAConfigPackage.DATA_ATLAS_CONFIGURATION__DATA_SOURCES);
 		}
 		return dataSources;
 	}
@@ -401,7 +401,7 @@ public class DataAtlasConfigurationImpl extends MinimalEObjectImpl.Container imp
 				return;
 			case DAConfigPackage.DATA_ATLAS_CONFIGURATION__DATA_SOURCES:
 				getDataSources().clear();
-				getDataSources().addAll((Collection<? extends JdbcDataSource>)newValue);
+				getDataSources().addAll((Collection<? extends DataSource>)newValue);
 				return;
 			case DAConfigPackage.DATA_ATLAS_CONFIGURATION__DATA_INPUTS:
 				getDataInputs().clear();

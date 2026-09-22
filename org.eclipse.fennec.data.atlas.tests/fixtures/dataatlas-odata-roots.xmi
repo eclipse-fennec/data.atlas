@@ -9,7 +9,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
     name="odata" description="OData test fixture: persons served as OData entity sets from a file, a database and a bridge.">
-  <dataSources id="odata-persons-db" name="Persons DB" filter="(dataatlas.test.ds=odata-persons)"/>
+  <dataSources xsi:type="configuration:JdbcDataSource" id="odata-persons-db" name="Persons DB" filter="(dataatlas.test.ds=odata-persons)"/>
   <dataInputs xsi:type="configuration:FileDataInput" id="odata-persons-file" uri="data/persons.xmi">
     <supportedEClasses href="model/person.ecore#//Person"/>
   </dataInputs>

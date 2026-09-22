@@ -1,0 +1,13 @@
+Bundle-Name: Fennec Data Atlas - Data Source Configurator
+Bundle-Description: Realizes the DataSource definitions of the configuration model: a definition \
+	with a filter binds to a backend service the deployment configured (BIND), a definition with \
+	connection coordinates is materialized into the backend's Config-Admin factory configuration \
+	(daanse JDBC DataSource, fennec Mongo client/database) with credentials as placeholders only.
+
+-library: enableEMF
+
+-buildpath: \
+	org.osgi.service.component.annotations;version=latest,\
+	org.osgi.service.cm;version=latest,\
+	org.eclipse.fennec.data.atlas.configuration.model;version=project,\
+	org.eclipse.fennec.data.atlas.api;version=project

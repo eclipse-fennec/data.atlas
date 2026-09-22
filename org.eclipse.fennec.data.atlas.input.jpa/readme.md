@@ -17,7 +17,7 @@ One `JPADataInput` with id `<id>` becomes (factory configuration name = `<id>`):
 | | `fennec.jpa.eorm.eClasses` | the names of `supportedEClasses` (explicit — there is no "map all") |
 | | `fennec.jpa.eorm.mappingName` | `<id>` |
 | `fennec.jpa.EMPersistenceUnit` | `fennec.jpa.persistenceUnitName` | `<id>` |
-| | `fennec.jpa.dataSource.target` | the `JdbcDataSource.filter` of the input, verbatim |
+| | `fennec.jpa.dataSource.target` | the `JdbcDataSource.filter` of the input, verbatim (BIND) — or `(data.atlas.datasource.id=<dataSourceId>)`, the marker of the service the datasource configurator materialized from the definition (MATERIALIZE) |
 | | `fennec.jpa.mapping.target` | `(fennec.jpa.eorm.mapping=<id>)`, or the registered mapping service (below) |
 | `fennec.repository.jpa` | `repositoryId` | `<id>` *(these keys are unprefixed)* |
 | | `unit.target` | `(osgi.unit.name=<id>)` |
@@ -40,9 +40,12 @@ integration tests.
 - `eclipselink.ddl-generation` stays at the upstream default `none`: the input
   serves an existing schema. Tests seed through their own writable persistence
   unit with DDL generation enabled.
-- A deployment needs a `javax.sql.DataSource` service matching the
-  `JdbcDataSource.filter`. The runtime ships the daanse PostgreSQL provider and
-  the driver (see below); other databases need their own provider bundle.
+- A deployment needs a `javax.sql.DataSource` service: either one it configures
+  itself and the `JdbcDataSource.filter` selects (below), or one the
+  [datasource configurator](../org.eclipse.fennec.data.atlas.datasource/readme.md)
+  materializes from the definition's connection coordinates. The runtime ships
+  the daanse PostgreSQL provider and the driver; other databases need their own
+  provider bundle.
 - The derived mapping names the table after the EClass **upper-cased** and the
   columns after the features **verbatim**, both unquoted — so on a case-folding
   database like PostgreSQL an `id/firstName/lastName` model reads
@@ -94,7 +97,7 @@ The last row is how a `JdbcDataSource` finds it: add an arbitrary key such as
 ```
 
 ```xml
-<dataSources id="persons-db" name="Persons DB" filter="(dataSourceName=personsDs)"/>
+<dataSources xsi:type="configuration:JdbcDataSource" id="persons-db" name="Persons DB" filter="(dataSourceName=personsDs)"/>
 ```
 
 A complete, running example is `docker/dockercompose/docker-compose-postgres.yml`

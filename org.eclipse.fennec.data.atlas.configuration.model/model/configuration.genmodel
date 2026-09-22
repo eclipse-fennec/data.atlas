@@ -99,7 +99,9 @@
     <genClasses ecoreClass="configuration.ecore#//GraphQLDataServiceConfiguration"/>
     <genClasses ecoreClass="configuration.ecore#//OgcFeaturesDataService"/>
     <genClasses ecoreClass="configuration.ecore#//OgcSensorThingsDataService"/>
-    <genClasses ecoreClass="configuration.ecore#//MongoRepository"/>
+    <genClasses ecoreClass="configuration.ecore#//MongoDataInput">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//MongoDataInput/dataSource"/>
+    </genClasses>
     <genClasses ecoreClass="configuration.ecore#//FileDataInput">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//FileDataInput/uri"/>
     </genClasses>
@@ -150,10 +152,35 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/publisherUri"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/licenseUri"/>
     </genClasses>
-    <genClasses ecoreClass="configuration.ecore#//JdbcDataSource">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//JdbcDataSource/filter"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//JdbcDataSource/id"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//JdbcDataSource/name"/>
+    <genClasses image="false" ecoreClass="configuration.ecore#//DataSource">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DataSource/id"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DataSource/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DataSource/description"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DataSource/filter"/>
     </genClasses>
+    <genClasses image="false" ecoreClass="configuration.ecore#//DatabaseDataSource">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DatabaseDataSource/host"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DatabaseDataSource/port"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DatabaseDataSource/database"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DatabaseDataSource/user"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DatabaseDataSource/password"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//DatabaseDataSource/properties"/>
+    </genClasses>
+    <genClasses ecoreClass="configuration.ecore#//ConnectionProperty">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//ConnectionProperty/key"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//ConnectionProperty/value"/>
+    </genClasses>
+    <genClasses ecoreClass="configuration.ecore#//JdbcDataSource">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//JdbcDataSource/driver"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//JdbcDataSource/schema"/>
+    </genClasses>
+    <genClasses ecoreClass="configuration.ecore#//MongoDataSource">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//MongoDataSource/authSource"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//MongoDataSource/flavor"/>
+    </genClasses>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="configuration.ecore#//JdbcDriver">
+      <genEnumLiterals ecoreEnumLiteral="configuration.ecore#//JdbcDriver/POSTGRESQL"/>
+      <genEnumLiterals ecoreEnumLiteral="configuration.ecore#//JdbcDriver/H2"/>
+    </genEnums>
   </genPackages>
 </genmodel:GenModel>
