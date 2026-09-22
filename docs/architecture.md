@@ -197,8 +197,11 @@ Implemented today (roadmap Milestones 0–8):
   docker-gated for the compose setups and for the PostgreSQL + CSV example).
 
 Not yet implemented: the other DataService kinds, importers, query
-transformations (a bridge with a configured `queryTrafo` stays down) (see the
-[roadmap](roadmap.md)).
+transformations (a bridge with a configured `queryTrafo` stays down), and a
+configurator for `MongoRepository` — the runtime carries the fennec Mongo
+backend (`persistence.mongo`, `repository.mongo`, BSON codec, driver) so a
+Mongo repository can be wired by hand through Config Admin, but the input type
+has no features to derive it from yet (see the [roadmap](roadmap.md)).
 
 ## Configuration lifecycle
 

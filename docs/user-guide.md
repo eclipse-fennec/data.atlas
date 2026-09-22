@@ -35,6 +35,7 @@ instances of those schemas.
   - [Minimal Example: File Input over REST](#minimal-example-file-input-over-rest)
   - [Relational Data: JPA Input](#relational-data-jpa-input)
   - [PostgreSQL End to End](#postgresql-end-to-end)
+  - [MongoDB: Hand-Wired Repository](#mongodb-hand-wired-repository)
   - [Query-Defined DataSets with Parameters](#query-defined-datasets-with-parameters)
   - [Transforming Data: QVT-O over a Bridge](#transforming-data-qvt-o-over-a-bridge)
   - [Serving GeoJSON](#serving-geojson)
@@ -213,6 +214,10 @@ the model types it can deliver. Implemented today:
   model (the `eorm` model of the fennec persistence stack) describing how
   model types map to the relational schema. Without an explicit mapping, a
   default mapping is derived from `supportedEClasses`.
+- **`MongoRepository`** — placeholder for a MongoDB-backed input. The image
+  ships the fennec Mongo persistence backend, but there is no configurator
+  for this type yet: the repository has to be wired by hand through
+  Config Admin (see [MongoDB: Hand-Wired Repository](#mongodb-hand-wired-repository)).
 
 Every input materializes as a read-only repository service inside the
 instance; all inputs are **read-only** — the Data Atlas serves data, it does
@@ -532,6 +537,65 @@ Three details that are easy to get wrong:
 There is no `url` key — the URL is assembled from host/port/dbname. The
 component wraps a `PGSimpleDataSource`, i.e. **no connection pool**; pooling is
 EclipseLink's (`fennec.jpa.ext.eclipselink.jdbc.connection-pool.*`).
+
+### MongoDB: Hand-Wired Repository
+
+The image contains the fennec Mongo persistence backend
+(`org.eclipse.fennec.persistence.mongo`, `…persistence.repository.mongo`, the
+BSON codec and the MongoDB driver), but the `MongoRepository` input type is
+still a placeholder without features and without a configurator. What exists is
+the *runtime* half: the endpoints find an input solely through the repository
+service property `persistence.repository.id` = the input's `id`, so a Mongo
+repository registered by hand serves DataSets exactly like a JPA one.
+
+Declare the input in the configuration — its `id` is the contract:
+
+```xml
+<dataInputs xsi:type="configuration:MongoRepository" id="assets-mongo">
+  <supportedEClasses href="model/asset.ecore#//Asset"/>
+</dataInputs>
+```
+
+and create the three upstream factory configurations in a mounted Configurator
+file, the same way the PostgreSQL `DataSource` is provided above:
+
+```json
+"persistence.mongo.client~main": {
+	"ident": "main",
+	"connectionString": "mongodb://mongo:27017"
+},
+"persistence.mongo.database~assets": {
+	"alias": "assets",
+	"database": "assets",
+	"client.target": "(mongo.client.ident=main)"
+},
+"fennec.repository.mongo~assets-mongo": {
+	"repositoryId": "assets-mongo",
+	"database.target": "(mongo.database.alias=assets)",
+	"readOnly": true
+}
+```
+
+The client service is liveness-gated: it appears only after a successful
+`ping` and disappears when the connection breaks, and the database and
+repository services follow it (DS cascade). Until MongoDB is reachable the
+DataSets of that input simply stay down — no configuration error is reported.
+Put credentials into the connection string via the secrets interpolation
+(`$[secret:mongo-uri]`, see the compose setups) rather than into the file.
+
+Two things to know before pointing this at an existing database:
+
+- Documents are read through the fennec **BSON codec**, i.e. they have to
+  follow its layout (`_id` from the EMF id, `_type` discriminator, references
+  as URIs). Collections written by the same backend do; arbitrary foreign
+  collections may not. The layout and its knobs are described in the upstream
+  [MongoDB user guide](https://github.com/eclipse-fennec/emf.persistence-jpa/blob/snapshot/docs/mongo-user-guide.md).
+- This path is **not yet covered by an integration test** in this repository;
+  it is the documented upstream recipe, made available in the image so it can
+  be tried. A proper `MongoRepository` configurator (deriving these
+  configurations from the model, like `JPADataInput` does) is tracked
+  separately; the model side — where the database selector lives — is an open
+  design question at the time of writing.
 
 ### Query-Defined DataSets with Parameters
 
