@@ -156,8 +156,8 @@ public class DAConfigAdapterFactory extends AdapterFactoryImpl {
 				return createOgcSensorThingsDataServiceAdapter();
 			}
 			@Override
-			public Adapter caseMongoRepository(MongoRepository object) {
-				return createMongoRepositoryAdapter();
+			public Adapter caseMongoDataInput(MongoDataInput object) {
+				return createMongoDataInputAdapter();
 			}
 			@Override
 			public Adapter caseFileDataInput(FileDataInput object) {
@@ -200,8 +200,24 @@ public class DAConfigAdapterFactory extends AdapterFactoryImpl {
 				return createDcatPublicationAdapter();
 			}
 			@Override
+			public Adapter caseDataSource(DataSource object) {
+				return createDataSourceAdapter();
+			}
+			@Override
+			public Adapter caseDatabaseDataSource(DatabaseDataSource object) {
+				return createDatabaseDataSourceAdapter();
+			}
+			@Override
+			public Adapter caseConnectionProperty(ConnectionProperty object) {
+				return createConnectionPropertyAdapter();
+			}
+			@Override
 			public Adapter caseJdbcDataSource(JdbcDataSource object) {
 				return createJdbcDataSourceAdapter();
+			}
+			@Override
+			public Adapter caseMongoDataSource(MongoDataSource object) {
+				return createMongoDataSourceAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -490,16 +506,16 @@ public class DAConfigAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.fennec.data.atlas.configuration.MongoRepository <em>Mongo Repository</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.eclipse.fennec.data.atlas.configuration.MongoDataInput <em>Mongo Data Input</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.eclipse.fennec.data.atlas.configuration.MongoRepository
+	 * @see org.eclipse.fennec.data.atlas.configuration.MongoDataInput
 	 * @generated
 	 */
-	public Adapter createMongoRepositoryAdapter() {
+	public Adapter createMongoDataInputAdapter() {
 		return null;
 	}
 
@@ -644,6 +660,48 @@ public class DAConfigAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.fennec.data.atlas.configuration.DataSource <em>Data Source</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DataSource
+	 * @generated
+	 */
+	public Adapter createDataSourceAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource <em>Database Data Source</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource
+	 * @generated
+	 */
+	public Adapter createDatabaseDataSourceAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.fennec.data.atlas.configuration.ConnectionProperty <em>Connection Property</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.fennec.data.atlas.configuration.ConnectionProperty
+	 * @generated
+	 */
+	public Adapter createConnectionPropertyAdapter() {
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for an object of class '{@link org.eclipse.fennec.data.atlas.configuration.JdbcDataSource <em>Jdbc Data Source</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -654,6 +712,20 @@ public class DAConfigAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createJdbcDataSourceAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.fennec.data.atlas.configuration.MongoDataSource <em>Mongo Data Source</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.fennec.data.atlas.configuration.MongoDataSource
+	 * @generated
+	 */
+	public Adapter createMongoDataSourceAdapter() {
 		return null;
 	}
 

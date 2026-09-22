@@ -19,7 +19,7 @@ are only *referenced* from the rest of the model:
 
 | Containment | Type | Purpose |
 |---|---|---|
-| `dataSources` | `JdbcDataSource` | Reusable data source definitions (bound at runtime to pooled OSGi `DataSource` services via an LDAP target filter) |
+| `dataSources` | `DataSource` (`JdbcDataSource`, `MongoDataSource`) | Reusable data source definitions: either *bound* to a backend service the deployment configured (LDAP `filter`) or *materialized* from their connection coordinates by the runtime |
 | `dataInputs` | `DataInput` | The inputs that stream EObjects into the instance |
 | `dataSets` | `DataSet` | The published datasets (DCAT Dataset equivalents) |
 | `services` | `DataService` | The endpoints this instance publishes |
@@ -29,7 +29,7 @@ are only *referenced* from the rest of the model:
 
 This registry design is deliberate: the same service definition can be
 re-applied to another data source (tenant, test system) by swapping the
-referenced `JdbcDataSource`, and export settings are templates instead of
+referenced `DataSource`, and export settings are templates instead of
 per-provider copies.
 
 ## Core concepts
@@ -55,16 +55,47 @@ an input can provide. Concrete types:
 - `FileDataInput` — EMF resources from a `uri` (file or directory). The
   database-free input used by the Milestone 1 slice.
 - `JPADataInput` — relational source: references a `JdbcDataSource` from the
-  registry and a JPA `EntityMappings` (the `eorm` model of
+  registry and optionally a JPA `EntityMappings` (the `eorm` model of
   `org.eclipse.fennec.persistence.orm`) describing how model types map to the
   relational schema.
-- `MongoRepository` — MongoDB-backed source (placeholder, no features yet; the
-  runtime ships the fennec Mongo backend, so the repository can be wired by hand
-  through Config Admin — see the user guide — but nothing derives it from the
-  model until the type gets its database selector).
+- `MongoDataInput` — MongoDB source: references a `MongoDataSource` from the
+  registry. No mapping — the fennec Mongo backend reads the collections through
+  the BSON codec from the registered EPackages, so documents have to follow its
+  layout (EMF id as `_id`, `_type` discriminator, references as URIs).
 - `BridgeRepository` — wraps another `DataInput` and applies a
   `DataTransformation` to loaded objects and a `QueryTransformation` to
   incoming queries; cascadable.
+
+### `DataSource` — where a database input connects to
+
+Abstract base of the `dataSources` registry: `id`, `name`, `description` and an
+optional `filter`. `DatabaseDataSource` adds the connection coordinates
+(`host`, `port`, `database`, `user`, `password`, `properties` — a list of
+`ConnectionProperty` key/value pairs passed through to the driver); the
+concrete types add what their backend needs:
+
+- `JdbcDataSource` (`driver`: `postgresql` | `h2`, `schema`) — realized as a
+  `javax.sql.DataSource` service, referenced by `JPADataInput.dataSource`.
+- `MongoDataSource` (`authSource`, `flavor`) — realized as a `MongoDatabase`
+  service of the fennec Mongo backend, referenced by `MongoDataInput.dataSource`.
+
+A definition is realized in exactly one of two modes, validated at
+registration (both or neither = error, the definition is skipped and its
+inputs stay down):
+
+| Mode | Declared by | Realization |
+|---|---|---|
+| **BIND** | `filter` only | The deployment configured the backend service (e.g. in a mounted Configurator file); the filter selects it. The pre-existing behaviour. |
+| **MATERIALIZE** | coordinates, no `filter` | The `datasource` bundle creates the backend's factory configurations from the definition and removes them with it. |
+
+**Credential rule.** The model never carries a credential value. `user` and
+`password` must be exactly one placeholder — `$[env:NAME]` (environment
+variable) or `$[secret:NAME]` (file in the runtime's secrets directory) — that
+the Felix Config Admin interpolation plugin resolves in the consuming runtime.
+A literal or a placeholder with a default is refused. The rule follows from
+the Model Atlas config mode: what a registry serves has to be treated as
+readable by anyone who reaches it. Details and the host allow-list for
+materialization: the [datasource readme](../org.eclipse.fennec.data.atlas.datasource/readme.md).
 
 ### `DataService` — how data is exposed
 

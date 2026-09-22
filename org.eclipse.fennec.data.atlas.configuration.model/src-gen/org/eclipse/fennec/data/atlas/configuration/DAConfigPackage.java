@@ -17,6 +17,7 @@ package org.eclipse.fennec.data.atlas.configuration;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 
@@ -49,7 +50,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * @generated
  */
 @ProviderType
-@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:50ea50f6d7b7d1a436454b1577255a425eef86c2dfc3c703570eff077e2b6f0d", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
+@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:44502254494552bd12175742047e5eeec0350c5389cdf657d84758c906f4c77b", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
 public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	/**
 	 * The package name.
@@ -1921,14 +1922,14 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	int OGC_SENSOR_THINGS_DATA_SERVICE_OPERATION_COUNT = DATA_SERVICE_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.MongoRepositoryImpl <em>Mongo Repository</em>}' class.
+	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.MongoDataInputImpl <em>Mongo Data Input</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.MongoRepositoryImpl
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getMongoRepository()
+	 * @see org.eclipse.fennec.data.atlas.configuration.impl.MongoDataInputImpl
+	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getMongoDataInput()
 	 * @generated
 	 */
-	int MONGO_REPOSITORY = 19;
+	int MONGO_DATA_INPUT = 19;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1937,7 +1938,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MONGO_REPOSITORY__ID = DATA_INPUT__ID;
+	int MONGO_DATA_INPUT__ID = DATA_INPUT__ID;
 
 	/**
 	 * The feature id for the '<em><b>Supported EClasses</b></em>' reference list.
@@ -1946,16 +1947,25 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MONGO_REPOSITORY__SUPPORTED_ECLASSES = DATA_INPUT__SUPPORTED_ECLASSES;
+	int MONGO_DATA_INPUT__SUPPORTED_ECLASSES = DATA_INPUT__SUPPORTED_ECLASSES;
 
 	/**
-	 * The number of structural features of the '<em>Mongo Repository</em>' class.
+	 * The feature id for the '<em><b>Data Source</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int MONGO_REPOSITORY_FEATURE_COUNT = DATA_INPUT_FEATURE_COUNT + 0;
+	int MONGO_DATA_INPUT__DATA_SOURCE = DATA_INPUT_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of structural features of the '<em>Mongo Data Input</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MONGO_DATA_INPUT_FEATURE_COUNT = DATA_INPUT_FEATURE_COUNT + 1;
 
 	/**
 	 * The operation id for the '<em>Stream Data</em>' operation.
@@ -1964,16 +1974,16 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MONGO_REPOSITORY___STREAM_DATA = DATA_INPUT___STREAM_DATA;
+	int MONGO_DATA_INPUT___STREAM_DATA = DATA_INPUT___STREAM_DATA;
 
 	/**
-	 * The number of operations of the '<em>Mongo Repository</em>' class.
+	 * The number of operations of the '<em>Mongo Data Input</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int MONGO_REPOSITORY_OPERATION_COUNT = DATA_INPUT_OPERATION_COUNT + 0;
+	int MONGO_DATA_INPUT_OPERATION_COUNT = DATA_INPUT_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.FileDataInputImpl <em>File Data Input</em>}' class.
@@ -2778,23 +2788,14 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	int DCAT_PUBLICATION_OPERATION_COUNT = 0;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.JdbcDataSourceImpl <em>Jdbc Data Source</em>}' class.
+	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DataSourceImpl <em>Data Source</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.JdbcDataSourceImpl
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getJdbcDataSource()
+	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DataSourceImpl
+	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDataSource()
 	 * @generated
 	 */
-	int JDBC_DATA_SOURCE = 30;
-
-	/**
-	 * The feature id for the '<em><b>Filter</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int JDBC_DATA_SOURCE__FILTER = 0;
+	int DATA_SOURCE = 30;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2803,7 +2804,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int JDBC_DATA_SOURCE__ID = 1;
+	int DATA_SOURCE__ID = 0;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2812,7 +2813,325 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int JDBC_DATA_SOURCE__NAME = 2;
+	int DATA_SOURCE__NAME = 1;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATA_SOURCE__DESCRIPTION = 2;
+
+	/**
+	 * The feature id for the '<em><b>Filter</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATA_SOURCE__FILTER = 3;
+
+	/**
+	 * The number of structural features of the '<em>Data Source</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATA_SOURCE_FEATURE_COUNT = 4;
+
+	/**
+	 * The number of operations of the '<em>Data Source</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATA_SOURCE_OPERATION_COUNT = 0;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DatabaseDataSourceImpl <em>Database Data Source</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DatabaseDataSourceImpl
+	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDatabaseDataSource()
+	 * @generated
+	 */
+	int DATABASE_DATA_SOURCE = 31;
+
+	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATABASE_DATA_SOURCE__ID = DATA_SOURCE__ID;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATABASE_DATA_SOURCE__NAME = DATA_SOURCE__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATABASE_DATA_SOURCE__DESCRIPTION = DATA_SOURCE__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Filter</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATABASE_DATA_SOURCE__FILTER = DATA_SOURCE__FILTER;
+
+	/**
+	 * The feature id for the '<em><b>Host</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATABASE_DATA_SOURCE__HOST = DATA_SOURCE_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Port</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATABASE_DATA_SOURCE__PORT = DATA_SOURCE_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Database</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATABASE_DATA_SOURCE__DATABASE = DATA_SOURCE_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>User</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATABASE_DATA_SOURCE__USER = DATA_SOURCE_FEATURE_COUNT + 3;
+
+	/**
+	 * The feature id for the '<em><b>Password</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATABASE_DATA_SOURCE__PASSWORD = DATA_SOURCE_FEATURE_COUNT + 4;
+
+	/**
+	 * The feature id for the '<em><b>Properties</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATABASE_DATA_SOURCE__PROPERTIES = DATA_SOURCE_FEATURE_COUNT + 5;
+
+	/**
+	 * The number of structural features of the '<em>Database Data Source</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATABASE_DATA_SOURCE_FEATURE_COUNT = DATA_SOURCE_FEATURE_COUNT + 6;
+
+	/**
+	 * The number of operations of the '<em>Database Data Source</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATABASE_DATA_SOURCE_OPERATION_COUNT = DATA_SOURCE_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.ConnectionPropertyImpl <em>Connection Property</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.fennec.data.atlas.configuration.impl.ConnectionPropertyImpl
+	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getConnectionProperty()
+	 * @generated
+	 */
+	int CONNECTION_PROPERTY = 32;
+
+	/**
+	 * The feature id for the '<em><b>Key</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONNECTION_PROPERTY__KEY = 0;
+
+	/**
+	 * The feature id for the '<em><b>Value</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONNECTION_PROPERTY__VALUE = 1;
+
+	/**
+	 * The number of structural features of the '<em>Connection Property</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONNECTION_PROPERTY_FEATURE_COUNT = 2;
+
+	/**
+	 * The number of operations of the '<em>Connection Property</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONNECTION_PROPERTY_OPERATION_COUNT = 0;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.JdbcDataSourceImpl <em>Jdbc Data Source</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.fennec.data.atlas.configuration.impl.JdbcDataSourceImpl
+	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getJdbcDataSource()
+	 * @generated
+	 */
+	int JDBC_DATA_SOURCE = 33;
+
+	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JDBC_DATA_SOURCE__ID = DATABASE_DATA_SOURCE__ID;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JDBC_DATA_SOURCE__NAME = DATABASE_DATA_SOURCE__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JDBC_DATA_SOURCE__DESCRIPTION = DATABASE_DATA_SOURCE__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Filter</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JDBC_DATA_SOURCE__FILTER = DATABASE_DATA_SOURCE__FILTER;
+
+	/**
+	 * The feature id for the '<em><b>Host</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JDBC_DATA_SOURCE__HOST = DATABASE_DATA_SOURCE__HOST;
+
+	/**
+	 * The feature id for the '<em><b>Port</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JDBC_DATA_SOURCE__PORT = DATABASE_DATA_SOURCE__PORT;
+
+	/**
+	 * The feature id for the '<em><b>Database</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JDBC_DATA_SOURCE__DATABASE = DATABASE_DATA_SOURCE__DATABASE;
+
+	/**
+	 * The feature id for the '<em><b>User</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JDBC_DATA_SOURCE__USER = DATABASE_DATA_SOURCE__USER;
+
+	/**
+	 * The feature id for the '<em><b>Password</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JDBC_DATA_SOURCE__PASSWORD = DATABASE_DATA_SOURCE__PASSWORD;
+
+	/**
+	 * The feature id for the '<em><b>Properties</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JDBC_DATA_SOURCE__PROPERTIES = DATABASE_DATA_SOURCE__PROPERTIES;
+
+	/**
+	 * The feature id for the '<em><b>Driver</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JDBC_DATA_SOURCE__DRIVER = DATABASE_DATA_SOURCE_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Schema</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JDBC_DATA_SOURCE__SCHEMA = DATABASE_DATA_SOURCE_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of structural features of the '<em>Jdbc Data Source</em>' class.
@@ -2821,7 +3140,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int JDBC_DATA_SOURCE_FEATURE_COUNT = 3;
+	int JDBC_DATA_SOURCE_FEATURE_COUNT = DATABASE_DATA_SOURCE_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of operations of the '<em>Jdbc Data Source</em>' class.
@@ -2830,7 +3149,153 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int JDBC_DATA_SOURCE_OPERATION_COUNT = 0;
+	int JDBC_DATA_SOURCE_OPERATION_COUNT = DATABASE_DATA_SOURCE_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.MongoDataSourceImpl <em>Mongo Data Source</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.fennec.data.atlas.configuration.impl.MongoDataSourceImpl
+	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getMongoDataSource()
+	 * @generated
+	 */
+	int MONGO_DATA_SOURCE = 34;
+
+	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MONGO_DATA_SOURCE__ID = DATABASE_DATA_SOURCE__ID;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MONGO_DATA_SOURCE__NAME = DATABASE_DATA_SOURCE__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MONGO_DATA_SOURCE__DESCRIPTION = DATABASE_DATA_SOURCE__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Filter</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MONGO_DATA_SOURCE__FILTER = DATABASE_DATA_SOURCE__FILTER;
+
+	/**
+	 * The feature id for the '<em><b>Host</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MONGO_DATA_SOURCE__HOST = DATABASE_DATA_SOURCE__HOST;
+
+	/**
+	 * The feature id for the '<em><b>Port</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MONGO_DATA_SOURCE__PORT = DATABASE_DATA_SOURCE__PORT;
+
+	/**
+	 * The feature id for the '<em><b>Database</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MONGO_DATA_SOURCE__DATABASE = DATABASE_DATA_SOURCE__DATABASE;
+
+	/**
+	 * The feature id for the '<em><b>User</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MONGO_DATA_SOURCE__USER = DATABASE_DATA_SOURCE__USER;
+
+	/**
+	 * The feature id for the '<em><b>Password</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MONGO_DATA_SOURCE__PASSWORD = DATABASE_DATA_SOURCE__PASSWORD;
+
+	/**
+	 * The feature id for the '<em><b>Properties</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MONGO_DATA_SOURCE__PROPERTIES = DATABASE_DATA_SOURCE__PROPERTIES;
+
+	/**
+	 * The feature id for the '<em><b>Auth Source</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MONGO_DATA_SOURCE__AUTH_SOURCE = DATABASE_DATA_SOURCE_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Flavor</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MONGO_DATA_SOURCE__FLAVOR = DATABASE_DATA_SOURCE_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of structural features of the '<em>Mongo Data Source</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MONGO_DATA_SOURCE_FEATURE_COUNT = DATABASE_DATA_SOURCE_FEATURE_COUNT + 2;
+
+	/**
+	 * The number of operations of the '<em>Mongo Data Source</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MONGO_DATA_SOURCE_OPERATION_COUNT = DATABASE_DATA_SOURCE_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.JdbcDriver <em>Jdbc Driver</em>}' enum.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.fennec.data.atlas.configuration.JdbcDriver
+	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getJdbcDriver()
+	 * @generated
+	 */
+	int JDBC_DRIVER = 35;
 
 
 	/**
@@ -3627,14 +4092,25 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	EClass getOgcSensorThingsDataService();
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.MongoRepository <em>Mongo Repository</em>}'.
+	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.MongoDataInput <em>Mongo Data Input</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Mongo Repository</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.MongoRepository
+	 * @return the meta object for class '<em>Mongo Data Input</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.MongoDataInput
 	 * @generated
 	 */
-	EClass getMongoRepository();
+	EClass getMongoDataInput();
+
+	/**
+	 * Returns the meta object for the reference '{@link org.eclipse.fennec.data.atlas.configuration.MongoDataInput#getDataSource <em>Data Source</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Data Source</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.MongoDataInput#getDataSource()
+	 * @see #getMongoDataInput()
+	 * @generated
+	 */
+	EReference getMongoDataInput_DataSource();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.FileDataInput <em>File Data Input</em>}'.
@@ -4078,6 +4554,168 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	EAttribute getDcatPublication_LicenseUri();
 
 	/**
+	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.DataSource <em>Data Source</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Data Source</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DataSource
+	 * @generated
+	 */
+	EClass getDataSource();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DataSource#getId <em>Id</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Id</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DataSource#getId()
+	 * @see #getDataSource()
+	 * @generated
+	 */
+	EAttribute getDataSource_Id();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DataSource#getName <em>Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Name</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DataSource#getName()
+	 * @see #getDataSource()
+	 * @generated
+	 */
+	EAttribute getDataSource_Name();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DataSource#getDescription <em>Description</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Description</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DataSource#getDescription()
+	 * @see #getDataSource()
+	 * @generated
+	 */
+	EAttribute getDataSource_Description();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DataSource#getFilter <em>Filter</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Filter</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DataSource#getFilter()
+	 * @see #getDataSource()
+	 * @generated
+	 */
+	EAttribute getDataSource_Filter();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource <em>Database Data Source</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Database Data Source</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource
+	 * @generated
+	 */
+	EClass getDatabaseDataSource();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource#getHost <em>Host</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Host</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource#getHost()
+	 * @see #getDatabaseDataSource()
+	 * @generated
+	 */
+	EAttribute getDatabaseDataSource_Host();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource#getPort <em>Port</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Port</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource#getPort()
+	 * @see #getDatabaseDataSource()
+	 * @generated
+	 */
+	EAttribute getDatabaseDataSource_Port();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource#getDatabase <em>Database</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Database</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource#getDatabase()
+	 * @see #getDatabaseDataSource()
+	 * @generated
+	 */
+	EAttribute getDatabaseDataSource_Database();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource#getUser <em>User</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>User</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource#getUser()
+	 * @see #getDatabaseDataSource()
+	 * @generated
+	 */
+	EAttribute getDatabaseDataSource_User();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource#getPassword <em>Password</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Password</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource#getPassword()
+	 * @see #getDatabaseDataSource()
+	 * @generated
+	 */
+	EAttribute getDatabaseDataSource_Password();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource#getProperties <em>Properties</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Properties</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource#getProperties()
+	 * @see #getDatabaseDataSource()
+	 * @generated
+	 */
+	EReference getDatabaseDataSource_Properties();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.ConnectionProperty <em>Connection Property</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Connection Property</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.ConnectionProperty
+	 * @generated
+	 */
+	EClass getConnectionProperty();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.ConnectionProperty#getKey <em>Key</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Key</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.ConnectionProperty#getKey()
+	 * @see #getConnectionProperty()
+	 * @generated
+	 */
+	EAttribute getConnectionProperty_Key();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.ConnectionProperty#getValue <em>Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Value</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.ConnectionProperty#getValue()
+	 * @see #getConnectionProperty()
+	 * @generated
+	 */
+	EAttribute getConnectionProperty_Value();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.JdbcDataSource <em>Jdbc Data Source</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4088,37 +4726,68 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	EClass getJdbcDataSource();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.JdbcDataSource#getFilter <em>Filter</em>}'.
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.JdbcDataSource#getDriver <em>Driver</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Filter</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.JdbcDataSource#getFilter()
+	 * @return the meta object for the attribute '<em>Driver</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.JdbcDataSource#getDriver()
 	 * @see #getJdbcDataSource()
 	 * @generated
 	 */
-	EAttribute getJdbcDataSource_Filter();
+	EAttribute getJdbcDataSource_Driver();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.JdbcDataSource#getId <em>Id</em>}'.
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.JdbcDataSource#getSchema <em>Schema</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Id</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.JdbcDataSource#getId()
+	 * @return the meta object for the attribute '<em>Schema</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.JdbcDataSource#getSchema()
 	 * @see #getJdbcDataSource()
 	 * @generated
 	 */
-	EAttribute getJdbcDataSource_Id();
+	EAttribute getJdbcDataSource_Schema();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.JdbcDataSource#getName <em>Name</em>}'.
+	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.MongoDataSource <em>Mongo Data Source</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.JdbcDataSource#getName()
-	 * @see #getJdbcDataSource()
+	 * @return the meta object for class '<em>Mongo Data Source</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.MongoDataSource
 	 * @generated
 	 */
-	EAttribute getJdbcDataSource_Name();
+	EClass getMongoDataSource();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.MongoDataSource#getAuthSource <em>Auth Source</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Auth Source</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.MongoDataSource#getAuthSource()
+	 * @see #getMongoDataSource()
+	 * @generated
+	 */
+	EAttribute getMongoDataSource_AuthSource();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.MongoDataSource#getFlavor <em>Flavor</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Flavor</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.MongoDataSource#getFlavor()
+	 * @see #getMongoDataSource()
+	 * @generated
+	 */
+	EAttribute getMongoDataSource_Flavor();
+
+	/**
+	 * Returns the meta object for enum '{@link org.eclipse.fennec.data.atlas.configuration.JdbcDriver <em>Jdbc Driver</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for enum '<em>Jdbc Driver</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.JdbcDriver
+	 * @generated
+	 */
+	EEnum getJdbcDriver();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -4774,14 +5443,22 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		EClass OGC_SENSOR_THINGS_DATA_SERVICE = eINSTANCE.getOgcSensorThingsDataService();
 
 		/**
-		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.MongoRepositoryImpl <em>Mongo Repository</em>}' class.
+		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.MongoDataInputImpl <em>Mongo Data Input</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see org.eclipse.fennec.data.atlas.configuration.impl.MongoRepositoryImpl
-		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getMongoRepository()
+		 * @see org.eclipse.fennec.data.atlas.configuration.impl.MongoDataInputImpl
+		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getMongoDataInput()
 		 * @generated
 		 */
-		EClass MONGO_REPOSITORY = eINSTANCE.getMongoRepository();
+		EClass MONGO_DATA_INPUT = eINSTANCE.getMongoDataInput();
+
+		/**
+		 * The meta object literal for the '<em><b>Data Source</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference MONGO_DATA_INPUT__DATA_SOURCE = eINSTANCE.getMongoDataInput_DataSource();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.FileDataInputImpl <em>File Data Input</em>}' class.
@@ -5132,6 +5809,132 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		EAttribute DCAT_PUBLICATION__LICENSE_URI = eINSTANCE.getDcatPublication_LicenseUri();
 
 		/**
+		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DataSourceImpl <em>Data Source</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DataSourceImpl
+		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDataSource()
+		 * @generated
+		 */
+		EClass DATA_SOURCE = eINSTANCE.getDataSource();
+
+		/**
+		 * The meta object literal for the '<em><b>Id</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DATA_SOURCE__ID = eINSTANCE.getDataSource_Id();
+
+		/**
+		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DATA_SOURCE__NAME = eINSTANCE.getDataSource_Name();
+
+		/**
+		 * The meta object literal for the '<em><b>Description</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DATA_SOURCE__DESCRIPTION = eINSTANCE.getDataSource_Description();
+
+		/**
+		 * The meta object literal for the '<em><b>Filter</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DATA_SOURCE__FILTER = eINSTANCE.getDataSource_Filter();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DatabaseDataSourceImpl <em>Database Data Source</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DatabaseDataSourceImpl
+		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDatabaseDataSource()
+		 * @generated
+		 */
+		EClass DATABASE_DATA_SOURCE = eINSTANCE.getDatabaseDataSource();
+
+		/**
+		 * The meta object literal for the '<em><b>Host</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DATABASE_DATA_SOURCE__HOST = eINSTANCE.getDatabaseDataSource_Host();
+
+		/**
+		 * The meta object literal for the '<em><b>Port</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DATABASE_DATA_SOURCE__PORT = eINSTANCE.getDatabaseDataSource_Port();
+
+		/**
+		 * The meta object literal for the '<em><b>Database</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DATABASE_DATA_SOURCE__DATABASE = eINSTANCE.getDatabaseDataSource_Database();
+
+		/**
+		 * The meta object literal for the '<em><b>User</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DATABASE_DATA_SOURCE__USER = eINSTANCE.getDatabaseDataSource_User();
+
+		/**
+		 * The meta object literal for the '<em><b>Password</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DATABASE_DATA_SOURCE__PASSWORD = eINSTANCE.getDatabaseDataSource_Password();
+
+		/**
+		 * The meta object literal for the '<em><b>Properties</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference DATABASE_DATA_SOURCE__PROPERTIES = eINSTANCE.getDatabaseDataSource_Properties();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.ConnectionPropertyImpl <em>Connection Property</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.fennec.data.atlas.configuration.impl.ConnectionPropertyImpl
+		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getConnectionProperty()
+		 * @generated
+		 */
+		EClass CONNECTION_PROPERTY = eINSTANCE.getConnectionProperty();
+
+		/**
+		 * The meta object literal for the '<em><b>Key</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CONNECTION_PROPERTY__KEY = eINSTANCE.getConnectionProperty_Key();
+
+		/**
+		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CONNECTION_PROPERTY__VALUE = eINSTANCE.getConnectionProperty_Value();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.JdbcDataSourceImpl <em>Jdbc Data Source</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -5142,28 +5945,56 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		EClass JDBC_DATA_SOURCE = eINSTANCE.getJdbcDataSource();
 
 		/**
-		 * The meta object literal for the '<em><b>Filter</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Driver</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute JDBC_DATA_SOURCE__FILTER = eINSTANCE.getJdbcDataSource_Filter();
+		EAttribute JDBC_DATA_SOURCE__DRIVER = eINSTANCE.getJdbcDataSource_Driver();
 
 		/**
-		 * The meta object literal for the '<em><b>Id</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Schema</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute JDBC_DATA_SOURCE__ID = eINSTANCE.getJdbcDataSource_Id();
+		EAttribute JDBC_DATA_SOURCE__SCHEMA = eINSTANCE.getJdbcDataSource_Schema();
 
 		/**
-		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.MongoDataSourceImpl <em>Mongo Data Source</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.fennec.data.atlas.configuration.impl.MongoDataSourceImpl
+		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getMongoDataSource()
+		 * @generated
+		 */
+		EClass MONGO_DATA_SOURCE = eINSTANCE.getMongoDataSource();
+
+		/**
+		 * The meta object literal for the '<em><b>Auth Source</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute JDBC_DATA_SOURCE__NAME = eINSTANCE.getJdbcDataSource_Name();
+		EAttribute MONGO_DATA_SOURCE__AUTH_SOURCE = eINSTANCE.getMongoDataSource_AuthSource();
+
+		/**
+		 * The meta object literal for the '<em><b>Flavor</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute MONGO_DATA_SOURCE__FLAVOR = eINSTANCE.getMongoDataSource_Flavor();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.JdbcDriver <em>Jdbc Driver</em>}' enum.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.fennec.data.atlas.configuration.JdbcDriver
+		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getJdbcDriver()
+		 * @generated
+		 */
+		EEnum JDBC_DRIVER = eINSTANCE.getJdbcDriver();
 
 	}
 

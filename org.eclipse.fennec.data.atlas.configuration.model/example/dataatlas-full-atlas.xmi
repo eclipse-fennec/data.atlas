@@ -21,7 +21,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
     name="example-full" description="Full example: PostgreSQL persons, raw and QVT-O-transformed, as CSV and JSON, published to a DCAT portal - configuration delivered by a Model Atlas.">
-  <dataSources id="persons-db" name="Persons DB" filter="(dataSourceName=personsDs)"/>
+  <dataSources xsi:type="configuration:JdbcDataSource" id="persons-db" name="Persons DB" filter="(dataSourceName=personsDs)"/>
   <dataInputs xsi:type="configuration:JPADataInput" id="persons-jpa" dataSource="persons-db">
     <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person"/>
   </dataInputs>

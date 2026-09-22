@@ -14,8 +14,6 @@
  */
 package org.eclipse.fennec.data.atlas.configuration;
 
-import org.eclipse.emf.ecore.EObject;
-
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -24,16 +22,17 @@ import org.osgi.annotation.versioning.ProviderType;
  * <!-- end-user-doc -->
  *
  * <!-- begin-model-doc -->
- * A reusable JDBC data source definition. At runtime it is bound to a pooled OSGi DataSource service that is selected via the OSGi target filter. Meant to live in a shared data source registry so it can be reused across DataInputs and tenants.
+ * A relational data source realized as a javax.sql.DataSource service.
+ * BIND: filter selects the DataSource service the deployment configured.
+ * MATERIALIZE: the Data Atlas creates a daanse.jdbc.datasource.<driver>.DataSource factory configuration from host/port/database/schema/user/password/properties (no connection pool - pooling is EclipseLink's), registered with the service property data.atlas.datasource.id=<id>.
  * <!-- end-model-doc -->
  *
  * <p>
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.fennec.data.atlas.configuration.JdbcDataSource#getFilter <em>Filter</em>}</li>
- *   <li>{@link org.eclipse.fennec.data.atlas.configuration.JdbcDataSource#getId <em>Id</em>}</li>
- *   <li>{@link org.eclipse.fennec.data.atlas.configuration.JdbcDataSource#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.JdbcDataSource#getDriver <em>Driver</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.JdbcDataSource#getSchema <em>Schema</em>}</li>
  * </ul>
  *
  * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getJdbcDataSource()
@@ -41,80 +40,58 @@ import org.osgi.annotation.versioning.ProviderType;
  * @generated
  */
 @ProviderType
-public interface JdbcDataSource extends EObject {
+public interface JdbcDataSource extends DatabaseDataSource {
 	/**
-	 * Returns the value of the '<em><b>Filter</b></em>' attribute.
+	 * Returns the value of the '<em><b>Driver</b></em>' attribute.
+	 * The literals are from the enumeration {@link org.eclipse.fennec.data.atlas.configuration.JdbcDriver}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * OSGi target filter (LDAP-style) used to select the actual DataSource service to bind to, e.g. (datasource.name=Derby_MDO).
+	 * The database kind the materialized DataSource connects to; selects the daanse provider (MATERIALIZE only, default PostgreSQL). The runtime has to carry the provider and driver bundles of that kind.
 	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Filter</em>' attribute.
-	 * @see #setFilter(String)
-	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getJdbcDataSource_Filter()
+	 * @return the value of the '<em>Driver</em>' attribute.
+	 * @see org.eclipse.fennec.data.atlas.configuration.JdbcDriver
+	 * @see #setDriver(JdbcDriver)
+	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getJdbcDataSource_Driver()
 	 * @model
 	 * @generated
 	 */
-	String getFilter();
+	JdbcDriver getDriver();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.fennec.data.atlas.configuration.JdbcDataSource#getFilter <em>Filter</em>}' attribute.
+	 * Sets the value of the '{@link org.eclipse.fennec.data.atlas.configuration.JdbcDataSource#getDriver <em>Driver</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Filter</em>' attribute.
-	 * @see #getFilter()
+	 * @param value the new value of the '<em>Driver</em>' attribute.
+	 * @see org.eclipse.fennec.data.atlas.configuration.JdbcDriver
+	 * @see #getDriver()
 	 * @generated
 	 */
-	void setFilter(String value);
+	void setDriver(JdbcDriver value);
 
 	/**
-	 * Returns the value of the '<em><b>Id</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * Unique identifier of this data source definition.
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Id</em>' attribute.
-	 * @see #setId(String)
-	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getJdbcDataSource_Id()
-	 * @model id="true" required="true"
-	 * @generated
-	 */
-	String getId();
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.fennec.data.atlas.configuration.JdbcDataSource#getId <em>Id</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Id</em>' attribute.
-	 * @see #getId()
-	 * @generated
-	 */
-	void setId(String value);
-
-	/**
-	 * Returns the value of the '<em><b>Name</b></em>' attribute.
+	 * Returns the value of the '<em><b>Schema</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * Derives from the model annotation by default
+	 * Optional default schema of the connection (PostgreSQL currentSchema).
 	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Name</em>' attribute.
-	 * @see #setName(String)
-	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getJdbcDataSource_Name()
-	 * @model required="true"
+	 * @return the value of the '<em>Schema</em>' attribute.
+	 * @see #setSchema(String)
+	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getJdbcDataSource_Schema()
+	 * @model
 	 * @generated
 	 */
-	String getName();
+	String getSchema();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.fennec.data.atlas.configuration.JdbcDataSource#getName <em>Name</em>}' attribute.
+	 * Sets the value of the '{@link org.eclipse.fennec.data.atlas.configuration.JdbcDataSource#getSchema <em>Schema</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Name</em>' attribute.
-	 * @see #getName()
+	 * @param value the new value of the '<em>Schema</em>' attribute.
+	 * @see #getSchema()
 	 * @generated
 	 */
-	void setName(String value);
+	void setSchema(String value);
 
 } // JdbcDataSource

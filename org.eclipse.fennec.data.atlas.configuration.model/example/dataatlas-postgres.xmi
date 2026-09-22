@@ -18,7 +18,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
     name="example-postgres" description="Example Data Atlas instance serving a PostgreSQL table as CSV.">
-  <dataSources id="persons-db" name="Persons DB" filter="(dataSourceName=personsDs)"/>
+  <dataSources xsi:type="configuration:JdbcDataSource" id="persons-db" name="Persons DB" filter="(dataSourceName=personsDs)"/>
   <dataInputs xsi:type="configuration:JPADataInput" id="persons-jpa" dataSource="persons-db">
     <supportedEClasses href="model/person.ecore#//Person"/>
   </dataInputs>

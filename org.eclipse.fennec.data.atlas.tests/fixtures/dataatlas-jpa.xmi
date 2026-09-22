@@ -5,7 +5,7 @@
     xmlns:expression="https://eclipse.org/fennec/expression/1.0.0"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
     name="jpa" description="JPA test fixture: persons served from a relational database, plus a query-defined DataSet with a bound parameter.">
-  <dataSources id="persons-db" name="Persons DB" filter="(dataatlas.test.ds=persons)"/>
+  <dataSources xsi:type="configuration:JdbcDataSource" id="persons-db" name="Persons DB" filter="(dataatlas.test.ds=persons)"/>
   <dataInputs xsi:type="configuration:JPADataInput" id="persons-jpa" dataSource="persons-db">
     <supportedEClasses href="model/person.ecore#//Person"/>
   </dataInputs>

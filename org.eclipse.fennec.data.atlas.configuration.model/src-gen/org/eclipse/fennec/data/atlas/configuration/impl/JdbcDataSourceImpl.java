@@ -19,10 +19,10 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.fennec.data.atlas.configuration.DAConfigPackage;
 import org.eclipse.fennec.data.atlas.configuration.JdbcDataSource;
+import org.eclipse.fennec.data.atlas.configuration.JdbcDriver;
 
 /**
  * <!-- begin-user-doc -->
@@ -32,73 +32,52 @@ import org.eclipse.fennec.data.atlas.configuration.JdbcDataSource;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.JdbcDataSourceImpl#getFilter <em>Filter</em>}</li>
- *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.JdbcDataSourceImpl#getId <em>Id</em>}</li>
- *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.JdbcDataSourceImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.JdbcDataSourceImpl#getDriver <em>Driver</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.JdbcDataSourceImpl#getSchema <em>Schema</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class JdbcDataSourceImpl extends MinimalEObjectImpl.Container implements JdbcDataSource {
+public class JdbcDataSourceImpl extends DatabaseDataSourceImpl implements JdbcDataSource {
 	/**
-	 * The default value of the '{@link #getFilter() <em>Filter</em>}' attribute.
+	 * The default value of the '{@link #getDriver() <em>Driver</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getFilter()
+	 * @see #getDriver()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String FILTER_EDEFAULT = null;
+	protected static final JdbcDriver DRIVER_EDEFAULT = JdbcDriver.POSTGRESQL;
 
 	/**
-	 * The cached value of the '{@link #getFilter() <em>Filter</em>}' attribute.
+	 * The cached value of the '{@link #getDriver() <em>Driver</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getFilter()
+	 * @see #getDriver()
 	 * @generated
 	 * @ordered
 	 */
-	protected String filter = FILTER_EDEFAULT;
+	protected JdbcDriver driver = DRIVER_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getId() <em>Id</em>}' attribute.
+	 * The default value of the '{@link #getSchema() <em>Schema</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getId()
+	 * @see #getSchema()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String ID_EDEFAULT = null;
+	protected static final String SCHEMA_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getId() <em>Id</em>}' attribute.
+	 * The cached value of the '{@link #getSchema() <em>Schema</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getId()
+	 * @see #getSchema()
 	 * @generated
 	 * @ordered
 	 */
-	protected String id = ID_EDEFAULT;
-
-	/**
-	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getName()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String NAME_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getName()
-	 * @generated
-	 * @ordered
-	 */
-	protected String name = NAME_EDEFAULT;
+	protected String schema = SCHEMA_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -125,8 +104,8 @@ public class JdbcDataSourceImpl extends MinimalEObjectImpl.Container implements 
 	 * @generated
 	 */
 	@Override
-	public String getFilter() {
-		return filter;
+	public JdbcDriver getDriver() {
+		return driver;
 	}
 
 	/**
@@ -135,11 +114,11 @@ public class JdbcDataSourceImpl extends MinimalEObjectImpl.Container implements 
 	 * @generated
 	 */
 	@Override
-	public void setFilter(String newFilter) {
-		String oldFilter = filter;
-		filter = newFilter;
+	public void setDriver(JdbcDriver newDriver) {
+		JdbcDriver oldDriver = driver;
+		driver = newDriver == null ? DRIVER_EDEFAULT : newDriver;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, DAConfigPackage.JDBC_DATA_SOURCE__FILTER, oldFilter, filter));
+			eNotify(new ENotificationImpl(this, Notification.SET, DAConfigPackage.JDBC_DATA_SOURCE__DRIVER, oldDriver, driver));
 	}
 
 	/**
@@ -148,8 +127,8 @@ public class JdbcDataSourceImpl extends MinimalEObjectImpl.Container implements 
 	 * @generated
 	 */
 	@Override
-	public String getId() {
-		return id;
+	public String getSchema() {
+		return schema;
 	}
 
 	/**
@@ -158,34 +137,11 @@ public class JdbcDataSourceImpl extends MinimalEObjectImpl.Container implements 
 	 * @generated
 	 */
 	@Override
-	public void setId(String newId) {
-		String oldId = id;
-		id = newId;
+	public void setSchema(String newSchema) {
+		String oldSchema = schema;
+		schema = newSchema;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, DAConfigPackage.JDBC_DATA_SOURCE__ID, oldId, id));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setName(String newName) {
-		String oldName = name;
-		name = newName;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, DAConfigPackage.JDBC_DATA_SOURCE__NAME, oldName, name));
+			eNotify(new ENotificationImpl(this, Notification.SET, DAConfigPackage.JDBC_DATA_SOURCE__SCHEMA, oldSchema, schema));
 	}
 
 	/**
@@ -196,12 +152,10 @@ public class JdbcDataSourceImpl extends MinimalEObjectImpl.Container implements 
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case DAConfigPackage.JDBC_DATA_SOURCE__FILTER:
-				return getFilter();
-			case DAConfigPackage.JDBC_DATA_SOURCE__ID:
-				return getId();
-			case DAConfigPackage.JDBC_DATA_SOURCE__NAME:
-				return getName();
+			case DAConfigPackage.JDBC_DATA_SOURCE__DRIVER:
+				return getDriver();
+			case DAConfigPackage.JDBC_DATA_SOURCE__SCHEMA:
+				return getSchema();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -214,14 +168,11 @@ public class JdbcDataSourceImpl extends MinimalEObjectImpl.Container implements 
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case DAConfigPackage.JDBC_DATA_SOURCE__FILTER:
-				setFilter((String)newValue);
+			case DAConfigPackage.JDBC_DATA_SOURCE__DRIVER:
+				setDriver((JdbcDriver)newValue);
 				return;
-			case DAConfigPackage.JDBC_DATA_SOURCE__ID:
-				setId((String)newValue);
-				return;
-			case DAConfigPackage.JDBC_DATA_SOURCE__NAME:
-				setName((String)newValue);
+			case DAConfigPackage.JDBC_DATA_SOURCE__SCHEMA:
+				setSchema((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -235,14 +186,11 @@ public class JdbcDataSourceImpl extends MinimalEObjectImpl.Container implements 
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case DAConfigPackage.JDBC_DATA_SOURCE__FILTER:
-				setFilter(FILTER_EDEFAULT);
+			case DAConfigPackage.JDBC_DATA_SOURCE__DRIVER:
+				setDriver(DRIVER_EDEFAULT);
 				return;
-			case DAConfigPackage.JDBC_DATA_SOURCE__ID:
-				setId(ID_EDEFAULT);
-				return;
-			case DAConfigPackage.JDBC_DATA_SOURCE__NAME:
-				setName(NAME_EDEFAULT);
+			case DAConfigPackage.JDBC_DATA_SOURCE__SCHEMA:
+				setSchema(SCHEMA_EDEFAULT);
 				return;
 		}
 		super.eUnset(featureID);
@@ -256,12 +204,10 @@ public class JdbcDataSourceImpl extends MinimalEObjectImpl.Container implements 
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case DAConfigPackage.JDBC_DATA_SOURCE__FILTER:
-				return FILTER_EDEFAULT == null ? filter != null : !FILTER_EDEFAULT.equals(filter);
-			case DAConfigPackage.JDBC_DATA_SOURCE__ID:
-				return ID_EDEFAULT == null ? id != null : !ID_EDEFAULT.equals(id);
-			case DAConfigPackage.JDBC_DATA_SOURCE__NAME:
-				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+			case DAConfigPackage.JDBC_DATA_SOURCE__DRIVER:
+				return driver != DRIVER_EDEFAULT;
+			case DAConfigPackage.JDBC_DATA_SOURCE__SCHEMA:
+				return SCHEMA_EDEFAULT == null ? schema != null : !SCHEMA_EDEFAULT.equals(schema);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -276,12 +222,10 @@ public class JdbcDataSourceImpl extends MinimalEObjectImpl.Container implements 
 		if (eIsProxy()) return super.toString();
 
 		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (filter: ");
-		result.append(filter);
-		result.append(", id: ");
-		result.append(id);
-		result.append(", name: ");
-		result.append(name);
+		result.append(" (driver: ");
+		result.append(driver);
+		result.append(", schema: ");
+		result.append(schema);
 		result.append(')');
 		return result.toString();
 	}

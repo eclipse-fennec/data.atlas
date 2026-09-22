@@ -39,7 +39,7 @@ config service disappears.
 flowchart TB
     subgraph CONFIG["Configuration model (EMF/XMI) — the single source of truth"]
         ROOT["DataAtlasConfiguration (root)"]
-        DS["DataSources<br/>(JdbcDataSource, ...)"]
+        DS["DataSources<br/>(JdbcDataSource, MongoDataSource)"]
         IN["DataInputs<br/>(JPA, Mongo, File, Bridge)"]
         SET["DataSets"]
         SVC["DataServices<br/>(REST/OData/OGC/QGis/XMLA/GraphQL)"]
@@ -85,8 +85,20 @@ Implemented today (roadmap Milestones 0–8):
   file-backed implementation per `FileDataInput`; `input.jpa` translates a
   `JPADataInput` into the fennec persistence factory configurations (EORM
   mapping derived from `supportedEClasses`, entity-mapping persistence unit
-  bound to the `JdbcDataSource` filter, read-only `fennec.repository.jpa`),
-  whose repository service *is* the input's runtime representation.
+  bound to the `JdbcDataSource` — by its filter, or by the marker of the
+  service the datasource configurator materialized — read-only
+  `fennec.repository.jpa`), whose repository service *is* the input's runtime
+  representation; `input.mongo` does the same for a `MongoDataInput` with one
+  read-only `fennec.repository.mongo` over the `MongoDataSource`.
+- **Data sources are modeled** (`datasource`): a `DataSource` definition is
+  either *bound* (filter → a backend service the deployment configured, the
+  original mode) or *materialized* (connection coordinates → the backend's
+  Config Admin factory configurations: daanse `DataSource` for JDBC, fennec
+  Mongo client + database for MongoDB), validated as exactly-one-of at
+  registration. Credentials are never values: `user`/`password` are
+  `$[env:NAME]`/`$[secret:NAME]` placeholders the Felix interpolation plugin
+  resolves in the consuming runtime; a literal is refused. A per-runtime host
+  allow-list bounds what a network-delivered configuration may connect to.
 - **Serving slice**: `bootstrap` (loads the configuration XMI, registers
   referenced EPackages and the configuration objects as OSGi services), `api`
   (property constants), `rest` (one Jakarta-RS whiteboard application per
@@ -197,11 +209,10 @@ Implemented today (roadmap Milestones 0–8):
   docker-gated for the compose setups and for the PostgreSQL + CSV example).
 
 Not yet implemented: the other DataService kinds, importers, query
-transformations (a bridge with a configured `queryTrafo` stays down), and a
-configurator for `MongoRepository` — the runtime carries the fennec Mongo
-backend (`persistence.mongo`, `repository.mongo`, BSON codec, driver) so a
-Mongo repository can be wired by hand through Config Admin, but the input type
-has no features to derive it from yet (see the [roadmap](roadmap.md)).
+transformations (a bridge with a configured `queryTrafo` stays down), a
+platform-wide data source catalog (a Model Atlas registry of definitions
+shared between components) and the `Deployment`/`Tenant` layer that would
+pick a definition per tenant (see the [roadmap](roadmap.md)).
 
 ## Configuration lifecycle
 

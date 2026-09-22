@@ -38,6 +38,8 @@ header:
     - '**/*.md'
     - '**/*.MD'
     - '**/.keep'
+    - '**/.gitkeep'
+    - '**/secrets/**'
     - '**/*.properties'
     - '**/*.maven'
     - '**/*.mvn'

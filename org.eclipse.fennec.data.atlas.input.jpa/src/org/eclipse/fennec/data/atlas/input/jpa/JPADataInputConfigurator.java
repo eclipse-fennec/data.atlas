@@ -98,17 +98,18 @@ public class JPADataInputConfigurator {
 	void addJPADataInput(JPADataInput input, Map<String, Object> serviceProps) {
 		String id = input.getId();
 		JdbcDataSource dataSource = input.getDataSource();
-		if (id == null || dataSource == null || dataSource.getFilter() == null) {
-			LOG.log(Level.WARNING, () -> "Ignoring JPADataInput without id or JdbcDataSource filter: " + input);
+		if (id == null || dataSource == null) {
+			LOG.log(Level.WARNING, () -> "Ignoring JPADataInput without id or JdbcDataSource: " + input);
 			return;
 		}
+		String dataSourceFilter = dataSourceTarget(dataSource);
 		try {
-			Realized result = realize(input, id, dataSource.getFilter());
+			Realized result = realize(input, id, dataSourceFilter);
 			synchronized (realized) {
 				realized.put(input, result);
 			}
 			LOG.log(Level.INFO, () -> "Realized JPADataInput '" + id + "' as persistence configurations (dataSource "
-					+ dataSource.getFilter() + ")");
+					+ dataSourceFilter + ")");
 		} catch (IOException | RuntimeException e) {
 			LOG.log(Level.ERROR, () -> "Unable to realize JPADataInput '" + id + "': " + e.getMessage(), e);
 		}
@@ -123,6 +124,21 @@ public class JPADataInputConfigurator {
 			tearDown(result);
 			LOG.log(Level.INFO, () -> "Removed persistence configurations of JPADataInput '" + input.getId() + "'");
 		}
+	}
+
+	/**
+	 * The target filter of the {@code javax.sql.DataSource} service: in BIND mode
+	 * the definition's own {@code filter}, verbatim; in MATERIALIZE mode (no
+	 * filter) the service the datasource configurator created from the
+	 * definition, which carries the definition's id as
+	 * {@code data.atlas.datasource.id}.
+	 */
+	static String dataSourceTarget(JdbcDataSource dataSource) {
+		String filter = dataSource.getFilter();
+		if (filter != null && !filter.isBlank()) {
+			return filter.trim();
+		}
+		return "(" + DataAtlasConstants.DATASOURCE_ID + "=" + dataSource.getId() + ")";
 	}
 
 	private Realized realize(JPADataInput input, String id, String dataSourceFilter) throws IOException {

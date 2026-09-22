@@ -28,7 +28,7 @@ import org.osgi.annotation.versioning.ProviderType;
  *
  * <!-- begin-model-doc -->
  * Base type for any data source that can stream EObjects into the Data-Atlas.
- * A DataInput can be backed by a database (JPADataInput), MongoDB (MongoRepository), EMF files (FileDataInput) or another input wrapped and transformed by a BridgeRepository.
+ * A DataInput can be backed by a database (JPADataInput), MongoDB (MongoDataInput), EMF files (FileDataInput) or another input wrapped and transformed by a BridgeRepository.
  * 
  * Intended as an abstract base - it is not meant to be instantiated directly.
  * <!-- end-model-doc -->
