@@ -58,7 +58,10 @@ an input can provide. Concrete types:
   registry and a JPA `EntityMappings` (the `eorm` model of
   `org.eclipse.fennec.persistence.orm`) describing how model types map to the
   relational schema.
-- `MongoRepository` — MongoDB-backed source (placeholder, no features yet).
+- `MongoRepository` — MongoDB-backed source (placeholder, no features yet; the
+  runtime ships the fennec Mongo backend, so the repository can be wired by hand
+  through Config Admin — see the user guide — but nothing derives it from the
+  model until the type gets its database selector).
 - `BridgeRepository` — wraps another `DataInput` and applies a
   `DataTransformation` to loaded objects and a `QueryTransformation` to
   incoming queries; cascadable.
