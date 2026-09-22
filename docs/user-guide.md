@@ -631,14 +631,21 @@ Mongo persistence backend (shipped in the image). It references a
 </dataInputs>
 ```
 
-Everything downstream is identical to the other inputs. Two things to know:
+Everything downstream is identical to the other inputs. Three things to know:
 
+- **The collection is named after the EClass** — `Person` for
+  `person.ecore#//Person`, case-sensitive. There is no collection attribute
+  yet; a collection under any other name is not an error but an empty result:
+  the endpoint answers `200` with an empty list and nothing is logged.
 - **No mapping**, but a document layout: the backend (de)serializes through the
-  fennec BSON codec directly from the Ecore metadata, so documents have to
-  follow its layout — the EMF id as `_id` (a composite id as a structured
-  sub-document), the concrete type as `_type` URI, references as URIs.
-  Collections written by the same backend do; arbitrary foreign collections may
-  not. The layout and its knobs are described in the upstream
+  fennec BSON codec directly from the Ecore metadata. The EMF id is the `_id`
+  (a composite id as a structured sub-document), fields carry the feature names,
+  references are URIs, and the concrete type is a `_type` URI. For a collection
+  holding one EClass a missing `_type` is tolerated on read (the expected type
+  carries it) and fields the EClass does not declare are ignored; type
+  predicates and polymorphic collections do need `_type`. Collections written by
+  the same backend match by construction. The layout and its knobs are
+  described in the upstream
   [MongoDB user guide](https://github.com/eclipse-fennec/emf.persistence-jpa/blob/snapshot/docs/mongo-user-guide.md).
 - **Liveness gating**: the Mongo client appears only after a successful `ping`
   and disappears when the connection breaks; the database service, the input's

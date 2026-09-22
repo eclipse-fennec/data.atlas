@@ -31,10 +31,14 @@ The configuration is deleted when the input's configuration service goes away.
   registers the packages the configuration references. No mapping is involved:
   the backend (de)serializes documents through the fennec BSON codec directly
   from the Ecore metadata.
-- Documents that follow the codec's layout: the EMF id as `_id` (a composite id
-  as a structured sub-document), the concrete type as `_type` URI, references as
-  URIs. Collections written by the same backend do; arbitrary foreign
-  collections may not. See the upstream
+- Collections **named after the EClass** (case-sensitive; there is no
+  collection attribute yet — a differently named collection yields an empty
+  result without any log) holding documents in the codec's layout: the EMF id
+  as `_id` (a composite id as a structured sub-document), feature names as
+  fields, references as URIs, the concrete type as `_type` URI (tolerated to be
+  absent on read for single-EClass collections; needed for type predicates).
+  Collections written by the same backend match by construction. See the
+  upstream
   [MongoDB user guide](https://github.com/eclipse-fennec/emf.persistence-jpa/blob/snapshot/docs/mongo-user-guide.md)
   for the layout and its knobs.
 
