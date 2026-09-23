@@ -27,7 +27,7 @@ import org.osgi.annotation.versioning.ProviderType;
  *
  *
  * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getGraphQLDataServiceConfiguration()
- * @model
+ * @model annotation="https://eclipse.org/fennec/data/atlas/configuration/status implementation='not implemented yet' note='no GraphQL endpoint configurator exists'"
  * @generated
  */
 @ProviderType

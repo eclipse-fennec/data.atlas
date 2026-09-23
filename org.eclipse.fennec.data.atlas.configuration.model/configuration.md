@@ -32,6 +32,36 @@ re-applied to another data source (tenant, test system) by swapping the
 referenced `DataSource`, and export settings are templates instead of
 per-provider copies.
 
+## Implementation status markers
+
+The model is ahead of the runtime in places. Every classifier, feature or
+operation that no runtime component consumes yet carries the annotation
+
+```xml
+<eAnnotations source="https://eclipse.org/fennec/data/atlas/configuration/status">
+  <details key="implementation" value="not implemented yet"/>
+  <details key="note" value="…what happens if it is configured…"/>
+</eAnnotations>
+```
+
+so that editors and tooling can flag it, and so that the list below has a
+single source of truth (grep the ecore for the annotation source). Marked
+today (2026-09-23):
+
+| Element | Effect when configured |
+|---|---|
+| `XMLADataService`, `XMLADataServiceConfiguration` | ignored — no XMLA endpoint configurator |
+| `GraphQLDataService`, `GraphQLDataServiceConfiguration` | ignored — no GraphQL endpoint configurator |
+| `QGisDataService`, `QGisDataServiceConfiguration` | ignored — no QGis endpoint configurator |
+| `OgcFeaturesDataService`, `OgcSensorThingsDataService` | ignored — no OGC endpoint configurators |
+| `QueryTransformation`, `BridgeRepository.queryTrafo` | recognized but not executed: a bridge with a `queryTrafo` is refused and stays down |
+| `BridgeRepository.filter` | placeholder, no runtime effect |
+| `DataSet.childDataSet`, `DataSet.parentDataSet` | no runtime effect |
+| `RestDataService.openAPI` | no OpenAPI document is generated; the value is ignored |
+| `DataInput.streamData()`, `DataService.getDistributions()` | legacy operations of the first draft; the generated implementations throw `UnsupportedOperationException` |
+
+Remove the annotation together with the implementation.
+
 ## Core concepts
 
 ### `DataProvider` — the common supertype and the override-else-default trias

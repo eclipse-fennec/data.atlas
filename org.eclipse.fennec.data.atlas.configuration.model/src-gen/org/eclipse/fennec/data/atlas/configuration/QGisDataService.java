@@ -36,7 +36,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * </ul>
  *
  * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getQGisDataService()
- * @model
+ * @model annotation="https://eclipse.org/fennec/data/atlas/configuration/status implementation='not implemented yet' note='no QGis endpoint configurator exists'"
  * @generated
  */
 @ProviderType

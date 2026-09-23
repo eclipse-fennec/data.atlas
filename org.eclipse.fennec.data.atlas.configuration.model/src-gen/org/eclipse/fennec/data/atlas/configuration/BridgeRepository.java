@@ -107,7 +107,7 @@ public interface BridgeRepository extends DataInput {
 	 * @return the value of the '<em>Query Trafo</em>' reference.
 	 * @see #setQueryTrafo(QueryTransformation)
 	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getBridgeRepository_QueryTrafo()
-	 * @model
+	 * @model annotation="https://eclipse.org/fennec/data/atlas/configuration/status implementation='not implemented yet' note='recognized but not executed: a bridge with a queryTrafo is refused and stays down'"
 	 * @generated
 	 */
 	QueryTransformation getQueryTrafo();
@@ -132,7 +132,7 @@ public interface BridgeRepository extends DataInput {
 	 * @return the value of the '<em>Filter</em>' reference.
 	 * @see #setFilter(EObject)
 	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getBridgeRepository_Filter()
-	 * @model
+	 * @model annotation="https://eclipse.org/fennec/data/atlas/configuration/status implementation='not implemented yet' note='placeholder without runtime effect'"
 	 * @generated
 	 */
 	EObject getFilter();

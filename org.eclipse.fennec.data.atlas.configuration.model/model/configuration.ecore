@@ -119,6 +119,10 @@
       <details key="documentation" value="Base type for any data source that can stream EObjects into the Data-Atlas.&#xA;A DataInput can be backed by a database (JPADataInput), MongoDB (MongoDataInput), EMF files (FileDataInput) or another input wrapped and transformed by a BridgeRepository.&#xA;&#xA;Intended as an abstract base - it is not meant to be instantiated directly."/>
     </eAnnotations>
     <eOperations name="streamData">
+      <eAnnotations source="https://eclipse.org/fennec/data/atlas/configuration/status">
+        <details key="implementation" value="not implemented yet"/>
+        <details key="note" value="legacy operation of the first draft; the generated implementation throws UnsupportedOperationException"/>
+      </eAnnotations>
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Returns a PushStream of the EObjects provided by this input."/>
       </eAnnotations>
@@ -153,11 +157,19 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="queryTrafo" eType="#//QueryTransformation">
+      <eAnnotations source="https://eclipse.org/fennec/data/atlas/configuration/status">
+        <details key="implementation" value="not implemented yet"/>
+        <details key="note" value="recognized but not executed: a bridge with a queryTrafo is refused and stays down"/>
+      </eAnnotations>
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Transformation applied to incoming queries so they can be executed against the source. Optional: without one, the bridge only accepts from/skip/top queries on its output type and rewrites them to the source type."/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="filter" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject">
+      <eAnnotations source="https://eclipse.org/fennec/data/atlas/configuration/status">
+        <details key="implementation" value="not implemented yet"/>
+        <details key="note" value="placeholder without runtime effect"/>
+      </eAnnotations>
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="A Placeholder for now. Will provide e.g. security filters or anonymization rules for the bridged dataset"/>
       </eAnnotations>
@@ -187,12 +199,20 @@
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="childDataSet" upperBound="-1"
         eType="#//DataSet" eOpposite="#//DataSet/parentDataSet">
+      <eAnnotations source="https://eclipse.org/fennec/data/atlas/configuration/status">
+        <details key="implementation" value="not implemented yet"/>
+        <details key="note" value="no runtime effect"/>
+      </eAnnotations>
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Child DataSets within a DCAT dataset hierarchy/series; this DataSet acts as the parent of the referenced ones."/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="parentDataSet" eType="#//DataSet"
         eOpposite="#//DataSet/childDataSet">
+      <eAnnotations source="https://eclipse.org/fennec/data/atlas/configuration/status">
+        <details key="implementation" value="not implemented yet"/>
+        <details key="note" value="no runtime effect"/>
+      </eAnnotations>
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Parent DataSet within a DCAT dataset hierarchy/series; opposite of childDataSet."/>
       </eAnnotations>
@@ -203,6 +223,10 @@
       <details key="documentation" value="Abstract definition of an Endpoint to publish DataSets.&#xA;As a DataProvider a DataService can also act standalone - serving its own dataInput generically in the formats given by its distributionExport - or it can contain refined DataSets (via its configurations)."/>
     </eAnnotations>
     <eOperations name="getDistributions">
+      <eAnnotations source="https://eclipse.org/fennec/data/atlas/configuration/status">
+        <details key="implementation" value="not implemented yet"/>
+        <details key="note" value="legacy operation of the first draft; the generated implementation throws UnsupportedOperationException"/>
+      </eAnnotations>
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Marker operation. Each configuration of a DataService must result in a DCAT Distribution."/>
       </eAnnotations>
@@ -229,6 +253,10 @@
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="openAPI" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eAnnotations source="https://eclipse.org/fennec/data/atlas/configuration/status">
+        <details key="implementation" value="not implemented yet"/>
+        <details key="note" value="no OpenAPI document is generated; the value is ignored"/>
+      </eAnnotations>
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Marker, if an openAPI definition should be provided"/>
       </eAnnotations>
@@ -367,6 +395,10 @@
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="XMLADataService" eSuperTypes="#//DataService">
+    <eAnnotations source="https://eclipse.org/fennec/data/atlas/configuration/status">
+      <details key="implementation" value="not implemented yet"/>
+      <details key="note" value="no XMLA endpoint configurator exists"/>
+    </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="DataService that exposes DataSets via the XML for Analysis (XMLA) protocol, e.g. for OLAP / Daanse cubes."/>
     </eAnnotations>
@@ -381,6 +413,10 @@
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="XMLADataServiceConfiguration" eSuperTypes="#//DataServiceConfiguration">
+    <eAnnotations source="https://eclipse.org/fennec/data/atlas/configuration/status">
+      <details key="implementation" value="not implemented yet"/>
+      <details key="note" value="no XMLA endpoint configurator exists"/>
+    </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Per-DataSet configuration for an XMLADataService."/>
     </eAnnotations>
@@ -392,6 +428,10 @@
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="GraphQLDataService" eSuperTypes="#//DataService">
+    <eAnnotations source="https://eclipse.org/fennec/data/atlas/configuration/status">
+      <details key="implementation" value="not implemented yet"/>
+      <details key="note" value="no GraphQL endpoint configurator exists"/>
+    </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="DataService that exposes DataSets via a GraphQL endpoint."/>
     </eAnnotations>
@@ -406,6 +446,10 @@
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="QGisDataService" eSuperTypes="#//DataService">
+    <eAnnotations source="https://eclipse.org/fennec/data/atlas/configuration/status">
+      <details key="implementation" value="not implemented yet"/>
+      <details key="note" value="no QGis endpoint configurator exists"/>
+    </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Endpoint that provides a generated QGis Mapping Configuration file.&#xA;TODO: Repeat for other geoServers"/>
     </eAnnotations>
@@ -420,6 +464,10 @@
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="QGisDataServiceConfiguration" eSuperTypes="#//DataServiceConfiguration">
+    <eAnnotations source="https://eclipse.org/fennec/data/atlas/configuration/status">
+      <details key="implementation" value="not implemented yet"/>
+      <details key="note" value="no QGis endpoint configurator exists"/>
+    </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Per-DataSet configuration for a QGisDataService; maps a DataSet to a QGis layer."/>
     </eAnnotations>
@@ -430,16 +478,28 @@
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="GraphQLDataServiceConfiguration" eSuperTypes="#//DataServiceConfiguration">
+    <eAnnotations source="https://eclipse.org/fennec/data/atlas/configuration/status">
+      <details key="implementation" value="not implemented yet"/>
+      <details key="note" value="no GraphQL endpoint configurator exists"/>
+    </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Per-DataSet configuration for a GraphQLDataService. Placeholder - no GraphQL-specific parameters yet."/>
     </eAnnotations>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="OgcFeaturesDataService" eSuperTypes="#//DataService">
+    <eAnnotations source="https://eclipse.org/fennec/data/atlas/configuration/status">
+      <details key="implementation" value="not implemented yet"/>
+      <details key="note" value="no OGC API Features endpoint configurator exists"/>
+    </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="DataService that exposes DataSets via the OGC API - Features standard."/>
     </eAnnotations>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="OgcSensorThingsDataService" eSuperTypes="#//DataService">
+    <eAnnotations source="https://eclipse.org/fennec/data/atlas/configuration/status">
+      <details key="implementation" value="not implemented yet"/>
+      <details key="note" value="no OGC SensorThings endpoint configurator exists"/>
+    </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="DataService that exposes DataSets via the OGC SensorThings API."/>
     </eAnnotations>
@@ -506,6 +566,10 @@
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="QueryTransformation" eSuperTypes="#//Transformation">
+    <eAnnotations source="https://eclipse.org/fennec/data/atlas/configuration/status">
+      <details key="implementation" value="not implemented yet"/>
+      <details key="note" value="no query transformation engine is wired; a bridge that references one stays down"/>
+    </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Queries are incoming requests, that need to be mapped on the corresponding data source"/>
     </eAnnotations>

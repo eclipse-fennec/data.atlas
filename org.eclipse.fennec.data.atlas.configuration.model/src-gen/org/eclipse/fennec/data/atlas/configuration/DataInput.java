@@ -93,7 +93,7 @@ public interface DataInput extends EObject {
 	 * <!-- begin-model-doc -->
 	 * Returns a PushStream of the EObjects provided by this input.
 	 * <!-- end-model-doc -->
-	 * @model
+	 * @model annotation="https://eclipse.org/fennec/data/atlas/configuration/status implementation='not implemented yet' note='legacy operation of the first draft; the generated implementation throws UnsupportedOperationException'"
 	 * @generated
 	 */
 	void streamData();

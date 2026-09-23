@@ -2240,6 +2240,8 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		createImportAnnotations();
 		// http://www.eclipse.org/emf/2002/GenModel
 		createGenModelAnnotations();
+		// https://eclipse.org/fennec/data/atlas/configuration/status
+		createStatusAnnotations();
 		// http://www.eclipse.org/OCL/Collection
 		createCollectionAnnotations();
 	}
@@ -3101,6 +3103,128 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		   source,
 		   new String[] {
 			   "documentation", "Optional server flavor behind the wire protocol as understood by the fennec Mongo backend (mongo, ferretdb, documentdb-pg); unset = mongo."
+		   });
+	}
+
+	/**
+	 * Initializes the annotations for <b>https://eclipse.org/fennec/data/atlas/configuration/status</b>.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void createStatusAnnotations() {
+		String source = "https://eclipse.org/fennec/data/atlas/configuration/status";
+		addAnnotation
+		  (getDataInput__StreamData(),
+		   source,
+		   new String[] {
+			   "implementation", "not implemented yet",
+			   "note", "legacy operation of the first draft; the generated implementation throws UnsupportedOperationException"
+		   });
+		addAnnotation
+		  (getBridgeRepository_QueryTrafo(),
+		   source,
+		   new String[] {
+			   "implementation", "not implemented yet",
+			   "note", "recognized but not executed: a bridge with a queryTrafo is refused and stays down"
+		   });
+		addAnnotation
+		  (getBridgeRepository_Filter(),
+		   source,
+		   new String[] {
+			   "implementation", "not implemented yet",
+			   "note", "placeholder without runtime effect"
+		   });
+		addAnnotation
+		  (getDataSet_ChildDataSet(),
+		   source,
+		   new String[] {
+			   "implementation", "not implemented yet",
+			   "note", "no runtime effect"
+		   });
+		addAnnotation
+		  (getDataSet_ParentDataSet(),
+		   source,
+		   new String[] {
+			   "implementation", "not implemented yet",
+			   "note", "no runtime effect"
+		   });
+		addAnnotation
+		  (getDataService__GetDistributions(),
+		   source,
+		   new String[] {
+			   "implementation", "not implemented yet",
+			   "note", "legacy operation of the first draft; the generated implementation throws UnsupportedOperationException"
+		   });
+		addAnnotation
+		  (getRestDataService_OpenAPI(),
+		   source,
+		   new String[] {
+			   "implementation", "not implemented yet",
+			   "note", "no OpenAPI document is generated; the value is ignored"
+		   });
+		addAnnotation
+		  (xmlaDataServiceEClass,
+		   source,
+		   new String[] {
+			   "implementation", "not implemented yet",
+			   "note", "no XMLA endpoint configurator exists"
+		   });
+		addAnnotation
+		  (xmlaDataServiceConfigurationEClass,
+		   source,
+		   new String[] {
+			   "implementation", "not implemented yet",
+			   "note", "no XMLA endpoint configurator exists"
+		   });
+		addAnnotation
+		  (graphQLDataServiceEClass,
+		   source,
+		   new String[] {
+			   "implementation", "not implemented yet",
+			   "note", "no GraphQL endpoint configurator exists"
+		   });
+		addAnnotation
+		  (qGisDataServiceEClass,
+		   source,
+		   new String[] {
+			   "implementation", "not implemented yet",
+			   "note", "no QGis endpoint configurator exists"
+		   });
+		addAnnotation
+		  (qGisDataServiceConfigurationEClass,
+		   source,
+		   new String[] {
+			   "implementation", "not implemented yet",
+			   "note", "no QGis endpoint configurator exists"
+		   });
+		addAnnotation
+		  (graphQLDataServiceConfigurationEClass,
+		   source,
+		   new String[] {
+			   "implementation", "not implemented yet",
+			   "note", "no GraphQL endpoint configurator exists"
+		   });
+		addAnnotation
+		  (ogcFeaturesDataServiceEClass,
+		   source,
+		   new String[] {
+			   "implementation", "not implemented yet",
+			   "note", "no OGC API Features endpoint configurator exists"
+		   });
+		addAnnotation
+		  (ogcSensorThingsDataServiceEClass,
+		   source,
+		   new String[] {
+			   "implementation", "not implemented yet",
+			   "note", "no OGC SensorThings endpoint configurator exists"
+		   });
+		addAnnotation
+		  (queryTransformationEClass,
+		   source,
+		   new String[] {
+			   "implementation", "not implemented yet",
+			   "note", "no query transformation engine is wired; a bridge that references one stays down"
 		   });
 	}
 
