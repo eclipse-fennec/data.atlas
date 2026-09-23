@@ -50,7 +50,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * @generated
  */
 @ProviderType
-@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:44502254494552bd12175742047e5eeec0350c5389cdf657d84758c906f4c77b", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
+@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:5632ec38cd6a7730fdc19bad1d777b4455e19281592c2b4241e973d6ae2939cf", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
 public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	/**
 	 * The package name.

@@ -27,7 +27,7 @@ import org.osgi.annotation.versioning.ProviderType;
  *
  *
  * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getOgcFeaturesDataService()
- * @model
+ * @model annotation="https://eclipse.org/fennec/data/atlas/configuration/status implementation='not implemented yet' note='no OGC API Features endpoint configurator exists'"
  * @generated
  */
 @ProviderType

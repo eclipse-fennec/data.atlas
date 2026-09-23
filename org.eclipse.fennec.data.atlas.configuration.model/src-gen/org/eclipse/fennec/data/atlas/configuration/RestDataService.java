@@ -68,6 +68,7 @@ public interface RestDataService extends DataService {
 	 * @see #setOpenAPI(boolean)
 	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getRestDataService_OpenAPI()
 	 * @model required="true"
+	 *        annotation="https://eclipse.org/fennec/data/atlas/configuration/status implementation='not implemented yet' note='no OpenAPI document is generated; the value is ignored'"
 	 * @generated
 	 */
 	boolean isOpenAPI();

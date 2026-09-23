@@ -71,6 +71,7 @@ public interface DataService extends DataProvider {
 	 * Marker operation. Each configuration of a DataService must result in a DCAT Distribution.
 	 * <!-- end-model-doc -->
 	 * @model kind="operation"
+	 *        annotation="https://eclipse.org/fennec/data/atlas/configuration/status implementation='not implemented yet' note='legacy operation of the first draft; the generated implementation throws UnsupportedOperationException'"
 	 * @generated
 	 */
 	void getDistributions();

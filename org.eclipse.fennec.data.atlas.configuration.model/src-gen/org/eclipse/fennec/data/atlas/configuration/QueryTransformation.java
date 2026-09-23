@@ -27,7 +27,7 @@ import org.osgi.annotation.versioning.ProviderType;
  *
  *
  * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getQueryTransformation()
- * @model
+ * @model annotation="https://eclipse.org/fennec/data/atlas/configuration/status implementation='not implemented yet' note='no query transformation engine is wired; a bridge that references one stays down'"
  * @generated
  */
 @ProviderType

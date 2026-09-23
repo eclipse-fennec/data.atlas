@@ -137,6 +137,7 @@ public interface DataSet extends DataProvider {
 	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getDataSet_ChildDataSet()
 	 * @see org.eclipse.fennec.data.atlas.configuration.DataSet#getParentDataSet
 	 * @model opposite="parentDataSet"
+	 *        annotation="https://eclipse.org/fennec/data/atlas/configuration/status implementation='not implemented yet' note='no runtime effect'"
 	 * @generated
 	 */
 	EList<DataSet> getChildDataSet();
@@ -154,6 +155,7 @@ public interface DataSet extends DataProvider {
 	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getDataSet_ParentDataSet()
 	 * @see org.eclipse.fennec.data.atlas.configuration.DataSet#getChildDataSet
 	 * @model opposite="childDataSet"
+	 *        annotation="https://eclipse.org/fennec/data/atlas/configuration/status implementation='not implemented yet' note='no runtime effect'"
 	 * @generated
 	 */
 	DataSet getParentDataSet();
