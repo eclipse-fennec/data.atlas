@@ -995,7 +995,13 @@ How the `href`s to EClasses are written depends on the config-source mode:
 - **Model Atlas mode**: reference schemas by their **nsURI**
   (`https://example.org/person/1.0.0#//Person`). The references resolve
   against the Model Atlas schema registry of the instance's scope — upload
-  the schemas there first. Compare the two example variants:
+  the schemas there first, **dependencies before dependants**: a schema
+  uploaded before one it references keeps a dangling proxy (model.atlas#322). The
+  configuration model itself references the fennec `eorm` model and, for
+  query-defined DataSets, the fennec `query` model (which references the
+  `expression` model); the compose seeder (`docker/dockercompose/seed`)
+  uploads `expression`, `query` and `eorm` before `configuration.ecore`.
+  Compare the two example variants:
   [`dataatlas.xmi`](../org.eclipse.fennec.data.atlas.configuration.model/example/dataatlas.xmi)
   (file) vs.
   [`dataatlas-atlas.xmi`](../org.eclipse.fennec.data.atlas.configuration.model/example/dataatlas-atlas.xmi)

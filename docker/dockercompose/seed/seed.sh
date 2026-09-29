@@ -33,7 +33,7 @@ until curl -sf "$BASE/scopes/dataatlas" >/dev/null 2>&1; do
 done
 
 upload_schema() {
-  FILE="$1"; NSURI="$2"; NAME="$3"
+  FILE="$1"; NSURI="$2"; NAME="$3"; VERSION="${4:-1.0.0}"
   # rawurlencode the nsUri (sufficient for the characters used here)
   ENC=$(printf '%s' "$NSURI" | sed 's|:|%3A|g; s|/|%2F|g')
   # the instance goes to the final 'release' stage, whose stage-scoped
@@ -41,7 +41,7 @@ upload_schema() {
   CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
     -H "Content-Type: application/xmi" \
     --data-binary @"$FILE" \
-    "$BASE/dataatlas/schema/stages/release?nsUri=$ENC&name=$NAME&version=1.0.0")
+    "$BASE/dataatlas/schema/stages/release?nsUri=$ENC&name=$NAME&version=$VERSION")
   case "$CODE" in
     200|201) echo "seed: schema $NAME uploaded ($CODE)" ;;
     409) echo "seed: schema $NAME already present ($CODE)" ;;
@@ -49,7 +49,14 @@ upload_schema() {
   esac
 }
 
-# eorm first: configuration.ecore references it
+# Order matters: a schema resolves its references against what the stage
+# already knows, and an upload that arrives BEFORE its dependency keeps a dangling
+# proxy for good (an instance using that reference then fails with
+# "EClass.getEPackage() is null"; model.atlas#322). configuration.ecore references the fennec
+# query model (DataSet.query), which references the expression model, and the
+# eorm model (JPADataInput.persistenceConfig) - so those three go first.
+upload_schema /seed/models/expression.ecore "https://eclipse.org/fennec/expression/1.0.0" expression
+upload_schema /seed/models/query.ecore "https://eclipse.org/fennec/query/2.0.0" query 2.0.0
 upload_schema /seed/models/eorm.ecore "https://eclipse.org/fennec/persistence/eorm/1.0.0" eorm
 upload_schema /seed/models/configuration.ecore "https://eclipse.org/fennec/data/atlas/configuration/1.0.0" configuration
 upload_schema /seed/models/person.ecore "https://eclipse.org/fennec/data/atlas/example/person/1.0.0" person

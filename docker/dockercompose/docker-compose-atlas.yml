@@ -29,6 +29,8 @@ services:
       - modelatlas
     volumes:
       - ./seed/seed.sh:/seed/seed.sh:ro
+      - ./seed/models/expression.ecore:/seed/models/expression.ecore:ro
+      - ./seed/models/query.ecore:/seed/models/query.ecore:ro
       - ./seed/models/eorm.ecore:/seed/models/eorm.ecore:ro
       - ../../org.eclipse.fennec.data.atlas.configuration.model/model/configuration.ecore:/seed/models/configuration.ecore:ro
       - ../../org.eclipse.fennec.data.atlas.configuration.model/example/model/person.ecore:/seed/models/person.ecore:ro

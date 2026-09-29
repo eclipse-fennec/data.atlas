@@ -203,7 +203,7 @@ public class DataAtlasHistoryAtlasModeIntegrationTest {
 	}
 
 	@Test
-	void servesTheNumericHypertableAsCsv() throws Exception {
+	void servesTheNumericKindAsCsv() throws Exception {
 		HttpResponse<String> response = awaitOk(BASE_URL + "/numeric", TEXT_CSV, DEADLINE_MS);
 
 		assertTrue(response.headers().firstValue("Content-Type").orElse("").startsWith(TEXT_CSV),
@@ -220,14 +220,14 @@ public class DataAtlasHistoryAtlasModeIntegrationTest {
 	}
 
 	@Test
-	void servesTheGeographyColumnThroughTheProjectingView() throws Exception {
+	void servesLocationsAsGeoJsonText() throws Exception {
 		HttpResponse<String> response = awaitOk(BASE_URL + "/geo", TEXT_CSV, DEADLINE_MS);
 
-		String header = response.body().lines().filter(line -> !line.isBlank()).findFirst().orElse("");
-		assertTrue(header.contains("location") && header.contains("longitude") && header.contains("latitude"),
-				"expected the projected geo columns in the header: " + header);
-		assertTrue(response.body().contains("POINT(11.582 50.927)"),
-				"expected the WKT of the seeded point: " + response.body());
+		List<String> rows = response.body().lines().filter(line -> !line.isBlank()).toList();
+		String header = rows.get(0);
+		assertTrue(header.contains("valueJson"), "expected the JSON value column in the header: " + header);
+		assertTrue(response.body().contains("11.582") && response.body().contains("50.927"),
+				"expected the coordinates of the seeded point as GeoJSON text: " + response.body());
 	}
 
 	@Test
@@ -245,7 +245,7 @@ public class DataAtlasHistoryAtlasModeIntegrationTest {
 		long deadline = System.currentTimeMillis() + DEADLINE_MS;
 		while (System.currentTimeMillis() < deadline) {
 			if (docker("exec", DB_CONTAINER, "psql", "-U", DB, "-d", DB, "-tAc",
-					"select count(*) from sensinact.numeric_data_recent") == 0) {
+					"select count(*) from sensinact.history") == 0) {
 				return;
 			}
 			Thread.sleep(2000);
@@ -255,6 +255,11 @@ public class DataAtlasHistoryAtlasModeIntegrationTest {
 
 	/** Seeds the schemas and the history configuration, mirroring the compose seeder. */
 	private static void seed(Path dir) throws Exception {
+		// dependencies first, as the compose seeder does: a schema uploaded before
+		// its dependency keeps a dangling proxy (model.atlas#322), and the query-defined DataSets of
+		// this example need configuration.ecore's DataSet.query resolved
+		postSchema(dir.resolve("atlas/models/expression.ecore"), "https://eclipse.org/fennec/expression/1.0.0");
+		postSchema(dir.resolve("atlas/models/query.ecore"), "https://eclipse.org/fennec/query/2.0.0", "2.0.0");
 		postSchema(dir.resolve("atlas/models/eorm.ecore"), "https://eclipse.org/fennec/persistence/eorm/1.0.0");
 		postSchema(dir.resolve("atlas/models/configuration.ecore"),
 				"https://eclipse.org/fennec/data/atlas/configuration/1.0.0");
@@ -285,10 +290,14 @@ public class DataAtlasHistoryAtlasModeIntegrationTest {
 	}
 
 	private static void postSchema(Path file, String nsUri) throws Exception {
+		postSchema(file, nsUri, "1.0.0");
+	}
+
+	private static void postSchema(Path file, String nsUri, String version) throws Exception {
 		String enc = URLEncoder.encode(nsUri, StandardCharsets.UTF_8);
 		HttpResponse<String> response = CLIENT.send(HttpRequest
 				.newBuilder(java.net.URI.create(
-						ATLAS_BASE + "/dataatlas/schema/stages/release?nsUri=" + enc + "&version=1.0.0"))
+						ATLAS_BASE + "/dataatlas/schema/stages/release?nsUri=" + enc + "&version=" + version))
 				.header("Content-Type", "application/xmi")
 				.header("Accept", "application/json")
 				.POST(HttpRequest.BodyPublishers.ofByteArray(Files.readAllBytes(file)))

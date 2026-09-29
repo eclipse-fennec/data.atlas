@@ -50,16 +50,15 @@ services:
       - "15433:5432"
     volumes:
       # 00-extensions.sql supplies what the seed presupposes (timescaledb for
-      # the provider, postgis for our geo view), 01-schema.sql is a verbatim
-      # transcription of the unified sensinact.history table the provider
-      # creates plus our per-kind views over it, 02-data.sql seeds a few
+      # the provider), 01-schema.sql is a verbatim transcription of the unified
+      # sensinact.history table the provider creates, 02-data.sql seeds a few
       # recordings
       - ./history/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      # the seeded view, not pg_isready: initdb.d runs while the server is
+      # the seeded table, not pg_isready: initdb.d runs while the server is
       # already accepting connections on the socket, so readiness has to mean
       # "the schema is there"
-      test: ["CMD-SHELL", "psql -U sensinact -d sensinact -tAc 'select 1 from sensinact.numeric_data_recent limit 1'"]
+      test: ["CMD-SHELL", "psql -U sensinact -d sensinact -tAc 'select 1 from sensinact.history limit 1'"]
       interval: 5s
       timeout: 10s
       retries: 30
@@ -87,6 +86,8 @@ services:
       - SEED_EXTRA_NAME=sensinact-history
     volumes:
       - ./seed/seed.sh:/seed/seed.sh:ro
+      - ./seed/models/expression.ecore:/seed/models/expression.ecore:ro
+      - ./seed/models/query.ecore:/seed/models/query.ecore:ro
       - ./seed/models/eorm.ecore:/seed/models/eorm.ecore:ro
       - ../../org.eclipse.fennec.data.atlas.configuration.model/model/configuration.ecore:/seed/models/configuration.ecore:ro
       - ../../org.eclipse.fennec.data.atlas.configuration.model/example/model/person.ecore:/seed/models/person.ecore:ro

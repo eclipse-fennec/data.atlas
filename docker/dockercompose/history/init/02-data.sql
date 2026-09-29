@@ -12,11 +12,9 @@
 -- ValueKind ordinal (0 NUMBER, 1 BOOLEAN, 2 STRING, 3 GEOJSON, 4 OBJECT);
 -- java_type is what the provider records (informational, not mapped).
 --
--- Timestamps are RELATIVE to insert time (now() - INTERVAL …) on purpose: the
--- views in 01-schema.sql bound to the last 7 days, so fixed dates would silently
--- age out of the example and the endpoint would go empty for no visible reason.
--- The 25-hour-old row is there to show that the window is 7 days, not 24 hours;
--- the integration test expects it.
+-- Timestamps are RELATIVE to insert time (now() - INTERVAL …) so the example
+-- always looks freshly recorded; the endpoints order by time, newest first, and
+-- the 25-hour-old row is the oldest one (the integration test expects it last).
 
 -- NUMBER -> value_num
 INSERT INTO sensinact.history (time, modelpackageuri, model, provider, service, resource, value_kind, java_type, value_num) VALUES
@@ -27,8 +25,8 @@ INSERT INTO sensinact.history (time, modelpackageuri, model, provider, service, 
     (now() - INTERVAL '10 minutes', 'https://eclipse.org/sensinact/example/weather/1.0.0', 'weather', 'station-2', 'sensor', 'temperature', 0, 'java.lang.Double', 19.9),
     (now() - INTERVAL '25 hours',   'https://eclipse.org/sensinact/example/weather/1.0.0', 'weather', 'station-2', 'sensor', 'temperature', 0, 'java.lang.Double', 18.2);
 
--- STRING -> value_json holds a JSON string; the text view unwraps it.
--- BOOLEAN -> value_json holds true/false; the text view serves it as text.
+-- STRING -> value_json holds a JSON string ("ok"); BOOLEAN -> true/false. The
+-- text endpoint serves value_json as it is, i.e. as JSON text.
 INSERT INTO sensinact.history (time, modelpackageuri, model, provider, service, resource, value_kind, java_type, value_json) VALUES
     (now() - INTERVAL '10 minutes', 'https://eclipse.org/sensinact/example/weather/1.0.0', 'weather', 'station-1', 'admin', 'status',    2, 'java.lang.String',  to_jsonb('ok'::text)),
     (now() - INTERVAL '15 minutes', 'https://eclipse.org/sensinact/example/weather/1.0.0', 'weather', 'station-2', 'admin', 'status',    2, 'java.lang.String',  to_jsonb('maintenance'::text)),

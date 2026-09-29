@@ -5,29 +5,18 @@
      This model describes a schema the Data Atlas does NOT own: it belongs to
      SensiNact's history provider, which creates schema `sensinact` with ONE
      hypertable `history` (verified against TimescaleSql, sensiNact 12ee7d94f):
-     the kind of a recorded value is the discriminator column value_kind
-     (0 NUMBER, 1 BOOLEAN, 2 STRING, 3 GEOJSON, 4 OBJECT), a number lives in
-     value_num, everything else as JSON in value_json. The three EClasses here
-     are the per-kind READING of that table: each is mapped onto a view
-     (numeric_data_recent, text_data_recent, geo_data_recent, see
-     docker/dockercompose/history/init/01-schema.sql) that selects one group of
-     kinds and projects the value into one typed column. The attribute names
-     here are EMF-side names; the mapping onto the real lower-case,
+     every recorded value is one row, the kind of the value is the discriminator
+     column value_kind (0 NUMBER, 1 BOOLEAN, 2 STRING, 3 GEOJSON, 4 OBJECT), a
+     number lives in value_num, everything else as a JSON document in
+     value_json. The single EClass here is that table, column by column. The
+     attribute names are EMF-side names; the mapping onto the real lower-case,
      schema-qualified column names is pinned explicitly in the inline
      persistenceConfig of the configuration (dataatlas-history.xmi), because the
      derived eorm naming would expect an upper-cased, unqualified table.
 
-     GeoData is the GEOJSON case. Its value is a GeoJSON document in a JSONB
-     column, which has no representation the persistence stack knows - so the
-     view projects it into ordinary SQL types (ST_AsText, ST_X/ST_Y of the
-     centroid) and this EClass needs neither a JSON- or geometry-aware EMF type
-     nor a TypeConverter.
-
-     The EClasses repeat their common attributes instead of sharing an
-     abstract supertype. That is deliberate: an abstract EMF supertype that is
-     not itself an entity puts EClass inheritance in front of the EclipseLink
-     dynamic type builder, which then has to be told an inheritance strategy for
-     something that is not one. The views are independent, so the model says so.
+     The per-kind endpoints of the example (numeric, text, geo) are DataSets
+     with a canonical query over valueKind, pushed down into the database - no
+     views are installed next to the provider's table.
 
      The table carries no primary key. JPA needs an identity, so the mapping
      declares a composite id over (time, provider, service, resource) - the
@@ -38,9 +27,9 @@
     name="sensinactHistory"
     nsURI="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0"
     nsPrefix="history">
-  <eClassifiers xsi:type="ecore:EClass" name="NumericData">
+  <eClassifiers xsi:type="ecore:EClass" name="HistoryEntry">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A recorded numeric value - the NUMBER rows (value_kind 0) of table sensinact.history, column value_num of type NUMERIC. Served through the bounded view sensinact.numeric_data_recent, which exposes value_num as data."/>
+      <details key="documentation" value="One recorded resource value - a row of table sensinact.history. Which of valueNum and valueJson carries the value is told by valueKind: 0 NUMBER (valueNum), 1 BOOLEAN, 2 STRING, 3 GEOJSON and 4 OBJECT (valueJson, a JSON document: true/false, a JSON string, a GeoJSON geometry or Feature, an object)."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="time" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate">
@@ -48,16 +37,15 @@
         <details key="documentation" value="Recording timestamp - the hypertable's partitioning column (TIMESTAMPTZ). Part of the composite id."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="modelPackageUri" lowerBound="1"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="modelPackageUri"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="nsURI of the model package the provider belongs to (column modelpackageuri)."/>
+        <details key="documentation" value="nsURI of the model package the provider belongs to (column modelpackageuri, nullable upstream)."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="model" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="model" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Name of the provider's model."/>
+        <details key="documentation" value="Name of the provider's model (nullable upstream)."/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="provider" lowerBound="1"
@@ -78,114 +66,25 @@
         <details key="documentation" value="Resource name within the service. Part of the composite id."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="data" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="valueKind" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The recorded value. NUMERIC is arbitrary precision, so EBigDecimal rather than EDouble."/>
+        <details key="documentation" value="The kind of the recorded value (column value_kind, SMALLINT): the ordinal of the provider's ValueKind - 0 NUMBER, 1 BOOLEAN, 2 STRING, 3 GEOJSON, 4 OBJECT."/>
       </eAnnotations>
     </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TextData">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A recorded textual value - the STRING, BOOLEAN and OBJECT rows (value_kind 2, 1, 4) of table sensinact.history, column value_json of type JSONB. Served through the bounded view sensinact.text_data_recent, which exposes the value as text: a STRING unwrapped to its bare text, a BOOLEAN or OBJECT as its JSON text."/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="time" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="javaType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Recording timestamp - the hypertable's partitioning column (TIMESTAMPTZ). Part of the composite id."/>
+        <details key="documentation" value="The Java type the provider recorded the value as (column java_type), e.g. java.lang.Double; informational."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="modelPackageUri" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="valueNum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="nsURI of the model package the provider belongs to (column modelpackageuri)."/>
+        <details key="documentation" value="The value of a NUMBER row (column value_num). NUMERIC is arbitrary precision, so EBigDecimal rather than EDouble; null for every other kind."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="model" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="valueJson" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Name of the provider's model."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="provider" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Provider id. Part of the composite id."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="service" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Service name within the provider. Part of the composite id."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="resource" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Resource name within the service. Part of the composite id."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="data" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The recorded value."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="GeoData">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A recorded location - the GEOJSON rows (value_kind 3) of table sensinact.history, column value_json holding a GeoJSON document (a bare geometry or a Feature). Served through the view sensinact.geo_data_recent, which PROJECTS the GeoJSON with PostGIS into ordinary SQL types (ST_AsText, ST_X/ST_Y of the centroid). That is why this EClass needs no JSON- or geometry-aware EMF type and no TypeConverter: the geometry work happens in the database, where the value already lives."/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="time" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Recording timestamp - the hypertable's partitioning column (TIMESTAMPTZ). Part of the composite id."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="modelPackageUri" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="nsURI of the model package the provider belongs to (column modelpackageuri)."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="model" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Name of the provider's model."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="provider" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Provider id. Part of the composite id."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="service" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Service name within the provider. Part of the composite id."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="resource" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Resource name within the service. Part of the composite id."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="location"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The point as WKT, e.g. POINT(11.582 50.927) - the view computes it with ST_AsText."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="longitude"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Longitude in WGS 84, computed by the view with ST_X. EDoubleObject rather than EDouble, because the column is nullable and 0.0 is a real coordinate."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="latitude"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Latitude in WGS 84, computed by the view with ST_Y."/>
+        <details key="documentation" value="The value of every non-NUMBER row as its JSON text (column value_json, JSONB): true/false for a BOOLEAN, a quoted JSON string for a STRING, a GeoJSON geometry or Feature for a GEOJSON, an object for an OBJECT; null for a NUMBER."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>

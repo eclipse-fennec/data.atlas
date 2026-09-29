@@ -156,7 +156,7 @@ public class DataAtlasHistoryIntegrationTest {
 	}
 
 	@Test
-	void servesTheNumericHypertableAsCsv() throws Exception {
+	void servesTheNumericKindAsCsv() throws Exception {
 		HttpResponse<String> response = awaitOk(BASE_URL + "/numeric", TEXT_CSV);
 
 		assertTrue(response.headers().firstValue("Content-Type").orElse("").startsWith(TEXT_CSV),
@@ -168,51 +168,63 @@ public class DataAtlasHistoryIntegrationTest {
 		// the EMF-side attribute names, not the lower-case column names — proof
 		// that the explicit mapping bridged the two
 		assertTrue(header.contains("modelPackageUri"), "expected the model attribute names in the header: " + header);
+		// the CSV lists the set attributes: a NUMBER row has valueNum, while its
+		// valueKind is the EInt default 0 and valueJson is null
+		assertTrue(header.contains("valueNum"), "expected the numeric value column in the header: " + header);
 		assertTrue(response.body().contains("temperature"),
 				"expected the seeded numeric recordings: " + response.body());
 		assertTrue(rows.size() > 1, "expected data rows, got only: " + rows);
+		// the DataSet's query (valueKind = 0) is pushed down: no other kind leaks in
+		assertFalse(response.body().contains("maintenance") || response.body().contains("location"),
+				"expected only NUMBER rows behind /numeric: " + response.body());
 	}
 
 	@Test
-	void servesTheTextHypertableAsCsv() throws Exception {
+	void servesTheTextKindsAsCsv() throws Exception {
 		HttpResponse<String> response = awaitOk(BASE_URL + "/text", TEXT_CSV);
 
+		// STRING, BOOLEAN and OBJECT share the text DataSet (valueKind IN (1, 2, 4));
+		// their value is the JSON text of value_json
+		String header = response.body().lines().filter(line -> !line.isBlank()).findFirst().orElse("");
+		assertTrue(header.contains("valueKind") && header.contains("valueJson"),
+				"expected the kind and the JSON value column in the header: " + header);
 		assertTrue(response.body().contains("maintenance"),
 				"expected the seeded textual recordings: " + response.body());
-		// a STRING is a JSON string in value_json; the view unwraps it, so the
-		// CSV must carry the bare text and not the JSON quotes
-		assertFalse(response.body().contains("\"ok\""),
-				"expected the STRING value unwrapped from its JSON quotes: " + response.body());
-		// a BOOLEAN shares the text view and is served as its JSON text
 		assertTrue(response.body().contains("online") && response.body().contains("true"),
-				"expected the seeded boolean recording in the text view: " + response.body());
+				"expected the seeded boolean recording: " + response.body());
+		assertFalse(response.body().contains("temperature"),
+				"expected no NUMBER rows behind /text: " + response.body());
+	}
+
+	@Test
+	void servesEveryKindAtEntries() throws Exception {
+		HttpResponse<String> response = awaitOk(BASE_URL + "/entries", TEXT_CSV);
+
+		long dataRows = response.body().lines().filter(line -> !line.isBlank()).count() - 1;
+		// 02-data.sql seeds 6 NUMBER, 4 text-like and 2 GEOJSON rows
+		assertTrue(dataRows >= 12, "expected every seeded row behind /entries, got " + dataRows);
 	}
 
 	/**
-	 * The geo case, and the answer to "would geodata work": yes, without teaching
-	 * the Data Atlas about JSON or geometries. A location is a GeoJSON document in
-	 * the JSONB column {@code value_json} (a bare geometry or a Feature), which has
-	 * no representation the persistence stack knows — so the view projects it with
-	 * PostGIS ({@code ST_GeomFromGeoJSON}, {@code ST_AsText}, {@code ST_X}/{@code
-	 * ST_Y} of the centroid) into text and double precision. The geometry work
-	 * happens in the database, and the mapping stays plain. Both seeded shapes must
-	 * arrive: the bare Point of station-1 and the Feature-wrapped Point of
-	 * station-2.
+	 * The geo case: a location is a GeoJSON document in the JSONB column
+	 * {@code value_json} (a bare geometry or a Feature), and the Data Atlas
+	 * serves it as that JSON text — no PostGIS, no view, no type converter. Both
+	 * seeded shapes must arrive: the bare Point of station-1 and the
+	 * Feature-wrapped Point of station-2.
 	 */
 	@Test
-	void servesTheGeographyColumnThroughTheProjectingView() throws Exception {
+	void servesLocationsAsGeoJsonText() throws Exception {
 		HttpResponse<String> response = awaitOk(BASE_URL + "/geo", TEXT_CSV);
 
 		List<String> rows = response.body().lines().filter(line -> !line.isBlank()).toList();
 		String header = rows.get(0);
-		assertTrue(header.contains("location") && header.contains("longitude") && header.contains("latitude"),
-				"expected the projected geo columns in the header: " + header);
-		assertTrue(response.body().contains("POINT(11.582 50.927)"),
-				"expected the WKT of the seeded point: " + response.body());
+		assertTrue(header.contains("valueJson"), "expected the JSON value column in the header: " + header);
 		assertTrue(response.body().contains("11.582") && response.body().contains("50.927"),
-				"expected longitude and latitude as numbers: " + response.body());
-		assertTrue(response.body().contains("POINT(11.606 50.941)"),
-				"expected the Feature-wrapped point to be unwrapped by the view: " + response.body());
+				"expected the coordinates of the seeded point: " + response.body());
+		assertTrue(response.body().contains("Point"), "expected the GeoJSON geometry type: " + response.body());
+		assertTrue(response.body().contains("Feature") && response.body().contains("11.606"),
+				"expected the Feature-wrapped point as it was recorded: " + response.body());
+		assertFalse(response.body().contains("temperature"), "expected only GEOJSON rows behind /geo: " + response.body());
 	}
 
 	@Test
@@ -233,16 +245,21 @@ public class DataAtlasHistoryIntegrationTest {
 	}
 
 	@Test
-	void theViewBoundsWhatTheEndpointServes() throws Exception {
+	void pagingBoundsWhatTheEndpointServes() throws Exception {
 		HttpResponse<String> response = awaitOk(BASE_URL + "/numeric", TEXT_CSV);
 
-		// 02-data.sql seeds one numeric row 25 hours old; the view keeps 7 days,
-		// so it must be present. The point of the assertion is the opposite of a
-		// row count: it pins that the endpoint reads the bounded view, so a
-		// hypertable that has been recording for a month cannot flood a response.
-		long dataRows = response.body().lines().filter(line -> !line.isBlank()).count() - 1;
-		assertTrue(dataRows >= 6, "expected all six seeded numeric rows through the 7-day view, got " + dataRows);
-		assertTrue(dataRows <= 1000, "the view caps at 1000 rows, so a response can never be unbounded");
+		// no view bounds the hypertable any more: the DataSet configuration's
+		// batchSize/batchSizeLimit (1000) do, and offset/limit page through it
+		List<String> rows = response.body().lines().filter(line -> !line.isBlank()).toList();
+		long dataRows = rows.size() - 1;
+		assertTrue(dataRows >= 6, "expected all six seeded numeric rows, got " + dataRows);
+		assertTrue(dataRows <= 1000, "batchSizeLimit caps at 1000 rows, so a response can never be unbounded");
+		// the query orders by time, newest first: the 25-hour-old recording comes last
+		assertTrue(rows.get(rows.size() - 1).contains("18.2"), "expected the oldest row last: " + rows.get(rows.size() - 1));
+
+		HttpResponse<String> page = awaitOk(BASE_URL + "/numeric?limit=2", TEXT_CSV);
+		long pageRows = page.body().lines().filter(line -> !line.isBlank()).count() - 1;
+		assertEquals(2, pageRows, "expected a page of two: " + page.body());
 	}
 
 	// --- helpers ---
@@ -251,7 +268,7 @@ public class DataAtlasHistoryIntegrationTest {
 		long deadline = System.currentTimeMillis() + DEADLINE_MS;
 		while (System.currentTimeMillis() < deadline) {
 			if (docker("exec", CONTAINER, "psql", "-U", DB, "-d", DB, "-tAc",
-					"select count(*) from sensinact.numeric_data_recent") == 0) {
+					"select count(*) from sensinact.history") == 0) {
 				return;
 			}
 			Thread.sleep(2000);

@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copy of model/query.ecore from org.eclipse.fennec.query.model 0.1.0-SNAPSHOT
+     (eclipse-fennec/emf.persistence-jpa, 2026-09-25), seeded into the Model Atlas
+     so that query-defined DataSets can be published in atlas mode. ONE change:
+     the upstream file references expression.ecore by the relative path
+     ../../org.eclipse.fennec.expression.model/model/expression.ecore, which no
+     schema registry can resolve; here every such reference is rewritten to the
+     nsURI https://eclipse.org/fennec/expression/1.0.0 (the published-schema
+     rule). Drop this copy once upstream references by nsURI - see
+     https://github.com/eclipse-fennec/emf.persistence-jpa/issues/359 (filed 2026-09-29,
+     "query.ecore references expression.ecore by relative path"). -->
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="query" nsURI="https://eclipse.org/fennec/query/2.0.0" nsPrefix="query">
+  <eAnnotations source="Version">
+    <details key="value" value="2.0"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="complianceLevel" value="21.0"/>
+    <details key="oSGiCompatible" value="true"/>
+    <details key="basePackage" value="org.eclipse.fennec.model"/>
+    <details key="copyrightText" value="Copyright (c) 2026 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0&#xA;&#xA;Contributors:&#xA;  Data In Motion Consulting - initial implementation"/>
+    <details key="documentation" value="The v2 query envelope around the Fennec Expression Model: root type, predicate, ordering, projection, aggregation pipeline, fetch hints, paging and declared parameters. Read-only by design — CUD lives in the command model (docs/unified-persistence/concept.md §14). See docs/unified-persistence/query-ir-redesign.md §4."/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="Query">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A backend-neutral read query. The shape of its result follows the content: countOnly → COUNT; apply with aggregation → AGGREGATION rows; select → PROJECTION rows; otherwise whole OBJECTS."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="from" lowerBound="1" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EClass">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The root type the query selects from — the type filter."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="predicate" eType="ecore:EClass https://eclipse.org/fennec/expression/1.0.0#//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The boolean filter expression; absent = match all."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="orderBy" upperBound="-1"
+        eType="#//OrderBy" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="select" upperBound="-1"
+        eType="#//Selection" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Projection subjects; non-empty select makes the query row-shaped."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="apply" eType="#//Pipeline"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optional aggregation pipeline, modelled after the OData $apply composition."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="expand" upperBound="-1"
+        eType="#//Expand" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Expansions: which non-containment references to resolve eagerly and batched with the result (decision D5 — envelope-level). An Expand carrying only a path is the plain fetch hint this feature held before issue #238."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="top" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Result cap; 0 = unlimited."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="skip" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="distinct" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="countOnly" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="withScores" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Requests the per-hit relevance score alongside object results (issue #165). An envelope flag rather than a query option, so the analyzer flags the SCORE capability and an undeclaring backend refuses with a Diagnostic (contract §2B). Declared-SCORE backends deliver hits() (object + score, streamed in rank order unless an explicit sort says otherwise) and scores() (the metadata-only id → score view, complete before any object is materialized) on the QueryResult; what the score of a hit without a scoring predicate is stays backend-defined."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parameters" upperBound="-1"
+        eType="#//ParameterDecl" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Declared parameters of a prepared query. Every ParameterRef in the predicate should be declared; binding happens at execution."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        iD="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Query name; required when saveQuery is set."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="saveQuery" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Marks the query to be persisted for later reuse (dogfooding — queries are EMF objects)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="OrderBy">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="One ordering entry — exactly one of path and key is set (issue #84). For row-shaped queries the path must address an output key (alias). key sorts by an arbitrary value expression (JPQL renders it inline; Mongo find-sorts refuse it via capability)."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="path" eType="ecore:EClass https://eclipse.org/fennec/expression/1.0.0#//PropertyPath"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="key" eType="ecore:EClass https://eclipse.org/fennec/expression/1.0.0#//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Sort by an arbitrary value expression (issue #84) — set instead of path."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="direction" lowerBound="1"
+        eType="#//SortDirection" defaultValueLiteral="ASC"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Expand">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="One expansion: a non-containment reference path to resolve eagerly and batched, optionally narrowed by query options (issue #238, docs/unified-persistence/expand-query-options.md).&#xA;&#xA;Both backends already deliver non-containment references as EMF proxies, so an expansion resolves proxies rather than shaping a result. The options therefore select WHICH proxies get resolved, never which entries the feature holds (D1): the collection keeps everything the store has, so the object cannot misreport it and writing it back loses nothing. What is delivered is exactly the selected set (D1b) — eIsProxy() discriminates the expansion from the untouched remainder.&#xA;&#xA;An Expand carrying only a path is the plain fetch hint of issue #95, unchanged."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="path" lowerBound="1" eType="ecore:EClass https://eclipse.org/fennec/expression/1.0.0#//PropertyPath"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The reference path to expand; every segment must be an EReference."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="filter" eType="ecore:EClass https://eclipse.org/fennec/expression/1.0.0#//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Narrows which children are resolved; addresses the expanded type, not the root. Requires the EXPAND_FILTER capability."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="orderBy" upperBound="-1"
+        eType="#//OrderBy" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Selector input for top/skip — 'the five newest' is orderBy plus top. It is NOT a delivered order: under D1 the list order belongs to the store, and an expansion cannot reorder a feature it does not own. Therefore served only together with top or skip, and refused standing alone (D3). Requires EXPAND_PAGE."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="top" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Resolve at most this many children per expanded parent; 0 = all. Requires EXPAND_PAGE."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="skip" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Skip this many children per expanded parent before resolving. Requires EXPAND_PAGE."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="expand" upperBound="-1"
+        eType="#//Expand" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Nested expansions, relative to the expanded type. OData allows arbitrary depth."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Selection">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="One projection subject - exactly one of path and key is set (issue #189, the projection counterpart of OrderBy). path names a navigation; the alias names the result column, and without an alias the cell is ordinal-only (dot-flattened path as the key). key projects an arbitrary value expression and requires an alias: an expression has no derivable column name."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="path" eType="ecore:EClass https://eclipse.org/fennec/expression/1.0.0#//PropertyPath"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="key" eType="ecore:EClass https://eclipse.org/fennec/expression/1.0.0#//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Project an arbitrary value expression (issue #189) - set instead of path, and only together with an alias."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ParameterDecl">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="typeHint" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EClassifier">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optional expected type of the bound value."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Pipeline">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Compositional aggregation: stages apply in order. v1 stages: Filter, GroupBy(+Aggregate), Top, Skip; further stages (Compute, Concat, BottomTop) are additive later (decision D3)."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="stages" lowerBound="1"
+        upperBound="-1" eType="#//Stage" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Stage" abstract="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FilterStage" eSuperTypes="#//Stage">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="predicate" lowerBound="1"
+        eType="ecore:EClass https://eclipse.org/fennec/expression/1.0.0#//Expression"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="GroupByStage" eSuperTypes="#//Stage">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Grouping over the given paths and expression keys with aggregate outputs. The effective group keys are paths plus keys; without either the aggregates apply to the whole input (single row). Expression keys (issue #87) accept arbitrary expressions including AliasRef to a pre-group compute alias."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="paths" upperBound="-1"
+        eType="ecore:EClass https://eclipse.org/fennec/expression/1.0.0#//PropertyPath"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="keys" upperBound="-1" eType="#//GroupKey"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="aggregates" lowerBound="1"
+        upperBound="-1" eType="#//Aggregate" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="representatives" eType="#//RepresentativeSpec"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The top-N documents of each group next to its aggregates (issue #214) — what SQL spells with a windowed ROW_NUMBER() OVER (PARTITION BY ...) and Lucene serves natively. Set here rather than as its own stage because it is a property of the grouping, and deliberately not the reserved BottomTop slot, which covers OData's topcount family over ROWS (the best groups by an aggregate) and is expressible today. Capability GROUP_REPRESENTATIVES."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RepresentativeSpec">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="How many documents of each group to hand out, and in which order (issue #214). The alias names one result cell that holds them as a list of EObjects — the shape decision R1: QueryResultRow cells are typed Object already, so this needs no SPI change and keeps grouped answers in the same row space as everything else. There is deliberately no total-count field: the group's full size is an ordinary COUNT aggregate on the same stage, so a truncated group shows as count greater than the number of representatives."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="count" lowerBound="1" eType="ecore:EClass https://eclipse.org/fennec/expression/1.0.0#//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="How many per group — a literal or a bound parameter, never a computed expression: an inverted index has to construct its search with the number known, the same rule MapValue's key carries. A count of zero or less is a validation error."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="offset" eType="ecore:EClass https://eclipse.org/fennec/expression/1.0.0#//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Where to start within the group, same constant rule as count. An offset past the end of a group yields an empty cell — the group's row, keys and aggregates still appear."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="orderBy" upperBound="-1"
+        eType="#//OrderBy" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The order WITHIN a group, kept apart from the order BETWEEN groups (which is the envelope's ordinary row ordering). Deliberately without a fallback to the envelope's orderBy: a query with representatives is grouped, so its envelope ordering addresses output columns rather than the documents inside a group. Left empty, the window is unspecified. Ordering groups by their best representative needs no vocabulary: a MIN/MAX aggregate over the sort key plus orderBy on that alias — a backend may recognise the pattern and use its native group sort, as optimisation, not semantics."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="GroupKey">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="One expression-valued group key (issue #87). The mandatory alias names the key in the result rows and makes it addressable via AliasRef in post-grouping stages — expression keys without a name would leave the row schema undefined."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
+        eType="ecore:EClass https://eclipse.org/fennec/expression/1.0.0#//Expression"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Aggregate">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="One aggregate output over exactly one of path or source (the validator refuses both or, except for COUNT, neither). path addresses a persisted attribute; source (issue #87) accepts an expression, notably an AliasRef to a pre-group compute alias. Both are optional for COUNT (count of group members)."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="path" eType="ecore:EClass https://eclipse.org/fennec/expression/1.0.0#//PropertyPath"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" eType="ecore:EClass https://eclipse.org/fennec/expression/1.0.0#//Expression"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="method" lowerBound="1"
+        eType="#//AggregateMethod"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TopStage" eSuperTypes="#//Stage">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="count" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SkipStage" eSuperTypes="#//Stage">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="count" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ComputeStage" eSuperTypes="#//Stage">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Alias-bound computed columns (issue #82, revisits decision D3; OData $apply compute). Three positions: terminal (no GroupBy in the pipeline — one row per entity: single-valued attributes plus the computed columns), after grouping (computations over aggregate aliases/group keys via AliasRef, e.g. Total div Cnt as Avg — visible to a trailing HAVING filter and orderBy), and before grouping (issue #87): the aliases bind a named scope for expression-valued group keys (GroupKey) and aggregate sources (Aggregate.source) — they are no result columns."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="computations" lowerBound="1"
+        upperBound="-1" eType="#//Computation" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Computation">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
+        eType="ecore:EClass https://eclipse.org/fennec/expression/1.0.0#//Expression"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="SortDirection">
+    <eLiterals name="ASC"/>
+    <eLiterals name="DESC" value="1"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="AggregateMethod">
+    <eLiterals name="SUM"/>
+    <eLiterals name="MIN" value="1"/>
+    <eLiterals name="MAX" value="2"/>
+    <eLiterals name="AVG" value="3"/>
+    <eLiterals name="COUNT" value="4"/>
+    <eLiterals name="COUNT_DISTINCT" value="5"/>
+  </eClassifiers>
+</ecore:EPackage>
