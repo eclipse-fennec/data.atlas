@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="asset" nsURI="https://eclipse.org/fennec/data/atlas/example/asset/1.0.0"
+    nsPrefix="asset">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="Assets of a leisure pool with a GeoJSON geometry: the source types of the example OGC API - Features service. Asset, Pool and Slide carry the https://eclipse.org/fennec/ogc/features annotation of emf.ogc.features (served as annotated); Bench does not and is published through the DataSet's OgcFeaturesDataServiceConfiguration alone."/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="Asset" abstract="true">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An asset of the leisure pool that has a location."/>
+    </eAnnotations>
+    <eAnnotations source="https://eclipse.org/fennec/persistence">
+      <details key="inheritance" value="SINGLE_TABLE"/>
+    </eAnnotations>
+    <eAnnotations source="https://eclipse.org/fennec/ogc/features">
+      <details key="collection" value="true"/>
+      <details key="id" value="assets"/>
+      <details key="title" value="All assets"/>
+      <details key="description" value="Every asset of the leisure pool."/>
+      <details key="geometry" value="geometry"/>
+      <details key="bbox" value="minX,minY,maxX,maxY"/>
+      <details key="temporal" value="lastInspection"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        iD="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="geometry" eType="#//GeoJsonGeometry">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Location of the asset as GeoJSON geometry in CRS84 (longitude, latitude)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="minX" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="minY" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="maxX" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="maxY" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="accessible" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lastInspection" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Pool" eSuperTypes="#//Asset">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A pool."/>
+    </eAnnotations>
+    <eAnnotations source="https://eclipse.org/fennec/ogc/features">
+      <details key="collection" value="true"/>
+      <details key="id" value="pools"/>
+      <details key="title" value="Pools"/>
+      <details key="layerGroup" value="Water"/>
+      <details key="style" value="#1e88e5"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="depthMax" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="waterTemperature" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Slide" eSuperTypes="#//Asset">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A water slide."/>
+    </eAnnotations>
+    <eAnnotations source="https://eclipse.org/fennec/ogc/features">
+      <details key="collection" value="true"/>
+      <details key="id" value="slides"/>
+      <details key="title" value="Slides"/>
+      <details key="layerGroup" value="Water"/>
+      <details key="style" value="#43a047"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="length" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Bench" eSuperTypes="#//Asset">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A bench. Carries no OGC annotation of its own: a Data Atlas publishes it through the configuration of its DataSet."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="seats" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="GeoJsonGeometry" instanceClassName="org.geojson.Geometry">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A GeoJSON geometry of the org.geojson model, persisted as GeoJSON text by the geojson TypeConverter of emf.ogc.features and held as GeoJSON text in XMI."/>
+    </eAnnotations>
+  </eClassifiers>
+</ecore:EPackage>

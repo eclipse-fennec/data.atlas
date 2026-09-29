@@ -53,7 +53,7 @@ today (2026-09-23):
 | `XMLADataService`, `XMLADataServiceConfiguration` | ignored — no XMLA endpoint configurator |
 | `GraphQLDataService`, `GraphQLDataServiceConfiguration` | ignored — no GraphQL endpoint configurator |
 | `QGisDataService`, `QGisDataServiceConfiguration` | ignored — no QGis endpoint configurator |
-| `OgcFeaturesDataService`, `OgcSensorThingsDataService` | ignored — no OGC endpoint configurators |
+| `OgcSensorThingsDataService` | ignored — no OGC SensorThings endpoint configurator |
 | `QueryTransformation`, `BridgeRepository.queryTrafo` | recognized but not executed: a bridge with a `queryTrafo` is refused and stays down |
 | `BridgeRepository.filter` | placeholder, no runtime effect |
 | `DataSet.childDataSet`, `DataSet.parentDataSet` | no runtime effect |
@@ -138,10 +138,10 @@ Concrete services: `RestDataService` (identity, `urlContext` and the `openAPI`
 marker; everything needed to serve a DataSet is on its per-dataset
 `RestDataServiceConfiguration`: `path`, `batchSize`, `batchSizeLimit`,
 `offsetParameterName`, `limitParameterName`), `GeoJsonDataService` and
-`ODataDataService` (both see below, same split),
+`ODataDataService` and `OgcFeaturesDataService` (all see below, same split),
 plus placeholders for `GraphQLDataService`,
 `XMLADataService` (OLAP/Daanse), `QGisDataService` (generated QGis layer
-configuration), `OgcFeaturesDataService` and `OgcSensorThingsDataService`.
+configuration) and `OgcSensorThingsDataService`.
 
 **`GeoJsonDataService`** publishes DataSets as RFC 7946 GeoJSON
 (`application/geo+json`): `GET {path}` returns a `FeatureCollection`,
@@ -175,6 +175,31 @@ and a DataSet with a `query` cannot be served (its base predicate would have
 to be composed with `$filter`): both are diagnosed configuration errors that
 keep the entity set down. Because the OData backend scopes by package, all
 types of one package served by one root must come from the same `DataInput`.
+
+**`OgcFeaturesDataService`** publishes DataSets as one OGC API - Features
+**root** (landing page at the `urlContext`, `/conformance`, `/api`,
+`/collections`, `/collections/{collectionId}/items` as GeoJSON with `bbox`,
+`datetime`, `limit` and CQL2 `filter`, a QGIS project at
+`/collections?f=qgs`, the map viewer at `/viewer/`), read-only, publishing
+exactly the collections its configurations declare. The service carries
+`defaultLimit` and `maxLimit` (page size and ceiling; -1 = server defaults 10
+and 10000). The per-dataset `OgcFeaturesDataServiceConfiguration` is
+override-else-default over the `https://eclipse.org/fennec/ogc/features`
+annotation of emf.ogc.features: an annotated EClass (`collection=true`) is
+served as annotated, every set feature — `collectionId` (default: the
+annotation's `id`, else the type name; unique per root), `title` (default:
+annotation, else the DataSet's name), `idFeature`, `geometryFeature`,
+`bboxFeatures` (the four attributes `minX`, `minY`, `maxX`, `maxY` of the
+persisted bounding box), `temporalFeature`, `layerGroup`, `style` — replaces
+the annotation's value, and a schema without the annotation is served through
+these features alone. The feature type is the DataSet's `outputType`; the
+geometry is an attribute whose EDataType has the instance class
+`org.geojson.Geometry` (GeoJSON text in XMI and in the database); a collection
+needs a feature id (`idFeature`, else the type's `iD` attribute) and a
+geometry. Missing either, a DataSet with a `query`, a declaration naming an
+attribute the type lacks, and two DataSets of one package served from
+different `DataInput`s in one root are diagnosed configuration errors that
+keep the collection down.
 
 ### `DistributionExport` — reusable serialization templates
 
@@ -291,6 +316,11 @@ slice: points of interest ([`example/model/poi.ecore`](example/model/poi.ecore),
 [`example/dataatlas-odata.xmi`](example/dataatlas-odata.xmi) is the Milestone
 10 slice: the persons served as the OData entity set `Persons` of the service
 root `/odata/persons`.
+[`example/dataatlas-ogc.xmi`](example/dataatlas-ogc.xmi) is the OGC API Features
+slice (data.atlas#16): the leisure pool assets ([`example/model/asset.ecore`](example/model/asset.ecore),
+[`example/data/assets.xmi`](example/data/assets.xmi)) served as the OGC API
+Features collections `pools`, `slides` (annotated EClasses) and `benches`
+(declared by configuration) of the root `/ogc/assets`.
 
 ## Open modeling questions
 

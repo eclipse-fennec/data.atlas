@@ -83,6 +83,7 @@ public class DAConfigFactoryImpl extends EFactoryImpl implements DAConfigFactory
 			case DAConfigPackage.QGIS_DATA_SERVICE_CONFIGURATION: return createQGisDataServiceConfiguration();
 			case DAConfigPackage.GRAPH_QL_DATA_SERVICE_CONFIGURATION: return createGraphQLDataServiceConfiguration();
 			case DAConfigPackage.OGC_FEATURES_DATA_SERVICE: return createOgcFeaturesDataService();
+			case DAConfigPackage.OGC_FEATURES_DATA_SERVICE_CONFIGURATION: return createOgcFeaturesDataServiceConfiguration();
 			case DAConfigPackage.OGC_SENSOR_THINGS_DATA_SERVICE: return createOgcSensorThingsDataService();
 			case DAConfigPackage.MONGO_DATA_INPUT: return createMongoDataInput();
 			case DAConfigPackage.FILE_DATA_INPUT: return createFileDataInput();
@@ -284,6 +285,17 @@ public class DAConfigFactoryImpl extends EFactoryImpl implements DAConfigFactory
 	public OgcFeaturesDataService createOgcFeaturesDataService() {
 		OgcFeaturesDataServiceImpl ogcFeaturesDataService = new OgcFeaturesDataServiceImpl();
 		return ogcFeaturesDataService;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public OgcFeaturesDataServiceConfiguration createOgcFeaturesDataServiceConfiguration() {
+		OgcFeaturesDataServiceConfigurationImpl ogcFeaturesDataServiceConfiguration = new OgcFeaturesDataServiceConfigurationImpl();
+		return ogcFeaturesDataServiceConfiguration;
 	}
 
 	/**

@@ -152,6 +152,10 @@ public class DAConfigAdapterFactory extends AdapterFactoryImpl {
 				return createOgcFeaturesDataServiceAdapter();
 			}
 			@Override
+			public Adapter caseOgcFeaturesDataServiceConfiguration(OgcFeaturesDataServiceConfiguration object) {
+				return createOgcFeaturesDataServiceConfigurationAdapter();
+			}
+			@Override
 			public Adapter caseOgcSensorThingsDataService(OgcSensorThingsDataService object) {
 				return createOgcSensorThingsDataServiceAdapter();
 			}
@@ -488,6 +492,20 @@ public class DAConfigAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createOgcFeaturesDataServiceAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataServiceConfiguration <em>Ogc Features Data Service Configuration</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataServiceConfiguration
+	 * @generated
+	 */
+	public Adapter createOgcFeaturesDataServiceConfigurationAdapter() {
 		return null;
 	}
 

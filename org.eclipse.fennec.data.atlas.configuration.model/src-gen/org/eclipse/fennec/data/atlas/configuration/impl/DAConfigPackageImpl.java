@@ -52,6 +52,7 @@ import org.eclipse.fennec.data.atlas.configuration.MongoDataSource;
 import org.eclipse.fennec.data.atlas.configuration.ODataDataService;
 import org.eclipse.fennec.data.atlas.configuration.ODataDataServiceConfiguration;
 import org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataService;
+import org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataServiceConfiguration;
 import org.eclipse.fennec.data.atlas.configuration.OgcSensorThingsDataService;
 import org.eclipse.fennec.data.atlas.configuration.QGisDataService;
 import org.eclipse.fennec.data.atlas.configuration.QGisDataServiceConfiguration;
@@ -202,6 +203,13 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	private EClass ogcFeaturesDataServiceEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass ogcFeaturesDataServiceConfigurationEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -1131,6 +1139,126 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
+	public EAttribute getOgcFeaturesDataService_DefaultLimit() {
+		return (EAttribute)ogcFeaturesDataServiceEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getOgcFeaturesDataService_MaxLimit() {
+		return (EAttribute)ogcFeaturesDataServiceEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getOgcFeaturesDataService_Configuration() {
+		return (EReference)ogcFeaturesDataServiceEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EClass getOgcFeaturesDataServiceConfiguration() {
+		return ogcFeaturesDataServiceConfigurationEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getOgcFeaturesDataServiceConfiguration_CollectionId() {
+		return (EAttribute)ogcFeaturesDataServiceConfigurationEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getOgcFeaturesDataServiceConfiguration_Title() {
+		return (EAttribute)ogcFeaturesDataServiceConfigurationEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getOgcFeaturesDataServiceConfiguration_IdFeature() {
+		return (EAttribute)ogcFeaturesDataServiceConfigurationEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getOgcFeaturesDataServiceConfiguration_GeometryFeature() {
+		return (EAttribute)ogcFeaturesDataServiceConfigurationEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getOgcFeaturesDataServiceConfiguration_BboxFeatures() {
+		return (EAttribute)ogcFeaturesDataServiceConfigurationEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getOgcFeaturesDataServiceConfiguration_TemporalFeature() {
+		return (EAttribute)ogcFeaturesDataServiceConfigurationEClass.getEStructuralFeatures().get(5);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getOgcFeaturesDataServiceConfiguration_LayerGroup() {
+		return (EAttribute)ogcFeaturesDataServiceConfigurationEClass.getEStructuralFeatures().get(6);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getOgcFeaturesDataServiceConfiguration_Style() {
+		return (EAttribute)ogcFeaturesDataServiceConfigurationEClass.getEStructuralFeatures().get(7);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getOgcSensorThingsDataService() {
 		return ogcSensorThingsDataServiceEClass;
 	}
@@ -1904,6 +2032,19 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		graphQLDataServiceConfigurationEClass = createEClass(GRAPH_QL_DATA_SERVICE_CONFIGURATION);
 
 		ogcFeaturesDataServiceEClass = createEClass(OGC_FEATURES_DATA_SERVICE);
+		createEAttribute(ogcFeaturesDataServiceEClass, OGC_FEATURES_DATA_SERVICE__DEFAULT_LIMIT);
+		createEAttribute(ogcFeaturesDataServiceEClass, OGC_FEATURES_DATA_SERVICE__MAX_LIMIT);
+		createEReference(ogcFeaturesDataServiceEClass, OGC_FEATURES_DATA_SERVICE__CONFIGURATION);
+
+		ogcFeaturesDataServiceConfigurationEClass = createEClass(OGC_FEATURES_DATA_SERVICE_CONFIGURATION);
+		createEAttribute(ogcFeaturesDataServiceConfigurationEClass, OGC_FEATURES_DATA_SERVICE_CONFIGURATION__COLLECTION_ID);
+		createEAttribute(ogcFeaturesDataServiceConfigurationEClass, OGC_FEATURES_DATA_SERVICE_CONFIGURATION__TITLE);
+		createEAttribute(ogcFeaturesDataServiceConfigurationEClass, OGC_FEATURES_DATA_SERVICE_CONFIGURATION__ID_FEATURE);
+		createEAttribute(ogcFeaturesDataServiceConfigurationEClass, OGC_FEATURES_DATA_SERVICE_CONFIGURATION__GEOMETRY_FEATURE);
+		createEAttribute(ogcFeaturesDataServiceConfigurationEClass, OGC_FEATURES_DATA_SERVICE_CONFIGURATION__BBOX_FEATURES);
+		createEAttribute(ogcFeaturesDataServiceConfigurationEClass, OGC_FEATURES_DATA_SERVICE_CONFIGURATION__TEMPORAL_FEATURE);
+		createEAttribute(ogcFeaturesDataServiceConfigurationEClass, OGC_FEATURES_DATA_SERVICE_CONFIGURATION__LAYER_GROUP);
+		createEAttribute(ogcFeaturesDataServiceConfigurationEClass, OGC_FEATURES_DATA_SERVICE_CONFIGURATION__STYLE);
 
 		ogcSensorThingsDataServiceEClass = createEClass(OGC_SENSOR_THINGS_DATA_SERVICE);
 
@@ -2038,6 +2179,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		qGisDataServiceConfigurationEClass.getESuperTypes().add(this.getDataServiceConfiguration());
 		graphQLDataServiceConfigurationEClass.getESuperTypes().add(this.getDataServiceConfiguration());
 		ogcFeaturesDataServiceEClass.getESuperTypes().add(this.getDataService());
+		ogcFeaturesDataServiceConfigurationEClass.getESuperTypes().add(this.getDataServiceConfiguration());
 		ogcSensorThingsDataServiceEClass.getESuperTypes().add(this.getDataService());
 		mongoDataInputEClass.getESuperTypes().add(this.getDataInput());
 		fileDataInputEClass.getESuperTypes().add(this.getDataInput());
@@ -2144,6 +2286,19 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		initEClass(graphQLDataServiceConfigurationEClass, GraphQLDataServiceConfiguration.class, "GraphQLDataServiceConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(ogcFeaturesDataServiceEClass, OgcFeaturesDataService.class, "OgcFeaturesDataService", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getOgcFeaturesDataService_DefaultLimit(), ecorePackage.getEBigInteger(), "defaultLimit", "-1", 1, 1, OgcFeaturesDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getOgcFeaturesDataService_MaxLimit(), ecorePackage.getEBigInteger(), "maxLimit", "-1", 1, 1, OgcFeaturesDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getOgcFeaturesDataService_Configuration(), this.getOgcFeaturesDataServiceConfiguration(), null, "configuration", null, 0, -1, OgcFeaturesDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+		initEClass(ogcFeaturesDataServiceConfigurationEClass, OgcFeaturesDataServiceConfiguration.class, "OgcFeaturesDataServiceConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getOgcFeaturesDataServiceConfiguration_CollectionId(), ecorePackage.getEString(), "collectionId", null, 0, 1, OgcFeaturesDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getOgcFeaturesDataServiceConfiguration_Title(), ecorePackage.getEString(), "title", null, 0, 1, OgcFeaturesDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getOgcFeaturesDataServiceConfiguration_IdFeature(), ecorePackage.getEString(), "idFeature", null, 0, 1, OgcFeaturesDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getOgcFeaturesDataServiceConfiguration_GeometryFeature(), ecorePackage.getEString(), "geometryFeature", null, 0, 1, OgcFeaturesDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getOgcFeaturesDataServiceConfiguration_BboxFeatures(), ecorePackage.getEString(), "bboxFeatures", null, 0, 4, OgcFeaturesDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getOgcFeaturesDataServiceConfiguration_TemporalFeature(), ecorePackage.getEString(), "temporalFeature", null, 0, 1, OgcFeaturesDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getOgcFeaturesDataServiceConfiguration_LayerGroup(), ecorePackage.getEString(), "layerGroup", null, 0, 1, OgcFeaturesDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getOgcFeaturesDataServiceConfiguration_Style(), ecorePackage.getEString(), "style", null, 0, 1, OgcFeaturesDataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(ogcSensorThingsDataServiceEClass, OgcSensorThingsDataService.class, "OgcSensorThingsDataService", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -2718,7 +2873,79 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		  (ogcFeaturesDataServiceEClass,
 		   source,
 		   new String[] {
-			   "documentation", "DataService that exposes DataSets via the OGC API - Features standard."
+			   "documentation", "DataService that exposes DataSets via the OGC API - Features standard (Part 1 Core, Part 3 Filtering with CQL2), served by the Fennec OGC API Features server (emf.ogc.features). One service is one API root with its own landing page at urlContext: /conformance, /collections, /collections/{collectionId}/items (GeoJSON, HTML), the OpenAPI document at /api, a QGIS project at /collections?f=qgs and, when the viewer bundle is present, a map viewer at {urlContext}/viewer/. The root publishes exactly the collections its configurations declare; every collection is served through the ReadRepository of its DataSet\'s DataInput, so bbox, datetime and CQL2 filters push down into the input. Read only."
+		   });
+		addAnnotation
+		  (getOgcFeaturesDataService_DefaultLimit(),
+		   source,
+		   new String[] {
+			   "documentation", "Page size of /items when a request carries no limit parameter. -1 means the server default (10)."
+		   });
+		addAnnotation
+		  (getOgcFeaturesDataService_MaxLimit(),
+		   source,
+		   new String[] {
+			   "documentation", "Largest page size served; a larger limit is reduced to it. -1 means the server default (10000)."
+		   });
+		addAnnotation
+		  (getOgcFeaturesDataService_Configuration(),
+		   source,
+		   new String[] {
+			   "documentation", "The per-DataSet collection configurations provided by this service."
+		   });
+		addAnnotation
+		  (ogcFeaturesDataServiceConfigurationEClass,
+		   source,
+		   new String[] {
+			   "documentation", "Everything the OGC API Features runtime needs to serve one DataSet of an OgcFeaturesDataService as a feature collection. The feature type is the DataSet\'s outputType. Override-else-default: an EClass carrying the https://eclipse.org/fennec/ogc/features annotation of emf.ogc.features (collection=true with id, geometry, bbox, temporal, idAttribute, layerGroup, style) is served as annotated; every feature set here replaces the annotation\'s value, and a schema without the annotation (e.g. one resolved from a Model Atlas) is served through these features alone. The geometry is an attribute whose EDataType has the instance class org.geojson.Geometry; a DataSet with neither an annotated nor a configured geometry attribute is a diagnosed configuration error and the collection stays down, as is a DataSet with a query (the base predicate cannot be composed with the collection filters). The feature id is idFeature, else the type\'s EMF id attribute - a collection needs one."
+		   });
+		addAnnotation
+		  (getOgcFeaturesDataServiceConfiguration_CollectionId(),
+		   source,
+		   new String[] {
+			   "documentation", "The collection id under the root (GET {urlContext}/collections/{collectionId}). Defaults to the annotation\'s id, else the outputType\'s EClass name; must be unique within the service."
+		   });
+		addAnnotation
+		  (getOgcFeaturesDataServiceConfiguration_Title(),
+		   source,
+		   new String[] {
+			   "documentation", "Title of the collection. Defaults to the annotation\'s title, else the DataSet\'s name."
+		   });
+		addAnnotation
+		  (getOgcFeaturesDataServiceConfiguration_IdFeature(),
+		   source,
+		   new String[] {
+			   "documentation", "Name of the attribute used as the feature id. Defaults to the annotation\'s idAttribute, else the EMF id attribute of the type."
+		   });
+		addAnnotation
+		  (getOgcFeaturesDataServiceConfiguration_GeometryFeature(),
+		   source,
+		   new String[] {
+			   "documentation", "Name of the attribute holding the feature geometry (EDataType with instance class org.geojson.Geometry, persisted as GeoJSON text). Defaults to the annotation\'s geometry."
+		   });
+		addAnnotation
+		  (getOgcFeaturesDataServiceConfiguration_BboxFeatures(),
+		   source,
+		   new String[] {
+			   "documentation", "The four attributes minX, minY, maxX, maxY holding the persisted bounding box of a feature, in this order; lets bbox requests push down into the input instead of testing every geometry. Defaults to the annotation\'s bbox."
+		   });
+		addAnnotation
+		  (getOgcFeaturesDataServiceConfiguration_TemporalFeature(),
+		   source,
+		   new String[] {
+			   "documentation", "Name of the date/time attribute the datetime parameter filters on. Defaults to the annotation\'s temporal."
+		   });
+		addAnnotation
+		  (getOgcFeaturesDataServiceConfiguration_LayerGroup(),
+		   source,
+		   new String[] {
+			   "documentation", "Group the map viewer and the QGIS project put the collection\'s layer in. Defaults to the annotation\'s layerGroup."
+		   });
+		addAnnotation
+		  (getOgcFeaturesDataServiceConfiguration_Style(),
+		   source,
+		   new String[] {
+			   "documentation", "Display style of the layer for the viewer and the QGIS project: a CSS color or a JSON object, as in the annotation. Defaults to the annotation\'s style."
 		   });
 		addAnnotation
 		  (ogcSensorThingsDataServiceEClass,
@@ -3206,13 +3433,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 			   "note", "no GraphQL endpoint configurator exists"
 		   });
 		addAnnotation
-		  (ogcFeaturesDataServiceEClass,
-		   source,
-		   new String[] {
-			   "implementation", "not implemented yet",
-			   "note", "no OGC API Features endpoint configurator exists"
-		   });
-		addAnnotation
 		  (ogcSensorThingsDataServiceEClass,
 		   source,
 		   new String[] {
@@ -3262,6 +3482,12 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		   });
 		addAnnotation
 		  (getQGisDataService_Configuration(),
+		   source,
+		   new String[] {
+			   "nullFree", "false"
+		   });
+		addAnnotation
+		  (getOgcFeaturesDataService_Configuration(),
 		   source,
 		   new String[] {
 			   "nullFree", "false"

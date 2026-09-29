@@ -206,6 +206,13 @@ public class DAConfigSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case DAConfigPackage.OGC_FEATURES_DATA_SERVICE_CONFIGURATION: {
+				OgcFeaturesDataServiceConfiguration ogcFeaturesDataServiceConfiguration = (OgcFeaturesDataServiceConfiguration)theEObject;
+				T result = caseOgcFeaturesDataServiceConfiguration(ogcFeaturesDataServiceConfiguration);
+				if (result == null) result = caseDataServiceConfiguration(ogcFeaturesDataServiceConfiguration);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case DAConfigPackage.OGC_SENSOR_THINGS_DATA_SERVICE: {
 				OgcSensorThingsDataService ogcSensorThingsDataService = (OgcSensorThingsDataService)theEObject;
 				T result = caseOgcSensorThingsDataService(ogcSensorThingsDataService);
@@ -595,6 +602,21 @@ public class DAConfigSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseOgcFeaturesDataService(OgcFeaturesDataService object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Ogc Features Data Service Configuration</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Ogc Features Data Service Configuration</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseOgcFeaturesDataServiceConfiguration(OgcFeaturesDataServiceConfiguration object) {
 		return null;
 	}
 

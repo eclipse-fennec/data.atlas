@@ -171,6 +171,36 @@ Implemented today (roadmap Milestones 0–8):
   lifecycle (torn down on removal, rebuilt on change). DCAT publication maps
   an OData root DataService-first: the root as `endpointURL`, its `$metadata`
   as `endpointDescription`, one JSON distribution per entity set.
+- **OGC API Features serving** (data.atlas#16): the omittable
+  `ogc` bundle follows the OData pattern — it tracks `OgcFeaturesDataService`
+  configuration services and the `ReadRepository`s of their inputs and
+  configures the Fennec OGC API Features server (emf.ogc.features) through
+  Config Admin. One service becomes one API root: a factory configuration of
+  the `OgcFeaturesServlet` mounted at `{urlContext}` and `{urlContext}/*` on
+  the Data Atlas HTTP runtime (emf.ogc.features#10) whose `collections`
+  allowlist holds exactly the configured collections (#11); per `DataInput`
+  one repository feature source over the input's `ReadRepository`, tied to
+  the root by a marker property its `source.target` selects, so `bbox`,
+  `datetime` and CQL2 push down through the same facade as everything else;
+  per DataSet whose type is not annotated — or whose configuration overrides
+  the annotation — one configured collection (#12, override-else-default:
+  annotation values, the configuration's on top, DataSet name/description as
+  last resort); and the map viewer below the root. The geometry is an
+  attribute of an `org.geojson.Geometry` EDataType; a `JPADataInput` serving
+  such a type binds the `geojson` type converter of the feature source
+  (GeoJSON text in a large-value column). Gating: no feature id, no geometry,
+  a query-defined DataSet, an unknown attribute, colliding collection ids or
+  two inputs for one package keep the collection down; roots follow the M4
+  lifecycle. DCAT publication maps a root DataService-first: the landing page
+  as `endpointURL`, `/api` as `endpointDescription`, one `application/geo+json`
+  distribution per collection (`/collections/{id}/items`); the QGIS project is
+  not a dataset distribution and is left to the root's own links. Dynamic
+  packages (schemas loaded from `.ecore` or a Model Atlas, the Data Atlas
+  case) resolve the instance class of the geometry data type through the
+  `org.eclipse.emf.ecore` bundle's class loader, so the runtime requires
+  emf.ogc.features' `ecore.fragment` explicitly (fragments are never added by
+  the resolver) and relies on its GeoJSON `ConversionDelegate` for XMI-held
+  geometries (emf.ogc.features#14, fixed 2026-09-29).
 - **Data transformations** (Milestone 6): the `transformation` bundle turns
   every `DataTransformation` configuration service into a ready-to-execute
   `DataTransformer` (fennec m2x QVT-O engine; the compiled AST — the

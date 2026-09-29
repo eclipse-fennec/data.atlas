@@ -17,6 +17,28 @@
       publication="dcat-open-data">
     <configuration id="dcat-persons-rest-config" dataSet="dcat-persons" path="persons"/>
   </services>
+  <!-- an OGC API Features root over the leisure pool assets, published with the
+       same declaration: the landing page is the endpoint, one GeoJSON distribution
+       per collection (annotated pools, configuration-declared benches) -->
+  <dataInputs xsi:type="configuration:FileDataInput" id="dcat-assets-file" uri="data/assets.xmi">
+    <supportedEClasses href="model/asset.ecore#//Pool"/>
+    <supportedEClasses href="model/asset.ecore#//Bench"/>
+  </dataInputs>
+  <dataSets id="dcat-pools" name="pools" description="The pools of the leisure pool." dataInput="dcat-assets-file">
+    <inputType href="model/asset.ecore#//Pool"/>
+    <outputType href="model/asset.ecore#//Pool"/>
+  </dataSets>
+  <dataSets id="dcat-benches" name="Benches" description="The benches of the leisure pool." dataInput="dcat-assets-file">
+    <inputType href="model/asset.ecore#//Bench"/>
+    <outputType href="model/asset.ecore#//Bench"/>
+  </dataSets>
+  <services xsi:type="configuration:OgcFeaturesDataService" id="dcat-assets-ogc" name="Assets OGC"
+      description="OGC API Features root publishing the leisure pool assets." urlContext="/dcat-ogc"
+      publication="dcat-open-data">
+    <configuration id="dcat-pools-collection" dataSet="dcat-pools"/>
+    <configuration id="dcat-benches-collection" dataSet="dcat-benches" collectionId="benches" geometryFeature="geometry"
+        idFeature="id"/>
+  </services>
   <publications id="dcat-open-data" catalog="test-catalog" publisherName="Data Atlas integration suite"
       licenseUri="http://dcat-ap.de/def/licenses/dl-by-de/2.0">
     <keywords>persons</keywords>

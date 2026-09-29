@@ -26,6 +26,8 @@ import org.eclipse.fennec.data.atlas.configuration.DcatPublication;
 import org.eclipse.fennec.data.atlas.configuration.DistributionExport;
 import org.eclipse.fennec.data.atlas.configuration.ODataDataService;
 import org.eclipse.fennec.data.atlas.configuration.ODataDataServiceConfiguration;
+import org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataService;
+import org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataServiceConfiguration;
 import org.eclipse.fennec.data.atlas.configuration.RestDataService;
 import org.eclipse.fennec.data.atlas.configuration.RestDataServiceConfiguration;
 
@@ -68,6 +70,8 @@ final class DcatMapper {
 
 	private static final String GENMODEL_SOURCE = "http://www.eclipse.org/emf/2002/GenModel";
 	private static final String IANA_MEDIA_TYPES = "http://www.iana.org/assignments/media-types/";
+	/** The collection annotation of emf.ogc.features (its {@code id} detail names the collection). */
+	private static final String OGC_FEATURES_SOURCE = "https://eclipse.org/fennec/ogc/features";
 
 	/** Everything one sync run registers and links for one provider. */
 	record ProviderPlan(String portal, String catalog, String serviceId, dcat.DataService dcatService,
@@ -108,10 +112,11 @@ final class DcatMapper {
 			problems.add("no public base URL is configured (set " + DcatPublicationConfigurator.PID
 					+ " / public.base.url, e.g. via DATA_ATLAS_PUBLIC_BASE_URL)");
 		}
-		if (!(service instanceof RestDataService) && !(service instanceof ODataDataService)) {
+		if (!(service instanceof RestDataService) && !(service instanceof ODataDataService)
+				&& !(service instanceof OgcFeaturesDataService)) {
 			throw new PublicationConfigException("DataService '" + service.getId() + "': publication of a "
-					+ service.eClass().getName()
-					+ " is not supported (only RestDataService and ODataDataService in this version)");
+					+ service.eClass().getName() + " is not supported (only RestDataService, ODataDataService and "
+					+ "OgcFeaturesDataService in this version)");
 		}
 		if (publication.getCatalog() == null || publication.getCatalog().isBlank()) {
 			problems.add("publication '" + publication.getId() + "' names no target catalog");
@@ -124,6 +129,9 @@ final class DcatMapper {
 			if (service instanceof ODataDataService) {
 				// the CSDL document describes the service (DCAT-AP: endpointDescription)
 				dcatService.getEndpointDescription().add(endpointUrl + "/$metadata");
+			} else if (service instanceof OgcFeaturesDataService) {
+				// the OpenAPI document of the API root describes the service
+				dcatService.getEndpointDescription().add(endpointUrl + "/api");
 			}
 		}
 		applyResourceMetadata(dcatService, publication, service.getName(), service.getDescription(), null,
@@ -140,7 +148,22 @@ final class DcatMapper {
 			for (RestDataServiceConfiguration configuration : byDataSet.values()) {
 				DataSet dataSet = configuration.getDataSet();
 				String path = configuration.getPath() != null ? configuration.getPath() : dataSet.getName();
-				datasets.add(planDataSet(service, dataSet, path, false, publication, endpointUrl, problems));
+				datasets.add(planDataSet(service, dataSet, path, Shape.REST, publication, endpointUrl, problems));
+			}
+		} else if (service instanceof OgcFeaturesDataService ogc) {
+			Map<String, OgcFeaturesDataServiceConfiguration> byDataSet = new LinkedHashMap<>();
+			for (OgcFeaturesDataServiceConfiguration configuration : ogc.getConfiguration()) {
+				if (configuration.getDataSet() != null) {
+					byDataSet.putIfAbsent(configuration.getDataSet().getId(), configuration);
+				}
+			}
+			for (OgcFeaturesDataServiceConfiguration configuration : byDataSet.values()) {
+				DataSet dataSet = configuration.getDataSet();
+				// the collection id mirrors the ogc bundle's derivation
+				String collectionId = collectionId(configuration, dataSet.getOutputType());
+				datasets.add(planDataSet(service, dataSet, collectionId == null ? null
+						: "collections/" + collectionId + "/items", Shape.OGC_FEATURES, publication, endpointUrl,
+						problems));
 			}
 		} else {
 			Map<String, ODataDataServiceConfiguration> byDataSet = new LinkedHashMap<>();
@@ -155,7 +178,8 @@ final class DcatMapper {
 				String entitySet = configuration.getEntitySetName() != null
 						&& !configuration.getEntitySetName().isBlank() ? configuration.getEntitySetName().trim()
 								: dataSet.getOutputType() != null ? dataSet.getOutputType().getName() : null;
-				datasets.add(planDataSet(service, dataSet, entitySet, true, publication, endpointUrl, problems));
+				datasets.add(planDataSet(service, dataSet, entitySet, Shape.ODATA, publication, endpointUrl,
+						problems));
 			}
 		}
 
@@ -167,12 +191,35 @@ final class DcatMapper {
 		return new ProviderPlan(publication.getPortal(), publication.getCatalog(), serviceId, dcatService, datasets);
 	}
 
+	/** The distribution shape of a service kind. */
+	private enum Shape {
+		REST, ODATA, OGC_FEATURES
+	}
+
+	/**
+	 * The collection id of an OGC API Features configuration: the configured
+	 * {@code collectionId}, else the {@code id} of the type's
+	 * {@code https://eclipse.org/fennec/ogc/features} annotation, else the type
+	 * name — the same derivation the ogc bundle serves by.
+	 */
+	private static String collectionId(OgcFeaturesDataServiceConfiguration configuration, EClass type) {
+		if (configuration.getCollectionId() != null && !configuration.getCollectionId().isBlank()) {
+			return configuration.getCollectionId().trim();
+		}
+		if (type == null) {
+			return null;
+		}
+		EAnnotation annotation = type.getEAnnotation(OGC_FEATURES_SOURCE);
+		String annotated = annotation == null ? null : annotation.getDetails().get("id");
+		return annotated != null && !annotated.isBlank() ? annotated.trim() : type.getName();
+	}
+
 	/**
 	 * Plans one served DataSet: {@code path} is the segment under the service
-	 * endpoint it is reachable at (REST path or OData entity set name);
-	 * {@code odata} selects the distribution shape.
+	 * endpoint it is reachable at (REST path, OData entity set name or the OGC
+	 * collection's items path); {@code shape} selects the distribution shape.
 	 */
-	private static DatasetPlan planDataSet(DataService service, DataSet dataSet, String path, boolean odata,
+	private static DatasetPlan planDataSet(DataService service, DataSet dataSet, String path, Shape shape,
 			DcatPublication servicePublication, String endpointUrl, List<String> problems) {
 		// override-else-default (DA-DCAT-7): a DataSet's own declaration wins
 		DcatPublication publication = dataSet.getPublication() != null ? dataSet.getPublication()
@@ -194,15 +241,22 @@ final class DcatMapper {
 
 		String dataSetUrl = endpointUrl == null || path == null ? null : endpointUrl + "/" + path;
 		if (path == null) {
-			problems.add(where + ": neither a configured " + (odata ? "entity set name" : "path")
-					+ " nor a name to derive one from");
+			problems.add(where + ": neither a configured " + switch (shape) {
+			case ODATA -> "entity set name";
+			case OGC_FEATURES -> "collection id";
+			default -> "path";
+			} + " nor a name to derive one from");
 		}
 
 		List<DistributionPlan> distributions = new ArrayList<>();
-		if (odata) {
+		if (shape == Shape.ODATA) {
 			// one entity set = one distribution: OData JSON is the protocol's format
 			distributions.add(planDistribution("odata", "application/json", dataSetUrl, publication, where,
 					problems));
+		} else if (shape == Shape.OGC_FEATURES) {
+			// one collection = one distribution: its items as GeoJSON
+			distributions.add(planDistribution("ogc-features", "application/geo+json", dataSetUrl, publication,
+					where, problems));
 		} else {
 			for (Map.Entry<String, String> entry : mediaTypesOf(dataSet, service, where, problems).entrySet()) {
 				distributions.add(planDistribution(entry.getKey(), entry.getValue(), dataSetUrl, publication,

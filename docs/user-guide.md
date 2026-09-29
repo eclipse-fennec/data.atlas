@@ -41,6 +41,7 @@ instances of those schemas.
   - [Transforming Data: QVT-O over a Bridge](#transforming-data-qvt-o-over-a-bridge)
   - [Serving GeoJSON](#serving-geojson)
   - [Serving OData](#serving-odata)
+  - [Serving OGC API Features](#serving-ogc-api-features)
   - [Referencing Schemas](#referencing-schemas)
 - [Configuration Lifecycle](#configuration-lifecycle)
   - [File Mode: Watching the Configuration File](#file-mode-watching-the-configuration-file)
@@ -874,6 +875,115 @@ creates; the same PID names the HTTP runtime the roots mount on
 (`http.whiteboard.target`, set to the Data Atlas instance by the runtime
 Configurator). A Data Atlas without the `odata` bundle serves no OData and is
 otherwise unchanged; a declared `ODataDataService` is then ignored.
+
+### Serving OGC API Features
+
+An `OgcFeaturesDataService` publishes DataSets as **one OGC API - Features
+root** served by the
+[Fennec OGC API Features server](https://github.com/eclipse-fennec/emf.ogc.features):
+`GET {urlContext}` is the landing page, `{urlContext}/conformance` the
+conformance declaration (Part 1 Core, GeoJSON and HTML, Part 3 Filtering with
+CQL2 text and JSON), `{urlContext}/api` the OpenAPI document,
+`{urlContext}/collections` the collections and
+`{urlContext}/collections/{collectionId}/items` the features of one — a
+GeoJSON `FeatureCollection` with `bbox`, `datetime`, `limit` and CQL2 `filter`
+parameters, `.../items/{featureId}` one `Feature`. The root is read-only and
+publishes exactly the configured collections — an unlisted collection is a
+`404`, even when its EClass is annotated. `{urlContext}/collections?f=qgs`
+is a ready-made QGIS project of the root, and `{urlContext}/viewer/` a
+MapLibre map viewer of its layers.
+
+```xml
+<services xsi:type="configuration:OgcFeaturesDataService" id="assets-ogc" name="Leisure pool assets"
+    description="OGC API - Features root publishing the assets of the leisure pool." urlContext="/ogc/assets"
+    defaultLimit="50">
+  <configuration id="pools-collection" dataSet="pools"/>
+  <configuration id="benches-collection" dataSet="benches" collectionId="benches" geometryFeature="geometry"
+      idFeature="id" layerGroup="Furniture" style="#8d6e63">
+    <bboxFeatures>minX</bboxFeatures>
+    <bboxFeatures>minY</bboxFeatures>
+    <bboxFeatures>maxX</bboxFeatures>
+    <bboxFeatures>maxY</bboxFeatures>
+  </configuration>
+</services>
+```
+
+- The **feature type** is the DataSet's `outputType`. Its **geometry** is an
+  attribute whose EDataType has the instance class `org.geojson.Geometry`
+  (declare one in the schema, e.g. `GeoJsonGeometry`); in XMI and in the
+  database it is GeoJSON text. Four optional numeric attributes hold the
+  persisted **bounding box** (`minX`, `minY`, `maxX`, `maxY`), so `bbox`
+  requests push down as range predicates instead of testing every geometry;
+  a date attribute serves the `datetime` parameter.
+- **Override-else-default.** An EClass carrying the
+  `https://eclipse.org/fennec/ogc/features` annotation of emf.ogc.features
+  (`collection=true` with `id`, `title`, `geometry`, `bbox`, `temporal`,
+  `idAttribute`, `layerGroup`, `style`; the attribute details are inherited
+  from supertypes) is served as annotated — a configuration entry with just the
+  DataSet is enough. Every feature set on the
+  `OgcFeaturesDataServiceConfiguration` (`collectionId`, `title`, `idFeature`,
+  `geometryFeature`, `bboxFeatures`, `temporalFeature`, `layerGroup`, `style`)
+  replaces the annotation's value, and a schema **without** the annotation —
+  one resolved from a Model Atlas, say — is served through these features
+  alone (title then defaults to the DataSet's name). The collection id defaults
+  to the annotation's `id`, else the type name, and must be unique per root.
+- A collection needs a **feature id** (`idFeature`, else the type's `iD`
+  attribute) and a **geometry**; a DataSet with neither an annotated nor a
+  configured geometry is a diagnosed configuration error and the collection
+  stays down. The same holds for a DataSet with a `query` (its base predicate
+  cannot be composed with the collection filters yet), a declaration naming an
+  attribute the type lacks, and two DataSets of one package served from
+  different `DataInput`s in one root (the feature source scopes by package).
+- `defaultLimit` is the page size without a `limit` parameter (server default
+  10), `maxLimit` the ceiling a larger `limit` is cut to (10000); pages carry
+  `next` links.
+- **Filters push down** through the DataInput's repository: a JPA input
+  evaluates `bbox` (over the bbox attributes), `datetime` and the CQL2
+  predicate in the database, file and bridge inputs in memory. Spatial
+  predicates of CQL2 (`S_INTERSECTS` etc.) are tested exactly on the
+  geometries of the candidate page.
+- **JPA inputs and the geometry.** When a served type has a GeoJSON geometry
+  attribute, the `JPADataInput`'s persistence unit binds the `geojson` type
+  converter of emf.ogc.features (`fennec.jpa.converter.target`), which stores
+  the geometry as GeoJSON text in a large-value column. The converter ships
+  with the OGC feature source, so such an input needs the `ogc` bundle in
+  the runtime — without it the unit waits for the converter and the input
+  stays down.
+- The root mounts **directly on the HTTP runtime**, not under the REST
+  whiteboard's `/rest` prefix — with the docker images the example root is
+  `http://localhost:8080/ogc/assets`. The M4 lifecycle applies: removing the
+  service from the configuration takes the root down.
+- **Dynamic schemas.** A schema the Data Atlas resolves at runtime is a
+  dynamic EPackage, and EMF resolves the instance class of its data types
+  through the `org.eclipse.emf.ecore` bundle. The runtime therefore carries
+  emf.ogc.features' `ecore.fragment` (a fragment of that bundle importing
+  `org.geojson`; listed explicitly in the bndruns because the resolver never
+  adds fragments on its own) and its GeoJSON conversion, which turns the
+  attribute text of an XMI file into a geometry and back — so a
+  `FileDataInput` serves geometries too (emf.ogc.features#14).
+
+```bash
+curl http://localhost:8080/ogc/assets                            # landing page
+curl http://localhost:8080/ogc/assets/collections                # the configured collections
+curl "http://localhost:8080/ogc/assets/collections/pools/items?limit=2"
+curl "http://localhost:8080/ogc/assets/collections/pools/items?bbox=11.619,50.906,11.62,50.907"
+curl "http://localhost:8080/ogc/assets/collections/pools/items?filter=waterTemperature%20%3E%2025"
+curl "http://localhost:8080/ogc/assets/collections/benches/items/bench-2"
+curl -o assets.qgs "http://localhost:8080/ogc/assets/collections?f=qgs"   # open in QGIS
+# the map viewer: http://localhost:8080/ogc/assets/viewer/
+```
+
+The shipped example is `configuration.model/example/dataatlas-ogc.xmi` over
+`example/model/asset.ecore` and `example/data/assets.xmi`. Deployment-wide
+server settings are configuration of the Data Atlas PID
+`org.eclipse.fennec.data.atlas.ogc`: `http.whiteboard.target` names the HTTP
+runtime the roots mount on (set to the Data Atlas instance by the runtime
+Configurator), `public.base.url` (`DATA_ATLAS_PUBLIC_BASE_URL`) the public base
+the roots' links are built on behind a proxy, and any `ogc.*` key is passed
+to every root's servlet configuration with the prefix stripped (e.g.
+`ogc.corsOrigin`, `ogc.layerFolders`). A Data Atlas without the `ogc` bundle
+serves no OGC API Features and is otherwise unchanged; a declared
+`OgcFeaturesDataService` is then ignored.
 
 ### Referencing Schemas
 

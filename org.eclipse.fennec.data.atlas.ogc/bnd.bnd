@@ -1,0 +1,21 @@
+Bundle-Name: Fennec Data Atlas - OGC API Features Endpoint Configurator
+Bundle-Description: Tracks OgcFeaturesDataService configuration services and turns every service \
+	into one OGC API - Features root of the Fennec OGC API Features server (emf.ogc.features): a \
+	servlet instance under the service's urlContext publishing exactly the configured collections \
+	(annotated ones as they are, the others declared by configuration), backed by repository feature \
+	sources over the ReadRepositories realizing the DataInputs, plus the map viewer below the root. \
+	Omittable: a Data Atlas without it serves no OGC API Features and is otherwise unchanged.
+
+-library: enableEMF
+
+-buildpath: \
+	org.osgi.service.component.annotations;version=latest,\
+	org.osgi.service.component;version=latest,\
+	org.osgi.service.cm;version=latest,\
+	org.osgi.service.servlet;version=latest,\
+	org.eclipse.fennec.data.atlas.configuration.model;version=project,\
+	org.eclipse.fennec.data.atlas.api;version=project,\
+	org.eclipse.fennec.persistence.repository;version=latest,\
+	org.eclipse.fennec.query.model;version=latest,\
+	org.eclipse.fennec.expression.model;version=latest,\
+	org.eclipse.fennec.ogc.features.api;version=latest

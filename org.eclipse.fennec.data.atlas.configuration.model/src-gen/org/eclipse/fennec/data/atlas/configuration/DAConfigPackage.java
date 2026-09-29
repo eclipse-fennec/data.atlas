@@ -50,7 +50,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * @generated
  */
 @ProviderType
-@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:5632ec38cd6a7730fdc19bad1d777b4455e19281592c2b4241e973d6ae2939cf", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
+@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:653063bba413c3bea9228ca51ec9d9607016f3aea02aa2ca6d8039d25d6d4d5e", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
 public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	/**
 	 * The package name.
@@ -1786,13 +1786,40 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	int OGC_FEATURES_DATA_SERVICE__URL_CONTEXT = DATA_SERVICE__URL_CONTEXT;
 
 	/**
+	 * The feature id for the '<em><b>Default Limit</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OGC_FEATURES_DATA_SERVICE__DEFAULT_LIMIT = DATA_SERVICE_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Max Limit</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OGC_FEATURES_DATA_SERVICE__MAX_LIMIT = DATA_SERVICE_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Configuration</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OGC_FEATURES_DATA_SERVICE__CONFIGURATION = DATA_SERVICE_FEATURE_COUNT + 2;
+
+	/**
 	 * The number of structural features of the '<em>Ogc Features Data Service</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int OGC_FEATURES_DATA_SERVICE_FEATURE_COUNT = DATA_SERVICE_FEATURE_COUNT + 0;
+	int OGC_FEATURES_DATA_SERVICE_FEATURE_COUNT = DATA_SERVICE_FEATURE_COUNT + 3;
 
 	/**
 	 * The operation id for the '<em>Get Distributions</em>' operation.
@@ -1813,6 +1840,124 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	int OGC_FEATURES_DATA_SERVICE_OPERATION_COUNT = DATA_SERVICE_OPERATION_COUNT + 0;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.OgcFeaturesDataServiceConfigurationImpl <em>Ogc Features Data Service Configuration</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.fennec.data.atlas.configuration.impl.OgcFeaturesDataServiceConfigurationImpl
+	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getOgcFeaturesDataServiceConfiguration()
+	 * @generated
+	 */
+	int OGC_FEATURES_DATA_SERVICE_CONFIGURATION = 18;
+
+	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OGC_FEATURES_DATA_SERVICE_CONFIGURATION__ID = DATA_SERVICE_CONFIGURATION__ID;
+
+	/**
+	 * The feature id for the '<em><b>Data Set</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OGC_FEATURES_DATA_SERVICE_CONFIGURATION__DATA_SET = DATA_SERVICE_CONFIGURATION__DATA_SET;
+
+	/**
+	 * The feature id for the '<em><b>Collection Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OGC_FEATURES_DATA_SERVICE_CONFIGURATION__COLLECTION_ID = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Title</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OGC_FEATURES_DATA_SERVICE_CONFIGURATION__TITLE = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Id Feature</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OGC_FEATURES_DATA_SERVICE_CONFIGURATION__ID_FEATURE = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>Geometry Feature</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OGC_FEATURES_DATA_SERVICE_CONFIGURATION__GEOMETRY_FEATURE = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 3;
+
+	/**
+	 * The feature id for the '<em><b>Bbox Features</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OGC_FEATURES_DATA_SERVICE_CONFIGURATION__BBOX_FEATURES = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 4;
+
+	/**
+	 * The feature id for the '<em><b>Temporal Feature</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OGC_FEATURES_DATA_SERVICE_CONFIGURATION__TEMPORAL_FEATURE = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 5;
+
+	/**
+	 * The feature id for the '<em><b>Layer Group</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OGC_FEATURES_DATA_SERVICE_CONFIGURATION__LAYER_GROUP = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 6;
+
+	/**
+	 * The feature id for the '<em><b>Style</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OGC_FEATURES_DATA_SERVICE_CONFIGURATION__STYLE = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 7;
+
+	/**
+	 * The number of structural features of the '<em>Ogc Features Data Service Configuration</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OGC_FEATURES_DATA_SERVICE_CONFIGURATION_FEATURE_COUNT = DATA_SERVICE_CONFIGURATION_FEATURE_COUNT + 8;
+
+	/**
+	 * The number of operations of the '<em>Ogc Features Data Service Configuration</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OGC_FEATURES_DATA_SERVICE_CONFIGURATION_OPERATION_COUNT = DATA_SERVICE_CONFIGURATION_OPERATION_COUNT + 0;
+
+	/**
 	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.OgcSensorThingsDataServiceImpl <em>Ogc Sensor Things Data Service</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1820,7 +1965,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getOgcSensorThingsDataService()
 	 * @generated
 	 */
-	int OGC_SENSOR_THINGS_DATA_SERVICE = 18;
+	int OGC_SENSOR_THINGS_DATA_SERVICE = 19;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1929,7 +2074,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getMongoDataInput()
 	 * @generated
 	 */
-	int MONGO_DATA_INPUT = 19;
+	int MONGO_DATA_INPUT = 20;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1993,7 +2138,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getFileDataInput()
 	 * @generated
 	 */
-	int FILE_DATA_INPUT = 20;
+	int FILE_DATA_INPUT = 21;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2057,7 +2202,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getJPADataInput()
 	 * @generated
 	 */
-	int JPA_DATA_INPUT = 21;
+	int JPA_DATA_INPUT = 22;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2130,7 +2275,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getTransformation()
 	 * @generated
 	 */
-	int TRANSFORMATION = 28;
+	int TRANSFORMATION = 29;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2185,7 +2330,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDataTransformation()
 	 * @generated
 	 */
-	int DATA_TRANSFORMATION = 22;
+	int DATA_TRANSFORMATION = 23;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2267,7 +2412,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getQueryTransformation()
 	 * @generated
 	 */
-	int QUERY_TRANSFORMATION = 23;
+	int QUERY_TRANSFORMATION = 24;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2322,7 +2467,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getODataDataService()
 	 * @generated
 	 */
-	int ODATA_DATA_SERVICE = 24;
+	int ODATA_DATA_SERVICE = 25;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2440,7 +2585,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getODataDataServiceConfiguration()
 	 * @generated
 	 */
-	int ODATA_DATA_SERVICE_CONFIGURATION = 25;
+	int ODATA_DATA_SERVICE_CONFIGURATION = 26;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2504,7 +2649,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDistributionExport()
 	 * @generated
 	 */
-	int DISTRIBUTION_EXPORT = 26;
+	int DISTRIBUTION_EXPORT = 27;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2568,7 +2713,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getCSVDistributionExport()
 	 * @generated
 	 */
-	int CSV_DISTRIBUTION_EXPORT = 27;
+	int CSV_DISTRIBUTION_EXPORT = 28;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2659,7 +2804,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDcatPublication()
 	 * @generated
 	 */
-	int DCAT_PUBLICATION = 29;
+	int DCAT_PUBLICATION = 30;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2795,7 +2940,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDataSource()
 	 * @generated
 	 */
-	int DATA_SOURCE = 30;
+	int DATA_SOURCE = 31;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2859,7 +3004,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDatabaseDataSource()
 	 * @generated
 	 */
-	int DATABASE_DATA_SOURCE = 31;
+	int DATABASE_DATA_SOURCE = 32;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2977,7 +3122,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getConnectionProperty()
 	 * @generated
 	 */
-	int CONNECTION_PROPERTY = 32;
+	int CONNECTION_PROPERTY = 33;
 
 	/**
 	 * The feature id for the '<em><b>Key</b></em>' attribute.
@@ -3023,7 +3168,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getJdbcDataSource()
 	 * @generated
 	 */
-	int JDBC_DATA_SOURCE = 33;
+	int JDBC_DATA_SOURCE = 34;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -3159,7 +3304,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getMongoDataSource()
 	 * @generated
 	 */
-	int MONGO_DATA_SOURCE = 34;
+	int MONGO_DATA_SOURCE = 35;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -3295,7 +3440,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getJdbcDriver()
 	 * @generated
 	 */
-	int JDBC_DRIVER = 35;
+	int JDBC_DRIVER = 36;
 
 
 	/**
@@ -4080,6 +4225,137 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 */
 	EClass getOgcFeaturesDataService();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataService#getDefaultLimit <em>Default Limit</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Default Limit</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataService#getDefaultLimit()
+	 * @see #getOgcFeaturesDataService()
+	 * @generated
+	 */
+	EAttribute getOgcFeaturesDataService_DefaultLimit();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataService#getMaxLimit <em>Max Limit</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Max Limit</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataService#getMaxLimit()
+	 * @see #getOgcFeaturesDataService()
+	 * @generated
+	 */
+	EAttribute getOgcFeaturesDataService_MaxLimit();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataService#getConfiguration <em>Configuration</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Configuration</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataService#getConfiguration()
+	 * @see #getOgcFeaturesDataService()
+	 * @generated
+	 */
+	EReference getOgcFeaturesDataService_Configuration();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataServiceConfiguration <em>Ogc Features Data Service Configuration</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Ogc Features Data Service Configuration</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataServiceConfiguration
+	 * @generated
+	 */
+	EClass getOgcFeaturesDataServiceConfiguration();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataServiceConfiguration#getCollectionId <em>Collection Id</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Collection Id</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataServiceConfiguration#getCollectionId()
+	 * @see #getOgcFeaturesDataServiceConfiguration()
+	 * @generated
+	 */
+	EAttribute getOgcFeaturesDataServiceConfiguration_CollectionId();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataServiceConfiguration#getTitle <em>Title</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Title</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataServiceConfiguration#getTitle()
+	 * @see #getOgcFeaturesDataServiceConfiguration()
+	 * @generated
+	 */
+	EAttribute getOgcFeaturesDataServiceConfiguration_Title();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataServiceConfiguration#getIdFeature <em>Id Feature</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Id Feature</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataServiceConfiguration#getIdFeature()
+	 * @see #getOgcFeaturesDataServiceConfiguration()
+	 * @generated
+	 */
+	EAttribute getOgcFeaturesDataServiceConfiguration_IdFeature();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataServiceConfiguration#getGeometryFeature <em>Geometry Feature</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Geometry Feature</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataServiceConfiguration#getGeometryFeature()
+	 * @see #getOgcFeaturesDataServiceConfiguration()
+	 * @generated
+	 */
+	EAttribute getOgcFeaturesDataServiceConfiguration_GeometryFeature();
+
+	/**
+	 * Returns the meta object for the attribute list '{@link org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataServiceConfiguration#getBboxFeatures <em>Bbox Features</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Bbox Features</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataServiceConfiguration#getBboxFeatures()
+	 * @see #getOgcFeaturesDataServiceConfiguration()
+	 * @generated
+	 */
+	EAttribute getOgcFeaturesDataServiceConfiguration_BboxFeatures();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataServiceConfiguration#getTemporalFeature <em>Temporal Feature</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Temporal Feature</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataServiceConfiguration#getTemporalFeature()
+	 * @see #getOgcFeaturesDataServiceConfiguration()
+	 * @generated
+	 */
+	EAttribute getOgcFeaturesDataServiceConfiguration_TemporalFeature();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataServiceConfiguration#getLayerGroup <em>Layer Group</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Layer Group</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataServiceConfiguration#getLayerGroup()
+	 * @see #getOgcFeaturesDataServiceConfiguration()
+	 * @generated
+	 */
+	EAttribute getOgcFeaturesDataServiceConfiguration_LayerGroup();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataServiceConfiguration#getStyle <em>Style</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Style</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataServiceConfiguration#getStyle()
+	 * @see #getOgcFeaturesDataServiceConfiguration()
+	 * @generated
+	 */
+	EAttribute getOgcFeaturesDataServiceConfiguration_Style();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.OgcSensorThingsDataService <em>Ogc Sensor Things Data Service</em>}'.
@@ -5431,6 +5707,104 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		 * @generated
 		 */
 		EClass OGC_FEATURES_DATA_SERVICE = eINSTANCE.getOgcFeaturesDataService();
+
+		/**
+		 * The meta object literal for the '<em><b>Default Limit</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute OGC_FEATURES_DATA_SERVICE__DEFAULT_LIMIT = eINSTANCE.getOgcFeaturesDataService_DefaultLimit();
+
+		/**
+		 * The meta object literal for the '<em><b>Max Limit</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute OGC_FEATURES_DATA_SERVICE__MAX_LIMIT = eINSTANCE.getOgcFeaturesDataService_MaxLimit();
+
+		/**
+		 * The meta object literal for the '<em><b>Configuration</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference OGC_FEATURES_DATA_SERVICE__CONFIGURATION = eINSTANCE.getOgcFeaturesDataService_Configuration();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.OgcFeaturesDataServiceConfigurationImpl <em>Ogc Features Data Service Configuration</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.fennec.data.atlas.configuration.impl.OgcFeaturesDataServiceConfigurationImpl
+		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getOgcFeaturesDataServiceConfiguration()
+		 * @generated
+		 */
+		EClass OGC_FEATURES_DATA_SERVICE_CONFIGURATION = eINSTANCE.getOgcFeaturesDataServiceConfiguration();
+
+		/**
+		 * The meta object literal for the '<em><b>Collection Id</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute OGC_FEATURES_DATA_SERVICE_CONFIGURATION__COLLECTION_ID = eINSTANCE.getOgcFeaturesDataServiceConfiguration_CollectionId();
+
+		/**
+		 * The meta object literal for the '<em><b>Title</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute OGC_FEATURES_DATA_SERVICE_CONFIGURATION__TITLE = eINSTANCE.getOgcFeaturesDataServiceConfiguration_Title();
+
+		/**
+		 * The meta object literal for the '<em><b>Id Feature</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute OGC_FEATURES_DATA_SERVICE_CONFIGURATION__ID_FEATURE = eINSTANCE.getOgcFeaturesDataServiceConfiguration_IdFeature();
+
+		/**
+		 * The meta object literal for the '<em><b>Geometry Feature</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute OGC_FEATURES_DATA_SERVICE_CONFIGURATION__GEOMETRY_FEATURE = eINSTANCE.getOgcFeaturesDataServiceConfiguration_GeometryFeature();
+
+		/**
+		 * The meta object literal for the '<em><b>Bbox Features</b></em>' attribute list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute OGC_FEATURES_DATA_SERVICE_CONFIGURATION__BBOX_FEATURES = eINSTANCE.getOgcFeaturesDataServiceConfiguration_BboxFeatures();
+
+		/**
+		 * The meta object literal for the '<em><b>Temporal Feature</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute OGC_FEATURES_DATA_SERVICE_CONFIGURATION__TEMPORAL_FEATURE = eINSTANCE.getOgcFeaturesDataServiceConfiguration_TemporalFeature();
+
+		/**
+		 * The meta object literal for the '<em><b>Layer Group</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute OGC_FEATURES_DATA_SERVICE_CONFIGURATION__LAYER_GROUP = eINSTANCE.getOgcFeaturesDataServiceConfiguration_LayerGroup();
+
+		/**
+		 * The meta object literal for the '<em><b>Style</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute OGC_FEATURES_DATA_SERVICE_CONFIGURATION__STYLE = eINSTANCE.getOgcFeaturesDataServiceConfiguration_Style();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.OgcSensorThingsDataServiceImpl <em>Ogc Sensor Things Data Service</em>}' class.

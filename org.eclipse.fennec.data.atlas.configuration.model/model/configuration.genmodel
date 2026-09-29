@@ -97,7 +97,21 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//QGisDataServiceConfiguration/layer"/>
     </genClasses>
     <genClasses ecoreClass="configuration.ecore#//GraphQLDataServiceConfiguration"/>
-    <genClasses ecoreClass="configuration.ecore#//OgcFeaturesDataService"/>
+    <genClasses ecoreClass="configuration.ecore#//OgcFeaturesDataService">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//OgcFeaturesDataService/defaultLimit"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//OgcFeaturesDataService/maxLimit"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//OgcFeaturesDataService/configuration"/>
+    </genClasses>
+    <genClasses ecoreClass="configuration.ecore#//OgcFeaturesDataServiceConfiguration">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//OgcFeaturesDataServiceConfiguration/collectionId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//OgcFeaturesDataServiceConfiguration/title"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//OgcFeaturesDataServiceConfiguration/idFeature"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//OgcFeaturesDataServiceConfiguration/geometryFeature"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//OgcFeaturesDataServiceConfiguration/bboxFeatures"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//OgcFeaturesDataServiceConfiguration/temporalFeature"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//OgcFeaturesDataServiceConfiguration/layerGroup"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//OgcFeaturesDataServiceConfiguration/style"/>
+    </genClasses>
     <genClasses ecoreClass="configuration.ecore#//OgcSensorThingsDataService"/>
     <genClasses ecoreClass="configuration.ecore#//MongoDataInput">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//MongoDataInput/dataSource"/>

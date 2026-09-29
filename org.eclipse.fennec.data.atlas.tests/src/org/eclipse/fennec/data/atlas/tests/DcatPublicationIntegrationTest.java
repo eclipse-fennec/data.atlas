@@ -160,6 +160,33 @@ public class DcatPublicationIntegrationTest {
 
 	@Test
 	@Order(2)
+	void ogcRootIsPublishedWithOneGeoJsonDistributionPerCollection(@InjectBundleContext BundleContext bundleContext)
+			throws Exception {
+		awaitState(bundleContext, "dcat-assets-ogc", PublicationStatus.STATE_REGISTERED, 60_000);
+
+		// the root DataService-first: the landing page as endpoint, the OpenAPI
+		// document as its description
+		dcat.DataService service = portal.dataServices.get("dcat-assets-ogc");
+		assertNotNull(service, "expected the OGC DataService to be registered");
+		assertEquals(PUBLIC_BASE + "/dcat-ogc", service.getEndpointURL().get(0));
+		assertEquals(PUBLIC_BASE + "/dcat-ogc/api", service.getEndpointDescription().get(0));
+
+		// one GeoJSON distribution per collection: the annotated id for the
+		// pools, the configured id for the benches
+		Distribution pools = portal.distributions.get("dcat-pools/ogc-features");
+		Distribution benches = portal.distributions.get("dcat-benches/ogc-features");
+		assertNotNull(pools, "expected the pools collection as a distribution: " + portal.distributions.keySet());
+		assertNotNull(benches, "expected the benches collection as a distribution: " + portal.distributions.keySet());
+		assertEquals(PUBLIC_BASE + "/dcat-ogc/collections/pools/items", pools.getAccessURL().get(0));
+		assertEquals(PUBLIC_BASE + "/dcat-ogc/collections/benches/items", benches.getAccessURL().get(0));
+		assertEquals("http://www.iana.org/assignments/media-types/application/geo+json", pools.getMediaType());
+		assertTrue(portal.links.contains("service:dcat-assets-ogc<-dataset:dcat-pools"), portal.links.toString());
+		assertTrue(portal.links.contains("distribution:dcat-benches/ogc-features<-service:dcat-assets-ogc"),
+				portal.links.toString());
+	}
+
+	@Test
+	@Order(3)
 	void removedDeclarationWithdrawsFromThePortal(@InjectBundleContext BundleContext bundleContext) throws Exception {
 		Files.writeString(configFile, v1.replace(" publication=\"dcat-open-data\"", ""), StandardCharsets.UTF_8);
 

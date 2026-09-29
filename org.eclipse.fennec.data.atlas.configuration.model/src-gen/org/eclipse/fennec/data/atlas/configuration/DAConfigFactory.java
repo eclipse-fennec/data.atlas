@@ -163,6 +163,15 @@ public interface DAConfigFactory extends EFactory {
 	OgcFeaturesDataService createOgcFeaturesDataService();
 
 	/**
+	 * Returns a new object of class '<em>Ogc Features Data Service Configuration</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Ogc Features Data Service Configuration</em>'.
+	 * @generated
+	 */
+	OgcFeaturesDataServiceConfiguration createOgcFeaturesDataServiceConfiguration();
+
+	/**
 	 * Returns a new object of class '<em>Ogc Sensor Things Data Service</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

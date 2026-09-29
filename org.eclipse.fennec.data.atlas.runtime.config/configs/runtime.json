@@ -19,6 +19,10 @@
 	"org.eclipse.fennec.data.atlas.odata": {
 		"http.whiteboard.target": "(id=dataAtlasHttp)"
 	},
+	"org.eclipse.fennec.data.atlas.ogc": {
+		"http.whiteboard.target": "(id=dataAtlasHttp)",
+		"public.base.url": "$[env:DATA_ATLAS_PUBLIC_BASE_URL;default=]"
+	},
 	"org.eclipse.fennec.data.atlas.publication.dcat": {
 		"public.base.url": "$[env:DATA_ATLAS_PUBLIC_BASE_URL;default=]",
 		"retry.interval.ms": "$[env:DATA_ATLAS_DCAT_RETRY_INTERVAL;default=30000]"

@@ -18,8 +18,10 @@ concepts, the REST endpoints, and the configuration lifecycle, see the
 ## Status
 
 Implemented today (see the [roadmap](docs/roadmap.md)): file- and JPA-backed
-data inputs served over REST, as GeoJSON and as OData v4.01 service roots
-(through the [Fennec OData server](https://github.com/eclipse-fennec/emf.odata)),
+data inputs served over REST, as GeoJSON, as OData v4.01 service roots
+(through the [Fennec OData server](https://github.com/eclipse-fennec/emf.odata))
+and as OGC API - Features roots (through the
+[Fennec OGC API Features server](https://github.com/eclipse-fennec/emf.ogc.features)),
 QVT-O transformations, both configuration-source modes (file system /
 Model Atlas), the configuration lifecycle — changes reach a running
 instance without a restart — and opt-in publication of declared services to a
@@ -37,6 +39,7 @@ Docker images:
 | `…transformation` / `…input.bridge` | QVT-O `DataTransformer` services and the `BridgeRepository` input serving transformed objects |
 | `…rest` | One Jakarta-RS whiteboard application per `RestDataService`/`GeoJsonDataService` |
 | `…odata` | Omittable: one OData v4.01 service root of the Fennec OData server per `ODataDataService`, backed by the inputs' repositories |
+| `…ogc` | Omittable: one OGC API - Features root of the Fennec OGC API Features server per `OgcFeaturesDataService`, backed by the inputs' repositories |
 | `…publication.dcat` | Omittable: keeps declared providers registered with a DCAT.Atlas portal |
 | `…runtime.config` / `…runtime.config.atlas` | Configurator resources per config-source flavour |
 | `…runtime`, `docker/*` | OSGi runtime assembly (bndruns), docker images and compose setups |

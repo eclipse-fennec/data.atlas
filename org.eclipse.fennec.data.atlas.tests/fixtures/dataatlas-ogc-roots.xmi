@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- OGC API Features fixture: two API roots over the leisure pool assets.
+     /ogc/assets serves pools and slides (annotated EClasses, as annotated) and
+     the benches (no annotation - declared by configuration) from the example
+     file; /ogc/db serves the pools under the overriding id db-pools and every
+     asset from the H2 database the test seeds, with a page size of 2 and a
+     ceiling of 5. -->
+<configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    name="ogc" description="OGC API Features test fixture: leisure pool assets served as feature collections from a file and a database.">
+  <dataSources xsi:type="configuration:JdbcDataSource" id="ogc-assets-db" name="Assets DB" filter="(dataatlas.test.ds=ogc-assets)"/>
+  <dataInputs xsi:type="configuration:FileDataInput" id="ogc-assets-file" uri="data/assets.xmi">
+    <supportedEClasses href="model/asset.ecore#//Pool"/>
+    <supportedEClasses href="model/asset.ecore#//Slide"/>
+    <supportedEClasses href="model/asset.ecore#//Bench"/>
+  </dataInputs>
+  <dataInputs xsi:type="configuration:JPADataInput" id="ogc-assets-jpa" dataSource="ogc-assets-db">
+    <supportedEClasses href="model/asset.ecore#//Asset"/>
+    <supportedEClasses href="model/asset.ecore#//Pool"/>
+    <supportedEClasses href="model/asset.ecore#//Slide"/>
+    <supportedEClasses href="model/asset.ecore#//Bench"/>
+  </dataInputs>
+  <dataSets id="ogc-pools" name="pools" description="The pools of the leisure pool." dataInput="ogc-assets-file">
+    <inputType href="model/asset.ecore#//Pool"/>
+    <outputType href="model/asset.ecore#//Pool"/>
+  </dataSets>
+  <dataSets id="ogc-slides" name="slides" description="The water slides of the leisure pool." dataInput="ogc-assets-file">
+    <inputType href="model/asset.ecore#//Slide"/>
+    <outputType href="model/asset.ecore#//Slide"/>
+  </dataSets>
+  <dataSets id="ogc-benches" name="Benches" description="The benches of the leisure pool." dataInput="ogc-assets-file">
+    <inputType href="model/asset.ecore#//Bench"/>
+    <outputType href="model/asset.ecore#//Bench"/>
+  </dataSets>
+  <dataSets id="ogc-pools-db" name="pools-db" description="The pools from the database." dataInput="ogc-assets-jpa">
+    <inputType href="model/asset.ecore#//Pool"/>
+    <outputType href="model/asset.ecore#//Pool"/>
+  </dataSets>
+  <dataSets id="ogc-assets-db-set" name="assets-db" description="Every asset from the database." dataInput="ogc-assets-jpa">
+    <inputType href="model/asset.ecore#//Asset"/>
+    <outputType href="model/asset.ecore#//Asset"/>
+  </dataSets>
+  <services xsi:type="configuration:OgcFeaturesDataService" id="assets-ogc" name="Leisure pool assets"
+      description="OGC API Features root publishing the assets of the example file." urlContext="/ogc/assets">
+    <configuration id="pools-collection" dataSet="ogc-pools"/>
+    <configuration id="slides-collection" dataSet="ogc-slides"/>
+    <configuration id="benches-collection" dataSet="ogc-benches" collectionId="benches" geometryFeature="geometry"
+        idFeature="id" layerGroup="Furniture" style="#8d6e63">
+      <bboxFeatures>minX</bboxFeatures>
+      <bboxFeatures>minY</bboxFeatures>
+      <bboxFeatures>maxX</bboxFeatures>
+      <bboxFeatures>maxY</bboxFeatures>
+    </configuration>
+  </services>
+  <services xsi:type="configuration:OgcFeaturesDataService" id="assets-ogc-jpa" name="Leisure pool assets (JPA)"
+      description="OGC API Features root publishing the database-backed assets." urlContext="/ogc/db"
+      defaultLimit="2" maxLimit="5">
+    <configuration id="pools-db-collection" dataSet="ogc-pools-db" collectionId="db-pools" title="Pools (DB)"/>
+    <configuration id="assets-db-collection" dataSet="ogc-assets-db-set"/>
+  </services>
+</configuration:DataAtlasConfiguration>

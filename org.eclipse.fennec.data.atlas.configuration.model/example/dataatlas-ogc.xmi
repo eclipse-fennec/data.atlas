@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- OGC API - Features example: the leisure pool assets served as one OGC API
+     Features root at /ogc/assets (landing page), /ogc/assets/collections,
+     /ogc/assets/collections/{id}/items (GeoJSON, with bbox/datetime/CQL2
+     filters and paging), /ogc/assets/api (OpenAPI), /ogc/assets/collections?f=qgs
+     (QGIS project) and the map viewer at /ogc/assets/viewer/. Pools and slides
+     are served as their EClasses are annotated; the benches carry no annotation
+     and are published through the configuration alone. -->
+<configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    name="ogc-example" description="Example Data Atlas instance serving leisure pool assets as OGC API - Features collections.">
+  <dataInputs xsi:type="configuration:FileDataInput" id="assets-file" uri="data/assets.xmi">
+    <supportedEClasses href="model/asset.ecore#//Pool"/>
+    <supportedEClasses href="model/asset.ecore#//Slide"/>
+    <supportedEClasses href="model/asset.ecore#//Bench"/>
+  </dataInputs>
+  <dataSets id="pools" name="pools" description="The pools of the leisure pool." dataInput="assets-file">
+    <inputType href="model/asset.ecore#//Pool"/>
+    <outputType href="model/asset.ecore#//Pool"/>
+  </dataSets>
+  <dataSets id="slides" name="slides" description="The water slides of the leisure pool." dataInput="assets-file">
+    <inputType href="model/asset.ecore#//Slide"/>
+    <outputType href="model/asset.ecore#//Slide"/>
+  </dataSets>
+  <dataSets id="benches" name="Benches" description="The benches of the leisure pool." dataInput="assets-file">
+    <inputType href="model/asset.ecore#//Bench"/>
+    <outputType href="model/asset.ecore#//Bench"/>
+  </dataSets>
+  <services xsi:type="configuration:OgcFeaturesDataService" id="assets-ogc" name="Leisure pool assets"
+      description="OGC API - Features root publishing the assets of the leisure pool." urlContext="/ogc/assets"
+      defaultLimit="50">
+    <configuration id="pools-collection" dataSet="pools"/>
+    <configuration id="slides-collection" dataSet="slides"/>
+    <configuration id="benches-collection" dataSet="benches" collectionId="benches" geometryFeature="geometry"
+        idFeature="id" layerGroup="Furniture" style="#8d6e63">
+      <bboxFeatures>minX</bboxFeatures>
+      <bboxFeatures>minY</bboxFeatures>
+      <bboxFeatures>maxX</bboxFeatures>
+      <bboxFeatures>maxY</bboxFeatures>
+    </configuration>
+  </services>
+</configuration:DataAtlasConfiguration>
