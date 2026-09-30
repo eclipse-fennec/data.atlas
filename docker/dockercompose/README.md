@@ -222,7 +222,10 @@ Three deployment pieces sit outside the configuration model, as they should:
 the **portal client** (`dcat/load/dcatclient.json`, the dcat.atlas client's
 factory configuration, injected via `configurator.initial`), the **public base
 URL** (`DATA_ATLAS_PUBLIC_BASE_URL` — the address the portal's consumers reach
-the Data Atlas under), and the **target catalog**, which is expected to exist:
+the Data Atlas under: the host, `http://localhost:8082`; the publication adds
+`/rest` for REST services and nothing for OData and OGC roots, so a mixed
+configuration advertises every kind where it is mounted), and the **target
+catalog**, which is expected to exist:
 the one-shot `catalog-seed` service creates it (`dcat/catalog.xmi`).
 
 The portal runs **without the DCAT-AP.de SHACL shapes** here — they are

@@ -169,7 +169,7 @@ public class DcatPublicationAtlasModeIntegrationTest {
 
 		dcat.DataService service = portal.dataServices.get("dcat-persons-rest");
 		assertNotNull(service, "expected the DataService to be registered");
-		assertEquals(PUBLIC_BASE + "/dcat-example", service.getEndpointURL().get(0));
+		assertEquals(PUBLIC_BASE + "/rest/dcat-example", service.getEndpointURL().get(0));
 		assertEquals("Persons REST", service.getTitle().get(0).getValue());
 
 		// THE assertion of this test: the description was derived from the
@@ -184,7 +184,7 @@ public class DcatPublicationAtlasModeIntegrationTest {
 
 		Distribution json = portal.distributions.get("dcat-persons/json");
 		assertNotNull(json, "expected a distribution for the JSON default");
-		assertEquals(PUBLIC_BASE + "/dcat-example/persons", json.getAccessURL().get(0));
+		assertEquals(PUBLIC_BASE + "/rest/dcat-example/persons", json.getAccessURL().get(0));
 		assertEquals("http://dcat-ap.de/def/licenses/dl-by-de/2.0", json.getLicense().getAbout());
 		assertTrue(portal.links.contains("service:dcat-persons-rest<-dataset:dcat-persons"), portal.links.toString());
 	}

@@ -76,7 +76,9 @@ public class DcatPortalIntegrationTest {
 	private static final int PORTAL_PORT = 18098;
 	private static final int HTTP_PORT = 18099;
 	private static final String PORTAL_BASE = "http://localhost:" + PORTAL_PORT;
-	private static final String PUBLIC_BASE = "http://localhost:" + HTTP_PORT + "/rest";
+	/** The public base is the host; the REST whiteboard's context path is added by the publication. */
+	private static final String PUBLIC_BASE = "http://localhost:" + HTTP_PORT;
+	private static final String REST_BASE = PUBLIC_BASE + "/rest";
 	private static final String PORTAL_NAME = "it-portal";
 
 	private static final HttpClient CLIENT = HttpClient.newHttpClient();
@@ -171,9 +173,9 @@ public class DcatPortalIntegrationTest {
 		await(() -> client.distribution("dcat-persons", "json").isPresent(), 30_000,
 				"the JSON distribution never reached the portal");
 		dcat.DataService portalService = client.dataService("dcat-persons-rest").orElseThrow();
-		assertEquals(PUBLIC_BASE + "/dcat-example", portalService.getEndpointURL().get(0));
+		assertEquals(REST_BASE + "/dcat-example", portalService.getEndpointURL().get(0));
 		String accessUrl = client.distribution("dcat-persons", "json").orElseThrow().getAccessURL().get(0);
-		assertEquals(PUBLIC_BASE + "/dcat-example/persons", accessUrl);
+		assertEquals(REST_BASE + "/dcat-example/persons", accessUrl);
 
 		// ... and that URL actually resolves to the exported data
 		assertEquals(200, awaitStatus(accessUrl, 200, 60_000));
@@ -191,8 +193,8 @@ public class DcatPortalIntegrationTest {
 
 		// the portal is not on the critical path: kill it, the data serves on
 		docker("rm", "-f", CONTAINER);
-		assertEquals(200, awaitStatus(PUBLIC_BASE + "/dcat-example/persons", 200, 30_000));
-		assertTrue(get(PUBLIC_BASE + "/dcat-example/persons", "application/json").body().contains("Hopper"));
+		assertEquals(200, awaitStatus(REST_BASE + "/dcat-example/persons", 200, 30_000));
+		assertTrue(get(REST_BASE + "/dcat-example/persons", "application/json").body().contains("Hopper"));
 	}
 
 	// --- helpers ------------------------------------------------------------

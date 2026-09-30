@@ -122,10 +122,11 @@ public class DcatPublicationIntegrationTest {
 	void declaredServiceIsPublishedServiceFirst(@InjectBundleContext BundleContext bundleContext) throws Exception {
 		awaitState(bundleContext, "dcat-persons-rest", PublicationStatus.STATE_REGISTERED, 60_000);
 
-		// the service, DataService-first: the endpoint under the public base
+		// the service, DataService-first: the endpoint under the public base,
+		// below the REST whiteboard's context path where the service is mounted
 		dcat.DataService service = portal.dataServices.get("dcat-persons-rest");
 		assertNotNull(service, "expected the DataService to be registered");
-		assertEquals(PUBLIC_BASE + "/dcat-example", service.getEndpointURL().get(0));
+		assertEquals(PUBLIC_BASE + "/rest/dcat-example", service.getEndpointURL().get(0));
 		assertEquals("Persons REST", service.getTitle().get(0).getValue());
 		assertNotNull(service.getPublisher(), "expected a publisher");
 		assertEquals("Data Atlas integration suite", service.getPublisher().getName().get(0).getValue());
@@ -145,7 +146,7 @@ public class DcatPublicationIntegrationTest {
 		Distribution xml = portal.distributions.get("dcat-persons/xml");
 		assertNotNull(json, "expected a distribution for the JSON default");
 		assertNotNull(xml, "expected a distribution for the XMI default");
-		assertEquals(PUBLIC_BASE + "/dcat-example/persons", json.getAccessURL().get(0));
+		assertEquals(PUBLIC_BASE + "/rest/dcat-example/persons", json.getAccessURL().get(0));
 		assertEquals("http://www.iana.org/assignments/media-types/application/json", json.getMediaType());
 		assertNotNull(json.getLicense(), "expected the declared license on the distribution");
 		assertEquals("http://dcat-ap.de/def/licenses/dl-by-de/2.0", json.getLicense().getAbout());
@@ -165,10 +166,15 @@ public class DcatPublicationIntegrationTest {
 		awaitState(bundleContext, "dcat-assets-ogc", PublicationStatus.STATE_REGISTERED, 60_000);
 
 		// the root DataService-first: the landing page as endpoint, the OpenAPI
-		// document as its description
+		// document as its description - directly under the public base, since
+		// OGC roots mount on the HTTP runtime and not under /rest (data.atlas#19:
+		// one public base, a REST service and an OGC root advertised where each
+		// is mounted)
 		dcat.DataService service = portal.dataServices.get("dcat-assets-ogc");
 		assertNotNull(service, "expected the OGC DataService to be registered");
 		assertEquals(PUBLIC_BASE + "/dcat-ogc", service.getEndpointURL().get(0));
+		assertEquals(PUBLIC_BASE + "/rest/dcat-example",
+				portal.dataServices.get("dcat-persons-rest").getEndpointURL().get(0));
 		assertEquals(PUBLIC_BASE + "/dcat-ogc/api", service.getEndpointDescription().get(0));
 
 		// one GeoJSON distribution per collection: the annotated id for the

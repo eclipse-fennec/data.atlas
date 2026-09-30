@@ -50,7 +50,7 @@ services:
       - DATA_ATLAS_CONFIG_URI=/opt/dataatlas/runtime/data/dataatlas-dcat.xmi
       # the public base the portal's consumers reach this Data Atlas under -
       # it becomes the endpoint and distribution URLs in the portal
-      - DATA_ATLAS_PUBLIC_BASE_URL=http://localhost:8082/rest
+      - DATA_ATLAS_PUBLIC_BASE_URL=http://localhost:8082
       # the portal endpoint is deployment configuration (the dcat.atlas
       # client's factory config), mounted rather than baked into the image
       - JAVA_TOOL_OPTIONS=-Dconfigurator.initial=file:///opt/dataatlas/runtime/load/dcatclient.json

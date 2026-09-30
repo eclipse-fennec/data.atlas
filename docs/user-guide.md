@@ -1134,9 +1134,17 @@ model. Two pieces:
 
 2. **The public base URL** — `DATA_ATLAS_PUBLIC_BASE_URL`, the address the
    portal's consumers reach this Data Atlas under (behind a reverse proxy
-   that is not the address the container sees). It becomes the endpoint and
-   distribution URLs in the portal; declared publications without it are a
-   configuration error.
+   that is not the address the container sees). It is the **host**, without
+   a mount prefix: every advertised URL is built from it the way the kind is
+   mounted — a `RestDataService` below the REST whiteboard's context path
+   (`https://data.example.org/rest/history/numeric`), an OData or OGC API
+   Features root directly under it (`https://data.example.org/ogc/assets`).
+   The context path is the `rest.context.path` of the publication PID
+   (default `rest`, matching the runtime's `jersey.context.path`). Declared
+   publications without a base URL are a configuration error. *Before
+   2026-09-30 the variable had to include `/rest`, which broke the OData and
+   OGC URLs; a REST-only deployment that still sets it that way now
+   advertises `/rest/rest/...` and has to drop the suffix.*
 
 The [compose setup](../docker/dockercompose/docker-compose-dcat.yml) wires
 all of this end to end: a portal, a one-shot catalog seeder, and a file-mode
@@ -1187,7 +1195,7 @@ Both images are configured through environment variables.
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `DATA_ATLAS_HTTP_PORT` | `8080` | HTTP port of the REST endpoints |
-| `DATA_ATLAS_PUBLIC_BASE_URL` | *(unset)* | Public base URL this instance is reachable under, used as the endpoint/distribution base of [DCAT publications](#publishing-to-a-dcat-portal). Only needed when publications are declared |
+| `DATA_ATLAS_PUBLIC_BASE_URL` | *(unset)* | Public base URL this instance is reachable under — the host, without `/rest`: REST services are advertised below `/rest`, OData and OGC roots directly under it. The endpoint/distribution base of [DCAT publications](#publishing-to-a-dcat-portal) and of the OGC roots' links. Only needed when publications are declared or an OGC root sits behind a proxy |
 | `DATA_ATLAS_DCAT_RETRY_INTERVAL` | `30000` | Retry interval (ms) for transiently failed DCAT portal registrations |
 
 ### File variant

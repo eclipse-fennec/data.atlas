@@ -99,13 +99,20 @@ final class DcatMapper {
 	/**
 	 * Builds the full registration plan of one published DataService.
 	 *
-	 * @param service       the provider, its publication resolved and non-null
-	 * @param publicBaseUrl the deployment-supplied public base the endpoints are
-	 *                      reachable under (DA-DCAT-13)
+	 * @param service         the provider, its publication resolved and non-null
+	 * @param publicBaseUrl   the deployment-supplied public base the Data Atlas is
+	 *                        reachable under (DA-DCAT-13): the host, without a
+	 *                        mount prefix
+	 * @param restContextPath the context path the REST whiteboard mounts
+	 *                        {@code RestDataService}s under (the Data Atlas
+	 *                        runtime: {@code rest}); OData and OGC API Features
+	 *                        roots mount directly on the HTTP runtime and get no
+	 *                        prefix (data.atlas#19)
 	 * @throws PublicationConfigException when mandatory metadata is missing or
 	 *                                    the provider kind is not publishable
 	 */
-	static ProviderPlan plan(DataService service, String publicBaseUrl) throws PublicationConfigException {
+	static ProviderPlan plan(DataService service, String publicBaseUrl, String restContextPath)
+			throws PublicationConfigException {
 		DcatPublication publication = service.getPublication();
 		List<String> problems = new ArrayList<>();
 		if (publicBaseUrl == null || publicBaseUrl.isBlank()) {
@@ -122,7 +129,9 @@ final class DcatMapper {
 			problems.add("publication '" + publication.getId() + "' names no target catalog");
 		}
 
-		String endpointUrl = problems.isEmpty() ? join(publicBaseUrl, basePath(service)) : null;
+		String endpointUrl = problems.isEmpty()
+				? join(publicBaseUrl, mountPrefix(service, restContextPath) + basePath(service))
+				: null;
 		dcat.DataService dcatService = DcatFactory.eINSTANCE.createDataService();
 		if (endpointUrl != null) {
 			dcatService.getEndpointURL().add(endpointUrl);
@@ -382,6 +391,22 @@ final class DcatMapper {
 				? "/" + service.getId()
 				: service.getUrlContext();
 		return base.startsWith("/") ? base : "/" + base;
+	}
+
+	/**
+	 * Where a service kind is mounted relative to the public base: REST services
+	 * below the whiteboard's context path, OData and OGC API Features roots
+	 * directly on the HTTP runtime (data.atlas#19).
+	 */
+	static String mountPrefix(DataService service, String restContextPath) {
+		if (!(service instanceof RestDataService) || restContextPath == null || restContextPath.isBlank()) {
+			return "";
+		}
+		String prefix = restContextPath.trim();
+		while (prefix.endsWith("/")) {
+			prefix = prefix.substring(0, prefix.length() - 1);
+		}
+		return prefix.isEmpty() ? "" : prefix.startsWith("/") ? prefix : "/" + prefix;
 	}
 
 	private static String join(String publicBaseUrl, String path) {

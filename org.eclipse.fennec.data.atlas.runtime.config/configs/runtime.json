@@ -25,6 +25,7 @@
 	},
 	"org.eclipse.fennec.data.atlas.publication.dcat": {
 		"public.base.url": "$[env:DATA_ATLAS_PUBLIC_BASE_URL;default=]",
+		"rest.context.path": "rest",
 		"retry.interval.ms": "$[env:DATA_ATLAS_DCAT_RETRY_INTERVAL;default=30000]"
 	}
 }

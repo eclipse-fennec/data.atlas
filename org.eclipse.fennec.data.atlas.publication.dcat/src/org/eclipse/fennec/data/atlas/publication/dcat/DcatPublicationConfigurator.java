@@ -94,9 +94,17 @@ public class DcatPublicationConfigurator {
 	@interface Config {
 
 		@AttributeDefinition(name = "Public base URL", description = "The public base URL this Data Atlas "
-				+ "is reachable under from the portal's consumers, e.g. https://data.example.org. "
+				+ "is reachable under from the portal's consumers, e.g. https://data.example.org - the host, "
+				+ "without a mount prefix: REST services are advertised below it under the REST context path, "
+				+ "OData and OGC API Features roots directly under it, as they are mounted. "
 				+ "Deployment configuration - the Data Atlas cannot know it (DA-DCAT-13).")
 		String public_base_url() default "";
+
+		@AttributeDefinition(name = "REST context path", description = "The context path the Jakarta REST "
+				+ "whiteboard mounts the RestDataServices under (jersey.context.path of the whiteboard runtime), "
+				+ "prepended to their urlContext when they are advertised; empty when the whiteboard mounts at "
+				+ "the root.")
+		String rest_context_path() default "rest";
 
 		@AttributeDefinition(name = "Retry interval (ms)", description = "Delay before a transiently "
 				+ "failed portal registration is retried.")
@@ -235,7 +243,7 @@ public class DcatPublicationConfigurator {
 		}
 		ProviderPlan plan;
 		try {
-			plan = DcatMapper.plan(service, currentConfig.public_base_url());
+			plan = DcatMapper.plan(service, currentConfig.public_base_url(), currentConfig.rest_context_path());
 		} catch (PublicationConfigException e) {
 			LOG.log(Level.ERROR, () -> "DCAT publication of '" + id + "' is misconfigured: " + e.getMessage());
 			updateStatus(id, PublicationStatus.STATE_ERROR, e.getMessage());

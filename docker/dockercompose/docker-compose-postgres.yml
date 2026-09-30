@@ -102,7 +102,7 @@ services:
       - DATA_ATLAS_OBJECT_ID=dataatlas
       # the public base the portal's consumers reach this Data Atlas under -
       # it becomes the endpoint and distribution URLs in the portal
-      - DATA_ATLAS_PUBLIC_BASE_URL=http://localhost:8081/rest
+      - DATA_ATLAS_PUBLIC_BASE_URL=http://localhost:8081
       # the DataSource the configuration's JdbcDataSource filter selects and
       # the DCAT portal client are created from mounted Configurator files,
       # so neither credential nor portal address is baked into the image

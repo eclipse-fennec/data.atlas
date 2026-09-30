@@ -123,7 +123,7 @@ services:
       - DATA_ATLAS_REGISTRY=configurations
       - DATA_ATLAS_OBJECT_ID=dataatlas
       # the public base the portal's consumers reach this Data Atlas under
-      - DATA_ATLAS_PUBLIC_BASE_URL=http://localhost:8083/rest
+      - DATA_ATLAS_PUBLIC_BASE_URL=http://localhost:8083
       # DataSource credentials and the DCAT portal client are mounted
       # Configurator files - nothing deployment-specific is baked in
       - JAVA_TOOL_OPTIONS=-Dconfigurator.initial=file:///opt/dataatlas/runtime/load/datasource.json,file:///opt/dataatlas/runtime/load-dcat/dcatclient.json

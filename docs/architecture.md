@@ -137,7 +137,10 @@ Implemented today (roadmap Milestones 0–8):
   marker-keyed check — the core has no DCAT dependency, DA-DCAT-1/3). The
   portal endpoint is deployment configuration (the client's Config-Admin
   factory PID); the public base URL comes from
-  `DATA_ATLAS_PUBLIC_BASE_URL`.
+  `DATA_ATLAS_PUBLIC_BASE_URL` — the host; the mapper adds the REST
+  whiteboard's context path (`rest.context.path`, default `rest`) for
+  `RestDataService`s and nothing for OData and OGC roots, which mount
+  directly on the HTTP runtime (data.atlas#19).
 - **GeoJSON serving** (Milestone 5): a `GeoJsonDataService` publishes DataSets
   as RFC 7946 GeoJSON (`application/geo+json`) — `GET {path}` a
   `FeatureCollection`, `{path}/{id}` a `Feature` — through its own
