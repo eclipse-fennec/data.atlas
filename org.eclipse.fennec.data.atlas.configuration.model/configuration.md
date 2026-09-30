@@ -193,10 +193,10 @@ annotation, else the DataSet's name), `idFeature`, `geometryFeature`,
 persisted bounding box), `temporalFeature`, `layerGroup`, `style` — replaces
 the annotation's value, and a schema without the annotation is served through
 these features alone. The feature type is the DataSet's `outputType`; the
-geometry is an attribute whose EDataType has the instance class
-`org.geojson.Geometry` (GeoJSON text in XMI and in the database); a collection
-needs a feature id (`idFeature`, else the type's `iD` attribute) and a
-geometry. Missing either, a DataSet with a `query`, a declaration naming an
+geometry is a containment reference to the `Geometry` class of the GeoJSON
+EMF model (`https://geojson.org/model/2016`), named by `geometryFeature` or
+the annotation, else the type's single such reference; a collection needs a
+feature id (`idFeature`, else the type's `iD` attribute) and a geometry. Missing either, a DataSet with a `query`, a declaration naming an
 attribute the type lacks, and two DataSets of one package served from
 different `DataInput`s in one root are diagnosed configuration errors that
 keep the collection down.

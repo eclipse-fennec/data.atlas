@@ -185,22 +185,23 @@ Implemented today (roadmap Milestones 0–8):
   per DataSet whose type is not annotated — or whose configuration overrides
   the annotation — one configured collection (#12, override-else-default:
   annotation values, the configuration's on top, DataSet name/description as
-  last resort); and the map viewer below the root. The geometry is an
-  attribute of an `org.geojson.Geometry` EDataType; a `JPADataInput` serving
-  such a type binds the `geojson` type converter of the feature source
-  (GeoJSON text in a large-value column). Gating: no feature id, no geometry,
-  a query-defined DataSet, an unknown attribute, colliding collection ids or
-  two inputs for one package keep the collection down; roots follow the M4
-  lifecycle. DCAT publication maps a root DataService-first: the landing page
-  as `endpointURL`, `/api` as `endpointDescription`, one `application/geo+json`
+  last resort); and the map viewer below the root. The geometry of a feature
+  type is a containment reference to the `Geometry` class of the GeoJSON EMF
+  model (`https://geojson.org/model/2016`) — modelling it as an EDataType
+  with instance class `org.geojson.Geometry` was a mistake: a dynamic package
+  resolves such an instance class through the ecore bundle's class loader and
+  then holds no value at all, which a fragment on `org.eclipse.emf.ecore`
+  only papered over (emf.ogc.features#15, reverted by #16). The server still
+  serves the geometry as an attribute (emf.ogc.features#14, open; blocked on
+  fennec persistence storing a GeoJSON child's coordinates), so the
+  configurator validates the reference and serves the collection without
+  geometry until then. Gating: no feature id, no geometry, a query-defined
+  DataSet, an unknown attribute, colliding collection ids or two inputs for
+  one package keep the collection down; roots follow the M4 lifecycle. DCAT
+  publication maps a root DataService-first: the landing page as
+  `endpointURL`, `/api` as `endpointDescription`, one `application/geo+json`
   distribution per collection (`/collections/{id}/items`); the QGIS project is
-  not a dataset distribution and is left to the root's own links. Dynamic
-  packages (schemas loaded from `.ecore` or a Model Atlas, the Data Atlas
-  case) resolve the instance class of the geometry data type through the
-  `org.eclipse.emf.ecore` bundle's class loader, so the runtime requires
-  emf.ogc.features' `ecore.fragment` explicitly (fragments are never added by
-  the resolver) and relies on its GeoJSON `ConversionDelegate` for XMI-held
-  geometries (emf.ogc.features#14, fixed 2026-09-29).
+  not a dataset distribution and is left to the root's own links.
 - **Data transformations** (Milestone 6): the `transformation` bundle turns
   every `DataTransformation` configuration service into a ready-to-execute
   `DataTransformer` (fennec m2x QVT-O engine; the compiled AST — the

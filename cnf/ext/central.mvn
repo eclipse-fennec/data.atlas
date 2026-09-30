@@ -193,7 +193,6 @@ org.eclipse.fennec.ogc:org.eclipse.fennec.ogc.features.geo:0.1.0-SNAPSHOT
 org.eclipse.fennec.ogc:org.eclipse.fennec.ogc.features.cql2:0.1.0-SNAPSHOT
 org.eclipse.fennec.ogc:org.eclipse.fennec.ogc.features.source.persistence:0.1.0-SNAPSHOT
 org.eclipse.fennec.ogc:org.eclipse.fennec.ogc.features.viewer:0.1.0-SNAPSHOT
-org.eclipse.fennec.ogc:org.eclipse.fennec.ogc.features.ecore.fragment:0.1.0-SNAPSHOT
 org.eclipse.fennec.ogc:org.eclipse.fennec.codec.cql2:0.1.0-SNAPSHOT
 org.eclipse.fennec.ogc:net.opengis.cql2.model:0.1.0-SNAPSHOT
 org.eclipse.fennec.ogc:org.qgis.project.model:0.1.0-SNAPSHOT

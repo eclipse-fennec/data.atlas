@@ -71,10 +71,6 @@ public class JPADataInputConfigurator {
 	private static final String PID_EORM_MAPPING = "fennec.jpa.EORMMappingService";
 	private static final String PID_PERSISTENCE_UNIT = "fennec.jpa.EMPersistenceUnit";
 	private static final String PID_REPOSITORY = "fennec.repository.jpa";
-	/** Instance class of a GeoJSON geometry EDataType (the org.geojson model's Geometry). */
-	private static final String GEOJSON_GEOMETRY = "org.geojson.Geometry";
-	/** The geojson TypeConverter of emf.ogc.features' repository source, persisting geometries as GeoJSON text. */
-	private static final String GEOJSON_CONVERTER_FILTER = "fennec.persistence.converter=geojson";
 
 	private final BundleContext bundleContext;
 	private final ConfigurationAdmin configAdmin;
@@ -168,9 +164,6 @@ public class JPADataInputConfigurator {
 			unitProps.put("fennec.jpa.persistenceUnitName", id);
 			unitProps.put("fennec.jpa.dataSource.target", dataSourceFilter);
 			unitProps.put("fennec.jpa.mapping.target", mappingTarget);
-			if (needsGeoJsonConverter(input)) {
-				unitProps.put("fennec.jpa.converter.target", "(" + GEOJSON_CONVERTER_FILTER + ")");
-			}
 			unit.update(unitProps);
 			configurations.add(unit);
 
@@ -188,22 +181,6 @@ public class JPADataInputConfigurator {
 			tearDown(new Realized(configurations, mappingRegistration));
 			throw e;
 		}
-	}
-
-	/**
-	 * Whether a served type has a GeoJSON geometry attribute (an EDataType with
-	 * the instance class {@code org.geojson.Geometry}): the unit then binds the
-	 * {@code geojson} {@code TypeConverter} of the OGC API Features repository
-	 * source (emf.ogc.features), which persists the geometry as GeoJSON text.
-	 * Without the converter such an attribute would be stored as its
-	 * {@code toString()}, so the unit waits for it — a Data Atlas without the
-	 * {@code ogc} bundle cannot serve such a model from JPA. A dynamic package
-	 * cannot resolve the instance class, hence the name is compared.
-	 */
-	static boolean needsGeoJsonConverter(JPADataInput input) {
-		return input.getSupportedEClasses().stream().flatMap(eClass -> eClass.getEAllAttributes().stream())
-				.anyMatch(attribute -> attribute.getEAttributeType() != null
-						&& GEOJSON_GEOMETRY.equals(attribute.getEAttributeType().getInstanceClassName()));
 	}
 
 	/**

@@ -2897,7 +2897,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		  (ogcFeaturesDataServiceConfigurationEClass,
 		   source,
 		   new String[] {
-			   "documentation", "Everything the OGC API Features runtime needs to serve one DataSet of an OgcFeaturesDataService as a feature collection. The feature type is the DataSet\'s outputType. Override-else-default: an EClass carrying the https://eclipse.org/fennec/ogc/features annotation of emf.ogc.features (collection=true with id, geometry, bbox, temporal, idAttribute, layerGroup, style) is served as annotated; every feature set here replaces the annotation\'s value, and a schema without the annotation (e.g. one resolved from a Model Atlas) is served through these features alone. The geometry is an attribute whose EDataType has the instance class org.geojson.Geometry; a DataSet with neither an annotated nor a configured geometry attribute is a diagnosed configuration error and the collection stays down, as is a DataSet with a query (the base predicate cannot be composed with the collection filters). The feature id is idFeature, else the type\'s EMF id attribute - a collection needs one."
+			   "documentation", "Everything the OGC API Features runtime needs to serve one DataSet of an OgcFeaturesDataService as a feature collection. The feature type is the DataSet\'s outputType. Override-else-default: an EClass carrying the https://eclipse.org/fennec/ogc/features annotation of emf.ogc.features (collection=true with id, geometry, bbox, temporal, idAttribute, layerGroup, style) is served as annotated; every feature set here replaces the annotation\'s value, and a schema without the annotation (e.g. one resolved from a Model Atlas) is served through these features alone. The geometry is a containment reference to the Geometry class of the GeoJSON EMF model (https://geojson.org/model/2016) - named by geometryFeature or the annotation, else the type\'s single such reference; a DataSet whose type has no geometry is a diagnosed configuration error and the collection stays down, as is a DataSet with a query (the base predicate cannot be composed with the collection filters). The feature id is idFeature, else the type\'s EMF id attribute - a collection needs one."
 		   });
 		addAnnotation
 		  (getOgcFeaturesDataServiceConfiguration_CollectionId(),
@@ -2921,7 +2921,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		  (getOgcFeaturesDataServiceConfiguration_GeometryFeature(),
 		   source,
 		   new String[] {
-			   "documentation", "Name of the attribute holding the feature geometry (EDataType with instance class org.geojson.Geometry, persisted as GeoJSON text). Defaults to the annotation\'s geometry."
+			   "documentation", "Name of the feature holding the feature geometry: a containment reference to the Geometry class of the GeoJSON EMF model (https://geojson.org/model/2016). Defaults to the annotation\'s geometry, else the type\'s single such reference."
 		   });
 		addAnnotation
 		  (getOgcFeaturesDataServiceConfiguration_BboxFeatures(),

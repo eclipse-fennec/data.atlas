@@ -20,7 +20,6 @@
 	bnd.identity;id='org.eclipse.fennec.odata.persistence',\
 	bnd.identity;id='org.eclipse.fennec.odata.metadata',\
 	bnd.identity;id='org.eclipse.fennec.data.atlas.ogc',\
-	bnd.identity;id='org.eclipse.fennec.ogc.features.ecore.fragment',\
 	bnd.identity;id='org.eclipse.fennec.ogc.features.runtime',\
 	bnd.identity;id='org.eclipse.fennec.ogc.features.source.persistence',\
 	bnd.identity;id='org.eclipse.fennec.ogc.features.cql2',\

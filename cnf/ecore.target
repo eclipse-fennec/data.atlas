@@ -15,6 +15,9 @@
   	<location type="BndRepositoryLocation">
     	<repository name="Central"/>
   	</location>
+  	<location type="BndRepositoryLocation">
+    	<repository name="Fennec Common Models Dependencies"/>
+  	</location>
 	</locations>
 	<environment>
 		<arch>x86_64</arch>

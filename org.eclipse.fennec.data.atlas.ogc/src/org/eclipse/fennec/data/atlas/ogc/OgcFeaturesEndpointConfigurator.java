@@ -32,7 +32,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.EAnnotation;
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.fennec.data.atlas.api.DataAtlasConstants;
 import org.eclipse.fennec.data.atlas.configuration.DataInput;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
@@ -74,6 +77,18 @@ import org.osgi.service.servlet.whiteboard.annotations.RequireHttpWhiteboard;
  * — or whose configuration overrides it — one configured collection
  * (emf.ogc.features#12, override-else-default); and the map viewer below the
  * root ({@code {urlContext}/viewer/}), inert without the viewer bundle.
+ *
+ * <p>
+ * The geometry of a feature type is a containment reference to the
+ * {@code Geometry} class of the GeoJSON EMF model ({@value #GEOJSON_NSURI}) —
+ * named by the configuration or the annotation, else the type's single such
+ * reference. The server still expects the geometry as an attribute
+ * (emf.ogc.features#14), so a reference geometry is validated here but not
+ * handed to the server: the collection is served without geometry, with a
+ * warning, until the server carries the reference; {@code bbox} requests are
+ * not filtered meanwhile. An attribute geometry (the server's current form) is
+ * passed through as it is.
+ * </p>
  *
  * <p>
  * The feature sources and collection providers of a root are tied to its
@@ -153,6 +168,8 @@ public class OgcFeaturesEndpointConfigurator {
 	private static final String KEY_COLLECTION_LAYER_GROUP = "layerGroup";
 	private static final String KEY_COLLECTION_STYLE = "style";
 	private static final String EMF_NSURI = "emf.nsURI";
+	/** The GeoJSON EMF model whose Geometry class a feature type's geometry reference points to. */
+	static final String GEOJSON_NSURI = "https://geojson.org/model/2016";
 	private static final String CONFIG_NAME_PREFIX = "dataAtlas.";
 	private static final Set<String> DERIVED_SERVLET_KEYS = Set.of(KEY_SERVLET_PATTERN, KEY_SERVLET_NAME,
 			KEY_HTTP_TARGET, KEY_HTTP_CONTEXT, KEY_TITLE, KEY_DESCRIPTION, KEY_DEFAULT_LIMIT, KEY_MAX_LIMIT,
@@ -167,6 +184,8 @@ public class OgcFeaturesEndpointConfigurator {
 	private final Map<String, OgcFeaturesDataService> services = new HashMap<>();
 	private final Map<String, ComponentServiceObjects<ReadRepository>> repositories = new HashMap<>();
 	private final Map<String, Realized> realized = new HashMap<>();
+	/** Types whose reference geometry was already reported as not (yet) served, per root reconcile. */
+	private static final Set<String> REPORTED_REFERENCE_GEOMETRIES = java.util.concurrent.ConcurrentHashMap.newKeySet();
 
 	/**
 	 * One collection: a configuration resolved against its DataSet, type and
@@ -350,7 +369,9 @@ public class OgcFeaturesEndpointConfigurator {
 	 * configuration's overrides on top, the DataSet's name and description
 	 * standing in for a missing title/description. Validated through the
 	 * server's own descriptor builder (feature id, attribute names, bbox shape)
-	 * plus the geometry requirement.
+	 * plus the geometry requirement: an attribute geometry goes to the server,
+	 * a GeoJSON reference geometry is accepted but not handed over (see the
+	 * class comment).
 	 *
 	 * @throws IllegalArgumentException when the collection cannot be served
 	 */
@@ -359,7 +380,9 @@ public class OgcFeaturesEndpointConfigurator {
 		Optional<CollectionDescriptor> annotated = CollectionDescriptor.of(type);
 		if (annotated.isPresent() && !overrides(configuration)) {
 			CollectionDescriptor descriptor = annotated.get();
-			requireGeometry(descriptor, type);
+			if (descriptor.geometry() == null) {
+				requireGeometry(geometryOf(type, null), type);
+			}
 			return new Collection(configuration.getId(), descriptor.id(), type, inputId, null);
 		}
 		List<String> bbox = configuration.getBboxFeatures().stream().map(OgcFeaturesEndpointConfigurator::blankToNull)
@@ -378,8 +401,10 @@ public class OgcFeaturesEndpointConfigurator {
 				firstNonBlank(own(type, OgcFeaturesAnnotations.DESCRIPTION), dataSet.getDescription()));
 		put(declaration, KEY_COLLECTION_ID_ATTRIBUTE,
 				firstNonBlank(configuration.getIdFeature(), inherited(type, OgcFeaturesAnnotations.ID_ATTRIBUTE)));
-		put(declaration, KEY_COLLECTION_GEOMETRY,
-				firstNonBlank(configuration.getGeometryFeature(), inherited(type, OgcFeaturesAnnotations.GEOMETRY)));
+		EStructuralFeature geometry = requireGeometry(geometryOf(type, configuration.getGeometryFeature()), type);
+		if (geometry instanceof EAttribute) {
+			declaration.put(KEY_COLLECTION_GEOMETRY, geometry.getName());
+		}
 		String bboxNames = bbox.isEmpty() ? inherited(type, OgcFeaturesAnnotations.BBOX) : String.join(",", bbox);
 		if (bboxNames != null) {
 			declaration.put(KEY_COLLECTION_BBOX, new ArrayList<>(List.of(bboxNames.split(","))));
@@ -400,15 +425,61 @@ public class OgcFeaturesEndpointConfigurator {
 				.temporal((String) declaration.get(KEY_COLLECTION_TEMPORAL))
 				.layerGroup((String) declaration.get(KEY_COLLECTION_LAYER_GROUP))
 				.style((String) declaration.get(KEY_COLLECTION_STYLE)).build();
-		requireGeometry(descriptor, type);
 		return new Collection(configuration.getId(), descriptor.id(), type, inputId, declaration);
 	}
 
-	private static void requireGeometry(CollectionDescriptor descriptor, EClass type) {
-		if (descriptor.geometry() == null) {
-			throw new IllegalArgumentException("type " + type.getName() + " has no geometry attribute (neither the "
-					+ OgcFeaturesAnnotations.SOURCE + " annotation nor the configuration names one)");
+	/**
+	 * The geometry feature of a type: the configured name, else the annotation's
+	 * (inherited) {@code geometry}, else the type's single containment reference
+	 * to a GeoJSON geometry; {@code null} when there is none.
+	 *
+	 * @throws IllegalArgumentException when a named feature is missing or is
+	 *                                  neither an attribute nor a GeoJSON reference
+	 */
+	static EStructuralFeature geometryOf(EClass type, String configuredName) {
+		String name = firstNonBlank(configuredName, inherited(type, OgcFeaturesAnnotations.GEOMETRY));
+		if (name != null) {
+			EStructuralFeature feature = type.getEStructuralFeature(name);
+			if (feature == null) {
+				throw new IllegalArgumentException("type " + type.getName() + " has no feature '" + name + "'");
+			}
+			if (!(feature instanceof EAttribute) && !isGeoJsonReference(feature)) {
+				throw new IllegalArgumentException("geometry feature '" + name + "' of type " + type.getName()
+						+ " is neither an attribute nor a containment reference to a " + GEOJSON_NSURI + " geometry");
+			}
+			return feature;
 		}
+		List<EReference> candidates = type.getEAllReferences().stream()
+				.filter(OgcFeaturesEndpointConfigurator::isGeoJsonReference).toList();
+		return candidates.size() == 1 ? candidates.get(0) : null;
+	}
+
+	/** A containment reference to the Geometry class (or a subclass) of the GeoJSON EMF model. */
+	static boolean isGeoJsonReference(EStructuralFeature feature) {
+		return feature instanceof EReference reference && reference.isContainment()
+				&& reference.getEReferenceType() != null && reference.getEReferenceType().getEPackage() != null
+				&& GEOJSON_NSURI.equals(reference.getEReferenceType().getEPackage().getNsURI());
+	}
+
+	/**
+	 * A collection needs a geometry. A reference geometry is not served yet
+	 * (emf.ogc.features#14): reported once per type, the collection goes up
+	 * without it.
+	 */
+	private static EStructuralFeature requireGeometry(EStructuralFeature geometry, EClass type) {
+		if (geometry == null) {
+			throw new IllegalArgumentException("type " + type.getName() + " has no geometry (neither the "
+					+ OgcFeaturesAnnotations.SOURCE + " annotation nor the configuration names one, and it has no "
+					+ "containment reference to a " + GEOJSON_NSURI + " geometry)");
+		}
+		if (geometry instanceof EReference
+				&& REPORTED_REFERENCE_GEOMETRIES.add(type.getEPackage().getNsURI() + "#" + type.getName())) {
+			LOG.log(Level.WARNING, () -> "type " + type.getName() + ": geometry '" + geometry.getName()
+					+ "' is a reference to the GeoJSON model, which the OGC API Features server does not serve yet "
+					+ "(emf.ogc.features#14) - the collection is served without geometry and bbox requests are "
+					+ "not filtered");
+		}
+		return geometry;
 	}
 
 	private static boolean overrides(OgcFeaturesDataServiceConfiguration configuration) {

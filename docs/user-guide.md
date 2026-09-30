@@ -908,13 +908,15 @@ MapLibre map viewer of its layers.
 </services>
 ```
 
-- The **feature type** is the DataSet's `outputType`. Its **geometry** is an
-  attribute whose EDataType has the instance class `org.geojson.Geometry`
-  (declare one in the schema, e.g. `GeoJsonGeometry`); in XMI and in the
-  database it is GeoJSON text. Four optional numeric attributes hold the
-  persisted **bounding box** (`minX`, `minY`, `maxX`, `maxY`), so `bbox`
-  requests push down as range predicates instead of testing every geometry;
-  a date attribute serves the `datetime` parameter.
+- The **feature type** is the DataSet's `outputType`. Its **geometry** is a
+  containment reference to the `Geometry` class of the GeoJSON EMF model
+  (`https://geojson.org/model/2016#//Geometry`, bundle `org.geojson.model`) —
+  a real model, not a data type, so a schema loaded at runtime resolves it
+  through the package registry like any other cross-model reference. Four
+  optional numeric attributes hold the persisted **bounding box** (`minX`,
+  `minY`, `maxX`, `maxY`), so `bbox` requests push down as range predicates
+  instead of testing every geometry; a date attribute serves the `datetime`
+  parameter.
 - **Override-else-default.** An EClass carrying the
   `https://eclipse.org/fennec/ogc/features` annotation of emf.ogc.features
   (`collection=true` with `id`, `title`, `geometry`, `bbox`, `temporal`,
@@ -928,9 +930,9 @@ MapLibre map viewer of its layers.
   alone (title then defaults to the DataSet's name). The collection id defaults
   to the annotation's `id`, else the type name, and must be unique per root.
 - A collection needs a **feature id** (`idFeature`, else the type's `iD`
-  attribute) and a **geometry**; a DataSet with neither an annotated nor a
-  configured geometry is a diagnosed configuration error and the collection
-  stays down. The same holds for a DataSet with a `query` (its base predicate
+  attribute) and a **geometry** (`geometryFeature`, else the annotation's
+  `geometry`, else the type's single GeoJSON reference); a DataSet whose type
+  has none is a diagnosed configuration error and the collection stays down. The same holds for a DataSet with a `query` (its base predicate
   cannot be composed with the collection filters yet), a declaration naming an
   attribute the type lacks, and two DataSets of one package served from
   different `DataInput`s in one root (the feature source scopes by package).
@@ -942,25 +944,20 @@ MapLibre map viewer of its layers.
   predicate in the database, file and bridge inputs in memory. Spatial
   predicates of CQL2 (`S_INTERSECTS` etc.) are tested exactly on the
   geometries of the candidate page.
-- **JPA inputs and the geometry.** When a served type has a GeoJSON geometry
-  attribute, the `JPADataInput`'s persistence unit binds the `geojson` type
-  converter of emf.ogc.features (`fennec.jpa.converter.target`), which stores
-  the geometry as GeoJSON text in a large-value column. The converter ships
-  with the OGC feature source, so such an input needs the `ogc` bundle in
-  the runtime — without it the unit waits for the converter and the input
-  stays down.
 - The root mounts **directly on the HTTP runtime**, not under the REST
   whiteboard's `/rest` prefix — with the docker images the example root is
   `http://localhost:8080/ogc/assets`. The M4 lifecycle applies: removing the
   service from the configuration takes the root down.
-- **Dynamic schemas.** A schema the Data Atlas resolves at runtime is a
-  dynamic EPackage, and EMF resolves the instance class of its data types
-  through the `org.eclipse.emf.ecore` bundle. The runtime therefore carries
-  emf.ogc.features' `ecore.fragment` (a fragment of that bundle importing
-  `org.geojson`; listed explicitly in the bndruns because the resolver never
-  adds fragments on its own) and its GeoJSON conversion, which turns the
-  attribute text of an XMI file into a geometry and back — so a
-  `FileDataInput` serves geometries too (emf.ogc.features#14).
+- **Known limitation (emf.ogc.features#14, open).** The server still
+  expects the geometry as an *attribute* and neither fennec persistence nor
+  the GeoJSON model's XMI form carry a geometry child's coordinates yet. The
+  Data Atlas therefore validates the reference but does not hand it to the
+  server: the collections come up and are served **without geometry** (a
+  warning names the type), and `bbox` requests are not filtered. Do not name the
+  reference in the class annotation's `geometry` detail — the server rejects
+  the whole package's annotations then; name it in `geometryFeature` or let
+  the single reference be found. Geometries follow once the server serves
+  the reference.
 
 ```bash
 curl http://localhost:8080/ogc/assets                            # landing page

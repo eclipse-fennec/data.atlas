@@ -1,28 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Assets of a leisure pool around Jena (CRS84 longitude/latitude): the data of the
-     example OGC API - Features service. The geometry is GeoJSON text (converted by
-     emf.ogc.features' GeoJSON conversion of the geometry data type), the bbox attributes
-     hold the bounding box of each asset's location. -->
+     example OGC API - Features service. The bbox attributes hold the bounding box of
+     each asset's location. The geometry itself (a containment reference to the
+     GeoJSON model's Geometry) is not set here: the GeoJSON model serializes its
+     coordinates only as Java-serialized text and the emf.ogc.features server does
+     not serve a reference geometry yet (emf.ogc.features#14), so the collections
+     are served without geometry for now (CQL2 and datetime filters work, bbox is
+     not filtered). -->
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:asset="https://eclipse.org/fennec/data/atlas/example/asset/1.0.0">
-  <asset:Pool id="pool-kids" geometry="{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[11.6170,50.9052]}" name="Kids pool"
+  <asset:Pool id="pool-kids" name="Kids pool"
       minX="11.6170" minY="50.9052" maxX="11.6170" maxY="50.9052" accessible="true" lastInspection="2026-06-15T00:00:00.000+0000"
       depthMax="0.6" waterTemperature="31.0"/>
-  <asset:Pool id="pool-sport" geometry="{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[11.6182,50.9058]}" name="Sports pool"
+  <asset:Pool id="pool-sport" name="Sports pool"
       minX="11.6182" minY="50.9058" maxX="11.6182" maxY="50.9058" accessible="true" lastInspection="2026-05-02T00:00:00.000+0000"
       depthMax="2.0" waterTemperature="26.5"/>
-  <asset:Pool id="pool-outdoor" geometry="{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[11.6195,50.9065]}" name="Outdoor pool"
+  <asset:Pool id="pool-outdoor" name="Outdoor pool"
       minX="11.6195" minY="50.9065" maxX="11.6195" maxY="50.9065" accessible="false" lastInspection="2025-09-20T00:00:00.000+0000"
       depthMax="1.8" waterTemperature="22.0"/>
-  <asset:Slide id="slide-black" geometry="{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[11.6175,50.9060]}" name="Black hole"
+  <asset:Slide id="slide-black" name="Black hole"
       minX="11.6175" minY="50.9060" maxX="11.6175" maxY="50.9060" accessible="false" lastInspection="2026-04-11T00:00:00.000+0000"
       length="82.0"/>
-  <asset:Slide id="slide-family" geometry="{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[11.6172,50.9054]}" name="Family slide"
+  <asset:Slide id="slide-family" name="Family slide"
       minX="11.6172" minY="50.9054" maxX="11.6172" maxY="50.9054" accessible="true" lastInspection="2026-04-11T00:00:00.000+0000"
       length="24.0"/>
-  <asset:Bench id="bench-1" geometry="{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[11.6168,50.9051]}" name="Bench at the kids pool"
+  <asset:Bench id="bench-1" name="Bench at the kids pool"
       minX="11.6168" minY="50.9051" maxX="11.6168" maxY="50.9051" accessible="true" lastInspection="2026-01-10T00:00:00.000+0000"
       seats="4"/>
-  <asset:Bench id="bench-2" geometry="{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[11.6198,50.9067]}" name="Bench at the outdoor pool"
+  <asset:Bench id="bench-2" name="Bench at the outdoor pool"
       minX="11.6198" minY="50.9067" maxX="11.6198" maxY="50.9067" accessible="true" lastInspection="2026-01-10T00:00:00.000+0000"
       seats="6"/>
 </xmi:XMI>
