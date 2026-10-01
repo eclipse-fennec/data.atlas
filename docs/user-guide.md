@@ -912,7 +912,11 @@ MapLibre map viewer of its layers.
   containment reference to the `Geometry` class of the GeoJSON EMF model
   (`https://geojson.org/model/2016#//Geometry`, bundle `org.geojson.model`) —
   a real model, not a data type, so a schema loaded at runtime resolves it
-  through the package registry like any other cross-model reference. Four
+  through the package registry like any other cross-model reference. A JPA
+  input stores the GeoJSON child as one CLOB column of its parent
+  (emf.persistence-jpa#363, nothing to configure), XMI carries it as a
+  child element. The column is atomic: a query path into the geometry is not
+  possible, which is what the bounding box is for. Four
   optional numeric attributes hold the persisted **bounding box** (`minX`,
   `minY`, `maxX`, `maxY`), so `bbox` requests push down as range predicates
   instead of testing every geometry; a date attribute serves the `datetime`
@@ -931,7 +935,9 @@ MapLibre map viewer of its layers.
   to the annotation's `id`, else the type name, and must be unique per root.
 - A collection needs a **feature id** (`idFeature`, else the type's `iD`
   attribute) and a **geometry** (`geometryFeature`, else the annotation's
-  `geometry`, else the type's single GeoJSON reference); a DataSet whose type
+  `geometry`, else the type's single GeoJSON reference — an annotated type
+  whose annotation names none is then declared by the Data Atlas with the
+  found reference); a DataSet whose type
   has none is a diagnosed configuration error and the collection stays down. The same holds for a DataSet with a `query` (its base predicate
   cannot be composed with the collection filters yet), a declaration naming an
   attribute the type lacks, and two DataSets of one package served from
@@ -948,16 +954,11 @@ MapLibre map viewer of its layers.
   whiteboard's `/rest` prefix — with the docker images the example root is
   `http://localhost:8080/ogc/assets`. The M4 lifecycle applies: removing the
   service from the configuration takes the root down.
-- **Known limitation (emf.ogc.features#14, open).** The server still
-  expects the geometry as an *attribute* and neither fennec persistence nor
-  the GeoJSON model's XMI form carry a geometry child's coordinates yet. The
-  Data Atlas therefore validates the reference but does not hand it to the
-  server: the collections come up and are served **without geometry** (a
-  warning names the type), and `bbox` requests are not filtered. Do not name the
-  reference in the class annotation's `geometry` detail — the server rejects
-  the whole package's annotations then; name it in `geometryFeature` or let
-  the single reference be found. Geometries follow once the server serves
-  the reference.
+- Whoever writes the features keeps the bbox attributes consistent with the
+  geometry: `bbox` filters on them in the store, the exact relation is then
+  checked on the geometry. In the example XMI the GeoJSON model writes the
+  point's coordinates as Java-serialized hex text (its derived `data`
+  attribute) — generate such files, do not edit them by hand.
 
 ```bash
 curl http://localhost:8080/ogc/assets                            # landing page

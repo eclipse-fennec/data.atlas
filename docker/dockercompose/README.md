@@ -423,8 +423,9 @@ A location is a GeoJSON document in `value_json` — a bare geometry or a
 as the provider recorded it. No PostGIS, no view, no type converter: for CSV
 and JSON dumps the text is the right shape. Serving the locations as real
 geometries (as an OGC API Features collection or a GeoJSON `FeatureCollection`)
-would take a schema whose geometry attribute is a GeoJSON `EDataType`, as the
-`asset.ecore` example shows — the recorded documents are already in that form.
+would take a schema whose geometry is a containment reference to the GeoJSON
+model's `Geometry`, as the `asset.ecore` example shows, and a mapping of the
+recorded documents into it.
 
 ---
 

@@ -82,12 +82,10 @@ import org.osgi.service.servlet.whiteboard.annotations.RequireHttpWhiteboard;
  * The geometry of a feature type is a containment reference to the
  * {@code Geometry} class of the GeoJSON EMF model ({@value #GEOJSON_NSURI}) —
  * named by the configuration or the annotation, else the type's single such
- * reference. The server still expects the geometry as an attribute
- * (emf.ogc.features#14), so a reference geometry is validated here but not
- * handed to the server: the collection is served without geometry, with a
- * warning, until the server carries the reference; {@code bbox} requests are
- * not filtered meanwhile. An attribute geometry (the server's current form) is
- * passed through as it is.
+ * reference — and handed to the server, which serves an attribute or a
+ * single-valued containment reference alike (emf.ogc.features#14). An
+ * annotated type whose annotation names no geometry is therefore declared by
+ * configuration, with the detected reference as its geometry.
  * </p>
  *
  * <p>
@@ -102,10 +100,10 @@ import org.osgi.service.servlet.whiteboard.annotations.RequireHttpWhiteboard;
  * <p>
  * Fail-early gating as everywhere: a configuration whose DataSet has no
  * resolvable input, no feature id (neither an {@code iD} attribute nor an
- * {@code idAttribute}), no geometry attribute (neither annotated nor
- * configured), a query (its base predicate would have to be composed with the
- * collection filters; not supported), a declaration naming an attribute the
- * type lacks, or that collides with a sibling is skipped with a loud log; a
+ * {@code idAttribute}), no geometry (neither annotated nor configured, nor a
+ * single GeoJSON reference), a query (its base predicate would have to be
+ * composed with the collection filters; not supported), a declaration naming
+ * an attribute the type lacks, or that collides with a sibling is skipped with a loud log; a
  * root whose repositories are not (yet) available waits. Roots are torn down
  * when their service disappears (M4 lifecycle) and rebuilt when their derived
  * configuration changes.
@@ -184,8 +182,6 @@ public class OgcFeaturesEndpointConfigurator {
 	private final Map<String, OgcFeaturesDataService> services = new HashMap<>();
 	private final Map<String, ComponentServiceObjects<ReadRepository>> repositories = new HashMap<>();
 	private final Map<String, Realized> realized = new HashMap<>();
-	/** Types whose reference geometry was already reported as not (yet) served, per root reconcile. */
-	private static final Set<String> REPORTED_REFERENCE_GEOMETRIES = java.util.concurrent.ConcurrentHashMap.newKeySet();
 
 	/**
 	 * One collection: a configuration resolved against its DataSet, type and
@@ -369,9 +365,8 @@ public class OgcFeaturesEndpointConfigurator {
 	 * configuration's overrides on top, the DataSet's name and description
 	 * standing in for a missing title/description. Validated through the
 	 * server's own descriptor builder (feature id, attribute names, bbox shape)
-	 * plus the geometry requirement: an attribute geometry goes to the server,
-	 * a GeoJSON reference geometry is accepted but not handed over (see the
-	 * class comment).
+	 * plus the geometry requirement. An annotated type whose annotation names no
+	 * geometry is declared as well, with the geometry detected here.
 	 *
 	 * @throws IllegalArgumentException when the collection cannot be served
 	 */
@@ -380,10 +375,10 @@ public class OgcFeaturesEndpointConfigurator {
 		Optional<CollectionDescriptor> annotated = CollectionDescriptor.of(type);
 		if (annotated.isPresent() && !overrides(configuration)) {
 			CollectionDescriptor descriptor = annotated.get();
-			if (descriptor.geometry() == null) {
-				requireGeometry(geometryOf(type, null), type);
+			if (descriptor.geometry() != null) {
+				return new Collection(configuration.getId(), descriptor.id(), type, inputId, null);
 			}
-			return new Collection(configuration.getId(), descriptor.id(), type, inputId, null);
+			// the annotation names no geometry: declared below with the detected one
 		}
 		List<String> bbox = configuration.getBboxFeatures().stream().map(OgcFeaturesEndpointConfigurator::blankToNull)
 				.filter(Objects::nonNull).toList();
@@ -402,9 +397,7 @@ public class OgcFeaturesEndpointConfigurator {
 		put(declaration, KEY_COLLECTION_ID_ATTRIBUTE,
 				firstNonBlank(configuration.getIdFeature(), inherited(type, OgcFeaturesAnnotations.ID_ATTRIBUTE)));
 		EStructuralFeature geometry = requireGeometry(geometryOf(type, configuration.getGeometryFeature()), type);
-		if (geometry instanceof EAttribute) {
-			declaration.put(KEY_COLLECTION_GEOMETRY, geometry.getName());
-		}
+		declaration.put(KEY_COLLECTION_GEOMETRY, geometry.getName());
 		String bboxNames = bbox.isEmpty() ? inherited(type, OgcFeaturesAnnotations.BBOX) : String.join(",", bbox);
 		if (bboxNames != null) {
 			declaration.put(KEY_COLLECTION_BBOX, new ArrayList<>(List.of(bboxNames.split(","))));
@@ -461,23 +454,12 @@ public class OgcFeaturesEndpointConfigurator {
 				&& GEOJSON_NSURI.equals(reference.getEReferenceType().getEPackage().getNsURI());
 	}
 
-	/**
-	 * A collection needs a geometry. A reference geometry is not served yet
-	 * (emf.ogc.features#14): reported once per type, the collection goes up
-	 * without it.
-	 */
+	/** A collection needs a geometry. */
 	private static EStructuralFeature requireGeometry(EStructuralFeature geometry, EClass type) {
 		if (geometry == null) {
 			throw new IllegalArgumentException("type " + type.getName() + " has no geometry (neither the "
 					+ OgcFeaturesAnnotations.SOURCE + " annotation nor the configuration names one, and it has no "
 					+ "containment reference to a " + GEOJSON_NSURI + " geometry)");
-		}
-		if (geometry instanceof EReference
-				&& REPORTED_REFERENCE_GEOMETRIES.add(type.getEPackage().getNsURI() + "#" + type.getName())) {
-			LOG.log(Level.WARNING, () -> "type " + type.getName() + ": geometry '" + geometry.getName()
-					+ "' is a reference to the GeoJSON model, which the OGC API Features server does not serve yet "
-					+ "(emf.ogc.features#14) - the collection is served without geometry and bbox requests are "
-					+ "not filtered");
 		}
 		return geometry;
 	}

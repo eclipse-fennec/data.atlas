@@ -34,6 +34,7 @@ Test-Cases: ${classes;HIERARCHY_INDIRECTLY_ANNOTATED;org.junit.platform.commons.
 	org.eclipse.fennec.persistence.query;version=latest,\
 	org.eclipse.fennec.query.model;version=latest,\
 	org.eclipse.fennec.expression.model;version=latest,\
+	org.geojson.model;version=latest,\
 	com.h2database;version=latest
 
 Private-Package: \

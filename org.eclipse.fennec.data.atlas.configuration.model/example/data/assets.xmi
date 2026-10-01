@@ -1,32 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Assets of a leisure pool around Jena (CRS84 longitude/latitude): the data of the
-     example OGC API - Features service. The bbox attributes hold the bounding box of
-     each asset's location. The geometry itself (a containment reference to the
-     GeoJSON model's Geometry) is not set here: the GeoJSON model serializes its
-     coordinates only as Java-serialized text and the emf.ogc.features server does
-     not serve a reference geometry yet (emf.ogc.features#14), so the collections
-     are served without geometry for now (CQL2 and datetime filters work, bbox is
-     not filtered). -->
-<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:asset="https://eclipse.org/fennec/data/atlas/example/asset/1.0.0">
+     example OGC API - Features service. The location of each asset is a GeoJSON
+     point (the containment reference to the GeoJSON model's Geometry); the bbox
+     attributes hold its bounding box, which the store filters on. The GeoJSON model
+     keeps the coordinates in its derived 'data' attribute, which XMI writes as
+     Java-serialized hex text - not meant to be edited by hand: the encoded values
+     are the minX/minY pair of the same asset. -->
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:geo-json="https://geojson.org/model/2016" xmlns:asset="https://eclipse.org/fennec/data/atlas/example/asset/1.0.0">
   <asset:Pool id="pool-kids" name="Kids pool"
       minX="11.6170" minY="50.9052" maxX="11.6170" maxY="50.9052" accessible="true" lastInspection="2026-06-15T00:00:00.000+0000"
-      depthMax="0.6" waterTemperature="31.0"/>
+      depthMax="0.6" waterTemperature="31.0">
+    <geometry xsi:type="geo-json:Point" data="ACED0005757200025B443EA68C14AB635A1E02000078700000000240273BE76C8B4396404973DD97F62B6B"/>
+  </asset:Pool>
   <asset:Pool id="pool-sport" name="Sports pool"
       minX="11.6182" minY="50.9058" maxX="11.6182" maxY="50.9058" accessible="true" lastInspection="2026-05-02T00:00:00.000+0000"
-      depthMax="2.0" waterTemperature="26.5"/>
+      depthMax="2.0" waterTemperature="26.5">
+    <geometry xsi:type="geo-json:Point" data="ACED0005757200025B443EA68C14AB635A1E02000078700000000240273C84B5DCC63F404973F141205BC0"/>
+  </asset:Pool>
   <asset:Pool id="pool-outdoor" name="Outdoor pool"
       minX="11.6195" minY="50.9065" maxX="11.6195" maxY="50.9065" accessible="false" lastInspection="2025-09-20T00:00:00.000+0000"
-      depthMax="1.8" waterTemperature="22.0"/>
+      depthMax="1.8" waterTemperature="22.0">
+    <geometry xsi:type="geo-json:Point" data="ACED0005757200025B443EA68C14AB635A1E02000078700000000240273D2F1A9FBE77404974083126E979"/>
+  </asset:Pool>
   <asset:Slide id="slide-black" name="Black hole"
       minX="11.6175" minY="50.9060" maxX="11.6175" maxY="50.9060" accessible="false" lastInspection="2026-04-11T00:00:00.000+0000"
-      length="82.0"/>
+      length="82.0">
+    <geometry xsi:type="geo-json:Point" data="ACED0005757200025B443EA68C14AB635A1E02000078700000000240273C28F5C28F5C404973F7CED91687"/>
+  </asset:Slide>
   <asset:Slide id="slide-family" name="Family slide"
       minX="11.6172" minY="50.9054" maxX="11.6172" maxY="50.9054" accessible="true" lastInspection="2026-04-11T00:00:00.000+0000"
-      length="24.0"/>
+      length="24.0">
+    <geometry xsi:type="geo-json:Point" data="ACED0005757200025B443EA68C14AB635A1E02000078700000000240273C01A36E2EB2404973E425AEE632"/>
+  </asset:Slide>
   <asset:Bench id="bench-1" name="Bench at the kids pool"
       minX="11.6168" minY="50.9051" maxX="11.6168" maxY="50.9051" accessible="true" lastInspection="2026-01-10T00:00:00.000+0000"
-      seats="4"/>
+      seats="4">
+    <geometry xsi:type="geo-json:Point" data="ACED0005757200025B443EA68C14AB635A1E02000078700000000240273BCD35A85879404973DA5119CE07"/>
+  </asset:Bench>
   <asset:Bench id="bench-2" name="Bench at the outdoor pool"
       minX="11.6198" minY="50.9067" maxX="11.6198" maxY="50.9067" accessible="true" lastInspection="2026-01-10T00:00:00.000+0000"
-      seats="6"/>
+      seats="6">
+    <geometry xsi:type="geo-json:Point" data="ACED0005757200025B443EA68C14AB635A1E02000078700000000240273D566CF41F214049740EBEDFA440"/>
+  </asset:Bench>
 </xmi:XMI>

@@ -4,14 +4,9 @@
      class of the GeoJSON EMF model (org.geojson.model, nsURI
      https://geojson.org/model/2016) - a real model, not a data type, so a schema
      loaded at runtime resolves it through the package registry like any other
-     cross-model reference.
-
-     The OGC annotations of Asset, Pool and Slide deliberately do NOT name the
-     geometry: the emf.ogc.features server still expects the geometry as an
-     EAttribute and rejects a package whose annotation names a reference
-     (emf.ogc.features#14, open). The Data Atlas recognizes the GeoJSON reference
-     itself and serves the collections without geometry until the server carries
-     the reference (bbox requests are not filtered meanwhile). -->
+     cross-model reference. The OGC annotation of Asset names it as the geometry
+     of every collection below (emf.ogc.features#14); a type whose annotation
+     names none still gets its single GeoJSON reference from the Data Atlas. -->
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="asset" nsURI="https://eclipse.org/fennec/data/atlas/example/asset/1.0.0"
     nsPrefix="asset">
@@ -30,6 +25,7 @@
       <details key="id" value="assets"/>
       <details key="title" value="All assets"/>
       <details key="description" value="Every asset of the leisure pool."/>
+      <details key="geometry" value="geometry"/>
       <details key="bbox" value="minX,minY,maxX,maxY"/>
       <details key="temporal" value="lastInspection"/>
     </eAnnotations>

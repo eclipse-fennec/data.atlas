@@ -194,11 +194,12 @@ Implemented today (roadmap Milestones 0–8):
   with instance class `org.geojson.Geometry` was a mistake: a dynamic package
   resolves such an instance class through the ecore bundle's class loader and
   then holds no value at all, which a fragment on `org.eclipse.emf.ecore`
-  only papered over (emf.ogc.features#15, reverted by #16). The server still
-  serves the geometry as an attribute (emf.ogc.features#14, open; blocked on
-  fennec persistence storing a GeoJSON child's coordinates), so the
-  configurator validates the reference and serves the collection without
-  geometry until then. Gating: no feature id, no geometry, a query-defined
+  only papered over (emf.ogc.features#15, reverted by #16). The server takes
+  the reference as the collection geometry (emf.ogc.features#14), JPA stores
+  the GeoJSON child as one CLOB column of its parent (emf.persistence-jpa#363);
+  the configurator hands the reference over — an annotated type whose
+  annotation names no geometry is declared with the detected reference.
+  Gating: no feature id, no geometry, a query-defined
   DataSet, an unknown attribute, colliding collection ids or two inputs for
   one package keep the collection down; roots follow the M4 lifecycle. DCAT
   publication maps a root DataService-first: the landing page as
