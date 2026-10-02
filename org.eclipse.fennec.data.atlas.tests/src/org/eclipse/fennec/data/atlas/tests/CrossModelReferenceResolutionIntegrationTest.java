@@ -30,7 +30,6 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.fennec.emf.osgi.ResourceSetFactory;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.osgi.framework.BundleContext;
@@ -58,8 +57,9 @@ import org.osgi.test.junit5.service.ServiceExtension;
  * capability ({@code ecore="/model/geojson.ecore"}) — in Eclipse EMF maps such
  * a location of a generated model to its nsURI. The emf.ogc.features example
  * models use the second form (the codegen cannot resolve the first,
- * eclipse-fennec/emf.osgi#113). Only the nsURI form resolves today; the
- * location cases are disabled until eclipse-fennec/emf.osgi#114 is fixed.
+ * eclipse-fennec/emf.osgi#113). Since eclipse-fennec/emf.osgi#114 the
+ * location resolves to the generated package as well — on purpose unlike
+ * Eclipse, where it loads the model file as a dynamic copy.
  * </p>
  */
 @ExtendWith(BundleContextExtension.class)
@@ -75,7 +75,6 @@ public class CrossModelReferenceResolutionIntegrationTest {
 	}
 
 	@Test
-	@Disabled("eclipse-fennec/emf.osgi#114: the generated_package location is not mapped to the package")
 	void platformPluginReferenceResolvesToTheDeployedGeneratedPackage(
 			@InjectService ResourceSetFactory resourceSetFactory,
 			@InjectService(filter = "(emf.nsURI=" + GEOJSON_NSURI + ")") EPackage geoJson) throws Exception {
@@ -86,11 +85,10 @@ public class CrossModelReferenceResolutionIntegrationTest {
 	/**
 	 * The manual way emf.osgi offers: a {@code DefaultUriMapProvider} mapping
 	 * the model location to the nsURI, which every ResourceSet's URI converter
-	 * receives. The location then normalizes to the nsURI, but the reference
-	 * still stays a proxy.
+	 * receives; the location normalizes to the nsURI, which resolves to the
+	 * registered package (emf.osgi#114).
 	 */
 	@Test
-	@Disabled("eclipse-fennec/emf.osgi#114: a UriMapProvider entry does not resolve the location either")
 	void platformPluginReferenceWithAConfiguredUriMap(@InjectBundleContext BundleContext bundleContext,
 			@InjectService ConfigurationAdmin configAdmin, @InjectService ResourceSetFactory resourceSetFactory,
 			@InjectService(filter = "(emf.nsURI=" + GEOJSON_NSURI + ")") EPackage geoJson) throws Exception {
