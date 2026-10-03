@@ -16,7 +16,9 @@
     <configuration id="persons-rest-config" dataSet="persons" path="persons"/>
   </services>
   <publications id="open-data" catalog="example" publisherName="Eclipse Fennec Data Atlas example"
-      licenseUri="http://dcat-ap.de/def/licenses/dl-by-de/2.0">
+      licenseUri="http://dcat-ap.de/def/licenses/dl-by-de/2.0"
+      rightsHolderName="Eclipse Fennec" contactName="Eclipse Fennec Data Atlas example"
+      contactEmail="fennec-dev@eclipse.org" contactUrl="https://github.com/eclipse-fennec/data.atlas">
     <keywords>persons</keywords>
     <keywords>example</keywords>
   </publications>

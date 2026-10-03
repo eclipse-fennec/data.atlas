@@ -49,6 +49,11 @@ import org.eclipse.fennec.data.atlas.configuration.DcatPublication;
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DcatPublicationImpl#getThemes <em>Themes</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DcatPublicationImpl#getPublisherName <em>Publisher Name</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DcatPublicationImpl#getPublisherUri <em>Publisher Uri</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DcatPublicationImpl#getRightsHolderName <em>Rights Holder Name</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DcatPublicationImpl#getRightsHolderUri <em>Rights Holder Uri</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DcatPublicationImpl#getContactName <em>Contact Name</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DcatPublicationImpl#getContactEmail <em>Contact Email</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DcatPublicationImpl#getContactUrl <em>Contact Url</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.impl.DcatPublicationImpl#getLicenseUri <em>License Uri</em>}</li>
  * </ul>
  *
@@ -254,6 +259,106 @@ public class DcatPublicationImpl extends MinimalEObjectImpl.Container implements
 	 * @ordered
 	 */
 	protected String publisherUri = PUBLISHER_URI_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getRightsHolderName() <em>Rights Holder Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getRightsHolderName()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String RIGHTS_HOLDER_NAME_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getRightsHolderName() <em>Rights Holder Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getRightsHolderName()
+	 * @generated
+	 * @ordered
+	 */
+	protected String rightsHolderName = RIGHTS_HOLDER_NAME_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getRightsHolderUri() <em>Rights Holder Uri</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getRightsHolderUri()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String RIGHTS_HOLDER_URI_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getRightsHolderUri() <em>Rights Holder Uri</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getRightsHolderUri()
+	 * @generated
+	 * @ordered
+	 */
+	protected String rightsHolderUri = RIGHTS_HOLDER_URI_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getContactName() <em>Contact Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getContactName()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String CONTACT_NAME_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getContactName() <em>Contact Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getContactName()
+	 * @generated
+	 * @ordered
+	 */
+	protected String contactName = CONTACT_NAME_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getContactEmail() <em>Contact Email</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getContactEmail()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String CONTACT_EMAIL_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getContactEmail() <em>Contact Email</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getContactEmail()
+	 * @generated
+	 * @ordered
+	 */
+	protected String contactEmail = CONTACT_EMAIL_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getContactUrl() <em>Contact Url</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getContactUrl()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String CONTACT_URL_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getContactUrl() <em>Contact Url</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getContactUrl()
+	 * @generated
+	 * @ordered
+	 */
+	protected String contactUrl = CONTACT_URL_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getLicenseUri() <em>License Uri</em>}' attribute.
@@ -533,6 +638,121 @@ public class DcatPublicationImpl extends MinimalEObjectImpl.Container implements
 	 * @generated
 	 */
 	@Override
+	public String getRightsHolderName() {
+		return rightsHolderName;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setRightsHolderName(String newRightsHolderName) {
+		String oldRightsHolderName = rightsHolderName;
+		rightsHolderName = newRightsHolderName;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DAConfigPackage.DCAT_PUBLICATION__RIGHTS_HOLDER_NAME, oldRightsHolderName, rightsHolderName));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String getRightsHolderUri() {
+		return rightsHolderUri;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setRightsHolderUri(String newRightsHolderUri) {
+		String oldRightsHolderUri = rightsHolderUri;
+		rightsHolderUri = newRightsHolderUri;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DAConfigPackage.DCAT_PUBLICATION__RIGHTS_HOLDER_URI, oldRightsHolderUri, rightsHolderUri));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String getContactName() {
+		return contactName;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setContactName(String newContactName) {
+		String oldContactName = contactName;
+		contactName = newContactName;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DAConfigPackage.DCAT_PUBLICATION__CONTACT_NAME, oldContactName, contactName));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String getContactEmail() {
+		return contactEmail;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setContactEmail(String newContactEmail) {
+		String oldContactEmail = contactEmail;
+		contactEmail = newContactEmail;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DAConfigPackage.DCAT_PUBLICATION__CONTACT_EMAIL, oldContactEmail, contactEmail));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String getContactUrl() {
+		return contactUrl;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setContactUrl(String newContactUrl) {
+		String oldContactUrl = contactUrl;
+		contactUrl = newContactUrl;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DAConfigPackage.DCAT_PUBLICATION__CONTACT_URL, oldContactUrl, contactUrl));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public String getLicenseUri() {
 		return licenseUri;
 	}
@@ -580,6 +800,16 @@ public class DcatPublicationImpl extends MinimalEObjectImpl.Container implements
 				return getPublisherName();
 			case DAConfigPackage.DCAT_PUBLICATION__PUBLISHER_URI:
 				return getPublisherUri();
+			case DAConfigPackage.DCAT_PUBLICATION__RIGHTS_HOLDER_NAME:
+				return getRightsHolderName();
+			case DAConfigPackage.DCAT_PUBLICATION__RIGHTS_HOLDER_URI:
+				return getRightsHolderUri();
+			case DAConfigPackage.DCAT_PUBLICATION__CONTACT_NAME:
+				return getContactName();
+			case DAConfigPackage.DCAT_PUBLICATION__CONTACT_EMAIL:
+				return getContactEmail();
+			case DAConfigPackage.DCAT_PUBLICATION__CONTACT_URL:
+				return getContactUrl();
 			case DAConfigPackage.DCAT_PUBLICATION__LICENSE_URI:
 				return getLicenseUri();
 		}
@@ -630,6 +860,21 @@ public class DcatPublicationImpl extends MinimalEObjectImpl.Container implements
 			case DAConfigPackage.DCAT_PUBLICATION__PUBLISHER_URI:
 				setPublisherUri((String)newValue);
 				return;
+			case DAConfigPackage.DCAT_PUBLICATION__RIGHTS_HOLDER_NAME:
+				setRightsHolderName((String)newValue);
+				return;
+			case DAConfigPackage.DCAT_PUBLICATION__RIGHTS_HOLDER_URI:
+				setRightsHolderUri((String)newValue);
+				return;
+			case DAConfigPackage.DCAT_PUBLICATION__CONTACT_NAME:
+				setContactName((String)newValue);
+				return;
+			case DAConfigPackage.DCAT_PUBLICATION__CONTACT_EMAIL:
+				setContactEmail((String)newValue);
+				return;
+			case DAConfigPackage.DCAT_PUBLICATION__CONTACT_URL:
+				setContactUrl((String)newValue);
+				return;
 			case DAConfigPackage.DCAT_PUBLICATION__LICENSE_URI:
 				setLicenseUri((String)newValue);
 				return;
@@ -678,6 +923,21 @@ public class DcatPublicationImpl extends MinimalEObjectImpl.Container implements
 			case DAConfigPackage.DCAT_PUBLICATION__PUBLISHER_URI:
 				setPublisherUri(PUBLISHER_URI_EDEFAULT);
 				return;
+			case DAConfigPackage.DCAT_PUBLICATION__RIGHTS_HOLDER_NAME:
+				setRightsHolderName(RIGHTS_HOLDER_NAME_EDEFAULT);
+				return;
+			case DAConfigPackage.DCAT_PUBLICATION__RIGHTS_HOLDER_URI:
+				setRightsHolderUri(RIGHTS_HOLDER_URI_EDEFAULT);
+				return;
+			case DAConfigPackage.DCAT_PUBLICATION__CONTACT_NAME:
+				setContactName(CONTACT_NAME_EDEFAULT);
+				return;
+			case DAConfigPackage.DCAT_PUBLICATION__CONTACT_EMAIL:
+				setContactEmail(CONTACT_EMAIL_EDEFAULT);
+				return;
+			case DAConfigPackage.DCAT_PUBLICATION__CONTACT_URL:
+				setContactUrl(CONTACT_URL_EDEFAULT);
+				return;
 			case DAConfigPackage.DCAT_PUBLICATION__LICENSE_URI:
 				setLicenseUri(LICENSE_URI_EDEFAULT);
 				return;
@@ -715,6 +975,16 @@ public class DcatPublicationImpl extends MinimalEObjectImpl.Container implements
 				return PUBLISHER_NAME_EDEFAULT == null ? publisherName != null : !PUBLISHER_NAME_EDEFAULT.equals(publisherName);
 			case DAConfigPackage.DCAT_PUBLICATION__PUBLISHER_URI:
 				return PUBLISHER_URI_EDEFAULT == null ? publisherUri != null : !PUBLISHER_URI_EDEFAULT.equals(publisherUri);
+			case DAConfigPackage.DCAT_PUBLICATION__RIGHTS_HOLDER_NAME:
+				return RIGHTS_HOLDER_NAME_EDEFAULT == null ? rightsHolderName != null : !RIGHTS_HOLDER_NAME_EDEFAULT.equals(rightsHolderName);
+			case DAConfigPackage.DCAT_PUBLICATION__RIGHTS_HOLDER_URI:
+				return RIGHTS_HOLDER_URI_EDEFAULT == null ? rightsHolderUri != null : !RIGHTS_HOLDER_URI_EDEFAULT.equals(rightsHolderUri);
+			case DAConfigPackage.DCAT_PUBLICATION__CONTACT_NAME:
+				return CONTACT_NAME_EDEFAULT == null ? contactName != null : !CONTACT_NAME_EDEFAULT.equals(contactName);
+			case DAConfigPackage.DCAT_PUBLICATION__CONTACT_EMAIL:
+				return CONTACT_EMAIL_EDEFAULT == null ? contactEmail != null : !CONTACT_EMAIL_EDEFAULT.equals(contactEmail);
+			case DAConfigPackage.DCAT_PUBLICATION__CONTACT_URL:
+				return CONTACT_URL_EDEFAULT == null ? contactUrl != null : !CONTACT_URL_EDEFAULT.equals(contactUrl);
 			case DAConfigPackage.DCAT_PUBLICATION__LICENSE_URI:
 				return LICENSE_URI_EDEFAULT == null ? licenseUri != null : !LICENSE_URI_EDEFAULT.equals(licenseUri);
 		}
@@ -753,6 +1023,16 @@ public class DcatPublicationImpl extends MinimalEObjectImpl.Container implements
 		result.append(publisherName);
 		result.append(", publisherUri: ");
 		result.append(publisherUri);
+		result.append(", rightsHolderName: ");
+		result.append(rightsHolderName);
+		result.append(", rightsHolderUri: ");
+		result.append(rightsHolderUri);
+		result.append(", contactName: ");
+		result.append(contactName);
+		result.append(", contactEmail: ");
+		result.append(contactEmail);
+		result.append(", contactUrl: ");
+		result.append(contactUrl);
 		result.append(", licenseUri: ");
 		result.append(licenseUri);
 		result.append(')');

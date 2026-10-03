@@ -39,6 +39,8 @@ import rdf.PlainLiteral;
 import rdf.RdfFactory;
 import terms.LicenseDocument;
 import terms.TermsFactory;
+import vcard.Organization;
+import vcard.VcardFactory;
 
 /**
  * Translates one published Fennec {@code DataService} — DataService-first, the
@@ -332,7 +334,8 @@ final class DcatMapper {
 	 * Title, description and publisher — the fields the portal's shapes require
 	 * of every {@code DcatResource}: explicit publication value, else the
 	 * provider's own, else (for the description) the GenModel documentation of
-	 * the provider's model type.
+	 * the provider's model type. The optional rights holder and contact point
+	 * come from the publication alone; unset, the entry states none.
 	 */
 	private static void applyResourceMetadata(DcatResource resource, DcatPublication publication, String name,
 			String description, EClass modelType, String where, List<String> problems) {
@@ -363,6 +366,47 @@ final class DcatMapper {
 			}
 			resource.setPublisher(publisher);
 		}
+		String rightsHolderName = blankToNull(publication.getRightsHolderName());
+		if (rightsHolderName != null) {
+			Agent rightsHolder = FoafFactory.eINSTANCE.createAgent();
+			rightsHolder.getName().add(literal(rightsHolderName, language));
+			String rightsHolderUri = blankToNull(publication.getRightsHolderUri());
+			if (rightsHolderUri != null) {
+				rightsHolder.setAbout(rightsHolderUri);
+			}
+			resource.setRightsHolder(rightsHolder);
+		}
+		Organization contact = contactPoint(publication);
+		if (contact != null) {
+			resource.getContactPoint().add(contact);
+		}
+	}
+
+	/**
+	 * The dcat:contactPoint of a publication as a vcard:Organization, or
+	 * {@code null} when it declares none of name, e-mail and URL. A plain e-mail
+	 * address becomes a {@code mailto:} IRI.
+	 */
+	static Organization contactPoint(DcatPublication publication) {
+		String name = blankToNull(publication.getContactName());
+		String email = blankToNull(publication.getContactEmail());
+		String url = blankToNull(publication.getContactUrl());
+		if (name == null && email == null && url == null) {
+			return null;
+		}
+		Organization contact = VcardFactory.eINSTANCE.createOrganization();
+		contact.setFn(name);
+		if (email != null) {
+			contact.getHasEmail().add(email.regionMatches(true, 0, "mailto:", 0, 7) ? email : "mailto:" + email);
+		}
+		if (url != null) {
+			contact.getHasURL().add(url);
+		}
+		return contact;
+	}
+
+	private static String blankToNull(String value) {
+		return value == null || value.isBlank() ? null : value.trim();
 	}
 
 	/** The GenModel documentation of an EClass — the annotation-derived default. */

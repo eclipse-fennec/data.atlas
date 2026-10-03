@@ -40,7 +40,9 @@
         idFeature="id"/>
   </services>
   <publications id="dcat-open-data" catalog="test-catalog" publisherName="Data Atlas integration suite"
-      licenseUri="http://dcat-ap.de/def/licenses/dl-by-de/2.0">
+      licenseUri="http://dcat-ap.de/def/licenses/dl-by-de/2.0"
+      rightsHolderName="Rights holding city" rightsHolderUri="https://example.org/city"
+      contactName="Open data desk" contactEmail="opendata@example.org" contactUrl="https://example.org/contact">
     <keywords>persons</keywords>
     <keywords>example</keywords>
   </publications>

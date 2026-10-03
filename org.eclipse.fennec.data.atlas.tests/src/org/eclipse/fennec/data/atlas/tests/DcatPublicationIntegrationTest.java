@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.eclipse.fennec.data.atlas.api.DataAtlasConstants;
 import org.eclipse.fennec.data.atlas.api.PublicationStatus;
@@ -130,6 +131,7 @@ public class DcatPublicationIntegrationTest {
 		assertEquals("Persons REST", service.getTitle().get(0).getValue());
 		assertNotNull(service.getPublisher(), "expected a publisher");
 		assertEquals("Data Atlas integration suite", service.getPublisher().getName().get(0).getValue());
+		assertRightsHolderAndContact(service);
 
 		// its dataset, with derived metadata and the declared keywords; the
 		// fixture's DataSet has no description, so it comes from the GenModel
@@ -139,6 +141,7 @@ public class DcatPublicationIntegrationTest {
 		assertEquals("persons", dataset.getTitle().get(0).getValue());
 		assertEquals(PERSON_DOCUMENTATION, dataset.getDescription().get(0).getValue());
 		assertEquals(2, dataset.getKeyword().size());
+		assertRightsHolderAndContact(dataset);
 
 		// no exports declared: the runtime defaults JSON and XMI become the
 		// distributions, each pointing at the endpoint that serves them
@@ -262,5 +265,21 @@ public class DcatPublicationIntegrationTest {
 			}
 		}
 		return target;
+	}
+
+	/**
+	 * The publication's rights holder (data.atlas#20): an agent other than the
+	 * publisher, and its contact point as a vcard organization with the plain
+	 * e-mail address published as a mailto: IRI.
+	 */
+	private static void assertRightsHolderAndContact(dcat.DcatResource resource) {
+		assertNotNull(resource.getRightsHolder(), "expected a rights holder");
+		assertEquals("Rights holding city", resource.getRightsHolder().getName().get(0).getValue());
+		assertEquals("https://example.org/city", resource.getRightsHolder().getAbout());
+		assertEquals(1, resource.getContactPoint().size(), "expected one contact point");
+		vcard.Organization contact = resource.getContactPoint().get(0);
+		assertEquals("Open data desk", contact.getFn());
+		assertEquals(List.of("mailto:opendata@example.org"), contact.getHasEmail());
+		assertEquals(List.of("https://example.org/contact"), contact.getHasURL());
 	}
 }

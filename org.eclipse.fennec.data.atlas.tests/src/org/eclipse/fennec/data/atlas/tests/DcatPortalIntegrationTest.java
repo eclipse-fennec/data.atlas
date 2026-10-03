@@ -13,6 +13,7 @@
 package org.eclipse.fennec.data.atlas.tests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
@@ -174,6 +175,14 @@ public class DcatPortalIntegrationTest {
 				"the JSON distribution never reached the portal");
 		dcat.DataService portalService = client.dataService("dcat-persons-rest").orElseThrow();
 		assertEquals(REST_BASE + "/dcat-example", portalService.getEndpointURL().get(0));
+		// the rights holder and contact point survive the portal's validation and
+		// its RDF round trip (data.atlas#20, dct:rightsHolder since dcat.atlas#51)
+		assertNotNull(portalService.getRightsHolder(), "the portal dropped the rights holder");
+		assertEquals("https://example.org/city", portalService.getRightsHolder().getAbout());
+		assertEquals(1, portalService.getContactPoint().size(), "the portal dropped the contact point");
+		assertEquals("Open data desk", portalService.getContactPoint().get(0).getFn());
+		assertTrue(portalService.getContactPoint().get(0).getHasEmail().contains("mailto:opendata@example.org"),
+				portalService.getContactPoint().get(0).getHasEmail().toString());
 		String accessUrl = client.distribution("dcat-persons", "json").orElseThrow().getAccessURL().get(0);
 		assertEquals(REST_BASE + "/dcat-example/persons", accessUrl);
 

@@ -1689,8 +1689,58 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
-	public EAttribute getDcatPublication_LicenseUri() {
+	public EAttribute getDcatPublication_RightsHolderName() {
 		return (EAttribute)dcatPublicationEClass.getEStructuralFeatures().get(11);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getDcatPublication_RightsHolderUri() {
+		return (EAttribute)dcatPublicationEClass.getEStructuralFeatures().get(12);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getDcatPublication_ContactName() {
+		return (EAttribute)dcatPublicationEClass.getEStructuralFeatures().get(13);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getDcatPublication_ContactEmail() {
+		return (EAttribute)dcatPublicationEClass.getEStructuralFeatures().get(14);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getDcatPublication_ContactUrl() {
+		return (EAttribute)dcatPublicationEClass.getEStructuralFeatures().get(15);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getDcatPublication_LicenseUri() {
+		return (EAttribute)dcatPublicationEClass.getEStructuralFeatures().get(16);
 	}
 
 	/**
@@ -2100,6 +2150,11 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		createEAttribute(dcatPublicationEClass, DCAT_PUBLICATION__THEMES);
 		createEAttribute(dcatPublicationEClass, DCAT_PUBLICATION__PUBLISHER_NAME);
 		createEAttribute(dcatPublicationEClass, DCAT_PUBLICATION__PUBLISHER_URI);
+		createEAttribute(dcatPublicationEClass, DCAT_PUBLICATION__RIGHTS_HOLDER_NAME);
+		createEAttribute(dcatPublicationEClass, DCAT_PUBLICATION__RIGHTS_HOLDER_URI);
+		createEAttribute(dcatPublicationEClass, DCAT_PUBLICATION__CONTACT_NAME);
+		createEAttribute(dcatPublicationEClass, DCAT_PUBLICATION__CONTACT_EMAIL);
+		createEAttribute(dcatPublicationEClass, DCAT_PUBLICATION__CONTACT_URL);
 		createEAttribute(dcatPublicationEClass, DCAT_PUBLICATION__LICENSE_URI);
 
 		dataSourceEClass = createEClass(DATA_SOURCE);
@@ -2354,6 +2409,11 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		initEAttribute(getDcatPublication_Themes(), ecorePackage.getEString(), "themes", null, 0, -1, DcatPublication.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getDcatPublication_PublisherName(), ecorePackage.getEString(), "publisherName", null, 0, 1, DcatPublication.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getDcatPublication_PublisherUri(), ecorePackage.getEString(), "publisherUri", null, 0, 1, DcatPublication.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDcatPublication_RightsHolderName(), ecorePackage.getEString(), "rightsHolderName", null, 0, 1, DcatPublication.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDcatPublication_RightsHolderUri(), ecorePackage.getEString(), "rightsHolderUri", null, 0, 1, DcatPublication.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDcatPublication_ContactName(), ecorePackage.getEString(), "contactName", null, 0, 1, DcatPublication.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDcatPublication_ContactEmail(), ecorePackage.getEString(), "contactEmail", null, 0, 1, DcatPublication.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDcatPublication_ContactUrl(), ecorePackage.getEString(), "contactUrl", null, 0, 1, DcatPublication.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getDcatPublication_LicenseUri(), ecorePackage.getEString(), "licenseUri", null, 0, 1, DcatPublication.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(dataSourceEClass, DataSource.class, "DataSource", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -3204,6 +3264,36 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		   source,
 		   new String[] {
 			   "documentation", "Optional IRI identifying the publisher agent."
+		   });
+		addAnnotation
+		  (getDcatPublication_RightsHolderName(),
+		   source,
+		   new String[] {
+			   "documentation", "Optional name of the dct:rightsHolder (a foaf:Agent): who owns or manages the rights over the published entries, where that is somebody other than the publisher - e.g. a utility publishes data whose rights the city holds. Unset means no rights holder is stated."
+		   });
+		addAnnotation
+		  (getDcatPublication_RightsHolderUri(),
+		   source,
+		   new String[] {
+			   "documentation", "Optional IRI identifying the rights holder agent. Only used together with rightsHolderName."
+		   });
+		addAnnotation
+		  (getDcatPublication_ContactName(),
+		   source,
+		   new String[] {
+			   "documentation", "Optional formatted name (vcard:fn) of the dcat:contactPoint (a vcard:Organization) of the published entries. A contact point is stated when at least one of contactName, contactEmail and contactUrl is set."
+		   });
+		addAnnotation
+		  (getDcatPublication_ContactEmail(),
+		   source,
+		   new String[] {
+			   "documentation", "Optional e-mail address of the contact point (vcard:hasEmail). A plain address is published as a mailto: IRI."
+		   });
+		addAnnotation
+		  (getDcatPublication_ContactUrl(),
+		   source,
+		   new String[] {
+			   "documentation", "Optional web page of the contact point (vcard:hasURL), e.g. a contact form."
 		   });
 		addAnnotation
 		  (getDcatPublication_LicenseUri(),

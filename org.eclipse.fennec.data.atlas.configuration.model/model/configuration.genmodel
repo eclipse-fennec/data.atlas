@@ -164,6 +164,11 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/themes"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/publisherName"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/publisherUri"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/rightsHolderName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/rightsHolderUri"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/contactName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/contactEmail"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/contactUrl"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/licenseUri"/>
     </genClasses>
     <genClasses image="false" ecoreClass="configuration.ecore#//DataSource">

@@ -279,6 +279,13 @@ provider's description, else the GenModel documentation of its model type),
 `licenseUri`. `publisherName` and — as soon as distributions are served —
 `licenseUri` are required by the portal's shapes and not derivable: leaving
 them unset is a diagnosed configuration error, not a silent omission.
+Optional, and stated only when set: the rights holder
+(`rightsHolderName`/`rightsHolderUri`, a `foaf:Agent` in `dct:rightsHolder`,
+for entries whose rights lie with somebody other than the publisher) and the
+contact point (`contactName`, `contactEmail`, `contactUrl`, a
+`vcard:Organization` in `dcat:contactPoint`; a plain e-mail address becomes a
+`mailto:` IRI). Like the publisher, both go onto every published DataService
+and Dataset (data.atlas#20).
 
 The mapping to `dcat:DataService`/`dcat:Dataset`/`dcat:Distribution` lives in
 the omittable `org.eclipse.fennec.data.atlas.publication.dcat` bundle; this

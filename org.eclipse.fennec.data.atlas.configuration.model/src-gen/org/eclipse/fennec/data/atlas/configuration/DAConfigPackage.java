@@ -50,7 +50,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * @generated
  */
 @ProviderType
-@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:653063bba413c3bea9228ca51ec9d9607016f3aea02aa2ca6d8039d25d6d4d5e", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
+@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:e5418de9338f2232123beaa60fc65e321ba6ba6f408e42e599ad7c0c562819e9", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
 public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	/**
 	 * The package name.
@@ -2906,13 +2906,58 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	int DCAT_PUBLICATION__PUBLISHER_URI = 10;
 
 	/**
+	 * The feature id for the '<em><b>Rights Holder Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DCAT_PUBLICATION__RIGHTS_HOLDER_NAME = 11;
+
+	/**
+	 * The feature id for the '<em><b>Rights Holder Uri</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DCAT_PUBLICATION__RIGHTS_HOLDER_URI = 12;
+
+	/**
+	 * The feature id for the '<em><b>Contact Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DCAT_PUBLICATION__CONTACT_NAME = 13;
+
+	/**
+	 * The feature id for the '<em><b>Contact Email</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DCAT_PUBLICATION__CONTACT_EMAIL = 14;
+
+	/**
+	 * The feature id for the '<em><b>Contact Url</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DCAT_PUBLICATION__CONTACT_URL = 15;
+
+	/**
 	 * The feature id for the '<em><b>License Uri</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DCAT_PUBLICATION__LICENSE_URI = 11;
+	int DCAT_PUBLICATION__LICENSE_URI = 16;
 
 	/**
 	 * The number of structural features of the '<em>Dcat Publication</em>' class.
@@ -2921,7 +2966,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DCAT_PUBLICATION_FEATURE_COUNT = 12;
+	int DCAT_PUBLICATION_FEATURE_COUNT = 17;
 
 	/**
 	 * The number of operations of the '<em>Dcat Publication</em>' class.
@@ -4819,6 +4864,61 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	EAttribute getDcatPublication_PublisherUri();
 
 	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getRightsHolderName <em>Rights Holder Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Rights Holder Name</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DcatPublication#getRightsHolderName()
+	 * @see #getDcatPublication()
+	 * @generated
+	 */
+	EAttribute getDcatPublication_RightsHolderName();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getRightsHolderUri <em>Rights Holder Uri</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Rights Holder Uri</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DcatPublication#getRightsHolderUri()
+	 * @see #getDcatPublication()
+	 * @generated
+	 */
+	EAttribute getDcatPublication_RightsHolderUri();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getContactName <em>Contact Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Contact Name</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DcatPublication#getContactName()
+	 * @see #getDcatPublication()
+	 * @generated
+	 */
+	EAttribute getDcatPublication_ContactName();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getContactEmail <em>Contact Email</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Contact Email</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DcatPublication#getContactEmail()
+	 * @see #getDcatPublication()
+	 * @generated
+	 */
+	EAttribute getDcatPublication_ContactEmail();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getContactUrl <em>Contact Url</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Contact Url</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DcatPublication#getContactUrl()
+	 * @see #getDcatPublication()
+	 * @generated
+	 */
+	EAttribute getDcatPublication_ContactUrl();
+
+	/**
 	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getLicenseUri <em>License Uri</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -6173,6 +6273,46 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		 * @generated
 		 */
 		EAttribute DCAT_PUBLICATION__PUBLISHER_URI = eINSTANCE.getDcatPublication_PublisherUri();
+
+		/**
+		 * The meta object literal for the '<em><b>Rights Holder Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DCAT_PUBLICATION__RIGHTS_HOLDER_NAME = eINSTANCE.getDcatPublication_RightsHolderName();
+
+		/**
+		 * The meta object literal for the '<em><b>Rights Holder Uri</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DCAT_PUBLICATION__RIGHTS_HOLDER_URI = eINSTANCE.getDcatPublication_RightsHolderUri();
+
+		/**
+		 * The meta object literal for the '<em><b>Contact Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DCAT_PUBLICATION__CONTACT_NAME = eINSTANCE.getDcatPublication_ContactName();
+
+		/**
+		 * The meta object literal for the '<em><b>Contact Email</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DCAT_PUBLICATION__CONTACT_EMAIL = eINSTANCE.getDcatPublication_ContactEmail();
+
+		/**
+		 * The meta object literal for the '<em><b>Contact Url</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DCAT_PUBLICATION__CONTACT_URL = eINSTANCE.getDcatPublication_ContactUrl();
 
 		/**
 		 * The meta object literal for the '<em><b>License Uri</b></em>' attribute feature.

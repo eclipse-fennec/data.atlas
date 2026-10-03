@@ -48,6 +48,11 @@ import org.osgi.annotation.versioning.ProviderType;
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getThemes <em>Themes</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getPublisherName <em>Publisher Name</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getPublisherUri <em>Publisher Uri</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getRightsHolderName <em>Rights Holder Name</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getRightsHolderUri <em>Rights Holder Uri</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getContactName <em>Contact Name</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getContactEmail <em>Contact Email</em>}</li>
+ *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getContactUrl <em>Contact Url</em>}</li>
  *   <li>{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getLicenseUri <em>License Uri</em>}</li>
  * </ul>
  *
@@ -312,6 +317,131 @@ public interface DcatPublication extends EObject {
 	 * @generated
 	 */
 	void setPublisherUri(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Rights Holder Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Optional name of the dct:rightsHolder (a foaf:Agent): who owns or manages the rights over the published entries, where that is somebody other than the publisher - e.g. a utility publishes data whose rights the city holds. Unset means no rights holder is stated.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Rights Holder Name</em>' attribute.
+	 * @see #setRightsHolderName(String)
+	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getDcatPublication_RightsHolderName()
+	 * @model
+	 * @generated
+	 */
+	String getRightsHolderName();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getRightsHolderName <em>Rights Holder Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Rights Holder Name</em>' attribute.
+	 * @see #getRightsHolderName()
+	 * @generated
+	 */
+	void setRightsHolderName(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Rights Holder Uri</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Optional IRI identifying the rights holder agent. Only used together with rightsHolderName.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Rights Holder Uri</em>' attribute.
+	 * @see #setRightsHolderUri(String)
+	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getDcatPublication_RightsHolderUri()
+	 * @model
+	 * @generated
+	 */
+	String getRightsHolderUri();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getRightsHolderUri <em>Rights Holder Uri</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Rights Holder Uri</em>' attribute.
+	 * @see #getRightsHolderUri()
+	 * @generated
+	 */
+	void setRightsHolderUri(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Contact Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Optional formatted name (vcard:fn) of the dcat:contactPoint (a vcard:Organization) of the published entries. A contact point is stated when at least one of contactName, contactEmail and contactUrl is set.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Contact Name</em>' attribute.
+	 * @see #setContactName(String)
+	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getDcatPublication_ContactName()
+	 * @model
+	 * @generated
+	 */
+	String getContactName();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getContactName <em>Contact Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Contact Name</em>' attribute.
+	 * @see #getContactName()
+	 * @generated
+	 */
+	void setContactName(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Contact Email</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Optional e-mail address of the contact point (vcard:hasEmail). A plain address is published as a mailto: IRI.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Contact Email</em>' attribute.
+	 * @see #setContactEmail(String)
+	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getDcatPublication_ContactEmail()
+	 * @model
+	 * @generated
+	 */
+	String getContactEmail();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getContactEmail <em>Contact Email</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Contact Email</em>' attribute.
+	 * @see #getContactEmail()
+	 * @generated
+	 */
+	void setContactEmail(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Contact Url</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Optional web page of the contact point (vcard:hasURL), e.g. a contact form.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Contact Url</em>' attribute.
+	 * @see #setContactUrl(String)
+	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getDcatPublication_ContactUrl()
+	 * @model
+	 * @generated
+	 */
+	String getContactUrl();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication#getContactUrl <em>Contact Url</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Contact Url</em>' attribute.
+	 * @see #getContactUrl()
+	 * @generated
+	 */
+	void setContactUrl(String value);
 
 	/**
 	 * Returns the value of the '<em><b>License Uri</b></em>' attribute.

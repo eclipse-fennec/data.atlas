@@ -1090,7 +1090,10 @@ the root's `publications` registry, referenced from the `DataService` (a
 </services>
 <publications id="open-data" catalog="example"
     publisherName="Eclipse Fennec Data Atlas example"
-    licenseUri="http://dcat-ap.de/def/licenses/dl-by-de/2.0">
+    licenseUri="http://dcat-ap.de/def/licenses/dl-by-de/2.0"
+    rightsHolderName="Eclipse Fennec"
+    contactName="Eclipse Fennec Data Atlas example" contactEmail="fennec-dev@eclipse.org"
+    contactUrl="https://github.com/eclipse-fennec/data.atlas">
   <keywords>persons</keywords>
 </publications>
 ```
@@ -1102,6 +1105,19 @@ description to the provider's description (else to the documentation
 annotation of its model type). `publisherName` and `licenseUri` cannot be
 derived and are required by the portal — leaving them out is a diagnosed
 configuration error, logged with what is missing.
+
+Two more statements are optional and appear only when set, on the DataService
+and every Dataset alike:
+
+- **Rights holder** — `rightsHolderName` (and optionally `rightsHolderUri`)
+  becomes `dct:rightsHolder`, for entries whose rights lie with somebody other
+  than the publisher (a utility publishing data whose rights the city holds).
+- **Contact point** — `contactName`, `contactEmail` and `contactUrl` become a
+  `vcard:Organization` in `dcat:contactPoint` (`fn`, `hasEmail`, `hasURL`); a
+  plain e-mail address is published as a `mailto:` IRI.
+
+The licence (`licenseUri`) is stated on the distributions only, which is what
+the portal's shapes ask for.
 
 ### Connecting the Portal
 
