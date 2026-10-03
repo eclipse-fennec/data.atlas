@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Atlas-mode twin of dataatlas-ogc-roots.xmi (OgcFeaturesAtlasModeIntegrationTest):
+     EClass references are nsURI hrefs resolved against the Model Atlas schema
+     registry, where the asset schema references the GeoJSON model by nsURI and
+     the GeoJSON model is seeded as a schema of its own - while the runtime also
+     carries the generated org.geojson.model. The file location is an absolute
+     path the test retargets before seeding. Two roots: the pools from the
+     example file, and every asset from the H2 database the test seeds. -->
+<configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    name="ogc-atlas" description="OGC API Features in atlas mode: leisure pool assets with GeoJSON geometries from a file and a database.">
+  <dataSources xsi:type="configuration:JdbcDataSource" id="ogc-atlas-db" name="Assets DB" filter="(dataatlas.test.ds=ogc-atlas-assets)"/>
+  <dataInputs xsi:type="configuration:FileDataInput" id="ogc-atlas-file" uri="/opt/dataatlas/runtime/data/data/assets.xmi">
+    <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/asset/1.0.0#//Pool"/>
+    <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/asset/1.0.0#//Slide"/>
+    <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/asset/1.0.0#//Bench"/>
+  </dataInputs>
+  <dataInputs xsi:type="configuration:JPADataInput" id="ogc-atlas-jpa" dataSource="ogc-atlas-db">
+    <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/asset/1.0.0#//Asset"/>
+    <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/asset/1.0.0#//Pool"/>
+    <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/asset/1.0.0#//Slide"/>
+    <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/asset/1.0.0#//Bench"/>
+  </dataInputs>
+  <dataSets id="ogc-atlas-pools" name="pools" description="The pools of the leisure pool." dataInput="ogc-atlas-file">
+    <inputType href="https://eclipse.org/fennec/data/atlas/example/asset/1.0.0#//Pool"/>
+    <outputType href="https://eclipse.org/fennec/data/atlas/example/asset/1.0.0#//Pool"/>
+  </dataSets>
+  <dataSets id="ogc-atlas-assets-db" name="assets-db" description="Every asset from the database." dataInput="ogc-atlas-jpa">
+    <inputType href="https://eclipse.org/fennec/data/atlas/example/asset/1.0.0#//Asset"/>
+    <outputType href="https://eclipse.org/fennec/data/atlas/example/asset/1.0.0#//Asset"/>
+  </dataSets>
+  <services xsi:type="configuration:OgcFeaturesDataService" id="ogc-atlas-file-root" name="Leisure pool assets (atlas, file)"
+      description="OGC API Features root over the example file, configured from a Model Atlas." urlContext="/ogc/atlas-file">
+    <configuration id="ogc-atlas-pools-collection" dataSet="ogc-atlas-pools"/>
+  </services>
+  <services xsi:type="configuration:OgcFeaturesDataService" id="ogc-atlas-db-root" name="Leisure pool assets (atlas, JPA)"
+      description="OGC API Features root over the database, configured from a Model Atlas." urlContext="/ogc/atlas-db">
+    <configuration id="ogc-atlas-assets-collection" dataSet="ogc-atlas-assets-db"/>
+  </services>
+</configuration:DataAtlasConfiguration>
