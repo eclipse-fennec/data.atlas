@@ -227,7 +227,9 @@ resolves to no export at all is served in the runtime's default formats
 (`application/json`, `application/xml`). As soon as it resolves to at least one
 export, exactly those media types are served and any other `Accept` is answered
 with `406 Not Acceptable` — so a configuration that wants CSV *and* JSON must
-declare both.
+declare both. If JSON is among the served formats it is the default response
+(no `Accept`, `*/*`, or any header that does not prefer another format more
+specifically), independent of the declaration order.
 
 ### `Transformation`
 

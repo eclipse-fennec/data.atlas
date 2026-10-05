@@ -114,7 +114,9 @@ Implemented today (roadmap Milestones 0–8):
   performs that resolution and translates a `CSVDistributionExport` into the
   fennec codec's CSV options, which the codec's message body writer picks up
   from its per-request option property. `@Produces` lists what the runtime can
-  write; the per-DataSet restriction is negotiated in the resource.
+  write; the per-DataSet restriction is negotiated in the resource, which also
+  makes JSON the default whenever it is offered (the JAX-RS variant selection
+  would otherwise break ties by declaration order).
 - **Model Atlas config mode**: `bootstrap` carries a second component
   (`DataAtlasModelAtlasBootstrap`) that fetches the configuration instance from
   a Model Atlas registry through the model.atlas client stack (per-scope

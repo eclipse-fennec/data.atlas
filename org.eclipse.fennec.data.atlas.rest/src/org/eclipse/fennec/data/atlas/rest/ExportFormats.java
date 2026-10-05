@@ -184,6 +184,12 @@ public final class ExportFormats {
 		return mediaTypes;
 	}
 
+	/** {@code true} if one of the declared media types is {@code mediaType}, parameters ignored. */
+	public boolean offers(MediaType mediaType) {
+		String wanted = key(mediaType);
+		return mediaTypes.stream().anyMatch(declared -> key(declared).equals(wanted));
+	}
+
 	/** {@code true} for {@link #defaults()} — no export was configured. */
 	public boolean isRuntimeDefaults() {
 		return runtimeDefaults;

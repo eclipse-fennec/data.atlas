@@ -340,6 +340,13 @@ runtime constant — see the next section. A DataSet that declares no export
 serves `application/json` and `application/xml`, which is the behaviour of every
 configuration written before exports became executable.
 
+**JSON is the default** whenever a DataSet offers it: a request without
+`Accept`, with `Accept: */*`, or with any other header that accepts JSON at
+least as well as the alternatives (same or higher quality, same or more
+specific media range) is answered with `application/json` — regardless of the
+order in which the exports are declared. An explicit preference still wins:
+`Accept: text/csv, */*` gets CSV.
+
 ### Export Formats: Deciding What a DataSet Serves
 
 The formats an endpoint offers come from the `DistributionExport` templates in

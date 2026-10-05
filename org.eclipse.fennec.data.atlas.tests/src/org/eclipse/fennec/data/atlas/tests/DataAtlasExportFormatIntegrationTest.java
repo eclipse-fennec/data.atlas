@@ -152,6 +152,31 @@ public class DataAtlasExportFormatIntegrationTest {
 	}
 
 	@Test
+	void jsonIsTheDefaultWhenItIsDeclaredAsAnExport() throws Exception {
+		// "both" declares CSV before JSON — declaration order must not decide
+		HttpResponse<String> wildcard = getUntil(BASE_URL + "/both", "*/*", body -> body.contains("Lovelace"));
+		assertTrue(wildcard.headers().firstValue("Content-Type").orElse("").startsWith("application/json"),
+				"Accept */* must default to JSON, got " + wildcard.headers().firstValue("Content-Type"));
+
+		HttpResponse<String> noAccept = CLIENT.send(HttpRequest.newBuilder(java.net.URI.create(BASE_URL + "/both"))
+				.timeout(Duration.ofSeconds(10)).GET().build(), HttpResponse.BodyHandlers.ofString());
+		assertEquals(200, noAccept.statusCode());
+		assertTrue(noAccept.headers().firstValue("Content-Type").orElse("").startsWith("application/json"),
+				"a request without Accept must default to JSON, got " + noAccept.headers().firstValue("Content-Type"));
+
+		HttpResponse<String> explicit = get(BASE_URL + "/both", "text/csv, */*");
+		assertTrue(explicit.headers().firstValue("Content-Type").orElse("").startsWith(TEXT_CSV),
+				"an explicit text/csv must still win over the JSON default, got "
+						+ explicit.headers().firstValue("Content-Type"));
+
+		HttpResponse<String> csvOnly = get(BASE_URL + "/csv-only", "*/*");
+		assertEquals(200, csvOnly.statusCode());
+		assertTrue(csvOnly.headers().firstValue("Content-Type").orElse("").startsWith(TEXT_CSV),
+				"without a JSON export the declared format is served, got "
+						+ csvOnly.headers().firstValue("Content-Type"));
+	}
+
+	@Test
 	void aFormatThatIsNotConfiguredIsNotAcceptable() throws Exception {
 		// bring the endpoint up first, so a 406 cannot be confused with a 404
 		getUntil(BASE_URL + "/csv-only", TEXT_CSV, body -> body.contains("Lovelace"));

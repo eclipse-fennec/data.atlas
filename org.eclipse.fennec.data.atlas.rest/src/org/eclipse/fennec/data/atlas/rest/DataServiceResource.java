@@ -161,9 +161,73 @@ public class DataServiceResource {
 			throw new NotAcceptableException(
 					"Data set '" + dataSetPath + "' is served as " + formats.mediaTypes() + " only");
 		}
-		MediaType mediaType = variant.getMediaType();
+		MediaType mediaType = preferJson(variant.getMediaType(), formats, requestContext);
 		publishCodecOptions(formats.optionsFor(mediaType), requestContext);
 		return mediaType;
+	}
+
+	/**
+	 * Makes JSON the default format of every DataSet that offers it.
+	 *
+	 * <p>
+	 * {@link Request#selectVariant} breaks ties between equally acceptable
+	 * variants in an implementation-defined way — in practice by declaration
+	 * order, so a DataSet exporting CSV before JSON answered {@code Accept: *}{@code /*}
+	 * (or no {@code Accept} at all) with CSV. JSON replaces the selected variant
+	 * whenever the client accepts it at least as well: with an equal or higher
+	 * quality and an equally or more specific media range. An explicit
+	 * preference is never overridden — {@code text/csv, *}{@code /*} still gets
+	 * CSV, because {@code text/csv} is the more specific range.
+	 * </p>
+	 */
+	private static MediaType preferJson(MediaType selected, ExportFormats formats,
+			ContainerRequestContext requestContext) {
+		if (requestContext == null || MediaType.APPLICATION_JSON_TYPE.isCompatible(selected)
+				|| !formats.offers(MediaType.APPLICATION_JSON_TYPE)) {
+			return selected;
+		}
+		List<MediaType> acceptable = requestContext.getAcceptableMediaTypes();
+		double[] json = acceptance(MediaType.APPLICATION_JSON_TYPE, acceptable);
+		double[] current = acceptance(selected, acceptable);
+		if (json == null || json[0] <= 0) {
+			return selected;
+		}
+		if (current == null || json[0] > current[0] || (json[0] == current[0] && json[1] >= current[1])) {
+			return MediaType.APPLICATION_JSON_TYPE;
+		}
+		return selected;
+	}
+
+	/**
+	 * How well the client accepts {@code type}: the quality and specificity
+	 * ({@code 0} = {@code *}{@code /*}, {@code 1} = {@code type/*}, {@code 2} =
+	 * exact) of the most specific matching media range, or {@code null} if no
+	 * range matches.
+	 */
+	private static double[] acceptance(MediaType type, List<MediaType> acceptable) {
+		double[] best = null;
+		for (MediaType range : acceptable) {
+			if (!range.isCompatible(type)) {
+				continue;
+			}
+			int specificity = range.isWildcardType() ? 0 : range.isWildcardSubtype() ? 1 : 2;
+			if (best == null || specificity > best[1]) {
+				best = new double[] { quality(range), specificity };
+			}
+		}
+		return best;
+	}
+
+	private static double quality(MediaType range) {
+		String q = range.getParameters().get("q");
+		if (q == null) {
+			return 1.0;
+		}
+		try {
+			return Double.parseDouble(q);
+		} catch (NumberFormatException e) {
+			return 1.0;
+		}
 	}
 
 	/**
