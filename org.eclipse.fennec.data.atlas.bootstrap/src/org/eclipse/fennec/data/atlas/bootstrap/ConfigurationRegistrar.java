@@ -14,6 +14,8 @@ package org.eclipse.fennec.data.atlas.bootstrap;
 
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -29,6 +31,8 @@ import java.util.stream.Stream;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EModelElement;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -298,20 +302,41 @@ class ConfigurationRegistrar {
 	}
 
 	/**
-	 * Whether the object (or its containment tree) references an EClass whose
-	 * published EPackage instance was replaced in this apply — such an object
-	 * must be re-registered even if structurally unchanged, or its EClass
-	 * references would point at a package the runtime no longer publishes.
+	 * Whether the object references an EClass whose published EPackage
+	 * instance was replaced in this apply — such an object must be
+	 * re-registered even if structurally unchanged, or its EClass references
+	 * would point at a package the runtime no longer publishes.
+	 *
+	 * <p>
+	 * The object itself counts (an input's or a transformation's
+	 * {@code supportedEClasses} sit on the registered root, which
+	 * {@link EcoreUtil#getAllContents(EObject, boolean)} does not visit), and
+	 * so does everything it reaches through non-containment references: a
+	 * service names its types only through its DataSets, a transformation
+	 * through the QVT-O document it references.
+	 * </p>
 	 */
 	private boolean referencesReplacedPackage(EObject object, Set<String> replacedNsUris) {
 		if (replacedNsUris.isEmpty()) {
 			return false;
 		}
-		for (TreeIterator<EObject> it = EcoreUtil.getAllContents(object, false); it.hasNext();) {
-			for (EObject referenced : it.next().eCrossReferences()) {
-				if (referenced instanceof EClass eClass && eClass.getEPackage() != null
-						&& replacedNsUris.contains(eClass.getEPackage().getNsURI())) {
-					return true;
+		Set<EObject> visited = new HashSet<>();
+		Deque<EObject> pending = new ArrayDeque<>(List.of(object));
+		while (!pending.isEmpty()) {
+			EObject next = pending.pop();
+			if (!visited.add(next)) {
+				continue;
+			}
+			for (TreeIterator<EObject> it = EcoreUtil.getAllContents(List.of(next), false); it.hasNext();) {
+				for (EObject referenced : it.next().eCrossReferences()) {
+					if (referenced instanceof EModelElement element) {
+						if (element instanceof EClassifier classifier && classifier.getEPackage() != null
+								&& replacedNsUris.contains(classifier.getEPackage().getNsURI())) {
+							return true;
+						}
+						continue; // metamodel element: its own contents are not configuration
+					}
+					pending.push(referenced);
 				}
 			}
 		}
