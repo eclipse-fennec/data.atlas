@@ -82,6 +82,7 @@ public class DataAtlasODataIntegrationTest {
 	private static final String FILE_ROOT = HOST + "/odata-file";
 	private static final String JPA_ROOT = HOST + "/odata-jpa";
 	private static final String PUBLIC_ROOT = HOST + "/odata-public";
+	private static final String COMBINED_ROOT = HOST + "/odata-combined";
 	private static final String PERSON_NSURI = "https://eclipse.org/fennec/data/atlas/example/person/1.0.0";
 	private static final String DATASOURCE_FILTER_PROPERTY = "dataatlas.test.ds";
 	private static final long DEADLINE_MS = 90_000;
@@ -317,7 +318,7 @@ public class DataAtlasODataIntegrationTest {
 	}
 
 	@Test
-	@Order(6)
+	@Order(7)
 	void removingTheServiceTakesItsRootDown(@InjectBundleContext BundleContext bundleContext) throws Exception {
 		awaitStatus(FILE_ROOT + "/Persons", 200);
 
@@ -334,9 +335,34 @@ public class DataAtlasODataIntegrationTest {
 		// the other roots survive the change
 		assertEquals(200, awaitStatus(JPA_ROOT + "/Persons", 200));
 		assertEquals(404, get(FILE_ROOT + "/Persons").statusCode());
+		// re-applying swaps the person packages: the bridge and its transformer
+		// must follow, or the transformation no longer matches the source objects
+		assertEquals(3, awaitSize(PUBLIC_ROOT + "/PublicPersons", 3), "bridge root empty after re-apply");
 
 		Files.writeString(configFile, v1, StandardCharsets.UTF_8);
 		assertEquals(200, awaitStatus(FILE_ROOT + "/Persons", 200));
+	}
+
+	@Test
+	@Order(6)
+	void aRootOverTwoPackagesHasExactlyOneEntityContainer() throws Exception {
+		assertEquals(3, awaitSize(COMBINED_ROOT + "/Persons", 3));
+		assertEquals(3, awaitSize(COMBINED_ROOT + "/PublicPersons", 3));
+
+		// CSDL: "Each metadata document used to describe an OData service MUST
+		// define exactly one entity container" - Excel/Power Query refuses the
+		// service otherwise (emf.odata#84)
+		String csdl = get(COMBINED_ROOT + "/$metadata", "application/xml").body();
+		assertEquals(2, csdl.split("<edm:Schema ", -1).length - 1, "one schema per package expected: " + csdl);
+		assertEquals(1, csdl.split("<edm:EntityContainer ", -1).length - 1, "exactly one container expected: " + csdl);
+
+		JsonObject csdlJson = json(get(COMBINED_ROOT + "/$metadata?$format=json"));
+		String container = csdlJson.getString("$EntityContainer");
+		int dot = container.lastIndexOf('.');
+		JsonObject declared = csdlJson.getJsonObject(container.substring(0, dot))
+				.getJsonObject(container.substring(dot + 1));
+		assertTrue(declared.containsKey("Persons") && declared.containsKey("PublicPersons"),
+				"the one container must hold both sets: " + declared);
 	}
 
 	private static void awaitServiceGone(BundleContext bundleContext, String filter) throws Exception {
@@ -369,6 +395,26 @@ public class DataAtlasODataIntegrationTest {
 				.GET()
 				.build();
 		return CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+	}
+
+	private static int awaitSize(String url, int wanted) throws Exception {
+		long deadline = System.currentTimeMillis() + DEADLINE_MS;
+		int last = -1;
+		while (System.currentTimeMillis() < deadline) {
+			try {
+				HttpResponse<String> response = get(url);
+				if (response.statusCode() == 200) {
+					last = json(response).getJsonArray("value").size();
+					if (last == wanted) {
+						return last;
+					}
+				}
+			} catch (Exception e) {
+				// keep polling
+			}
+			Thread.sleep(500);
+		}
+		return last;
 	}
 
 	private static int awaitStatus(String url, int wanted) throws Exception {

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Milestone 10 fixture: three OData service roots over the three input kinds.
+<!-- Milestone 10 fixture: four OData service roots over the three input kinds.
      /odata-file serves the example persons file, /odata-jpa the same persons
      from the H2 database the test seeds (with a $top ceiling of 2 to show the
      limit), /odata-public the QVT-O-transformed PublicPerson projections through
-     the bridge. Every root publishes exactly one entity set, all of them named
-     by configuration (Persons / PublicPersons). -->
+     the bridge. Each of these roots publishes exactly one entity set, all of them
+     named by configuration (Persons / PublicPersons). /odata-combined publishes
+     sets from TWO packages (person + person-public) in one root, whose
+     $metadata must still hold exactly one entity container (emf.odata#84). -->
 <configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
@@ -44,6 +46,11 @@
   <services xsi:type="configuration:ODataDataService" id="public-persons-odata" name="Public Persons OData"
       description="OData service root publishing the transformed persons." urlContext="/odata-public">
     <configuration id="public-persons-odata-config" dataSet="odata-public-persons" entitySetName="PublicPersons"/>
+  </services>
+  <services xsi:type="configuration:ODataDataService" id="combined-odata" name="Combined OData"
+      description="OData service root publishing persons and their public projection side by side." urlContext="/odata-combined">
+    <configuration id="combined-persons-config" dataSet="odata-persons" entitySetName="Persons"/>
+    <configuration id="combined-public-config" dataSet="odata-public-persons" entitySetName="PublicPersons"/>
   </services>
   <transformations xsi:type="configuration:DataTransformation" id="odata-person-to-public" name="PersonToPublic"
       description="Projects a Person onto a PublicPerson (id, displayName).">
