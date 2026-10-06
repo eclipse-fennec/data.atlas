@@ -123,7 +123,7 @@ public class DataAtlasMongoIntegrationTest {
 		wbProps.put("osgi.http.whiteboard.target", "(id=mongoHttp)");
 		whiteboardConfig.update(wbProps);
 
-		bootstrapConfig = configAdmin.getConfiguration("DataAtlasBootstrap", "?");
+		bootstrapConfig = BootstrapConfigs.fresh(configAdmin);
 		Dictionary<String, Object> bootProps = new Hashtable<>();
 		bootProps.put("config.uri", dataDir.resolve("dataatlas-mongo.xmi").toUri().toString());
 		bootstrapConfig.update(bootProps);

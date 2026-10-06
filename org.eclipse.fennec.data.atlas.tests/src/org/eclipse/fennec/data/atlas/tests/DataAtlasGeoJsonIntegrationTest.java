@@ -89,7 +89,7 @@ public class DataAtlasGeoJsonIntegrationTest {
 		wbProps.put("osgi.http.whiteboard.target", "(id=geoM5Http)");
 		whiteboardConfig.update(wbProps);
 
-		bootstrapConfig = configAdmin.getConfiguration("DataAtlasBootstrap", "?");
+		bootstrapConfig = BootstrapConfigs.fresh(configAdmin);
 		Dictionary<String, Object> bootProps = new Hashtable<>();
 		bootProps.put("config.uri", dataDir.resolve("dataatlas-geo.xmi").toUri().toString());
 		bootstrapConfig.update(bootProps);

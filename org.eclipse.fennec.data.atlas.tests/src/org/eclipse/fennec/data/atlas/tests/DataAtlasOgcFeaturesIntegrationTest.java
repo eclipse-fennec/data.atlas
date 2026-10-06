@@ -136,7 +136,7 @@ public class DataAtlasOgcFeaturesIntegrationTest {
 		ogcProps.put("http.whiteboard.target", "(id=ogcFeaturesHttp)");
 		ogcConfig.update(ogcProps);
 
-		bootstrapConfig = configAdmin.getConfiguration("DataAtlasBootstrap", "?");
+		bootstrapConfig = BootstrapConfigs.fresh(configAdmin);
 		Dictionary<String, Object> bootProps = new Hashtable<>();
 		bootProps.put("config.uri", configFile.toUri().toString());
 		bootstrapConfig.update(bootProps);
@@ -466,7 +466,8 @@ public class DataAtlasOgcFeaturesIntegrationTest {
 			}
 			Thread.sleep(250);
 		}
-		throw new AssertionError("no " + type.getSimpleName() + " matching " + filter + " within " + DEADLINE_MS + " ms");
+		throw new AssertionError("no " + type.getSimpleName() + " matching " + filter + " within " + DEADLINE_MS
+				+ " ms" + ThreadDumps.dump());
 	}
 
 	private static Path extractTestData(BundleContext bundleContext) throws Exception {

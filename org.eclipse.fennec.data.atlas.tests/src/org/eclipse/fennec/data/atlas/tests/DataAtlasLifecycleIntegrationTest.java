@@ -201,7 +201,7 @@ public class DataAtlasLifecycleIntegrationTest {
 	}
 
 	private void activateBootstrap(ConfigurationAdmin configAdmin, String configFile) throws Exception {
-		bootstrapConfig = configAdmin.getConfiguration("DataAtlasBootstrap", "?");
+		bootstrapConfig = BootstrapConfigs.fresh(configAdmin);
 		updateBootstrap(configFile);
 	}
 

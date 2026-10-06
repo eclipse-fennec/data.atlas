@@ -136,7 +136,7 @@ public class DataAtlasHistoryIntegrationTest {
 		dsProps.put("dataSourceName", "historyDs");
 		dataSourceConfig.update(dsProps);
 
-		bootstrapConfig = configAdmin.getConfiguration("DataAtlasBootstrap", "?");
+		bootstrapConfig = BootstrapConfigs.fresh(configAdmin);
 		Dictionary<String, Object> bootProps = new Hashtable<>();
 		bootProps.put("config.uri", dir.resolve("dataatlas-history.xmi").toUri().toString());
 		bootstrapConfig.update(bootProps);

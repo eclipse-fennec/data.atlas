@@ -113,7 +113,7 @@ public class DataAtlasJpaIntegrationTest {
 		wbProps.put("osgi.http.whiteboard.target", "(id=jpaHttp)");
 		whiteboardConfig.update(wbProps);
 
-		bootstrapConfig = configAdmin.getConfiguration("DataAtlasBootstrap", "?");
+		bootstrapConfig = BootstrapConfigs.fresh(configAdmin);
 		Dictionary<String, Object> bootProps = new Hashtable<>();
 		bootProps.put("config.uri", dataDir.resolve("dataatlas-jpa.xmi").toUri().toString());
 		bootstrapConfig.update(bootProps);

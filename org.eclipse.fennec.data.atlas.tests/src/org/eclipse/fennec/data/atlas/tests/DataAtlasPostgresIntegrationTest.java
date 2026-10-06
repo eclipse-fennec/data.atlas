@@ -140,7 +140,7 @@ public class DataAtlasPostgresIntegrationTest {
 		dsProps.put("dataSourceName", "personsDs");
 		dataSourceConfig.update(dsProps);
 
-		bootstrapConfig = configAdmin.getConfiguration("DataAtlasBootstrap", "?");
+		bootstrapConfig = BootstrapConfigs.fresh(configAdmin);
 		Dictionary<String, Object> bootProps = new Hashtable<>();
 		bootProps.put("config.uri", dir.resolve("dataatlas-postgres.xmi").toUri().toString());
 		bootstrapConfig.update(bootProps);

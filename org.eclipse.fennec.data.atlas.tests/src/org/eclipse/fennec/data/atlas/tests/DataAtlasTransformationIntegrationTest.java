@@ -100,7 +100,7 @@ public class DataAtlasTransformationIntegrationTest {
 		wbProps.put("osgi.http.whiteboard.target", "(id=trafoM6Http)");
 		whiteboardConfig.update(wbProps);
 
-		bootstrapConfig = configAdmin.getConfiguration("DataAtlasBootstrap", "?");
+		bootstrapConfig = BootstrapConfigs.fresh(configAdmin);
 		Dictionary<String, Object> bootProps = new Hashtable<>();
 		bootProps.put("config.uri", configFile.toUri().toString());
 		bootstrapConfig.update(bootProps);

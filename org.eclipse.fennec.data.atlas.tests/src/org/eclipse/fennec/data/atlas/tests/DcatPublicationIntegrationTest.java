@@ -99,7 +99,7 @@ public class DcatPublicationIntegrationTest {
 		publicationProps.put("retry.interval.ms", 2_000L);
 		publicationConfig.update(publicationProps);
 
-		bootstrapConfig = configAdmin.getConfiguration("DataAtlasBootstrap", "?");
+		bootstrapConfig = BootstrapConfigs.fresh(configAdmin);
 		Dictionary<String, Object> bootProps = new Hashtable<>();
 		bootProps.put("config.uri", configFile.toUri().toString());
 		bootstrapConfig.update(bootProps);

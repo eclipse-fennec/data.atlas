@@ -128,7 +128,7 @@ public class DataAtlasODataIntegrationTest {
 		odataProps.put("http.whiteboard.target", "(id=odataM10Http)");
 		odataConfig.update(odataProps);
 
-		bootstrapConfig = configAdmin.getConfiguration("DataAtlasBootstrap", "?");
+		bootstrapConfig = BootstrapConfigs.fresh(configAdmin);
 		Dictionary<String, Object> bootProps = new Hashtable<>();
 		bootProps.put("config.uri", configFile.toUri().toString());
 		bootstrapConfig.update(bootProps);

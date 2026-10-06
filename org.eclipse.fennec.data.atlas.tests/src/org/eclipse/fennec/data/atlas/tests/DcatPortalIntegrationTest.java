@@ -145,7 +145,7 @@ public class DcatPortalIntegrationTest {
 		DcatAtlasClient client = awaitClient(bundleContext, 30_000);
 		client.registerCatalog("test-catalog", catalog());
 
-		bootstrapConfig = configAdmin.getConfiguration("DataAtlasBootstrap", "?");
+		bootstrapConfig = BootstrapConfigs.fresh(configAdmin);
 		Dictionary<String, Object> bootProps = new Hashtable<>();
 		bootProps.put("config.uri", configFile.toUri().toString());
 		bootstrapConfig.update(bootProps);

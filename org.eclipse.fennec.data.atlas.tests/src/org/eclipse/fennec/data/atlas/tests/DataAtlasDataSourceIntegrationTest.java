@@ -106,7 +106,7 @@ public class DataAtlasDataSourceIntegrationTest {
 		wbProps.put("osgi.http.whiteboard.target", "(id=dsHttp)");
 		whiteboardConfig.update(wbProps);
 
-		bootstrapConfig = configAdmin.getConfiguration("DataAtlasBootstrap", "?");
+		bootstrapConfig = BootstrapConfigs.fresh(configAdmin);
 		Dictionary<String, Object> bootProps = new Hashtable<>();
 		bootProps.put("config.uri", dataDir.resolve("dataatlas-datasources.xmi").toUri().toString());
 		bootstrapConfig.update(bootProps);
