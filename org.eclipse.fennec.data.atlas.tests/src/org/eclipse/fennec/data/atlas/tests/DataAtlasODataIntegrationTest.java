@@ -126,6 +126,8 @@ public class DataAtlasODataIntegrationTest {
 		odataConfig = configAdmin.getConfiguration("org.eclipse.fennec.data.atlas.odata", "?");
 		Dictionary<String, Object> odataProps = new Hashtable<>();
 		odataProps.put("http.whiteboard.target", "(id=odataM10Http)");
+		// a deployment-wide odata.* key: passed through to every root
+		odataProps.put("odata.cache.control", "max-age=60");
 		odataConfig.update(odataProps);
 
 		bootstrapConfig = BootstrapConfigs.fresh(configAdmin);
@@ -363,6 +365,36 @@ public class DataAtlasODataIntegrationTest {
 				.getJsonObject(container.substring(dot + 1));
 		assertTrue(declared.containsKey("Persons") && declared.containsKey("PublicPersons"),
 				"the one container must hold both sets: " + declared);
+	}
+
+	/**
+	 * emf.odata#98: the service-describing documents carry an ETag and the
+	 * Cache-Control the deployment configured (odata.cache.control, passed
+	 * through from the Data Atlas PID), and a matching If-None-Match answers
+	 * 304 - so clients notice a model change instead of keeping stale
+	 * metadata.
+	 */
+	@Test
+	@Order(8)
+	void metadataAndServiceDocumentCanBeRevalidated() throws Exception {
+		assertEquals(200, awaitStatus(FILE_ROOT + "/Persons", 200));
+		for (String document : new String[] { FILE_ROOT + "/$metadata", FILE_ROOT + "/" }) {
+			HttpResponse<String> first = get(document, document.endsWith("$metadata") ? "application/xml" : "application/json");
+			assertEquals(200, first.statusCode(), document);
+			String etag = first.headers().firstValue("ETag").orElse(null);
+			assertNotNull(etag, () -> document + " carries no ETag: " + first.headers().map());
+			assertEquals("max-age=60", first.headers().firstValue("Cache-Control").orElse(null),
+					() -> document + ": the configured odata.cache.control must reach the root");
+
+			HttpRequest revalidate = HttpRequest.newBuilder(java.net.URI.create(document))
+					.header("Accept", document.endsWith("$metadata") ? "application/xml" : "application/json")
+					.header("If-None-Match", etag)
+					.timeout(Duration.ofSeconds(15))
+					.GET()
+					.build();
+			assertEquals(304, CLIENT.send(revalidate, HttpResponse.BodyHandlers.ofString()).statusCode(),
+					() -> document + ": an unchanged document must answer 304 to its own ETag");
+		}
 	}
 
 	private static void awaitServiceGone(BundleContext bundleContext, String filter) throws Exception {

@@ -880,7 +880,17 @@ servlet PID, e.g. `odata.cors.origin`) are configuration of the Data Atlas
 PID `org.eclipse.fennec.data.atlas.odata`, which passes them to every root it
 creates; the same PID names the HTTP runtime the roots mount on
 (`http.whiteboard.target`, set to the Data Atlas instance by the runtime
-Configurator). A Data Atlas without the `odata` bundle serves no OData and is
+Configurator).
+
+`$metadata` and the service document carry a strong `ETag` and, by default,
+`Cache-Control: no-cache`; a client that sends the ETag back in
+`If-None-Match` gets `304 Not Modified` while the model is unchanged, and the
+new document after a change. `odata.cache.control` on the same PID sets
+another directive for every root (e.g. `max-age=300`, empty = none; the ETag
+stays). Behind a gateway, list `ETag` in `Access-Control-Expose-Headers` so
+browser clients can read it. Excel / Power Query keeps its own persistent
+cache regardless: if it still reports an outdated model, close Excel and
+delete `%LOCALAPPDATA%\Microsoft\Office\16.0\PowerQuery\Cache`. A Data Atlas without the `odata` bundle serves no OData and is
 otherwise unchanged; a declared `ODataDataService` is then ignored.
 
 ### Serving OGC API Features
