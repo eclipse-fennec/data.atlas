@@ -6,7 +6,10 @@
      the bridge. Each of these roots publishes exactly one entity set, all of them
      named by configuration (Persons / PublicPersons). /odata-combined publishes
      sets from TWO packages (person + person-public) in one root, whose
-     $metadata must still hold exactly one entity container (emf.odata#84). -->
+     $metadata must still hold exactly one entity container (emf.odata#84).
+     /odata-narrowed publishes one set out of a package that also holds an
+     internal type with personal data; $metadata describes only the published
+     type's closure (emf.odata#91). -->
 <configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
@@ -22,6 +25,14 @@
       dataTrafo="odata-person-to-public">
     <supportedEClasses href="model/person-public.ecore#//PublicPerson"/>
   </dataInputs>
+  <dataInputs xsi:type="configuration:FileDataInput" id="odata-ticketing-file" uri="data/ticketing.xmi">
+    <supportedEClasses href="model/ticketing.ecore#//Opening"/>
+  </dataInputs>
+  <dataSets id="odata-openings" name="openings" description="Opening hours, the public part of the ticketing model."
+      dataInput="odata-ticketing-file">
+    <inputType href="model/ticketing.ecore#//Opening"/>
+    <outputType href="model/ticketing.ecore#//Opening"/>
+  </dataSets>
   <dataSets id="odata-persons" name="persons" description="All persons of the example file." dataInput="odata-persons-file">
     <inputType href="model/person.ecore#//Person"/>
     <outputType href="model/person.ecore#//Person"/>
@@ -51,6 +62,10 @@
       description="OData service root publishing persons and their public projection side by side." urlContext="/odata-combined">
     <configuration id="combined-persons-config" dataSet="odata-persons" entitySetName="Persons"/>
     <configuration id="combined-public-config" dataSet="odata-public-persons" entitySetName="PublicPersons"/>
+  </services>
+  <services xsi:type="configuration:ODataDataService" id="narrowed-odata" name="Narrowed OData"
+      description="OData service root publishing one set of a package that also holds internal types." urlContext="/odata-narrowed">
+    <configuration id="narrowed-openings-config" dataSet="odata-openings" entitySetName="Openings"/>
   </services>
   <transformations xsi:type="configuration:DataTransformation" id="odata-person-to-public" name="PersonToPublic"
       description="Projects a Person onto a PublicPerson (id, displayName).">

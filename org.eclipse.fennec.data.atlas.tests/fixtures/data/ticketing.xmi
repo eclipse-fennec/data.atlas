@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ticketing="https://eclipse.org/fennec/data/atlas/test/ticketing/1.0.0">
+  <ticketing:Opening id="mon" day="Monday" hours="10-18"/>
+  <ticketing:Opening id="tue" day="Tuesday" hours="10-20"/>
+  <ticketing:CardHolderVisit id="v1" name="Erika Mustermann" email="erika@example.org" opening="mon"/>
+</xmi:XMI>
