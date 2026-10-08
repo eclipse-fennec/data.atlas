@@ -195,9 +195,10 @@ public class DataAtlasRestIntegrationTest {
 		assertEquals(listRef, byIdRef);
 
 		// the reference resolves to the served type. Not asserted yet, open in the
-		// codec: query parameters lack "in", optional attributes are written as
-		// type arrays (not OpenAPI 3.0), and the schema does not describe the
-		// codec's "_id"/"_type" keys of the served JSON
+		// codec: query parameters lack "in" (emf.codec#269), optional attributes
+		// are written as type arrays, not OpenAPI 3.0 nullable (emf.codec#270),
+		// and the schema does not describe the codec's "_id"/"_type" keys of the
+		// served JSON (emf.codec#271)
 		JsonObject schemas = document.getJsonObject("components").getJsonObject("schemas");
 		String name = byIdRef.substring("#/components/schemas/".length());
 		JsonObject person = schemas.getJsonObject(name);

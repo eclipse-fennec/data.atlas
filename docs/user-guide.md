@@ -457,9 +457,12 @@ curl http://localhost:8080/rest/example/openapi.json
 ```
 
 Known gaps, open in the Fennec codec: query parameters are written without
-`in`, optional attributes use JSON Schema type arrays instead of OpenAPI 3.0
-`nullable`, and the schemas describe the EMF attributes rather than the
-codec's `_id`/`_type` keys of the served JSON.
+`in` ([emf.codec#269](https://github.com/eclipse-fennec/emf.codec/issues/269)),
+optional attributes use JSON Schema type arrays instead of OpenAPI 3.0
+`nullable` ([emf.codec#270](https://github.com/eclipse-fennec/emf.codec/issues/270)),
+and the schemas describe the EMF attributes rather than the codec's
+`_id`/`_type` keys of the served JSON
+([emf.codec#271](https://github.com/eclipse-fennec/emf.codec/issues/271)).
 
 ---
 
