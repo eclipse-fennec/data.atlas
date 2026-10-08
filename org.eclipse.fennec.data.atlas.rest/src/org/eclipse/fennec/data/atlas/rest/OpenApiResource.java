@@ -12,21 +12,15 @@
  */
 package org.eclipse.fennec.data.atlas.rest;
 
-import java.io.IOException;
-import java.lang.System.Logger;
-import java.lang.System.Logger.Level;
-import java.util.function.Supplier;
-
-import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.fennec.codec.openapi.OpenApiResourceFactoryImpl;
+import org.eclipse.fennec.codec.rest.annotations.ResourceOverwriteContentType;
+import org.eclipse.fennec.model.openapi.OpenAPI;
 
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.ServiceUnavailableException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
 /**
@@ -35,9 +29,11 @@ import jakarta.ws.rs.core.UriInfo;
  *
  * <p>
  * The document names the URL the request reached the application at as its
- * server, so it is rendered per request; a DataSet whose path is
+ * server, so it is completed per request; a DataSet whose path is
  * {@code openapi.json} is shadowed by it (the literal path wins over the
- * DataSet template).
+ * DataSet template). The codec's message body writer serializes it through
+ * the OpenAPI resource factory, selected by its content type — also when the
+ * client asks for plain {@code application/json}.
  * </p>
  */
 @Path(OpenApiResource.PATH)
@@ -46,37 +42,20 @@ public class OpenApiResource {
 	/** The path of the document below the application base. */
 	public static final String PATH = "openapi.json";
 
-	private static final Logger LOG = System.getLogger(OpenApiResource.class.getName());
-
 	private final RestOpenApi openApi;
-	private final Supplier<Resource.Factory> resourceFactory;
 
 	/**
-	 * @param openApi         the description of the service
-	 * @param resourceFactory the codec's OpenAPI resource factory, {@code null}
-	 *                        while it is not available
+	 * @param openApi the description of the service
 	 */
-	public OpenApiResource(RestOpenApi openApi, Supplier<Resource.Factory> resourceFactory) {
+	public OpenApiResource(RestOpenApi openApi) {
 		this.openApi = openApi;
-		this.resourceFactory = resourceFactory;
 	}
 
 	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response document(@Context UriInfo uriInfo) {
-		Resource.Factory factory = resourceFactory.get();
-		if (factory == null) {
-			LOG.log(Level.WARNING, "OpenAPI document requested, but no OpenAPI resource factory "
-					+ "(org.eclipse.fennec.codec.openapi) is available");
-			throw new ServiceUnavailableException("The OpenAPI document is currently not available");
-		}
+	@Produces({ MediaType.APPLICATION_JSON, OpenApiResourceFactoryImpl.CONTENT_TYPE_OPENAPI_JSON })
+	@ResourceOverwriteContentType(OpenApiResourceFactoryImpl.CONTENT_TYPE_OPENAPI_JSON)
+	public OpenAPI document(@Context UriInfo uriInfo) {
 		String base = uriInfo.getBaseUri().toString();
-		String serverUrl = base.endsWith("/") ? base.substring(0, base.length() - 1) : base;
-		try {
-			return Response.ok(openApi.render(factory, serverUrl), MediaType.APPLICATION_JSON_TYPE).build();
-		} catch (IOException | RuntimeException e) {
-			LOG.log(Level.ERROR, "Writing the OpenAPI document failed", e);
-			throw new InternalServerErrorException("Writing the OpenAPI document failed", e);
-		}
+		return openApi.document(base.endsWith("/") ? base.substring(0, base.length() - 1) : base);
 	}
 }

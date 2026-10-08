@@ -145,14 +145,32 @@ public class DataAtlasOpenApiIntegrationTest {
 	}
 
 	@Test
+	void servesTheOpenApiMediaTypeOnRequest() throws Exception {
+		assertEquals(200, awaitOk(BASE_URL + "/openapi-example/persons").statusCode());
+		HttpResponse<String> response = get(BASE_URL + "/openapi-example/openapi.json",
+				"application/vnd.oai.openapi+json");
+		assertEquals(200, response.statusCode(), response::body);
+		assertTrue(response.headers().firstValue("Content-Type").orElse("")
+				.startsWith("application/vnd.oai.openapi+json"), () -> response.headers().map().toString());
+		// written by the OpenAPI factory, not the generic JSON codec
+		JsonObject document = Json.createReader(new StringReader(response.body())).readObject();
+		assertFalse(document.containsKey("_type"), response::body);
+		assertTrue(document.getJsonObject("components").containsKey("schemas"), response::body);
+	}
+
+	@Test
 	void aServiceWithoutOpenApiServesNoDocument() throws Exception {
 		assertEquals(200, awaitOk(BASE_URL + "/openapi-off/persons").statusCode());
 		assertEquals(404, get(BASE_URL + "/openapi-off/openapi.json").statusCode());
 	}
 
 	private HttpResponse<String> get(String url) throws Exception {
+		return get(url, "application/json");
+	}
+
+	private HttpResponse<String> get(String url, String accept) throws Exception {
 		HttpRequest request = HttpRequest.newBuilder(java.net.URI.create(url))
-				.header("Accept", "application/json")
+				.header("Accept", accept)
 				.timeout(Duration.ofSeconds(10))
 				.GET()
 				.build();
