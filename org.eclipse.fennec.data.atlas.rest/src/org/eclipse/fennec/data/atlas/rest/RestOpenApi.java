@@ -118,6 +118,17 @@ final class RestOpenApi {
 	/**
 	 * Renders the description as an OpenAPI JSON document.
 	 *
+	 * <p>
+	 * Temporary: the codec's REST message body writer resolves factories by
+	 * content type, and the OpenAPI factory registers none, so the document is
+	 * written here instead of returning the {@code OpenAPI} object from the
+	 * resource. Once
+	 * <a href="https://github.com/eclipse-fennec/emf.codec/issues/268">emf.codec#268</a>
+	 * is fixed, the resource returns the object with
+	 * {@code @ResourceOverwriteContentType("application/vnd.oai.openapi+json")}
+	 * and this method and the factory reference go away.
+	 * </p>
+	 *
 	 * @param resourceFactory the codec's OpenAPI resource factory
 	 * @param serverUrl       the URL the application is reached at, the single
 	 *                        {@code servers} entry
