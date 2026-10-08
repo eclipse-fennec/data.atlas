@@ -12,9 +12,6 @@
  */
 package org.eclipse.fennec.data.atlas.rest;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
@@ -24,7 +21,6 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
@@ -32,7 +28,6 @@ import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.EcorePackage;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
 import org.eclipse.fennec.data.atlas.configuration.RestDataService;
@@ -54,8 +49,8 @@ import org.eclipse.fennec.model.query.ParameterDecl;
 
 /**
  * The OpenAPI 3 description of one {@code RestDataService}, built on the
- * OpenAPI model of the fennec codec and serialized by its OpenAPI resource
- * factory.
+ * OpenAPI model of the fennec codec; the codec's message body writer serializes
+ * it through the OpenAPI resource factory.
  *
  * <p>
  * Every served DataSet contributes its list path (with the configured
@@ -63,8 +58,8 @@ import org.eclipse.fennec.model.query.ParameterDecl;
  * its by-id path, each answering in exactly the media types the DataSet is
  * served as. The JSON response schemas are the EClasses of the served objects:
  * the codec writes {@code components/schemas} from an {@code EPackage}, so the
- * served types — together with every type they reach through supertypes and
- * references — are copied into one schema package and referenced by name.
+ * type closure of the served types is copied into one schema package and
+ * referenced by name.
  * </p>
  */
 final class RestOpenApi {
@@ -87,7 +82,7 @@ final class RestOpenApi {
 	 * @param id        the service id, the fallback title
 	 * @param service   the service configuration
 	 * @param endpoints the served DataSets by path, as resolved by the configurator
-	 * @return the description, to be rendered per request
+	 * @return the description, completed per request by {@link #document(String)}
 	 */
 	static RestOpenApi describe(String id, RestDataService service, Map<String, DataSetEndpoint> endpoints) {
 		OpenApiFactory factory = OpenApiFactory.eINSTANCE;
@@ -116,35 +111,19 @@ final class RestOpenApi {
 	}
 
 	/**
-	 * Renders the description as an OpenAPI JSON document.
+	 * The OpenAPI document of the service as reached at {@code serverUrl}: a copy
+	 * of the description with that URL as its single {@code servers} entry, for
+	 * the codec's message body writer to serialize.
 	 *
-	 * <p>
-	 * Temporary: the codec's REST message body writer resolves factories by
-	 * content type, and the OpenAPI factory registers none, so the document is
-	 * written here instead of returning the {@code OpenAPI} object from the
-	 * resource. Once
-	 * <a href="https://github.com/eclipse-fennec/emf.codec/issues/268">emf.codec#268</a>
-	 * is fixed, the resource returns the object with
-	 * {@code @ResourceOverwriteContentType("application/vnd.oai.openapi+json")}
-	 * and this method and the factory reference go away.
-	 * </p>
-	 *
-	 * @param resourceFactory the codec's OpenAPI resource factory
-	 * @param serverUrl       the URL the application is reached at, the single
-	 *                        {@code servers} entry
-	 * @return the JSON document
-	 * @throws IOException if the codec fails to write it
+	 * @param serverUrl the URL the application is reached at
+	 * @return the document
 	 */
-	String render(Resource.Factory resourceFactory, String serverUrl) throws IOException {
+	OpenAPI document(String serverUrl) {
 		OpenAPI openApi = EcoreUtil.copy(template);
 		org.eclipse.fennec.model.openapi.Server server = OpenApiFactory.eINSTANCE.createServer();
 		server.setUrl(serverUrl);
 		openApi.getServers().add(server);
-		Resource resource = resourceFactory.createResource(URI.createURI("dataatlas:/openapi.json"));
-		resource.getContents().add(openApi);
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		resource.save(out, null);
-		return out.toString(StandardCharsets.UTF_8);
+		return openApi;
 	}
 
 	private static PathItem listPath(String path, DataSetEndpoint endpoint, String ref) {

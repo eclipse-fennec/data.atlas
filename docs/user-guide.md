@@ -456,11 +456,9 @@ document was requested at. A published service names the document as the
 curl http://localhost:8080/rest/example/openapi.json
 ```
 
-Known gaps, open in the Fennec codec: query parameters are written without
-`in` ([emf.codec#269](https://github.com/eclipse-fennec/emf.codec/issues/269)),
-optional attributes use JSON Schema type arrays instead of OpenAPI 3.0
-`nullable` ([emf.codec#270](https://github.com/eclipse-fennec/emf.codec/issues/270)),
-and the schemas describe the EMF attributes rather than the codec's
+The document is served as `application/json`, or as
+`application/vnd.oai.openapi+json` on request. Known gap, open in the Fennec
+codec: the schemas describe the EMF attributes rather than the codec's
 `_id`/`_type` keys of the served JSON
 ([emf.codec#271](https://github.com/eclipse-fennec/emf.codec/issues/271)).
 

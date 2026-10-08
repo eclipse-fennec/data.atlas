@@ -17,6 +17,7 @@ Bundle-Description: Tracks RestDataService configuration services and registers 
 	org.eclipse.fennec.codec.rest;version=latest,\
 	org.eclipse.fennec.codec.csv;version=latest,\
 	org.eclipse.fennec.codec.geojson;version=latest,\
+	org.eclipse.fennec.codec.openapi;version=latest,\
 	org.eclipse.fennec.openapi.model;version=latest,\
 	org.geojson.model;version=latest,\
 	org.eclipse.fennec.persistence.repository;version=latest,\

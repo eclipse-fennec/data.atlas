@@ -182,7 +182,7 @@ public class DataAtlasRestIntegrationTest {
 		JsonObject paths = document.getJsonObject("paths");
 		JsonObject list = paths.getJsonObject("/persons").getJsonObject("get");
 		assertTrue(list.getJsonArray("parameters").stream().map(JsonValue::asJsonObject)
-				.anyMatch(p -> "limit".equals(p.getString("name"))),
+				.anyMatch(p -> "limit".equals(p.getString("name")) && "query".equals(p.getString("in", null))),
 				() -> "no limit parameter in: " + list);
 		JsonObject listContent = list.getJsonObject("responses").getJsonObject("200").getJsonObject("content");
 		assertTrue(listContent.containsKey("application/xml"), () -> "xml not described: " + listContent);
@@ -195,16 +195,18 @@ public class DataAtlasRestIntegrationTest {
 		assertEquals(listRef, byIdRef);
 
 		// the reference resolves to the served type. Not asserted yet, open in the
-		// codec: query parameters lack "in" (emf.codec#269), optional attributes
-		// are written as type arrays, not OpenAPI 3.0 nullable (emf.codec#270),
-		// and the schema does not describe the codec's "_id"/"_type" keys of the
-		// served JSON (emf.codec#271)
+		// codec: the schema does not describe the codec's "_id"/"_type" keys of
+		// the served JSON (emf.codec#271)
 		JsonObject schemas = document.getJsonObject("components").getJsonObject("schemas");
 		String name = byIdRef.substring("#/components/schemas/".length());
 		JsonObject person = schemas.getJsonObject(name);
 		assertTrue(person != null, () -> byIdRef + " does not resolve in: " + schemas);
 		JsonObject properties = person.getJsonObject("properties");
 		assertTrue(properties.containsKey("lastName"), () -> "lastName not described: " + person);
+		// OpenAPI 3.0 has no null type: an optional attribute is nullable (emf.codec#270)
+		JsonObject firstName = properties.getJsonObject("firstName");
+		assertEquals("string", firstName.getString("type"), firstName::toString);
+		assertTrue(firstName.getBoolean("nullable", false), firstName::toString);
 	}
 
 	private HttpResponse<String> get(String url, String accept) throws Exception {
