@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- OpenAPI fixture: one REST service over two packages (person, ticketing).
+     Its OpenAPI document describes both served types in one schema section,
+     and only the types a response can contain: the ticketing package also
+     holds CardHolderVisit, an internal type with personal data that no
+     DataSet serves (the REST counterpart of emf.odata#91). -->
+<configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    name="openapi" description="OpenAPI test fixture: persons and opening hours served by one REST service.">
+  <dataInputs xsi:type="configuration:FileDataInput" id="openapi-persons-file" uri="data/persons.xmi">
+    <supportedEClasses href="model/person.ecore#//Person"/>
+  </dataInputs>
+  <dataInputs xsi:type="configuration:FileDataInput" id="openapi-ticketing-file" uri="data/ticketing.xmi">
+    <supportedEClasses href="model/ticketing.ecore#//Opening"/>
+  </dataInputs>
+  <dataSets id="openapi-persons" name="Persons" dataInput="openapi-persons-file">
+    <inputType href="model/person.ecore#//Person"/>
+    <outputType href="model/person.ecore#//Person"/>
+  </dataSets>
+  <dataSets id="openapi-openings" name="Openings" description="Opening hours." dataInput="openapi-ticketing-file">
+    <inputType href="model/ticketing.ecore#//Opening"/>
+    <outputType href="model/ticketing.ecore#//Opening"/>
+  </dataSets>
+  <services xsi:type="configuration:RestDataService" id="openapi-rest" name="Persons and Openings"
+      description="REST service over two packages." urlContext="/openapi-example">
+    <configuration id="openapi-persons-config" dataSet="openapi-persons" path="persons"/>
+    <configuration id="openapi-openings-config" dataSet="openapi-openings" path="openings"/>
+  </services>
+  <services xsi:type="configuration:RestDataService" id="openapi-off" name="No OpenAPI"
+      urlContext="/openapi-off" openAPI="false">
+    <configuration id="openapi-off-config" dataSet="openapi-persons" path="persons"/>
+  </services>
+</configuration:DataAtlasConfiguration>

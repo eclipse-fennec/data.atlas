@@ -444,7 +444,11 @@ service. The document lists, per DataSet, the list path with its
 offset/limit parameters and the parameters its query declares, the by-id
 path, the media types the DataSet is served as, and in
 `components/schemas` the JSON schemas of the served types (generated from
-their EClasses by the Fennec codec). The `servers` entry is the URL the
+their EClasses by the Fennec codec). Only the types a response can contain
+are described — the served types with their super- and subtypes and the types
+of their features — never the rest of their packages, so an internal model
+sharing a package with a published type stays private (as for OData
+`$metadata`, emf.odata#91). The `servers` entry is the URL the
 document was requested at. A published service names the document as the
 `endpointDescription` of its DCAT `DataService`.
 

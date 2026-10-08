@@ -18,9 +18,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,7 +30,6 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -295,38 +294,48 @@ final class RestOpenApi {
 	}
 
 	/**
-	 * The schema package of a service: copies of the served types and of every
-	 * type they reach, gathered into one {@code EPackage} — the shape the
-	 * codec's OpenAPI writer turns into {@code components/schemas}.
+	 * The schema package of a service: copies of the type closure of the served
+	 * types, gathered into one {@code EPackage} — the shape the codec's OpenAPI
+	 * writer turns into {@code components/schemas}.
+	 *
+	 * <p>
+	 * Only what a response can contain is described, never the rest of the
+	 * packages the served types live in — the same rule the OData runtime
+	 * follows for {@code $metadata} (emf.odata#91, ADR-0009): a package that
+	 * holds an internal model next to a published type must not expose it.
+	 * </p>
 	 */
 	private record SchemaPackage(EPackage ePackage, Map<EClass, String> names) {
 
 		static SchemaPackage of(String serviceId, Collection<EClass> served) {
-			Set<EPackage> packages = reachablePackages(served);
+			Set<EClassifier> closure = typeClosure(served);
 			EcoreUtil.Copier copier = new EcoreUtil.Copier();
-			Collection<EPackage> copies = copier.copyAll(packages);
+			Collection<EClassifier> copies = copier.copyAll(closure);
 			copier.copyReferences();
-			EPackage target;
-			if (copies.size() == 1) {
-				target = copies.iterator().next();
+			Set<EPackage> sources = new LinkedHashSet<>();
+			closure.forEach(classifier -> sources.add(classifier.getEPackage()));
+			EPackage target = EcoreFactory.eINSTANCE.createEPackage();
+			if (sources.size() == 1) {
+				EPackage source = sources.iterator().next();
+				target.setName(source.getName());
+				target.setNsPrefix(source.getNsPrefix());
+				target.setNsURI(source.getNsURI());
 			} else {
-				target = EcoreFactory.eINSTANCE.createEPackage();
 				target.setName("schemas");
 				target.setNsPrefix("schemas");
 				target.setNsURI("urn:dataatlas:openapi:" + serviceId);
-				Set<String> taken = new HashSet<>();
-				for (EPackage copy : copies) {
-					for (EClassifier classifier : List.copyOf(copy.getEClassifiers())) {
-						if (!taken.add(classifier.getName())) {
-							// same name in two packages: qualify the later one
-							classifier.setName(copy.getName() + "_" + classifier.getName());
-							taken.add(classifier.getName());
-						}
-						target.getEClassifiers().add(classifier);
-					}
+			}
+			Set<String> taken = new HashSet<>();
+			for (EClassifier original : closure) {
+				EClassifier copy = (EClassifier) copier.get(original);
+				if (!taken.add(copy.getName())) {
+					// same name in two packages: qualify the later one
+					copy.setName(original.getEPackage().getName() + "_" + copy.getName());
+					taken.add(copy.getName());
 				}
 			}
-			Map<EClass, String> names = new java.util.HashMap<>();
+			target.getEClassifiers().addAll(copies);
+			Map<EClass, String> names = new HashMap<>();
 			for (EClass type : served) {
 				if (copier.get(type) instanceof EClass copy) {
 					names.put(type, copy.getName());
@@ -340,29 +349,32 @@ final class RestOpenApi {
 		}
 
 		/**
-		 * The packages of the served types and of every type reachable from them
-		 * through supertypes and references; Ecore itself is left out — its
-		 * data types are written as JSON primitives.
+		 * The served types and, transitively, their supertypes, their subtypes
+		 * (a response can contain derived instances), the types of their
+		 * references and their enum and data types. Ecore's own classifiers are
+		 * left out — they are written as JSON primitives.
 		 */
-		private static Set<EPackage> reachablePackages(Collection<EClass> served) {
-			Set<EPackage> packages = new LinkedHashSet<>();
-			Set<EClass> seen = new HashSet<>();
-			Deque<EClass> todo = new ArrayDeque<>(served);
+		private static Set<EClassifier> typeClosure(Collection<EClass> served) {
+			Set<EClassifier> closure = new LinkedHashSet<>();
+			Deque<EClassifier> todo = new ArrayDeque<>(served);
 			while (!todo.isEmpty()) {
-				EClass type = todo.pop();
-				if (!seen.add(type) || type.getEPackage() == null || type.getEPackage() == EcorePackage.eINSTANCE) {
+				EClassifier classifier = todo.pop();
+				if (classifier == null || classifier.getEPackage() == null
+						|| classifier.getEPackage() == EcorePackage.eINSTANCE || !closure.add(classifier)) {
 					continue;
 				}
-				if (packages.add(type.getEPackage())) {
-					type.getEPackage().getEClassifiers().stream().filter(EClass.class::isInstance)
-							.map(EClass.class::cast).forEach(todo::add);
-				}
-				todo.addAll(type.getESuperTypes());
-				for (EReference reference : type.getEReferences()) {
-					todo.add(reference.getEReferenceType());
+				if (classifier instanceof EClass type) {
+					todo.addAll(type.getESuperTypes());
+					type.getEStructuralFeatures().forEach(feature -> todo.add(feature.getEType()));
+					// derived types live in the packages the closure reaches
+					for (EClassifier candidate : type.getEPackage().getEClassifiers()) {
+						if (candidate instanceof EClass other && other.getESuperTypes().contains(type)) {
+							todo.add(other);
+						}
+					}
 				}
 			}
-			return packages;
+			return closure;
 		}
 	}
 }
