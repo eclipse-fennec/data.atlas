@@ -49,7 +49,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
  * repository or the transformer goes away. Cascaded bridges work naturally:
  * a bridge's repository can be another bridge's source.
  */
-@Component(immediate = true)
+@Component
 public class BridgeInputConfigurator {
 
 	private static final Logger LOG = System.getLogger(BridgeInputConfigurator.class.getName());

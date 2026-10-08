@@ -53,7 +53,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
  * dependent endpoint down (fail-early gating).
  * </p>
  */
-@Component(immediate = true)
+@Component
 public class TransformationConfigurator {
 
 	private static final Logger LOG = System.getLogger(TransformationConfigurator.class.getName());

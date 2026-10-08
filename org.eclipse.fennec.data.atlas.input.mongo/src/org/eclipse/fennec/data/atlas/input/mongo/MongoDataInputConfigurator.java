@@ -48,7 +48,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
  * client is liveness-gated) and disappears with it.
  * </p>
  */
-@Component(immediate = true)
+@Component
 public class MongoDataInputConfigurator {
 
 	private static final Logger LOG = System.getLogger(MongoDataInputConfigurator.class.getName());

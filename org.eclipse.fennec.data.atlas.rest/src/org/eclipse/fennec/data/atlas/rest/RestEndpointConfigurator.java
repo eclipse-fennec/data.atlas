@@ -65,7 +65,7 @@ import jakarta.ws.rs.core.Application;
  * attach to it.
  * </p>
  */
-@Component(immediate = true)
+@Component
 @RequireJakartarsWhiteboard
 @RequireHttpWhiteboard
 // The formats DataServiceResource declares in @Produces are only writable if

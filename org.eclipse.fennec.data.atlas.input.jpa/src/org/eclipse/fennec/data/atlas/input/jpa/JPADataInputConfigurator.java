@@ -61,7 +61,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
  * chain is documented in eclipse-fennec/emf.persistence-jpa (see issue #193 for
  * the end-to-end recipe).
  */
-@Component(immediate = true)
+@Component
 public class JPADataInputConfigurator {
 
 	private static final Logger LOG = System.getLogger(JPADataInputConfigurator.class.getName());

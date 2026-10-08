@@ -65,7 +65,7 @@ import jakarta.ws.rs.core.Application;
  * missing the codec fails to resolve instead of failing per request.
  * </p>
  */
-@Component(immediate = true)
+@Component
 @RequireJakartarsWhiteboard
 @RequireHttpWhiteboard
 @RequireCodecGeoJson

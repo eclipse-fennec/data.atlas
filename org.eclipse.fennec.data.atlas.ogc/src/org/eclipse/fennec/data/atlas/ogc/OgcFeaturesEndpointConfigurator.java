@@ -123,7 +123,7 @@ import org.osgi.service.servlet.whiteboard.annotations.RequireHttpWhiteboard;
  * overridable here).
  * </p>
  */
-@Component(immediate = true, configurationPid = OgcFeaturesEndpointConfigurator.PID,
+@Component(configurationPid = OgcFeaturesEndpointConfigurator.PID,
 		configurationPolicy = ConfigurationPolicy.OPTIONAL)
 @RequireHttpWhiteboard
 public class OgcFeaturesEndpointConfigurator {

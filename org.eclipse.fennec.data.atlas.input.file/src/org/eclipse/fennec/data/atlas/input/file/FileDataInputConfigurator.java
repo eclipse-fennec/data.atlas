@@ -42,7 +42,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
  * {@link RepositoryConstants#REPOSITORY_ID} = the input's id; the repository is
  * unregistered when the configuration service goes away.
  */
-@Component(immediate = true)
+@Component
 public class FileDataInputConfigurator {
 
 	private static final Logger LOG = System.getLogger(FileDataInputConfigurator.class.getName());

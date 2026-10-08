@@ -70,7 +70,7 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
  * running, so a later corrected version recovers the instance.
  * </p>
  */
-@Component(name = DataAtlasBootstrap.PID, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE)
+@Component(name = DataAtlasBootstrap.PID, configurationPolicy = ConfigurationPolicy.REQUIRE)
 @Designate(ocd = DataAtlasBootstrap.Config.class)
 public class DataAtlasBootstrap {
 

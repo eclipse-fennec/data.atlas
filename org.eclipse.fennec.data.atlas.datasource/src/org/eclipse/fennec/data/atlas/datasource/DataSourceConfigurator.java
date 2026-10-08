@@ -63,7 +63,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
  * the mounted Configurator files next to it).
  * </p>
  */
-@Component(immediate = true, configurationPid = DataSourceConfigurator.PID,
+@Component(service = {}, configurationPid = DataSourceConfigurator.PID,
 		configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class DataSourceConfigurator implements Materialization.Environment {
 

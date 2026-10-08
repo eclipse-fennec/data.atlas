@@ -98,7 +98,7 @@ import org.osgi.service.servlet.whiteboard.annotations.RequireHttpWhiteboard;
  * {@code odata.max.top}, derived from the model, are not overridable here).
  * </p>
  */
-@Component(immediate = true, configurationPid = ODataEndpointConfigurator.PID,
+@Component(configurationPid = ODataEndpointConfigurator.PID,
 		configurationPolicy = ConfigurationPolicy.OPTIONAL)
 @RequireHttpWhiteboard
 public class ODataEndpointConfigurator {

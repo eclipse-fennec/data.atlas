@@ -80,7 +80,7 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
  * served by a Model Atlas must use absolute URIs.
  * </p>
  */
-@Component(name = ModelAtlasBootstrap.PID, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE)
+@Component(name = ModelAtlasBootstrap.PID, configurationPolicy = ConfigurationPolicy.REQUIRE)
 @Designate(ocd = ModelAtlasBootstrap.Config.class)
 public class ModelAtlasBootstrap {
 
