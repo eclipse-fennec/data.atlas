@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
+import java.io.StringReader;
 import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -26,6 +27,10 @@ import java.time.Duration;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
+
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonValue;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -160,6 +165,45 @@ public class DataAtlasRestIntegrationTest {
 		HttpResponse<String> offsetResponse = get(BASE_URL + "?offset=1&limit=1", "application/json");
 		assertEquals(200, offsetResponse.statusCode());
 		assertTrue(offsetResponse.body().contains("Hopper"), () -> "missing Hopper in: " + offsetResponse.body());
+	}
+
+	@Test
+	void servesOpenApiDocument() throws Exception {
+		getUntilOk(BASE_URL, "application/json");
+		HttpResponse<String> response = get("http://localhost:" + HTTP_PORT + "/rest/example/openapi.json",
+				"application/json");
+		assertEquals(200, response.statusCode(), () -> response.body());
+		JsonObject document = Json.createReader(new StringReader(response.body())).readObject();
+		assertTrue(document.getString("openapi").startsWith("3."), () -> response.body());
+		assertEquals("Persons REST", document.getJsonObject("info").getString("title"));
+		assertEquals("http://localhost:" + HTTP_PORT + "/rest/example",
+				document.getJsonArray("servers").getJsonObject(0).getString("url"));
+
+		JsonObject paths = document.getJsonObject("paths");
+		JsonObject list = paths.getJsonObject("/persons").getJsonObject("get");
+		assertTrue(list.getJsonArray("parameters").stream().map(JsonValue::asJsonObject)
+				.anyMatch(p -> "limit".equals(p.getString("name"))),
+				() -> "no limit parameter in: " + list);
+		JsonObject listContent = list.getJsonObject("responses").getJsonObject("200").getJsonObject("content");
+		assertTrue(listContent.containsKey("application/xml"), () -> "xml not described: " + listContent);
+		String listRef = listContent.getJsonObject("application/json").getJsonObject("schema")
+				.getJsonObject("items").getString("$ref");
+
+		JsonObject byId = paths.getJsonObject("/persons/{id}").getJsonObject("get");
+		String byIdRef = byId.getJsonObject("responses").getJsonObject("200").getJsonObject("content")
+				.getJsonObject("application/json").getJsonObject("schema").getString("$ref");
+		assertEquals(listRef, byIdRef);
+
+		// the reference resolves to the served type. Not asserted yet, open in the
+		// codec: query parameters lack "in", optional attributes are written as
+		// type arrays (not OpenAPI 3.0), and the schema does not describe the
+		// codec's "_id"/"_type" keys of the served JSON
+		JsonObject schemas = document.getJsonObject("components").getJsonObject("schemas");
+		String name = byIdRef.substring("#/components/schemas/".length());
+		JsonObject person = schemas.getJsonObject(name);
+		assertTrue(person != null, () -> byIdRef + " does not resolve in: " + schemas);
+		JsonObject properties = person.getJsonObject("properties");
+		assertTrue(properties.containsKey("lastName"), () -> "lastName not described: " + person);
 	}
 
 	private HttpResponse<String> get(String url, String accept) throws Exception {

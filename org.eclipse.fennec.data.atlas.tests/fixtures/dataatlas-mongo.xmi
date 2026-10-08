@@ -19,7 +19,7 @@
     <outputType href="model/person.ecore#//Person"/>
   </dataSets>
   <services xsi:type="configuration:RestDataService" id="persons-mongo-rest" name="Persons Mongo REST"
-      urlContext="/mongo" openAPI="false">
+      urlContext="/mongo">
     <configuration id="persons-mongo-config" dataSet="persons-mongo" path="persons"/>
   </services>
 </configuration:DataAtlasConfiguration>

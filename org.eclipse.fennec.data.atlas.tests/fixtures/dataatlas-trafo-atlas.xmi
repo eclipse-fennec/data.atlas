@@ -22,7 +22,7 @@
     <outputType href="https://eclipse.org/fennec/data/atlas/example/person/public/1.0.0#//PublicPerson"/>
   </dataSets>
   <services xsi:type="configuration:RestDataService" id="public-persons-rest" name="Public Persons REST"
-      description="REST endpoint publishing the transformed persons." urlContext="/example-public" openAPI="false">
+      description="REST endpoint publishing the transformed persons." urlContext="/example-public">
     <configuration id="public-persons-rest-config" dataSet="public-persons" path="public-persons"/>
   </services>
   <transformations xsi:type="configuration:DataTransformation" id="person-to-public" name="PersonToPublic"

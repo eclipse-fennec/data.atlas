@@ -83,6 +83,7 @@ public class DataAtlasODataIntegrationTest {
 	private static final String JPA_ROOT = HOST + "/odata-jpa";
 	private static final String PUBLIC_ROOT = HOST + "/odata-public";
 	private static final String COMBINED_ROOT = HOST + "/odata-combined";
+	private static final String NARROWED_ROOT = HOST + "/odata-narrowed";
 	private static final String PERSON_NSURI = "https://eclipse.org/fennec/data/atlas/example/person/1.0.0";
 	private static final String DATASOURCE_FILTER_PROPERTY = "dataatlas.test.ds";
 	private static final long DEADLINE_MS = 90_000;
@@ -365,6 +366,27 @@ public class DataAtlasODataIntegrationTest {
 				.getJsonObject(container.substring(dot + 1));
 		assertTrue(declared.containsKey("Persons") && declared.containsKey("PublicPersons"),
 				"the one container must hold both sets: " + declared);
+	}
+
+	/**
+	 * emf.odata#91: a root publishing one set out of a package describes only
+	 * that set's type closure. The internal type with personal data shares the
+	 * package and even points at the published type, yet $metadata must not
+	 * describe it - the Data Atlas always narrows a root by
+	 * odata.model.entitysets, so this holds for every configured root.
+	 */
+	@Test
+	@Order(6)
+	void aRootDescribesOnlyTheTypesItsSetsReach() throws Exception {
+		assertEquals(2, awaitSize(NARROWED_ROOT + "/Openings", 2));
+
+		String csdl = get(NARROWED_ROOT + "/$metadata", "application/xml").body();
+		assertTrue(csdl.contains("EntityType Name=\"Opening\""), csdl);
+		assertFalse(csdl.contains("CardHolderVisit"), "an unpublished type must not be described: " + csdl);
+		assertFalse(csdl.contains("email"), "an unpublished type's properties must not be described: " + csdl);
+
+		JsonObject csdlJson = json(get(NARROWED_ROOT + "/$metadata?$format=json"));
+		assertFalse(csdlJson.toString().contains("CardHolderVisit"), csdlJson.toString());
 	}
 
 	/**

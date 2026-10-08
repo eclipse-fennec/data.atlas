@@ -59,16 +59,16 @@ public interface RestDataService extends DataService {
 
 	/**
 	 * Returns the value of the '<em><b>Open API</b></em>' attribute.
+	 * The default value is <code>"true"</code>.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * Marker, if an openAPI definition should be provided
+	 * Whether the service publishes its OpenAPI 3 document at {urlContext}/openapi.json (default true): the list and by-id path of every DataSet with its paging and query parameters, the media types it is served as, and the JSON schemas of the served types.
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Open API</em>' attribute.
 	 * @see #setOpenAPI(boolean)
 	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getRestDataService_OpenAPI()
-	 * @model required="true"
-	 *        annotation="https://eclipse.org/fennec/data/atlas/configuration/status implementation='not implemented yet' note='no OpenAPI document is generated; the value is ignored'"
+	 * @model default="true" required="true"
 	 * @generated
 	 */
 	boolean isOpenAPI();

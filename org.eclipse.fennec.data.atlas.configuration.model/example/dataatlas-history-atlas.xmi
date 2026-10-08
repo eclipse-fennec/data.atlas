@@ -206,7 +206,7 @@
     </query>
   </dataSets>
   <services xsi:type="configuration:RestDataService" id="history-rest" name="SensiNact history REST"
-      description="REST endpoint publishing the recorded history." urlContext="/history" openAPI="false">
+      description="REST endpoint publishing the recorded history." urlContext="/history">
     <configuration id="entries-config" dataSet="entries" path="entries" batchSize="1000" batchSizeLimit="1000"/>
     <configuration id="numeric-config" dataSet="numeric" path="numeric" batchSize="1000" batchSizeLimit="1000"/>
     <configuration id="text-config" dataSet="text" path="text" batchSize="1000" batchSizeLimit="1000"/>

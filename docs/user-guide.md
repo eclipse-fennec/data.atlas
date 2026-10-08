@@ -31,6 +31,7 @@ instances of those schemas.
   - [Content Negotiation](#content-negotiation)
   - [Export Formats: Deciding What a DataSet Serves](#export-formats-deciding-what-a-dataset-serves)
   - [Error Handling](#error-handling)
+  - [OpenAPI Document](#openapi-document)
 - [Writing a Configuration](#writing-a-configuration)
   - [Minimal Example: File Input over REST](#minimal-example-file-input-over-rest)
   - [Relational Data: JPA Input](#relational-data-jpa-input)
@@ -435,6 +436,31 @@ that may be tuned by clients.
 | `406 Not Acceptable` | The requested media type is not one of the DataSet's configured export formats |
 | `500 Internal Server Error` | Reading from the backing input failed |
 
+### OpenAPI Document
+
+Every `RestDataService` publishes an OpenAPI 3 description of itself at
+`{urlContext}/openapi.json` — switch it off with `openAPI="false"` on the
+service. The document lists, per DataSet, the list path with its
+offset/limit parameters and the parameters its query declares, the by-id
+path, the media types the DataSet is served as, and in
+`components/schemas` the JSON schemas of the served types (generated from
+their EClasses by the Fennec codec). Only the types a response can contain
+are described — the served types with their super- and subtypes and the types
+of their features — never the rest of their packages, so an internal model
+sharing a package with a published type stays private (as for OData
+`$metadata`, emf.odata#91). The `servers` entry is the URL the
+document was requested at. A published service names the document as the
+`endpointDescription` of its DCAT `DataService`.
+
+```bash
+curl http://localhost:8080/rest/example/openapi.json
+```
+
+Known gaps, open in the Fennec codec: query parameters are written without
+`in`, optional attributes use JSON Schema type arrays instead of OpenAPI 3.0
+`nullable`, and the schemas describe the EMF attributes rather than the
+codec's `_id`/`_type` keys of the served JSON.
+
 ---
 
 ## Writing a Configuration
@@ -459,7 +485,7 @@ The complete example — one file input, one DataSet, one REST service
     <outputType href="model/person.ecore#//Person"/>
   </dataSets>
   <services xsi:type="configuration:RestDataService" id="persons-rest" name="Persons REST"
-      urlContext="/example" openAPI="false">
+      urlContext="/example">
     <configuration id="persons-rest-config" dataSet="persons" path="persons"/>
   </services>
 </configuration:DataAtlasConfiguration>

@@ -2295,7 +2295,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 
 		initEClass(restDataServiceEClass, RestDataService.class, "RestDataService", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getRestDataService_Configuration(), this.getRestDataServiceConfiguration(), null, "configuration", null, 0, -1, RestDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEAttribute(getRestDataService_OpenAPI(), ecorePackage.getEBoolean(), "openAPI", null, 1, 1, RestDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getRestDataService_OpenAPI(), ecorePackage.getEBoolean(), "openAPI", "true", 1, 1, RestDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(dataServiceConfigurationEClass, DataServiceConfiguration.class, "DataServiceConfiguration", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getDataServiceConfiguration_Id(), ecorePackage.getEString(), "id", null, 1, 1, DataServiceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2729,7 +2729,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		  (getRestDataService_OpenAPI(),
 		   source,
 		   new String[] {
-			   "documentation", "Marker, if an openAPI definition should be provided"
+			   "documentation", "Whether the service publishes its OpenAPI 3 document at {urlContext}/openapi.json (default true): the list and by-id path of every DataSet with its paging and query parameters, the media types it is served as, and the JSON schemas of the served types."
 		   });
 		addAnnotation
 		  (dataServiceConfigurationEClass,
@@ -3472,13 +3472,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		   new String[] {
 			   "implementation", "not implemented yet",
 			   "note", "legacy operation of the first draft; the generated implementation throws UnsupportedOperationException"
-		   });
-		addAnnotation
-		  (getRestDataService_OpenAPI(),
-		   source,
-		   new String[] {
-			   "implementation", "not implemented yet",
-			   "note", "no OpenAPI document is generated; the value is ignored"
 		   });
 		addAnnotation
 		  (xmlaDataServiceEClass,

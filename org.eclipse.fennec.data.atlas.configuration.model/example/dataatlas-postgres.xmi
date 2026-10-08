@@ -28,7 +28,7 @@
     <outputType href="model/person.ecore#//Person"/>
   </dataSets>
   <services xsi:type="configuration:RestDataService" id="persons-pg-rest" name="Persons Postgres REST"
-      description="REST endpoint publishing the database-backed persons." urlContext="/pg" openAPI="false">
+      description="REST endpoint publishing the database-backed persons." urlContext="/pg">
     <configuration id="persons-pg-rest-config" dataSet="persons" path="persons"/>
   </services>
   <exports xsi:type="configuration:CSVDistributionExport" id="csv" name="CSV"

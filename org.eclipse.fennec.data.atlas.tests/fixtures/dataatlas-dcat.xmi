@@ -13,7 +13,7 @@
     <outputType href="model/person.ecore#//Person"/>
   </dataSets>
   <services xsi:type="configuration:RestDataService" id="dcat-persons-rest" name="Persons REST"
-      description="REST endpoint publishing the example persons." urlContext="/dcat-example" openAPI="false"
+      description="REST endpoint publishing the example persons." urlContext="/dcat-example"
       publication="dcat-open-data">
     <configuration id="dcat-persons-rest-config" dataSet="dcat-persons" path="persons"/>
   </services>
