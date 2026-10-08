@@ -252,13 +252,9 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="openAPI" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
-      <eAnnotations source="https://eclipse.org/fennec/data/atlas/configuration/status">
-        <details key="implementation" value="not implemented yet"/>
-        <details key="note" value="no OpenAPI document is generated; the value is ignored"/>
-      </eAnnotations>
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean" defaultValueLiteral="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Marker, if an openAPI definition should be provided"/>
+        <details key="documentation" value="Whether the service publishes its OpenAPI 3 document at {urlContext}/openapi.json (default true): the list and by-id path of every DataSet with its paging and query parameters, the media types it is served as, and the JSON schemas of the served types."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>

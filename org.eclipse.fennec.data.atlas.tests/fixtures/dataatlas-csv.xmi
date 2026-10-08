@@ -22,7 +22,7 @@
     <outputType href="model/person.ecore#//Person"/>
   </dataSets>
   <services xsi:type="configuration:RestDataService" id="persons-export-rest" name="Persons export REST"
-      description="REST endpoint exercising the DistributionExport resolution." urlContext="/export" openAPI="false">
+      description="REST endpoint exercising the DistributionExport resolution." urlContext="/export">
     <configuration id="persons-csv-and-json-config" dataSet="persons-csv-and-json" path="both"/>
     <configuration id="persons-csv-only-config" dataSet="persons-csv-only" path="csv-only"/>
     <configuration id="persons-default-config" dataSet="persons-default" path="default"/>

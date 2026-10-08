@@ -19,8 +19,10 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.fennec.codec.annotation.RequireCodecJson;
 import org.eclipse.fennec.codec.csv.annotation.RequireCodecCsv;
@@ -64,6 +66,12 @@ import jakarta.ws.rs.core.Application;
  * extensions (EObject/Resource message body handlers, per-request ResourceSet)
  * attach to it.
  * </p>
+ *
+ * <p>
+ * A service with {@code openAPI} set additionally serves its OpenAPI document
+ * at {@code {urlContext}/openapi.json} ({@link OpenApiResource}), written by
+ * the fennec codec's OpenAPI resource factory.
+ * </p>
  */
 @Component(immediate = true)
 @RequireJakartarsWhiteboard
@@ -82,12 +90,18 @@ public class RestEndpointConfigurator {
 
 	private static final Logger LOG = System.getLogger(RestEndpointConfigurator.class.getName());
 
+	/** The service property the codec registers its resource factories by. */
+	static final String OPENAPI_FACTORY_PROPERTY = "emf.resource.name";
+	/** The name of the codec's OpenAPI resource factory. */
+	static final String OPENAPI_FACTORY_NAME = "openapi";
+
 	private final BundleContext bundleContext;
 
 	// all access guarded by this
 	private final Map<String, RestDataService> services = new HashMap<>();
 	private final Map<String, ComponentServiceObjects<ReadRepository>> repositories = new HashMap<>();
 	private final Map<String, ServiceRegistration<Application>> applications = new HashMap<>();
+	private final AtomicReference<Resource.Factory> openApiResourceFactory = new AtomicReference<>();
 
 	@Activate
 	public RestEndpointConfigurator(BundleContext bundleContext) {
@@ -133,6 +147,16 @@ public class RestEndpointConfigurator {
 		if (props.get(RepositoryConstants.REPOSITORY_ID) instanceof String id && repositories.remove(id) != null) {
 			reconcile();
 		}
+	}
+
+	@Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC,
+			target = "(" + OPENAPI_FACTORY_PROPERTY + "=" + OPENAPI_FACTORY_NAME + ")")
+	void bindOpenApiResourceFactory(Resource.Factory factory) {
+		openApiResourceFactory.set(factory);
+	}
+
+	void unbindOpenApiResourceFactory(Resource.Factory factory) {
+		openApiResourceFactory.compareAndSet(factory, null);
 	}
 
 	private String configObjectId(Map<String, Object> props, String fallback) {
@@ -240,6 +264,10 @@ public class RestEndpointConfigurator {
 	private ServiceRegistration<Application> register(String id, RestDataService service,
 			Map<String, DataSetEndpoint> endpoints) {
 		DataServiceResource resource = new DataServiceResource(endpoints);
+		Object[] resources = service.isOpenAPI()
+				? new Object[] { resource,
+						new OpenApiResource(RestOpenApi.describe(id, service, endpoints), openApiResourceFactory::get) }
+				: new Object[] { resource };
 		String base = service.getUrlContext() == null || service.getUrlContext().isBlank() ? "/" + id
 				: service.getUrlContext();
 		if (!base.startsWith("/")) {
@@ -253,7 +281,8 @@ public class RestEndpointConfigurator {
 		String logBase = base;
 		LOG.log(Level.INFO, () -> "Registering REST application for service '" + id + "' at '" + logBase + "' with "
 				+ endpoints.size() + " data set(s): " + endpoints.entrySet().stream()
-						.map(e -> e.getKey() + " " + e.getValue().formats()).toList());
-		return bundleContext.registerService(Application.class, new DataAtlasRestApplication(resource), props);
+						.map(e -> e.getKey() + " " + e.getValue().formats()).toList()
+				+ (service.isOpenAPI() ? ", OpenAPI at '" + logBase + "/" + OpenApiResource.PATH + "'" : ""));
+		return bundleContext.registerService(Application.class, new DataAtlasRestApplication(resources), props);
 	}
 }

@@ -66,7 +66,7 @@ public class RestDataServiceImpl extends DataServiceImpl implements RestDataServ
 	 * @generated
 	 * @ordered
 	 */
-	protected static final boolean OPEN_API_EDEFAULT = false;
+	protected static final boolean OPEN_API_EDEFAULT = true;
 
 	/**
 	 * The cached value of the '{@link #isOpenAPI() <em>Open API</em>}' attribute.

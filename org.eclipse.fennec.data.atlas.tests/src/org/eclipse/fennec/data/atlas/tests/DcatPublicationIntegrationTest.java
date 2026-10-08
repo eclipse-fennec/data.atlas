@@ -128,6 +128,7 @@ public class DcatPublicationIntegrationTest {
 		dcat.DataService service = portal.dataServices.get("dcat-persons-rest");
 		assertNotNull(service, "expected the DataService to be registered");
 		assertEquals(PUBLIC_BASE + "/rest/dcat-example", service.getEndpointURL().get(0));
+		assertEquals(PUBLIC_BASE + "/rest/dcat-example/openapi.json", service.getEndpointDescription().get(0));
 		assertEquals("Persons REST", service.getTitle().get(0).getValue());
 		assertNotNull(service.getPublisher(), "expected a publisher");
 		assertEquals("Data Atlas integration suite", service.getPublisher().getName().get(0).getValue());

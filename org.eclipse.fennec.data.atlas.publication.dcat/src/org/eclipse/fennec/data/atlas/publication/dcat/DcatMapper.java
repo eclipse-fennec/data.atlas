@@ -143,6 +143,9 @@ final class DcatMapper {
 			} else if (service instanceof OgcFeaturesDataService) {
 				// the OpenAPI document of the API root describes the service
 				dcatService.getEndpointDescription().add(endpointUrl + "/api");
+			} else if (service instanceof RestDataService rest && rest.isOpenAPI()) {
+				// the REST bundle serves the service's OpenAPI document
+				dcatService.getEndpointDescription().add(endpointUrl + "/openapi.json");
 			}
 		}
 		applyResourceMetadata(dcatService, publication, service.getName(), service.getDescription(), null,

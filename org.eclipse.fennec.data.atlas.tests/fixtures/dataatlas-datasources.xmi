@@ -42,13 +42,13 @@
     <outputType href="model/person.ecore#//Person"/>
   </dataSets>
   <services xsi:type="configuration:RestDataService" id="datasources-rest" name="Data sources REST"
-      urlContext="/ds" openAPI="false">
+      urlContext="/ds">
     <configuration id="persons-materialized-config" dataSet="persons-materialized" path="persons"/>
   </services>
   <!-- a REST application is published only once every DataSet of the service is
        servable, so the refused inputs get a service of their own that stays down -->
   <services xsi:type="configuration:RestDataService" id="datasources-refused-rest" name="Refused data sources REST"
-      urlContext="/ds-refused" openAPI="false">
+      urlContext="/ds-refused">
     <configuration id="persons-bad-literal-config" dataSet="persons-bad-literal" path="bad-literal"/>
     <configuration id="persons-bad-both-config" dataSet="persons-bad-both" path="bad-both"/>
   </services>

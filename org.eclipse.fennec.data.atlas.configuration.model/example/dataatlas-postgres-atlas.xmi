@@ -28,7 +28,7 @@
     <outputType href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person"/>
   </dataSets>
   <services xsi:type="configuration:RestDataService" id="persons-pg-rest" name="Persons Postgres REST"
-      description="REST endpoint publishing the database-backed persons." urlContext="/pg" openAPI="false"
+      description="REST endpoint publishing the database-backed persons." urlContext="/pg"
       publication="open-data">
     <configuration id="persons-pg-rest-config" dataSet="persons" path="persons"/>
   </services>

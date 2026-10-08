@@ -31,7 +31,7 @@
     </query>
   </dataSets>
   <services xsi:type="configuration:RestDataService" id="persons-jpa-rest" name="Persons JPA REST"
-      description="REST endpoint publishing the database-backed persons." urlContext="/jpa" openAPI="false">
+      description="REST endpoint publishing the database-backed persons." urlContext="/jpa">
     <configuration id="persons-jpa-rest-config" dataSet="persons" path="persons"/>
     <configuration id="persons-by-lastname-config" dataSet="persons-by-lastname" path="by-lastname"/>
   </services>

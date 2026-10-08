@@ -57,7 +57,6 @@ today (2026-09-23):
 | `QueryTransformation`, `BridgeRepository.queryTrafo` | recognized but not executed: a bridge with a `queryTrafo` is refused and stays down |
 | `BridgeRepository.filter` | placeholder, no runtime effect |
 | `DataSet.childDataSet`, `DataSet.parentDataSet` | no runtime effect |
-| `RestDataService.openAPI` | no OpenAPI document is generated; the value is ignored |
 | `DataInput.streamData()`, `DataService.getDistributions()` | legacy operations of the first draft; the generated implementations throw `UnsupportedOperationException` |
 
 Remove the annotation together with the implementation.
@@ -135,7 +134,7 @@ standalone — serving its own `dataInput` generically — or contain per-DataSe
 Every configuration of a DataService must result in a DCAT Distribution.
 
 Concrete services: `RestDataService` (identity, `urlContext` and the `openAPI`
-marker; everything needed to serve a DataSet is on its per-dataset
+switch, default `true`: the OpenAPI 3 document at `{urlContext}/openapi.json`; everything needed to serve a DataSet is on its per-dataset
 `RestDataServiceConfiguration`: `path`, `batchSize`, `batchSizeLimit`,
 `offsetParameterName`, `limitParameterName`), `GeoJsonDataService` and
 `ODataDataService` and `OgcFeaturesDataService` (all see below, same split),

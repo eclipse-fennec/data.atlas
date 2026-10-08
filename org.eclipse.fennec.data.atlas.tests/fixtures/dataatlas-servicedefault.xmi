@@ -12,7 +12,7 @@
   </dataSets>
   <services xsi:type="configuration:RestDataService" id="persons-rest" name="Persons REST"
       description="REST endpoint whose dataInput is the default for its DataSets." urlContext="/svcdefault"
-      dataInput="persons-file" openAPI="false">
+      dataInput="persons-file">
     <configuration id="persons-rest-config" dataSet="persons"/>
   </services>
 </configuration:DataAtlasConfiguration>

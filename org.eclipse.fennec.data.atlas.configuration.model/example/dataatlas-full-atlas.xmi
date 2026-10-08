@@ -59,7 +59,7 @@
   </services>
   <services xsi:type="configuration:RestDataService" id="full-rest" name="Full Example REST"
       description="REST endpoint publishing the database-backed persons, raw and transformed." urlContext="/full"
-      openAPI="false" publication="open-data">
+      publication="open-data">
     <configuration id="full-persons-config" dataSet="persons" path="persons"/>
     <configuration id="full-public-config" dataSet="public-persons" path="public-persons"/>
   </services>

@@ -11,7 +11,7 @@
     <outputType href="model/person.ecore#//Person"/>
   </dataSets>
   <services xsi:type="configuration:RestDataService" id="persons-rest" name="Persons REST"
-      description="REST endpoint publishing the example persons." urlContext="/example" openAPI="false">
+      description="REST endpoint publishing the example persons." urlContext="/example">
     <configuration id="persons-rest-config" dataSet="persons" path="persons"/>
   </services>
 </configuration:DataAtlasConfiguration>
