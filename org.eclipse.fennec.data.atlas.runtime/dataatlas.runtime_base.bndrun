@@ -208,7 +208,7 @@ slf4j.runpath: \
 	org.eclipse.persistence.core;version='[4.0.9,4.0.10)';startlevel=1113,\
 	org.eclipse.persistence.jpa;version='[4.0.9,4.0.10)';startlevel=1114,\
 	org.eclipse.persistence.jpa.jpql;version='[4.0.9,4.0.10)';startlevel=1115,\
-	org.geojson.model;version='[0.0.1,0.0.2)';startlevel=1116,\
+	org.geojson.model;version='[0.1.0,0.1.1)';startlevel=1116,\
 	org.glassfish.hk2.api;version='[3.0.5,3.0.6)';startlevel=1117,\
 	org.glassfish.hk2.external.aopalliance-repackaged;version='[3.0.5,3.0.6)';startlevel=1118,\
 	org.glassfish.hk2.locator;version='[3.0.5,3.0.6)';startlevel=1119,\
