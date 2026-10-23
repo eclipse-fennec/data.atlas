@@ -203,10 +203,12 @@ public class DataAtlasRestIntegrationTest {
 		assertTrue(person != null, () -> byIdRef + " does not resolve in: " + schemas);
 		JsonObject properties = person.getJsonObject("properties");
 		assertTrue(properties.containsKey("lastName"), () -> "lastName not described: " + person);
-		// OpenAPI 3.0 has no null type: an optional attribute is nullable (emf.codec#270)
+		// OpenAPI 3.0 has no null type, nullability is "nullable: true" (emf.codec#270). The
+		// schema marks an attribute nullable only where the codec writes null (emf.codec#271);
+		// without serializeNull an unset firstName is left out, so it is a plain string
 		JsonObject firstName = properties.getJsonObject("firstName");
 		assertEquals("string", firstName.getString("type"), firstName::toString);
-		assertTrue(firstName.getBoolean("nullable", false), firstName::toString);
+		assertTrue(!firstName.getBoolean("nullable", false), firstName::toString);
 	}
 
 	private HttpResponse<String> get(String url, String accept) throws Exception {
