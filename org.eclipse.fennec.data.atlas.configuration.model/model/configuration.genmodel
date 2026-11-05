@@ -4,7 +4,7 @@
     modelDirectory="/org.eclipse.fennec.data.atlas.configuration.model/src" modelPluginID="org.eclipse.fennec.data.atlas.configuration.model"
     modelName="configuration" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
     importerID="org.eclipse.emf.importer.ecore" complianceLevel="21.0" suppressGenModelAnnotations="false"
-    copyrightFields="false" usedGenPackages="../../org.eclipse.fennec.persistence.orm/model/epersistence.genmodel#//eorm ../../org.eclipse.fennec.query.model/model/query.genmodel#//query ../../org.eclipse.fennec.expression.model/model/expression.genmodel#//expression ../../org.eclipse.fennec.m2x.qvto.model/model/qvto.genmodel#//qvtoperational"
+    copyrightFields="false" usedGenPackages="../../org.eclipse.fennec.atlas.configuration.model/model/configuration.genmodel#//configuration ../../org.eclipse.fennec.query.model/model/query.genmodel#//query ../../org.eclipse.fennec.expression.model/model/expression.genmodel#//expression ../../org.eclipse.fennec.m2x.qvto.model/model/qvto.genmodel#//qvtoperational"
     operationReflection="true" importOrganizing="true" oSGiCompatible="true">
   <foreignModel>configuration.ecore</foreignModel>
   <genPackages prefix="DAConfig" basePackage="org.eclipse.fennec.data.atlas" resource="XMI"
@@ -20,19 +20,10 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//DataAtlasConfiguration/transformations"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//DataAtlasConfiguration/publications"/>
     </genClasses>
-    <genClasses image="false" ecoreClass="configuration.ecore#//DataProvider">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DataProvider/id"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DataProvider/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DataProvider/description"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//DataProvider/dataInput"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//DataProvider/transformation"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//DataProvider/distributionExport"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//DataProvider/publication"/>
-    </genClasses>
-    <genClasses image="false" ecoreClass="configuration.ecore#//DataInput">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DataInput/id"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//DataInput/supportedEClasses"/>
-      <genOperations ecoreOperation="configuration.ecore#//DataInput/streamData"/>
+    <genClasses image="false" ecoreClass="configuration.ecore#//DataAtlasProvider">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//DataAtlasProvider/transformation"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//DataAtlasProvider/distributionExport"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//DataAtlasProvider/publication"/>
     </genClasses>
     <genClasses ecoreClass="configuration.ecore#//BridgeRepository">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//BridgeRepository/source"/>
@@ -47,10 +38,7 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//DataSet/childDataSet"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//DataSet/parentDataSet"/>
     </genClasses>
-    <genClasses image="false" ecoreClass="configuration.ecore#//DataService">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DataService/urlContext"/>
-      <genOperations ecoreOperation="configuration.ecore#//DataService/getDistributions"/>
-    </genClasses>
+    <genClasses image="false" ecoreClass="configuration.ecore#//DataAtlasService"/>
     <genClasses ecoreClass="configuration.ecore#//RestDataService">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//RestDataService/configuration"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//RestDataService/openAPI"/>
@@ -113,16 +101,6 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//OgcFeaturesDataServiceConfiguration/style"/>
     </genClasses>
     <genClasses ecoreClass="configuration.ecore#//OgcSensorThingsDataService"/>
-    <genClasses ecoreClass="configuration.ecore#//MongoDataInput">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//MongoDataInput/dataSource"/>
-    </genClasses>
-    <genClasses ecoreClass="configuration.ecore#//FileDataInput">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//FileDataInput/uri"/>
-    </genClasses>
-    <genClasses ecoreClass="configuration.ecore#//JPADataInput">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//JPADataInput/persistenceConfig"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//JPADataInput/dataSource"/>
-    </genClasses>
     <genClasses ecoreClass="configuration.ecore#//DataTransformation">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//DataTransformation/transformation"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//DataTransformation/supportedEClasses"/>
@@ -171,35 +149,5 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/contactUrl"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/licenseUri"/>
     </genClasses>
-    <genClasses image="false" ecoreClass="configuration.ecore#//DataSource">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DataSource/id"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DataSource/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DataSource/description"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DataSource/filter"/>
-    </genClasses>
-    <genClasses image="false" ecoreClass="configuration.ecore#//DatabaseDataSource">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DatabaseDataSource/host"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DatabaseDataSource/port"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DatabaseDataSource/database"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DatabaseDataSource/user"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DatabaseDataSource/password"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//DatabaseDataSource/properties"/>
-    </genClasses>
-    <genClasses ecoreClass="configuration.ecore#//ConnectionProperty">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//ConnectionProperty/key"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//ConnectionProperty/value"/>
-    </genClasses>
-    <genClasses ecoreClass="configuration.ecore#//JdbcDataSource">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//JdbcDataSource/driver"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//JdbcDataSource/schema"/>
-    </genClasses>
-    <genClasses ecoreClass="configuration.ecore#//MongoDataSource">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//MongoDataSource/authSource"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//MongoDataSource/flavor"/>
-    </genClasses>
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="configuration.ecore#//JdbcDriver">
-      <genEnumLiterals ecoreEnumLiteral="configuration.ecore#//JdbcDriver/POSTGRESQL"/>
-      <genEnumLiterals ecoreEnumLiteral="configuration.ecore#//JdbcDriver/H2"/>
-    </genEnums>
   </genPackages>
 </genmodel:GenModel>

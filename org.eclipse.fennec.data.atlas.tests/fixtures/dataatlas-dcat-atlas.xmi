@@ -9,8 +9,9 @@
 <configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    xmlns:atlasconfig="https://eclipse.org/fennec/atlas/configuration/1.0.0"
     name="dcat-example-atlas" description="Milestone 8 fixture in atlas mode: the example persons, declared for DCAT publication.">
-  <dataInputs xsi:type="configuration:FileDataInput" id="dcat-persons-file" uri="/opt/dataatlas/runtime/data/data/persons.xmi">
+  <dataInputs xsi:type="atlasconfig:FileDataInput" id="dcat-persons-file" uri="/opt/dataatlas/runtime/data/data/persons.xmi">
     <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person"/>
   </dataInputs>
   <dataSets id="dcat-persons" name="persons" dataInput="dcat-persons-file">

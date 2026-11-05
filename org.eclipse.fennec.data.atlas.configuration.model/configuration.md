@@ -8,6 +8,43 @@ which data sources provide data, which DataSets are published, which
 DataServices expose them, which reusable export templates are used for
 serialization, and which transformations map between models.
 
+It builds on the **shared atlas configuration model** of eclipse-fennec/fennec.models
+(`org.eclipse.fennec.atlas.configuration.model`, nsURI
+`https://eclipse.org/fennec/atlas/configuration/1.0.0`, nsPrefix `atlasconfig`, Java
+package `org.eclipse.fennec.atlas.configuration`): the building blocks every Fennec
+atlas shares — the `DataProvider`/`DataService` bases, the `DataInput` kinds
+(`FileDataInput`, `MongoDataInput`, …) and the `DataSource` kinds
+(`JdbcDataSource`, `MongoDataSource`, …) — live there. `JPADataInput` lives in its
+JPA extension (`org.eclipse.fennec.atlas.configuration.jpa.model`, nsURI
+`https://eclipse.org/fennec/atlas/configuration/jpa/1.0.0`, nsPrefix
+`atlasconfigjpa`), so that only JPA users depend on the eorm model. This model adds
+what is specific to the Data Atlas: the root registries, `DataSet`, the concrete
+services, exports, transformations, `BridgeRepository` and `DcatPublication`.
+
+In an XMI the shared types carry their own namespace:
+
+```xml
+<configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    xmlns:atlasconfig="https://eclipse.org/fennec/atlas/configuration/1.0.0"
+    xmlns:atlasconfigjpa="https://eclipse.org/fennec/atlas/configuration/jpa/1.0.0"
+    name="example">
+  <dataSources xsi:type="atlasconfig:JdbcDataSource" id="persons-db" name="Persons DB" filter="(dataSourceName=personsDs)"/>
+  <dataInputs xsi:type="atlasconfig:FileDataInput" id="persons-file" uri="data/persons.xmi"/>
+  <dataInputs xsi:type="atlasconfigjpa:JPADataInput" id="persons-jpa" dataSource="persons-db"/>
+  <services xsi:type="configuration:RestDataService" id="persons" name="Persons" description="…" urlContext="persons"/>
+</configuration:DataAtlasConfiguration>
+```
+
+A configuration written before the switch (2026-11-05) needs exactly that
+rewrite: `configuration:FileDataInput`, `configuration:MongoDataInput`,
+`configuration:JdbcDataSource` and `configuration:MongoDataSource` become
+`atlasconfig:…`, `configuration:JPADataInput` becomes `atlasconfigjpa:JPADataInput`,
+plus the two namespace declarations. Features and ids are unchanged. In Model
+Atlas mode both shared schemas have to be seeded before `configuration.ecore`
+(see the [user guide](../docs/user-guide.md)).
+
 ## Root: `DataAtlasConfiguration`
 
 The root describes **exactly one Data Atlas instance**. Multiple instances can
@@ -19,10 +56,10 @@ are only *referenced* from the rest of the model:
 
 | Containment | Type | Purpose |
 |---|---|---|
-| `dataSources` | `DataSource` (`JdbcDataSource`, `MongoDataSource`) | Reusable data source definitions: either *bound* to a backend service the deployment configured (LDAP `filter`) or *materialized* from their connection coordinates by the runtime |
-| `dataInputs` | `DataInput` | The inputs that stream EObjects into the instance |
+| `dataSources` | `atlasconfig:DataSource` (`JdbcDataSource`, `MongoDataSource`) | Reusable data source definitions: either *bound* to a backend service the deployment configured (LDAP `filter`) or *materialized* from their connection coordinates by the runtime. Other shared kinds (`MqttDataSource`) are diagnosed and skipped |
+| `dataInputs` | `atlasconfig:DataInput` | The inputs that stream EObjects into the instance |
 | `dataSets` | `DataSet` | The published datasets (DCAT Dataset equivalents) |
-| `services` | `DataService` | The endpoints this instance publishes |
+| `services` | `DataAtlasService` | The endpoints this instance publishes |
 | `exports` | `DistributionExport` | Reusable serialization templates (e.g. CSV settings) |
 | `transformations` | `Transformation` | Data and query transformations |
 | `publications` | `DcatPublication` | Opt-in open-data publication declarations (target catalog + metadata overrides) |
@@ -57,17 +94,20 @@ today (2026-09-23):
 | `QueryTransformation`, `BridgeRepository.queryTrafo` | recognized but not executed: a bridge with a `queryTrafo` is refused and stays down |
 | `BridgeRepository.filter` | placeholder, no runtime effect |
 | `DataSet.childDataSet`, `DataSet.parentDataSet` | no runtime effect |
-| `DataInput.streamData()`, `DataService.getDistributions()` | legacy operations of the first draft; the generated implementations throw `UnsupportedOperationException` |
 
 Remove the annotation together with the implementation.
 
 ## Core concepts
 
-### `DataProvider` — the common supertype and the override-else-default trias
+### `DataAtlasProvider` — the common supertype and the override-else-default trias
 
-`DataService` and `DataSet` share the abstract supertype `DataProvider`:
-identity (`id`, `name`, `description`) plus the **data configuration trias**
-`dataInput`, `transformation`, `distributionExport[]`.
+`DataService` and `DataSet` share the abstract supertype `DataAtlasProvider`, the
+Data Atlas refinement of the shared `atlasconfig:DataProvider`: identity (`id`,
+`name`, `description`) and `dataInput` come from the shared base, the rest of the
+**data configuration trias** — `transformation`, `distributionExport[]` — and the
+opt-in `publication` from `DataAtlasProvider`. The concrete services extend
+`DataAtlasService`, which combines the shared `atlasconfig:DataService`
+(`urlContext`) with `DataAtlasProvider`.
 
 A `DataSet` *refines* the `DataService` it is published by: if the DataSet sets
 a trias feature itself, that value overrides the service's; if it leaves it
@@ -81,13 +121,15 @@ Abstract base for anything that streams EObjects into the instance;
 `supportedEClasses` names the model types (resolved against the Model Atlas)
 an input can provide. Concrete types:
 
-- `FileDataInput` — EMF resources from a `uri` (file or directory). The
-  database-free input used by the Milestone 1 slice.
-- `JPADataInput` — relational source: references a `JdbcDataSource` from the
-  registry and optionally a JPA `EntityMappings` (the `eorm` model of
-  `org.eclipse.fennec.persistence.orm`) describing how model types map to the
-  relational schema.
-- `MongoDataInput` — MongoDB source: references a `MongoDataSource` from the
+- `FileDataInput` (shared) — EMF resources from a `uri` (file or directory). The
+  database-free input used by the Milestone 1 slice. The shared model's
+  `codec` (a `CodecConfiguration` of its `PayloadDataInput` base) is not
+  evaluated by `input.file` yet.
+- `JPADataInput` (shared JPA extension) — relational source: references a
+  `JdbcDataSource` from the registry and optionally a JPA `EntityMappings` (the
+  `eorm` model of `org.eclipse.fennec.persistence.orm`) describing how model types
+  map to the relational schema.
+- `MongoDataInput` (shared) — MongoDB source: references a `MongoDataSource` from the
   registry. No mapping — the fennec Mongo backend reads the collections through
   the BSON codec from the registered EPackages, so documents have to follow its
   layout (EMF id as `_id`, `_type` discriminator, references as URIs).
@@ -97,11 +139,12 @@ an input can provide. Concrete types:
 
 ### `DataSource` — where a database input connects to
 
-Abstract base of the `dataSources` registry: `id`, `name`, `description` and an
-optional `filter`. `DatabaseDataSource` adds the connection coordinates
-(`host`, `port`, `database`, `user`, `password`, `properties` — a list of
-`ConnectionProperty` key/value pairs passed through to the driver); the
-concrete types add what their backend needs:
+Abstract base of the `dataSources` registry, from the shared model: `id`,
+`name`, `description` and an optional `filter`. `ServerDataSource` adds the
+network coordinates (`host`, `port`, `user`, `password`, `properties` — a list of
+`ConnectionProperty` key/value pairs passed through to the driver),
+`DatabaseDataSource` the `database`; the concrete types add what their backend
+needs:
 
 - `JdbcDataSource` (`driver`: `postgresql` | `h2`, `schema`) — realized as a
   `javax.sql.DataSource` service, referenced by `JPADataInput.dataSource`.
@@ -126,7 +169,7 @@ the Model Atlas config mode: what a registry serves has to be treated as
 readable by anyone who reaches it. Details and the host allow-list for
 materialization: the [datasource readme](../org.eclipse.fennec.data.atlas.datasource/readme.md).
 
-### `DataService` — how data is exposed
+### `DataAtlasService` — how data is exposed
 
 Abstract endpoint definition (`urlContext` = base path). A service can act
 standalone — serving its own `dataInput` generically — or contain per-DataSet

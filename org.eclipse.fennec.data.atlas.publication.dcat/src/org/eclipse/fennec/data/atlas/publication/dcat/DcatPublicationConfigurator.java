@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.fennec.data.atlas.api.DataAtlasConstants;
 import org.eclipse.fennec.data.atlas.api.PublicationStatus;
-import org.eclipse.fennec.data.atlas.configuration.DataService;
+import org.eclipse.fennec.data.atlas.configuration.DataAtlasService;
 import org.eclipse.fennec.data.atlas.publication.dcat.DcatMapper.DatasetPlan;
 import org.eclipse.fennec.data.atlas.publication.dcat.DcatMapper.DistributionPlan;
 import org.eclipse.fennec.data.atlas.publication.dcat.DcatMapper.ProviderPlan;
@@ -125,7 +125,7 @@ public class DcatPublicationConfigurator {
 	}
 
 	// all mutable state guarded by this
-	private final Map<String, DataService> services = new HashMap<>();
+	private final Map<String, DataAtlasService> services = new HashMap<>();
 	private final Map<String, DcatAtlasClient> clients = new HashMap<>();
 	private final Map<String, Published> published = new HashMap<>();
 	private final Map<String, StatusHolder> statuses = new HashMap<>();
@@ -154,7 +154,7 @@ public class DcatPublicationConfigurator {
 	}
 
 	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
-	synchronized void addDataService(DataService service, Map<String, Object> props) {
+	synchronized void addDataService(DataAtlasService service, Map<String, Object> props) {
 		String id = configObjectId(props, service.getId());
 		if (id == null) {
 			return;
@@ -163,7 +163,7 @@ public class DcatPublicationConfigurator {
 		reconcile();
 	}
 
-	synchronized void removeDataService(DataService service, Map<String, Object> props) {
+	synchronized void removeDataService(DataAtlasService service, Map<String, Object> props) {
 		String id = configObjectId(props, service.getId());
 		if (id != null && services.remove(id) != null && !closing) {
 			reconcile();
@@ -203,7 +203,7 @@ public class DcatPublicationConfigurator {
 		long current = generation;
 		// withdraw what was published but is no longer declared
 		for (String id : Set.copyOf(published.keySet())) {
-			DataService service = services.get(id);
+			DataAtlasService service = services.get(id);
 			if (service == null || !DcatMapper.isPublished(service)) {
 				Published record = published.get(id);
 				worker.execute(() -> withdraw(current, id, record));
@@ -217,7 +217,7 @@ public class DcatPublicationConfigurator {
 		});
 		// drop stale ERROR/PENDING statuses of providers that lost their declaration
 		statuses.keySet().removeIf(id -> {
-			DataService service = services.get(id);
+			DataAtlasService service = services.get(id);
 			if ((service == null || !DcatMapper.isPublished(service)) && !published.containsKey(id)) {
 				statuses.get(id).unregister();
 				return true;
@@ -229,7 +229,7 @@ public class DcatPublicationConfigurator {
 	// --- worker-side (single thread) ----------------------------------------
 
 	private void sync(long expectedGeneration, String id) {
-		DataService service;
+		DataAtlasService service;
 		Config currentConfig;
 		synchronized (this) {
 			if (closing || generation != expectedGeneration) {

@@ -11,8 +11,9 @@
 <configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    xmlns:atlasconfig="https://eclipse.org/fennec/atlas/configuration/1.0.0"
     name="transformation-example" description="Example Data Atlas instance serving QVT-O-transformed objects through a BridgeRepository.">
-  <dataInputs xsi:type="configuration:FileDataInput" id="persons-file" uri="data/persons.xmi">
+  <dataInputs xsi:type="atlasconfig:FileDataInput" id="persons-file" uri="data/persons.xmi">
     <supportedEClasses href="model/person.ecore#//Person"/>
   </dataInputs>
   <dataInputs xsi:type="configuration:BridgeRepository" id="public-persons-bridge" source="persons-file"

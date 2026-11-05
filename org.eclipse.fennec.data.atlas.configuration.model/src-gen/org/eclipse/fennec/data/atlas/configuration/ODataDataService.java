@@ -39,7 +39,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * @generated
  */
 @ProviderType
-public interface ODataDataService extends DataService {
+public interface ODataDataService extends DataAtlasService {
 	/**
 	 * Returns the value of the '<em><b>Configuration</b></em>' containment reference list.
 	 * The list contents are of type {@link org.eclipse.fennec.data.atlas.configuration.ODataDataServiceConfiguration}.

@@ -25,7 +25,7 @@ import org.osgi.annotation.versioning.ProviderType;
  *
  * <!-- begin-model-doc -->
  * Abstract binding of a DataSet to a specific DataService (the link DataService -> configuration -> dataSet).
- * Holds the service-specific, per-DataSet settings (e.g. REST path / mime types). The exports themselves are no longer held here - they are resolved via the DataService default and the DataSet override (see DataProvider.distributionExport).
+ * Holds the service-specific, per-DataSet settings (e.g. REST path / mime types). The exports themselves are no longer held here - they are resolved via the DataService default and the DataSet override (see DataAtlasProvider.distributionExport).
  * <!-- end-model-doc -->
  *
  * <p>

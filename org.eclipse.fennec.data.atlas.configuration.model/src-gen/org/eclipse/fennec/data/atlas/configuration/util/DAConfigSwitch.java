@@ -19,6 +19,10 @@ import org.eclipse.emf.ecore.EPackage;
 
 import org.eclipse.emf.ecore.util.Switch;
 
+import org.eclipse.fennec.atlas.configuration.DataInput;
+import org.eclipse.fennec.atlas.configuration.DataProvider;
+import org.eclipse.fennec.atlas.configuration.DataService;
+
 import org.eclipse.fennec.data.atlas.configuration.*;
 
 /**
@@ -84,15 +88,10 @@ public class DAConfigSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case DAConfigPackage.DATA_PROVIDER: {
-				DataProvider dataProvider = (DataProvider)theEObject;
-				T result = caseDataProvider(dataProvider);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case DAConfigPackage.DATA_INPUT: {
-				DataInput dataInput = (DataInput)theEObject;
-				T result = caseDataInput(dataInput);
+			case DAConfigPackage.DATA_ATLAS_PROVIDER: {
+				DataAtlasProvider dataAtlasProvider = (DataAtlasProvider)theEObject;
+				T result = caseDataAtlasProvider(dataAtlasProvider);
+				if (result == null) result = caseDataProvider(dataAtlasProvider);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -106,21 +105,26 @@ public class DAConfigSwitch<T> extends Switch<T> {
 			case DAConfigPackage.DATA_SET: {
 				DataSet dataSet = (DataSet)theEObject;
 				T result = caseDataSet(dataSet);
+				if (result == null) result = caseDataAtlasProvider(dataSet);
 				if (result == null) result = caseDataProvider(dataSet);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case DAConfigPackage.DATA_SERVICE: {
-				DataService dataService = (DataService)theEObject;
-				T result = caseDataService(dataService);
-				if (result == null) result = caseDataProvider(dataService);
+			case DAConfigPackage.DATA_ATLAS_SERVICE: {
+				DataAtlasService dataAtlasService = (DataAtlasService)theEObject;
+				T result = caseDataAtlasService(dataAtlasService);
+				if (result == null) result = caseDataService(dataAtlasService);
+				if (result == null) result = caseDataAtlasProvider(dataAtlasService);
+				if (result == null) result = caseDataProvider(dataAtlasService);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
 			case DAConfigPackage.REST_DATA_SERVICE: {
 				RestDataService restDataService = (RestDataService)theEObject;
 				T result = caseRestDataService(restDataService);
+				if (result == null) result = caseDataAtlasService(restDataService);
 				if (result == null) result = caseDataService(restDataService);
+				if (result == null) result = caseDataAtlasProvider(restDataService);
 				if (result == null) result = caseDataProvider(restDataService);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
@@ -141,7 +145,9 @@ public class DAConfigSwitch<T> extends Switch<T> {
 			case DAConfigPackage.GEO_JSON_DATA_SERVICE: {
 				GeoJsonDataService geoJsonDataService = (GeoJsonDataService)theEObject;
 				T result = caseGeoJsonDataService(geoJsonDataService);
+				if (result == null) result = caseDataAtlasService(geoJsonDataService);
 				if (result == null) result = caseDataService(geoJsonDataService);
+				if (result == null) result = caseDataAtlasProvider(geoJsonDataService);
 				if (result == null) result = caseDataProvider(geoJsonDataService);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
@@ -156,7 +162,9 @@ public class DAConfigSwitch<T> extends Switch<T> {
 			case DAConfigPackage.XMLA_DATA_SERVICE: {
 				XMLADataService xmlaDataService = (XMLADataService)theEObject;
 				T result = caseXMLADataService(xmlaDataService);
+				if (result == null) result = caseDataAtlasService(xmlaDataService);
 				if (result == null) result = caseDataService(xmlaDataService);
+				if (result == null) result = caseDataAtlasProvider(xmlaDataService);
 				if (result == null) result = caseDataProvider(xmlaDataService);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
@@ -171,7 +179,9 @@ public class DAConfigSwitch<T> extends Switch<T> {
 			case DAConfigPackage.GRAPH_QL_DATA_SERVICE: {
 				GraphQLDataService graphQLDataService = (GraphQLDataService)theEObject;
 				T result = caseGraphQLDataService(graphQLDataService);
+				if (result == null) result = caseDataAtlasService(graphQLDataService);
 				if (result == null) result = caseDataService(graphQLDataService);
+				if (result == null) result = caseDataAtlasProvider(graphQLDataService);
 				if (result == null) result = caseDataProvider(graphQLDataService);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
@@ -179,7 +189,9 @@ public class DAConfigSwitch<T> extends Switch<T> {
 			case DAConfigPackage.QGIS_DATA_SERVICE: {
 				QGisDataService qGisDataService = (QGisDataService)theEObject;
 				T result = caseQGisDataService(qGisDataService);
+				if (result == null) result = caseDataAtlasService(qGisDataService);
 				if (result == null) result = caseDataService(qGisDataService);
+				if (result == null) result = caseDataAtlasProvider(qGisDataService);
 				if (result == null) result = caseDataProvider(qGisDataService);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
@@ -201,7 +213,9 @@ public class DAConfigSwitch<T> extends Switch<T> {
 			case DAConfigPackage.OGC_FEATURES_DATA_SERVICE: {
 				OgcFeaturesDataService ogcFeaturesDataService = (OgcFeaturesDataService)theEObject;
 				T result = caseOgcFeaturesDataService(ogcFeaturesDataService);
+				if (result == null) result = caseDataAtlasService(ogcFeaturesDataService);
 				if (result == null) result = caseDataService(ogcFeaturesDataService);
+				if (result == null) result = caseDataAtlasProvider(ogcFeaturesDataService);
 				if (result == null) result = caseDataProvider(ogcFeaturesDataService);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
@@ -216,29 +230,10 @@ public class DAConfigSwitch<T> extends Switch<T> {
 			case DAConfigPackage.OGC_SENSOR_THINGS_DATA_SERVICE: {
 				OgcSensorThingsDataService ogcSensorThingsDataService = (OgcSensorThingsDataService)theEObject;
 				T result = caseOgcSensorThingsDataService(ogcSensorThingsDataService);
+				if (result == null) result = caseDataAtlasService(ogcSensorThingsDataService);
 				if (result == null) result = caseDataService(ogcSensorThingsDataService);
+				if (result == null) result = caseDataAtlasProvider(ogcSensorThingsDataService);
 				if (result == null) result = caseDataProvider(ogcSensorThingsDataService);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case DAConfigPackage.MONGO_DATA_INPUT: {
-				MongoDataInput mongoDataInput = (MongoDataInput)theEObject;
-				T result = caseMongoDataInput(mongoDataInput);
-				if (result == null) result = caseDataInput(mongoDataInput);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case DAConfigPackage.FILE_DATA_INPUT: {
-				FileDataInput fileDataInput = (FileDataInput)theEObject;
-				T result = caseFileDataInput(fileDataInput);
-				if (result == null) result = caseDataInput(fileDataInput);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case DAConfigPackage.JPA_DATA_INPUT: {
-				JPADataInput jpaDataInput = (JPADataInput)theEObject;
-				T result = caseJPADataInput(jpaDataInput);
-				if (result == null) result = caseDataInput(jpaDataInput);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -259,7 +254,9 @@ public class DAConfigSwitch<T> extends Switch<T> {
 			case DAConfigPackage.ODATA_DATA_SERVICE: {
 				ODataDataService oDataDataService = (ODataDataService)theEObject;
 				T result = caseODataDataService(oDataDataService);
+				if (result == null) result = caseDataAtlasService(oDataDataService);
 				if (result == null) result = caseDataService(oDataDataService);
+				if (result == null) result = caseDataAtlasProvider(oDataDataService);
 				if (result == null) result = caseDataProvider(oDataDataService);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
@@ -296,41 +293,6 @@ public class DAConfigSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case DAConfigPackage.DATA_SOURCE: {
-				DataSource dataSource = (DataSource)theEObject;
-				T result = caseDataSource(dataSource);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case DAConfigPackage.DATABASE_DATA_SOURCE: {
-				DatabaseDataSource databaseDataSource = (DatabaseDataSource)theEObject;
-				T result = caseDatabaseDataSource(databaseDataSource);
-				if (result == null) result = caseDataSource(databaseDataSource);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case DAConfigPackage.CONNECTION_PROPERTY: {
-				ConnectionProperty connectionProperty = (ConnectionProperty)theEObject;
-				T result = caseConnectionProperty(connectionProperty);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case DAConfigPackage.JDBC_DATA_SOURCE: {
-				JdbcDataSource jdbcDataSource = (JdbcDataSource)theEObject;
-				T result = caseJdbcDataSource(jdbcDataSource);
-				if (result == null) result = caseDatabaseDataSource(jdbcDataSource);
-				if (result == null) result = caseDataSource(jdbcDataSource);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case DAConfigPackage.MONGO_DATA_SOURCE: {
-				MongoDataSource mongoDataSource = (MongoDataSource)theEObject;
-				T result = caseMongoDataSource(mongoDataSource);
-				if (result == null) result = caseDatabaseDataSource(mongoDataSource);
-				if (result == null) result = caseDataSource(mongoDataSource);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			default: return defaultCase(theEObject);
 		}
 	}
@@ -351,32 +313,17 @@ public class DAConfigSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Data Provider</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Data Atlas Provider</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Data Provider</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Data Atlas Provider</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseDataProvider(DataProvider object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Data Input</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Data Input</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseDataInput(DataInput object) {
+	public T caseDataAtlasProvider(DataAtlasProvider object) {
 		return null;
 	}
 
@@ -411,17 +358,17 @@ public class DAConfigSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Data Service</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Data Atlas Service</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Data Service</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Data Atlas Service</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseDataService(DataService object) {
+	public T caseDataAtlasService(DataAtlasService object) {
 		return null;
 	}
 
@@ -636,51 +583,6 @@ public class DAConfigSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Mongo Data Input</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Mongo Data Input</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseMongoDataInput(MongoDataInput object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>File Data Input</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>File Data Input</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseFileDataInput(FileDataInput object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>JPA Data Input</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>JPA Data Input</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseJPADataInput(JPADataInput object) {
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Data Transformation</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -801,77 +703,47 @@ public class DAConfigSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Data Source</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Data Provider</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Data Source</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Data Provider</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseDataSource(DataSource object) {
+	public T caseDataProvider(DataProvider object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Database Data Source</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Data Input</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Database Data Source</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Data Input</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseDatabaseDataSource(DatabaseDataSource object) {
+	public T caseDataInput(DataInput object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Connection Property</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Data Service</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Connection Property</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Data Service</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseConnectionProperty(ConnectionProperty object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Jdbc Data Source</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Jdbc Data Source</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseJdbcDataSource(JdbcDataSource object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Mongo Data Source</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Mongo Data Source</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseMongoDataSource(MongoDataSource object) {
+	public T caseDataService(DataService object) {
 		return null;
 	}
 

@@ -52,12 +52,18 @@ upload_schema() {
 # Order matters: a schema resolves its references against what the stage
 # already knows, and an upload that arrives BEFORE its dependency keeps a dangling
 # proxy for good (an instance using that reference then fails with
-# "EClass.getEPackage() is null"; model.atlas#322). configuration.ecore references the fennec
-# query model (DataSet.query), which references the expression model, and the
-# eorm model (JPADataInput.persistenceConfig) - so those three go first.
+# "EClass.getEPackage() is null"; model.atlas#322). configuration.ecore builds on the
+# shared atlas configuration model (atlasconfig: data sources, data inputs, the
+# DataProvider/DataService bases) and references the fennec query model
+# (DataSet.query), which references the expression model. JPADataInput lives in
+# the JPA extension of the shared model (atlasconfigjpa), which references atlasconfig
+# and the eorm model (persistenceConfig). So: expression -> query -> eorm ->
+# atlasconfig -> atlasconfigjpa -> configuration.
 upload_schema /seed/models/expression.ecore "https://eclipse.org/fennec/expression/1.0.0" expression
 upload_schema /seed/models/query.ecore "https://eclipse.org/fennec/query/2.0.0" query 2.0.0
 upload_schema /seed/models/eorm.ecore "https://eclipse.org/fennec/persistence/eorm/1.0.0" eorm
+upload_schema /seed/models/atlasconfig.ecore "https://eclipse.org/fennec/atlas/configuration/1.0.0" atlasconfig
+upload_schema /seed/models/atlasconfigjpa.ecore "https://eclipse.org/fennec/atlas/configuration/jpa/1.0.0" atlasconfigjpa
 upload_schema /seed/models/configuration.ecore "https://eclipse.org/fennec/data/atlas/configuration/1.0.0" configuration
 upload_schema /seed/models/person.ecore "https://eclipse.org/fennec/data/atlas/example/person/1.0.0" person
 

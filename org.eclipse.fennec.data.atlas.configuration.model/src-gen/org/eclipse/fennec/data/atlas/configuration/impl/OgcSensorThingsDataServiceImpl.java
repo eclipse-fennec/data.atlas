@@ -26,7 +26,7 @@ import org.eclipse.fennec.data.atlas.configuration.OgcSensorThingsDataService;
  *
  * @generated
  */
-public class OgcSensorThingsDataServiceImpl extends DataServiceImpl implements OgcSensorThingsDataService {
+public class OgcSensorThingsDataServiceImpl extends DataAtlasServiceImpl implements OgcSensorThingsDataService {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

@@ -22,7 +22,7 @@ import java.util.Map;
 import org.eclipse.fennec.codec.csv.CodecCsvOptions;
 import org.eclipse.fennec.data.atlas.configuration.CSVDistributionExport;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
-import org.eclipse.fennec.data.atlas.configuration.DataService;
+import org.eclipse.fennec.data.atlas.configuration.DataAtlasService;
 import org.eclipse.fennec.data.atlas.configuration.DistributionExport;
 
 import jakarta.ws.rs.core.MediaType;
@@ -97,7 +97,7 @@ public final class ExportFormats {
 	 *         or {@code null} if exports are declared but none of them names a
 	 *         media type — a configuration error the caller must not serve
 	 */
-	public static ExportFormats resolve(DataSet dataSet, DataService service) {
+	public static ExportFormats resolve(DataSet dataSet, DataAtlasService service) {
 		List<DistributionExport> exports = dataSet.getDistributionExport().isEmpty()
 				? service.getDistributionExport()
 				: dataSet.getDistributionExport();

@@ -50,7 +50,7 @@ import org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataServiceConfigu
  *
  * @generated
  */
-public class OgcFeaturesDataServiceImpl extends DataServiceImpl implements OgcFeaturesDataService {
+public class OgcFeaturesDataServiceImpl extends DataAtlasServiceImpl implements OgcFeaturesDataService {
 	/**
 	 * The default value of the '{@link #getDefaultLimit() <em>Default Limit</em>}' attribute.
 	 * <!-- begin-user-doc -->

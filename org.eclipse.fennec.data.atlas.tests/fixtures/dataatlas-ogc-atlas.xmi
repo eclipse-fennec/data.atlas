@@ -9,14 +9,16 @@
 <configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    xmlns:atlasconfig="https://eclipse.org/fennec/atlas/configuration/1.0.0"
+    xmlns:atlasconfigjpa="https://eclipse.org/fennec/atlas/configuration/jpa/1.0.0"
     name="ogc-atlas" description="OGC API Features in atlas mode: leisure pool assets with GeoJSON geometries from a file and a database.">
-  <dataSources xsi:type="configuration:JdbcDataSource" id="ogc-atlas-db" name="Assets DB" filter="(dataatlas.test.ds=ogc-atlas-assets)"/>
-  <dataInputs xsi:type="configuration:FileDataInput" id="ogc-atlas-file" uri="/opt/dataatlas/runtime/data/data/assets.xmi">
+  <dataSources xsi:type="atlasconfig:JdbcDataSource" id="ogc-atlas-db" name="Assets DB" filter="(dataatlas.test.ds=ogc-atlas-assets)"/>
+  <dataInputs xsi:type="atlasconfig:FileDataInput" id="ogc-atlas-file" uri="/opt/dataatlas/runtime/data/data/assets.xmi">
     <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/asset/1.0.0#//Pool"/>
     <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/asset/1.0.0#//Slide"/>
     <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/asset/1.0.0#//Bench"/>
   </dataInputs>
-  <dataInputs xsi:type="configuration:JPADataInput" id="ogc-atlas-jpa" dataSource="ogc-atlas-db">
+  <dataInputs xsi:type="atlasconfigjpa:JPADataInput" id="ogc-atlas-jpa" dataSource="ogc-atlas-db">
     <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/asset/1.0.0#//Asset"/>
     <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/asset/1.0.0#//Pool"/>
     <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/asset/1.0.0#//Slide"/>

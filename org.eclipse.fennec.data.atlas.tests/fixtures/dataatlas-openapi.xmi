@@ -7,11 +7,12 @@
 <configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    xmlns:atlasconfig="https://eclipse.org/fennec/atlas/configuration/1.0.0"
     name="openapi" description="OpenAPI test fixture: persons and opening hours served by one REST service.">
-  <dataInputs xsi:type="configuration:FileDataInput" id="openapi-persons-file" uri="data/persons.xmi">
+  <dataInputs xsi:type="atlasconfig:FileDataInput" id="openapi-persons-file" uri="data/persons.xmi">
     <supportedEClasses href="model/person.ecore#//Person"/>
   </dataInputs>
-  <dataInputs xsi:type="configuration:FileDataInput" id="openapi-ticketing-file" uri="data/ticketing.xmi">
+  <dataInputs xsi:type="atlasconfig:FileDataInput" id="openapi-ticketing-file" uri="data/ticketing.xmi">
     <supportedEClasses href="model/ticketing.ecore#//Opening"/>
   </dataInputs>
   <dataSets id="openapi-persons" name="Persons" dataInput="openapi-persons-file">

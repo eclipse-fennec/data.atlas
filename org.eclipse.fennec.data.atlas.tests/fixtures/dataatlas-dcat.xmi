@@ -2,8 +2,9 @@
 <configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    xmlns:atlasconfig="https://eclipse.org/fennec/atlas/configuration/1.0.0"
     name="dcat-example" description="Milestone 8 fixture: the example persons, declared for DCAT publication.">
-  <dataInputs xsi:type="configuration:FileDataInput" id="dcat-persons-file" uri="data/persons.xmi">
+  <dataInputs xsi:type="atlasconfig:FileDataInput" id="dcat-persons-file" uri="data/persons.xmi">
     <supportedEClasses href="model/person.ecore#//Person"/>
   </dataInputs>
   <!-- no description on purpose: the DCAT description is derived from the
@@ -20,7 +21,7 @@
   <!-- an OGC API Features root over the leisure pool assets, published with the
        same declaration: the landing page is the endpoint, one GeoJSON distribution
        per collection (annotated pools, configuration-declared benches) -->
-  <dataInputs xsi:type="configuration:FileDataInput" id="dcat-assets-file" uri="data/assets.xmi">
+  <dataInputs xsi:type="atlasconfig:FileDataInput" id="dcat-assets-file" uri="data/assets.xmi">
     <supportedEClasses href="model/asset.ecore#//Pool"/>
     <supportedEClasses href="model/asset.ecore#//Bench"/>
   </dataInputs>

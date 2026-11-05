@@ -9,5 +9,7 @@ Bundle-Description: Input configurator: translates JPADataInput configuration se
 	org.osgi.service.component.annotations;version=latest,\
 	org.osgi.service.cm;version=latest,\
 	org.eclipse.fennec.data.atlas.configuration.model;version=project,\
+	org.eclipse.fennec.atlas.configuration.model;version=latest,\
+	org.eclipse.fennec.atlas.configuration.jpa.model;version=latest,\
 	org.eclipse.fennec.data.atlas.api;version=project,\
 	org.eclipse.fennec.persistence.orm;version=latest

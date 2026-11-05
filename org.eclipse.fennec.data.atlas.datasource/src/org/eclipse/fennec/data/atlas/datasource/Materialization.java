@@ -23,13 +23,13 @@ import java.util.Set;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.fennec.data.atlas.api.DataAtlasConstants;
-import org.eclipse.fennec.data.atlas.configuration.ConnectionProperty;
-import org.eclipse.fennec.data.atlas.configuration.DAConfigPackage;
-import org.eclipse.fennec.data.atlas.configuration.DataSource;
-import org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource;
-import org.eclipse.fennec.data.atlas.configuration.JdbcDataSource;
-import org.eclipse.fennec.data.atlas.configuration.JdbcDriver;
-import org.eclipse.fennec.data.atlas.configuration.MongoDataSource;
+import org.eclipse.fennec.atlas.configuration.ConnectionProperty;
+import org.eclipse.fennec.atlas.configuration.AtlasConfigPackage;
+import org.eclipse.fennec.atlas.configuration.DataSource;
+import org.eclipse.fennec.atlas.configuration.DatabaseDataSource;
+import org.eclipse.fennec.atlas.configuration.JdbcDataSource;
+import org.eclipse.fennec.atlas.configuration.JdbcDriver;
+import org.eclipse.fennec.atlas.configuration.MongoDataSource;
 
 /**
  * The pure part of the datasource configurator: decides the mode of a
@@ -62,9 +62,9 @@ final class Materialization {
 	static final String PID_MONGO_CLIENT = "persistence.mongo.client";
 	static final String PID_MONGO_DATABASE = "persistence.mongo.database";
 
-	private static final Set<EStructuralFeature> IDENTITY_FEATURES = Set.of(DAConfigPackage.Literals.DATA_SOURCE__ID,
-			DAConfigPackage.Literals.DATA_SOURCE__NAME, DAConfigPackage.Literals.DATA_SOURCE__DESCRIPTION,
-			DAConfigPackage.Literals.DATA_SOURCE__FILTER);
+	private static final Set<EStructuralFeature> IDENTITY_FEATURES = Set.of(AtlasConfigPackage.Literals.DATA_SOURCE__ID,
+			AtlasConfigPackage.Literals.DATA_SOURCE__NAME, AtlasConfigPackage.Literals.DATA_SOURCE__DESCRIPTION,
+			AtlasConfigPackage.Literals.DATA_SOURCE__FILTER);
 
 	/** How a definition is realized. */
 	enum Mode {
@@ -167,6 +167,22 @@ final class Materialization {
 			}
 			props.put("identifier", source.getDatabase().trim());
 			putCredential(props, "username", source.getUser(), source, environment);
+			putCredential(props, ".password", source.getPassword(), source, environment);
+		}
+		case MARIADB, MYSQL -> {
+			require(source, "host", source.getHost());
+			require(source, "database", source.getDatabase());
+			if (set(source.getSchema())) {
+				throw new DataSourceDefinitionException(describe(source) + ": schema does not apply to the "
+						+ driver.getName() + " driver (the database is the catalog)");
+			}
+			checkHost(source, environment);
+			props.put("host", source.getHost().trim());
+			props.put("databaseName", source.getDatabase().trim());
+			if (source.getPort() != null) {
+				props.put("port", source.getPort());
+			}
+			putCredential(props, "user", source.getUser(), source, environment);
 			putCredential(props, ".password", source.getPassword(), source, environment);
 		}
 		}

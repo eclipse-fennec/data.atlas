@@ -10,4 +10,5 @@ Bundle-Description: Realizes the DataSource definitions of the configuration mod
 	org.osgi.service.component.annotations;version=latest,\
 	org.osgi.service.cm;version=latest,\
 	org.eclipse.fennec.data.atlas.configuration.model;version=project,\
+	org.eclipse.fennec.atlas.configuration.model;version=latest,\
 	org.eclipse.fennec.data.atlas.api;version=project

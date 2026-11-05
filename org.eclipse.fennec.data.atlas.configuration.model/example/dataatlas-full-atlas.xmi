@@ -20,16 +20,18 @@
 <configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    xmlns:atlasconfig="https://eclipse.org/fennec/atlas/configuration/1.0.0"
+    xmlns:atlasconfigjpa="https://eclipse.org/fennec/atlas/configuration/jpa/1.0.0"
     name="example-full" description="Full example: PostgreSQL persons, raw and QVT-O-transformed, as CSV and JSON, published to a DCAT portal - configuration delivered by a Model Atlas.">
-  <dataSources xsi:type="configuration:JdbcDataSource" id="persons-db" name="Persons DB" filter="(dataSourceName=personsDs)"/>
-  <dataInputs xsi:type="configuration:JPADataInput" id="persons-jpa" dataSource="persons-db">
+  <dataSources xsi:type="atlasconfig:JdbcDataSource" id="persons-db" name="Persons DB" filter="(dataSourceName=personsDs)"/>
+  <dataInputs xsi:type="atlasconfigjpa:JPADataInput" id="persons-jpa" dataSource="persons-db">
     <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person"/>
   </dataInputs>
   <dataInputs xsi:type="configuration:BridgeRepository" id="public-persons-bridge" source="persons-jpa"
       dataTrafo="person-to-public">
     <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/person/public/1.0.0#//PublicPerson"/>
   </dataInputs>
-  <dataInputs xsi:type="configuration:FileDataInput" id="pois-file" uri="file:///opt/dataatlas/runtime/data/data/pois.xmi">
+  <dataInputs xsi:type="atlasconfig:FileDataInput" id="pois-file" uri="file:///opt/dataatlas/runtime/data/data/pois.xmi">
     <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/poi/1.0.0#//PointOfInterest"/>
   </dataInputs>
   <dataSets id="persons" name="persons" description="All persons from the database, as CSV or JSON."

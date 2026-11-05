@@ -97,7 +97,7 @@ The last row is how a `JdbcDataSource` finds it: add an arbitrary key such as
 ```
 
 ```xml
-<dataSources xsi:type="configuration:JdbcDataSource" id="persons-db" name="Persons DB" filter="(dataSourceName=personsDs)"/>
+<dataSources xsi:type="atlasconfig:JdbcDataSource" id="persons-db" name="Persons DB" filter="(dataSourceName=personsDs)"/>
 ```
 
 A complete, running example is `docker/dockercompose/docker-compose-postgres.yml`

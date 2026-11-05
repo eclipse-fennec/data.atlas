@@ -31,5 +31,5 @@ import org.osgi.annotation.versioning.ProviderType;
  * @generated
  */
 @ProviderType
-public interface OgcSensorThingsDataService extends DataService {
+public interface OgcSensorThingsDataService extends DataAtlasService {
 } // OgcSensorThingsDataService

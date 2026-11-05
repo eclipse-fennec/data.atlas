@@ -9,8 +9,9 @@
 <configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    xmlns:atlasconfig="https://eclipse.org/fennec/atlas/configuration/1.0.0"
     name="ogc-example" description="Example Data Atlas instance serving leisure pool assets as OGC API - Features collections.">
-  <dataInputs xsi:type="configuration:FileDataInput" id="assets-file" uri="data/assets.xmi">
+  <dataInputs xsi:type="atlasconfig:FileDataInput" id="assets-file" uri="data/assets.xmi">
     <supportedEClasses href="model/asset.ecore#//Pool"/>
     <supportedEClasses href="model/asset.ecore#//Slide"/>
     <supportedEClasses href="model/asset.ecore#//Bench"/>

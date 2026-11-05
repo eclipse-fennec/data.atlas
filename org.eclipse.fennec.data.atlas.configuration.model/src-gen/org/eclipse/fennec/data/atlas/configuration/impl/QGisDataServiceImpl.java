@@ -43,7 +43,7 @@ import org.eclipse.fennec.data.atlas.configuration.QGisDataServiceConfiguration;
  *
  * @generated
  */
-public class QGisDataServiceImpl extends DataServiceImpl implements QGisDataService {
+public class QGisDataServiceImpl extends DataAtlasServiceImpl implements QGisDataService {
 	/**
 	 * The cached value of the '{@link #getConfiguration() <em>Configuration</em>}' containment reference list.
 	 * <!-- begin-user-doc -->

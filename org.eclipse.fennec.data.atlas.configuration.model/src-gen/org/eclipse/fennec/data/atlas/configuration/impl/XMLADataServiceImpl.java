@@ -43,7 +43,7 @@ import org.eclipse.fennec.data.atlas.configuration.XMLADataServiceConfiguration;
  *
  * @generated
  */
-public class XMLADataServiceImpl extends DataServiceImpl implements XMLADataService {
+public class XMLADataServiceImpl extends DataAtlasServiceImpl implements XMLADataService {
 	/**
 	 * The cached value of the '{@link #getConfiguration() <em>Configuration</em>}' containment reference list.
 	 * <!-- begin-user-doc -->

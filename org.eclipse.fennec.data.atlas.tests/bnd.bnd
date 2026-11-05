@@ -16,6 +16,8 @@ Test-Cases: ${classes;HIERARCHY_INDIRECTLY_ANNOTATED;org.junit.platform.commons.
 	org.osgi.service.component;version=latest,\
 	org.eclipse.fennec.data.atlas.api;version=project,\
 	org.eclipse.fennec.data.atlas.configuration.model;version=project,\
+	org.eclipse.fennec.atlas.configuration.model;version=latest,\
+	org.eclipse.fennec.atlas.configuration.jpa.model;version=latest,\
 	org.eclipse.fennec.data.atlas.bootstrap;version=project,\
 	org.eclipse.fennec.data.atlas.input.file;version=project,\
 	org.eclipse.fennec.data.atlas.input.jpa;version=project,\
@@ -53,4 +55,5 @@ Private-Package: \
 	atlas/models=../docker/dockercompose/seed/models,\
 	atlas/models/configuration.ecore=../org.eclipse.fennec.data.atlas.configuration.model/model/configuration.ecore,\
 	postgres/init=../docker/dockercompose/postgres/init,\
+	mariadb/init=mariadb/init,\
 	history/init=../docker/dockercompose/history/init

@@ -17,9 +17,9 @@ package org.eclipse.fennec.data.atlas.configuration;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EEnum;
-import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
+
+import org.eclipse.fennec.atlas.configuration.AtlasConfigPackage;
 
 import org.eclipse.fennec.emf.osgi.annotation.provide.EPackage;
 
@@ -42,15 +42,17 @@ import org.osgi.annotation.versioning.ProviderType;
  * 
  * It describes - independent of any concrete deployment - which data sources (DataInput) provide data, which DataSets are published, which DataServices (REST, OData, OGC, QGis, XMLA, GraphQL) expose them, which reusable DistributionExport templates are used for serialization, and which Transformations map between models.
  * An instance of this model is meant to fully configure a Data-Atlas runtime, while the model types it refers to are resolved against the Model-Atlas EPackage registry.
+ * 
+ * The building blocks shared by all Fennec atlases - data sources (DataSource and its subtypes), data inputs (DataInput, FileDataInput, MongoDataInput, ...) and the DataProvider/DataService bases - come from the shared atlas configuration model (https://eclipse.org/fennec/atlas/configuration/1.0.0, org.eclipse.fennec.atlas.configuration.model); JPADataInput from its JPA extension (https://eclipse.org/fennec/atlas/configuration/jpa/1.0.0). This model adds what is specific to the Data Atlas: the root registries, DataSets, the concrete DataServices, exports, transformations, bridges and publications.
  * <!-- end-model-doc -->
  * @see org.eclipse.fennec.data.atlas.configuration.DAConfigFactory
  * @model kind="package"
- *        annotation="http://www.eclipse.org/OCL/Import ecore='http://www.eclipse.org/emf/2002/Ecore' eorm='platform:/resource/org.eclipse.fennec.persistence.orm/model/eorm.ecore#/'"
+ *        annotation="http://www.eclipse.org/OCL/Import ecore='http://www.eclipse.org/emf/2002/Ecore'"
  *        annotation="http://www.eclipse.org/emf/2002/GenModel oSGiCompatible='true' basePackage='org.eclipse.fennec.data.atlas' copyrightText='******************************************************************\nCopyright (c) 2026 Contributors to the Eclipse Foundation.\n\nThis program and the accompanying materials are made\navailable under the terms of the Eclipse Public License 2.0\nwhich is available at https://www.eclipse.org/legal/epl-2.0/\n\nSPDX-License-Identifier: EPL-2.0\n\nContributors:\n  Data In Motion Consulting - initial implementation\n******************************************************************' complianceLevel='21.0' resource='XMI'"
  * @generated
  */
 @ProviderType
-@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:d49a8b4eedfbf52ee122ada396ab0c9a9c7a4e6c455ca71e953c63a90f4348c4", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
+@EPackage(uri = DAConfigPackage.eNS_URI, fingerprint = "fp1:638f2653e006f4fc9461e9c23de4aab7d83e55b79fb7144cdb0586782beb1bcf", genModel = "/model/configuration.genmodel", genModelSourceLocations = {"model/configuration.genmodel","org.eclipse.fennec.data.atlas.configuration.model/model/configuration.genmodel"}, ecore = "/model/configuration.ecore", ecoreSourceLocations = "/model/configuration.ecore")
 public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	/**
 	 * The package name.
@@ -194,14 +196,14 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	int DATA_ATLAS_CONFIGURATION_OPERATION_COUNT = 0;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DataProviderImpl <em>Data Provider</em>}' class.
+	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DataAtlasProviderImpl <em>Data Atlas Provider</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DataProviderImpl
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDataProvider()
+	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DataAtlasProviderImpl
+	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDataAtlasProvider()
 	 * @generated
 	 */
-	int DATA_PROVIDER = 1;
+	int DATA_ATLAS_PROVIDER = 1;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -210,7 +212,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_PROVIDER__ID = 0;
+	int DATA_ATLAS_PROVIDER__ID = AtlasConfigPackage.DATA_PROVIDER__ID;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -219,7 +221,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_PROVIDER__NAME = 1;
+	int DATA_ATLAS_PROVIDER__NAME = AtlasConfigPackage.DATA_PROVIDER__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
@@ -228,7 +230,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_PROVIDER__DESCRIPTION = 2;
+	int DATA_ATLAS_PROVIDER__DESCRIPTION = AtlasConfigPackage.DATA_PROVIDER__DESCRIPTION;
 
 	/**
 	 * The feature id for the '<em><b>Data Input</b></em>' reference.
@@ -237,7 +239,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_PROVIDER__DATA_INPUT = 3;
+	int DATA_ATLAS_PROVIDER__DATA_INPUT = AtlasConfigPackage.DATA_PROVIDER__DATA_INPUT;
 
 	/**
 	 * The feature id for the '<em><b>Transformation</b></em>' reference.
@@ -246,7 +248,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_PROVIDER__TRANSFORMATION = 4;
+	int DATA_ATLAS_PROVIDER__TRANSFORMATION = AtlasConfigPackage.DATA_PROVIDER_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Distribution Export</b></em>' reference list.
@@ -255,7 +257,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_PROVIDER__DISTRIBUTION_EXPORT = 5;
+	int DATA_ATLAS_PROVIDER__DISTRIBUTION_EXPORT = AtlasConfigPackage.DATA_PROVIDER_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Publication</b></em>' reference.
@@ -264,80 +266,25 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_PROVIDER__PUBLICATION = 6;
+	int DATA_ATLAS_PROVIDER__PUBLICATION = AtlasConfigPackage.DATA_PROVIDER_FEATURE_COUNT + 2;
 
 	/**
-	 * The number of structural features of the '<em>Data Provider</em>' class.
+	 * The number of structural features of the '<em>Data Atlas Provider</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_PROVIDER_FEATURE_COUNT = 7;
+	int DATA_ATLAS_PROVIDER_FEATURE_COUNT = AtlasConfigPackage.DATA_PROVIDER_FEATURE_COUNT + 3;
 
 	/**
-	 * The number of operations of the '<em>Data Provider</em>' class.
+	 * The number of operations of the '<em>Data Atlas Provider</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_PROVIDER_OPERATION_COUNT = 0;
-
-	/**
-	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DataInputImpl <em>Data Input</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DataInputImpl
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDataInput()
-	 * @generated
-	 */
-	int DATA_INPUT = 2;
-
-	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATA_INPUT__ID = 0;
-
-	/**
-	 * The feature id for the '<em><b>Supported EClasses</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATA_INPUT__SUPPORTED_ECLASSES = 1;
-
-	/**
-	 * The number of structural features of the '<em>Data Input</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATA_INPUT_FEATURE_COUNT = 2;
-
-	/**
-	 * The operation id for the '<em>Stream Data</em>' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATA_INPUT___STREAM_DATA = 0;
-
-	/**
-	 * The number of operations of the '<em>Data Input</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATA_INPUT_OPERATION_COUNT = 1;
+	int DATA_ATLAS_PROVIDER_OPERATION_COUNT = AtlasConfigPackage.DATA_PROVIDER_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.BridgeRepositoryImpl <em>Bridge Repository</em>}' class.
@@ -347,7 +294,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getBridgeRepository()
 	 * @generated
 	 */
-	int BRIDGE_REPOSITORY = 3;
+	int BRIDGE_REPOSITORY = 2;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -356,7 +303,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BRIDGE_REPOSITORY__ID = DATA_INPUT__ID;
+	int BRIDGE_REPOSITORY__ID = AtlasConfigPackage.DATA_INPUT__ID;
 
 	/**
 	 * The feature id for the '<em><b>Supported EClasses</b></em>' reference list.
@@ -365,7 +312,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BRIDGE_REPOSITORY__SUPPORTED_ECLASSES = DATA_INPUT__SUPPORTED_ECLASSES;
+	int BRIDGE_REPOSITORY__SUPPORTED_ECLASSES = AtlasConfigPackage.DATA_INPUT__SUPPORTED_ECLASSES;
 
 	/**
 	 * The feature id for the '<em><b>Source</b></em>' reference.
@@ -374,7 +321,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BRIDGE_REPOSITORY__SOURCE = DATA_INPUT_FEATURE_COUNT + 0;
+	int BRIDGE_REPOSITORY__SOURCE = AtlasConfigPackage.DATA_INPUT_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Data Trafo</b></em>' reference.
@@ -383,7 +330,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BRIDGE_REPOSITORY__DATA_TRAFO = DATA_INPUT_FEATURE_COUNT + 1;
+	int BRIDGE_REPOSITORY__DATA_TRAFO = AtlasConfigPackage.DATA_INPUT_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Query Trafo</b></em>' reference.
@@ -392,7 +339,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BRIDGE_REPOSITORY__QUERY_TRAFO = DATA_INPUT_FEATURE_COUNT + 2;
+	int BRIDGE_REPOSITORY__QUERY_TRAFO = AtlasConfigPackage.DATA_INPUT_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Filter</b></em>' reference.
@@ -401,7 +348,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BRIDGE_REPOSITORY__FILTER = DATA_INPUT_FEATURE_COUNT + 3;
+	int BRIDGE_REPOSITORY__FILTER = AtlasConfigPackage.DATA_INPUT_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of structural features of the '<em>Bridge Repository</em>' class.
@@ -410,16 +357,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BRIDGE_REPOSITORY_FEATURE_COUNT = DATA_INPUT_FEATURE_COUNT + 4;
-
-	/**
-	 * The operation id for the '<em>Stream Data</em>' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BRIDGE_REPOSITORY___STREAM_DATA = DATA_INPUT___STREAM_DATA;
+	int BRIDGE_REPOSITORY_FEATURE_COUNT = AtlasConfigPackage.DATA_INPUT_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of operations of the '<em>Bridge Repository</em>' class.
@@ -428,7 +366,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BRIDGE_REPOSITORY_OPERATION_COUNT = DATA_INPUT_OPERATION_COUNT + 0;
+	int BRIDGE_REPOSITORY_OPERATION_COUNT = AtlasConfigPackage.DATA_INPUT_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DataSetImpl <em>Data Set</em>}' class.
@@ -438,7 +376,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDataSet()
 	 * @generated
 	 */
-	int DATA_SET = 4;
+	int DATA_SET = 3;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -447,7 +385,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_SET__ID = DATA_PROVIDER__ID;
+	int DATA_SET__ID = DATA_ATLAS_PROVIDER__ID;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -456,7 +394,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_SET__NAME = DATA_PROVIDER__NAME;
+	int DATA_SET__NAME = DATA_ATLAS_PROVIDER__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
@@ -465,7 +403,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_SET__DESCRIPTION = DATA_PROVIDER__DESCRIPTION;
+	int DATA_SET__DESCRIPTION = DATA_ATLAS_PROVIDER__DESCRIPTION;
 
 	/**
 	 * The feature id for the '<em><b>Data Input</b></em>' reference.
@@ -474,7 +412,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_SET__DATA_INPUT = DATA_PROVIDER__DATA_INPUT;
+	int DATA_SET__DATA_INPUT = DATA_ATLAS_PROVIDER__DATA_INPUT;
 
 	/**
 	 * The feature id for the '<em><b>Transformation</b></em>' reference.
@@ -483,7 +421,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_SET__TRANSFORMATION = DATA_PROVIDER__TRANSFORMATION;
+	int DATA_SET__TRANSFORMATION = DATA_ATLAS_PROVIDER__TRANSFORMATION;
 
 	/**
 	 * The feature id for the '<em><b>Distribution Export</b></em>' reference list.
@@ -492,7 +430,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_SET__DISTRIBUTION_EXPORT = DATA_PROVIDER__DISTRIBUTION_EXPORT;
+	int DATA_SET__DISTRIBUTION_EXPORT = DATA_ATLAS_PROVIDER__DISTRIBUTION_EXPORT;
 
 	/**
 	 * The feature id for the '<em><b>Publication</b></em>' reference.
@@ -501,7 +439,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_SET__PUBLICATION = DATA_PROVIDER__PUBLICATION;
+	int DATA_SET__PUBLICATION = DATA_ATLAS_PROVIDER__PUBLICATION;
 
 	/**
 	 * The feature id for the '<em><b>Input Type</b></em>' reference.
@@ -510,7 +448,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_SET__INPUT_TYPE = DATA_PROVIDER_FEATURE_COUNT + 0;
+	int DATA_SET__INPUT_TYPE = DATA_ATLAS_PROVIDER_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Output Type</b></em>' reference.
@@ -519,7 +457,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_SET__OUTPUT_TYPE = DATA_PROVIDER_FEATURE_COUNT + 1;
+	int DATA_SET__OUTPUT_TYPE = DATA_ATLAS_PROVIDER_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Query</b></em>' containment reference.
@@ -528,7 +466,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_SET__QUERY = DATA_PROVIDER_FEATURE_COUNT + 2;
+	int DATA_SET__QUERY = DATA_ATLAS_PROVIDER_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Child Data Set</b></em>' reference list.
@@ -537,7 +475,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_SET__CHILD_DATA_SET = DATA_PROVIDER_FEATURE_COUNT + 3;
+	int DATA_SET__CHILD_DATA_SET = DATA_ATLAS_PROVIDER_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Parent Data Set</b></em>' reference.
@@ -546,7 +484,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_SET__PARENT_DATA_SET = DATA_PROVIDER_FEATURE_COUNT + 4;
+	int DATA_SET__PARENT_DATA_SET = DATA_ATLAS_PROVIDER_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of structural features of the '<em>Data Set</em>' class.
@@ -555,7 +493,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_SET_FEATURE_COUNT = DATA_PROVIDER_FEATURE_COUNT + 5;
+	int DATA_SET_FEATURE_COUNT = DATA_ATLAS_PROVIDER_FEATURE_COUNT + 5;
 
 	/**
 	 * The number of operations of the '<em>Data Set</em>' class.
@@ -564,17 +502,17 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_SET_OPERATION_COUNT = DATA_PROVIDER_OPERATION_COUNT + 0;
+	int DATA_SET_OPERATION_COUNT = DATA_ATLAS_PROVIDER_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DataServiceImpl <em>Data Service</em>}' class.
+	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DataAtlasServiceImpl <em>Data Atlas Service</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DataServiceImpl
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDataService()
+	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DataAtlasServiceImpl
+	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDataAtlasService()
 	 * @generated
 	 */
-	int DATA_SERVICE = 5;
+	int DATA_ATLAS_SERVICE = 4;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -583,7 +521,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_SERVICE__ID = DATA_PROVIDER__ID;
+	int DATA_ATLAS_SERVICE__ID = AtlasConfigPackage.DATA_SERVICE__ID;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -592,7 +530,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_SERVICE__NAME = DATA_PROVIDER__NAME;
+	int DATA_ATLAS_SERVICE__NAME = AtlasConfigPackage.DATA_SERVICE__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
@@ -601,7 +539,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_SERVICE__DESCRIPTION = DATA_PROVIDER__DESCRIPTION;
+	int DATA_ATLAS_SERVICE__DESCRIPTION = AtlasConfigPackage.DATA_SERVICE__DESCRIPTION;
 
 	/**
 	 * The feature id for the '<em><b>Data Input</b></em>' reference.
@@ -610,34 +548,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_SERVICE__DATA_INPUT = DATA_PROVIDER__DATA_INPUT;
-
-	/**
-	 * The feature id for the '<em><b>Transformation</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATA_SERVICE__TRANSFORMATION = DATA_PROVIDER__TRANSFORMATION;
-
-	/**
-	 * The feature id for the '<em><b>Distribution Export</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_PROVIDER__DISTRIBUTION_EXPORT;
-
-	/**
-	 * The feature id for the '<em><b>Publication</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATA_SERVICE__PUBLICATION = DATA_PROVIDER__PUBLICATION;
+	int DATA_ATLAS_SERVICE__DATA_INPUT = AtlasConfigPackage.DATA_SERVICE__DATA_INPUT;
 
 	/**
 	 * The feature id for the '<em><b>Url Context</b></em>' attribute.
@@ -646,34 +557,52 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_SERVICE__URL_CONTEXT = DATA_PROVIDER_FEATURE_COUNT + 0;
+	int DATA_ATLAS_SERVICE__URL_CONTEXT = AtlasConfigPackage.DATA_SERVICE__URL_CONTEXT;
 
 	/**
-	 * The number of structural features of the '<em>Data Service</em>' class.
+	 * The feature id for the '<em><b>Transformation</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_SERVICE_FEATURE_COUNT = DATA_PROVIDER_FEATURE_COUNT + 1;
+	int DATA_ATLAS_SERVICE__TRANSFORMATION = AtlasConfigPackage.DATA_SERVICE_FEATURE_COUNT + 0;
 
 	/**
-	 * The operation id for the '<em>Get Distributions</em>' operation.
+	 * The feature id for the '<em><b>Distribution Export</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_SERVICE___GET_DISTRIBUTIONS = DATA_PROVIDER_OPERATION_COUNT + 0;
+	int DATA_ATLAS_SERVICE__DISTRIBUTION_EXPORT = AtlasConfigPackage.DATA_SERVICE_FEATURE_COUNT + 1;
 
 	/**
-	 * The number of operations of the '<em>Data Service</em>' class.
+	 * The feature id for the '<em><b>Publication</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_SERVICE_OPERATION_COUNT = DATA_PROVIDER_OPERATION_COUNT + 1;
+	int DATA_ATLAS_SERVICE__PUBLICATION = AtlasConfigPackage.DATA_SERVICE_FEATURE_COUNT + 2;
+
+	/**
+	 * The number of structural features of the '<em>Data Atlas Service</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATA_ATLAS_SERVICE_FEATURE_COUNT = AtlasConfigPackage.DATA_SERVICE_FEATURE_COUNT + 3;
+
+	/**
+	 * The number of operations of the '<em>Data Atlas Service</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATA_ATLAS_SERVICE_OPERATION_COUNT = AtlasConfigPackage.DATA_SERVICE_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.RestDataServiceImpl <em>Rest Data Service</em>}' class.
@@ -683,7 +612,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getRestDataService()
 	 * @generated
 	 */
-	int REST_DATA_SERVICE = 6;
+	int REST_DATA_SERVICE = 5;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -692,7 +621,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int REST_DATA_SERVICE__ID = DATA_SERVICE__ID;
+	int REST_DATA_SERVICE__ID = DATA_ATLAS_SERVICE__ID;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -701,7 +630,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int REST_DATA_SERVICE__NAME = DATA_SERVICE__NAME;
+	int REST_DATA_SERVICE__NAME = DATA_ATLAS_SERVICE__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
@@ -710,7 +639,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int REST_DATA_SERVICE__DESCRIPTION = DATA_SERVICE__DESCRIPTION;
+	int REST_DATA_SERVICE__DESCRIPTION = DATA_ATLAS_SERVICE__DESCRIPTION;
 
 	/**
 	 * The feature id for the '<em><b>Data Input</b></em>' reference.
@@ -719,34 +648,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int REST_DATA_SERVICE__DATA_INPUT = DATA_SERVICE__DATA_INPUT;
-
-	/**
-	 * The feature id for the '<em><b>Transformation</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int REST_DATA_SERVICE__TRANSFORMATION = DATA_SERVICE__TRANSFORMATION;
-
-	/**
-	 * The feature id for the '<em><b>Distribution Export</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int REST_DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_SERVICE__DISTRIBUTION_EXPORT;
-
-	/**
-	 * The feature id for the '<em><b>Publication</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int REST_DATA_SERVICE__PUBLICATION = DATA_SERVICE__PUBLICATION;
+	int REST_DATA_SERVICE__DATA_INPUT = DATA_ATLAS_SERVICE__DATA_INPUT;
 
 	/**
 	 * The feature id for the '<em><b>Url Context</b></em>' attribute.
@@ -755,7 +657,34 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int REST_DATA_SERVICE__URL_CONTEXT = DATA_SERVICE__URL_CONTEXT;
+	int REST_DATA_SERVICE__URL_CONTEXT = DATA_ATLAS_SERVICE__URL_CONTEXT;
+
+	/**
+	 * The feature id for the '<em><b>Transformation</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int REST_DATA_SERVICE__TRANSFORMATION = DATA_ATLAS_SERVICE__TRANSFORMATION;
+
+	/**
+	 * The feature id for the '<em><b>Distribution Export</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int REST_DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_ATLAS_SERVICE__DISTRIBUTION_EXPORT;
+
+	/**
+	 * The feature id for the '<em><b>Publication</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int REST_DATA_SERVICE__PUBLICATION = DATA_ATLAS_SERVICE__PUBLICATION;
 
 	/**
 	 * The feature id for the '<em><b>Configuration</b></em>' containment reference list.
@@ -764,7 +693,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int REST_DATA_SERVICE__CONFIGURATION = DATA_SERVICE_FEATURE_COUNT + 0;
+	int REST_DATA_SERVICE__CONFIGURATION = DATA_ATLAS_SERVICE_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Open API</b></em>' attribute.
@@ -773,7 +702,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int REST_DATA_SERVICE__OPEN_API = DATA_SERVICE_FEATURE_COUNT + 1;
+	int REST_DATA_SERVICE__OPEN_API = DATA_ATLAS_SERVICE_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of structural features of the '<em>Rest Data Service</em>' class.
@@ -782,16 +711,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int REST_DATA_SERVICE_FEATURE_COUNT = DATA_SERVICE_FEATURE_COUNT + 2;
-
-	/**
-	 * The operation id for the '<em>Get Distributions</em>' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int REST_DATA_SERVICE___GET_DISTRIBUTIONS = DATA_SERVICE___GET_DISTRIBUTIONS;
+	int REST_DATA_SERVICE_FEATURE_COUNT = DATA_ATLAS_SERVICE_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of operations of the '<em>Rest Data Service</em>' class.
@@ -800,7 +720,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int REST_DATA_SERVICE_OPERATION_COUNT = DATA_SERVICE_OPERATION_COUNT + 0;
+	int REST_DATA_SERVICE_OPERATION_COUNT = DATA_ATLAS_SERVICE_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DataServiceConfigurationImpl <em>Data Service Configuration</em>}' class.
@@ -810,7 +730,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDataServiceConfiguration()
 	 * @generated
 	 */
-	int DATA_SERVICE_CONFIGURATION = 7;
+	int DATA_SERVICE_CONFIGURATION = 6;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -856,7 +776,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getRestDataServiceConfiguration()
 	 * @generated
 	 */
-	int REST_DATA_SERVICE_CONFIGURATION = 8;
+	int REST_DATA_SERVICE_CONFIGURATION = 7;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -947,7 +867,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getGeoJsonDataService()
 	 * @generated
 	 */
-	int GEO_JSON_DATA_SERVICE = 9;
+	int GEO_JSON_DATA_SERVICE = 8;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -956,7 +876,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GEO_JSON_DATA_SERVICE__ID = DATA_SERVICE__ID;
+	int GEO_JSON_DATA_SERVICE__ID = DATA_ATLAS_SERVICE__ID;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -965,7 +885,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GEO_JSON_DATA_SERVICE__NAME = DATA_SERVICE__NAME;
+	int GEO_JSON_DATA_SERVICE__NAME = DATA_ATLAS_SERVICE__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
@@ -974,7 +894,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GEO_JSON_DATA_SERVICE__DESCRIPTION = DATA_SERVICE__DESCRIPTION;
+	int GEO_JSON_DATA_SERVICE__DESCRIPTION = DATA_ATLAS_SERVICE__DESCRIPTION;
 
 	/**
 	 * The feature id for the '<em><b>Data Input</b></em>' reference.
@@ -983,34 +903,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GEO_JSON_DATA_SERVICE__DATA_INPUT = DATA_SERVICE__DATA_INPUT;
-
-	/**
-	 * The feature id for the '<em><b>Transformation</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GEO_JSON_DATA_SERVICE__TRANSFORMATION = DATA_SERVICE__TRANSFORMATION;
-
-	/**
-	 * The feature id for the '<em><b>Distribution Export</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GEO_JSON_DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_SERVICE__DISTRIBUTION_EXPORT;
-
-	/**
-	 * The feature id for the '<em><b>Publication</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GEO_JSON_DATA_SERVICE__PUBLICATION = DATA_SERVICE__PUBLICATION;
+	int GEO_JSON_DATA_SERVICE__DATA_INPUT = DATA_ATLAS_SERVICE__DATA_INPUT;
 
 	/**
 	 * The feature id for the '<em><b>Url Context</b></em>' attribute.
@@ -1019,7 +912,34 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GEO_JSON_DATA_SERVICE__URL_CONTEXT = DATA_SERVICE__URL_CONTEXT;
+	int GEO_JSON_DATA_SERVICE__URL_CONTEXT = DATA_ATLAS_SERVICE__URL_CONTEXT;
+
+	/**
+	 * The feature id for the '<em><b>Transformation</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE__TRANSFORMATION = DATA_ATLAS_SERVICE__TRANSFORMATION;
+
+	/**
+	 * The feature id for the '<em><b>Distribution Export</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_ATLAS_SERVICE__DISTRIBUTION_EXPORT;
+
+	/**
+	 * The feature id for the '<em><b>Publication</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GEO_JSON_DATA_SERVICE__PUBLICATION = DATA_ATLAS_SERVICE__PUBLICATION;
 
 	/**
 	 * The feature id for the '<em><b>Configuration</b></em>' containment reference list.
@@ -1028,7 +948,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GEO_JSON_DATA_SERVICE__CONFIGURATION = DATA_SERVICE_FEATURE_COUNT + 0;
+	int GEO_JSON_DATA_SERVICE__CONFIGURATION = DATA_ATLAS_SERVICE_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Geo Json Data Service</em>' class.
@@ -1037,16 +957,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GEO_JSON_DATA_SERVICE_FEATURE_COUNT = DATA_SERVICE_FEATURE_COUNT + 1;
-
-	/**
-	 * The operation id for the '<em>Get Distributions</em>' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GEO_JSON_DATA_SERVICE___GET_DISTRIBUTIONS = DATA_SERVICE___GET_DISTRIBUTIONS;
+	int GEO_JSON_DATA_SERVICE_FEATURE_COUNT = DATA_ATLAS_SERVICE_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>Geo Json Data Service</em>' class.
@@ -1055,7 +966,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GEO_JSON_DATA_SERVICE_OPERATION_COUNT = DATA_SERVICE_OPERATION_COUNT + 0;
+	int GEO_JSON_DATA_SERVICE_OPERATION_COUNT = DATA_ATLAS_SERVICE_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.GeoJsonDataServiceConfigurationImpl <em>Geo Json Data Service Configuration</em>}' class.
@@ -1065,7 +976,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getGeoJsonDataServiceConfiguration()
 	 * @generated
 	 */
-	int GEO_JSON_DATA_SERVICE_CONFIGURATION = 10;
+	int GEO_JSON_DATA_SERVICE_CONFIGURATION = 9;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1201,7 +1112,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getXMLADataService()
 	 * @generated
 	 */
-	int XMLA_DATA_SERVICE = 11;
+	int XMLA_DATA_SERVICE = 10;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1210,7 +1121,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int XMLA_DATA_SERVICE__ID = DATA_SERVICE__ID;
+	int XMLA_DATA_SERVICE__ID = DATA_ATLAS_SERVICE__ID;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1219,7 +1130,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int XMLA_DATA_SERVICE__NAME = DATA_SERVICE__NAME;
+	int XMLA_DATA_SERVICE__NAME = DATA_ATLAS_SERVICE__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
@@ -1228,7 +1139,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int XMLA_DATA_SERVICE__DESCRIPTION = DATA_SERVICE__DESCRIPTION;
+	int XMLA_DATA_SERVICE__DESCRIPTION = DATA_ATLAS_SERVICE__DESCRIPTION;
 
 	/**
 	 * The feature id for the '<em><b>Data Input</b></em>' reference.
@@ -1237,34 +1148,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int XMLA_DATA_SERVICE__DATA_INPUT = DATA_SERVICE__DATA_INPUT;
-
-	/**
-	 * The feature id for the '<em><b>Transformation</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int XMLA_DATA_SERVICE__TRANSFORMATION = DATA_SERVICE__TRANSFORMATION;
-
-	/**
-	 * The feature id for the '<em><b>Distribution Export</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int XMLA_DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_SERVICE__DISTRIBUTION_EXPORT;
-
-	/**
-	 * The feature id for the '<em><b>Publication</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int XMLA_DATA_SERVICE__PUBLICATION = DATA_SERVICE__PUBLICATION;
+	int XMLA_DATA_SERVICE__DATA_INPUT = DATA_ATLAS_SERVICE__DATA_INPUT;
 
 	/**
 	 * The feature id for the '<em><b>Url Context</b></em>' attribute.
@@ -1273,7 +1157,34 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int XMLA_DATA_SERVICE__URL_CONTEXT = DATA_SERVICE__URL_CONTEXT;
+	int XMLA_DATA_SERVICE__URL_CONTEXT = DATA_ATLAS_SERVICE__URL_CONTEXT;
+
+	/**
+	 * The feature id for the '<em><b>Transformation</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int XMLA_DATA_SERVICE__TRANSFORMATION = DATA_ATLAS_SERVICE__TRANSFORMATION;
+
+	/**
+	 * The feature id for the '<em><b>Distribution Export</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int XMLA_DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_ATLAS_SERVICE__DISTRIBUTION_EXPORT;
+
+	/**
+	 * The feature id for the '<em><b>Publication</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int XMLA_DATA_SERVICE__PUBLICATION = DATA_ATLAS_SERVICE__PUBLICATION;
 
 	/**
 	 * The feature id for the '<em><b>Configuration</b></em>' containment reference list.
@@ -1282,7 +1193,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int XMLA_DATA_SERVICE__CONFIGURATION = DATA_SERVICE_FEATURE_COUNT + 0;
+	int XMLA_DATA_SERVICE__CONFIGURATION = DATA_ATLAS_SERVICE_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>XMLA Data Service</em>' class.
@@ -1291,16 +1202,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int XMLA_DATA_SERVICE_FEATURE_COUNT = DATA_SERVICE_FEATURE_COUNT + 1;
-
-	/**
-	 * The operation id for the '<em>Get Distributions</em>' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int XMLA_DATA_SERVICE___GET_DISTRIBUTIONS = DATA_SERVICE___GET_DISTRIBUTIONS;
+	int XMLA_DATA_SERVICE_FEATURE_COUNT = DATA_ATLAS_SERVICE_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>XMLA Data Service</em>' class.
@@ -1309,7 +1211,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int XMLA_DATA_SERVICE_OPERATION_COUNT = DATA_SERVICE_OPERATION_COUNT + 0;
+	int XMLA_DATA_SERVICE_OPERATION_COUNT = DATA_ATLAS_SERVICE_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.XMLADataServiceConfigurationImpl <em>XMLA Data Service Configuration</em>}' class.
@@ -1319,7 +1221,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getXMLADataServiceConfiguration()
 	 * @generated
 	 */
-	int XMLA_DATA_SERVICE_CONFIGURATION = 12;
+	int XMLA_DATA_SERVICE_CONFIGURATION = 11;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1374,7 +1276,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getGraphQLDataService()
 	 * @generated
 	 */
-	int GRAPH_QL_DATA_SERVICE = 13;
+	int GRAPH_QL_DATA_SERVICE = 12;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1383,7 +1285,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GRAPH_QL_DATA_SERVICE__ID = DATA_SERVICE__ID;
+	int GRAPH_QL_DATA_SERVICE__ID = DATA_ATLAS_SERVICE__ID;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1392,7 +1294,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GRAPH_QL_DATA_SERVICE__NAME = DATA_SERVICE__NAME;
+	int GRAPH_QL_DATA_SERVICE__NAME = DATA_ATLAS_SERVICE__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
@@ -1401,7 +1303,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GRAPH_QL_DATA_SERVICE__DESCRIPTION = DATA_SERVICE__DESCRIPTION;
+	int GRAPH_QL_DATA_SERVICE__DESCRIPTION = DATA_ATLAS_SERVICE__DESCRIPTION;
 
 	/**
 	 * The feature id for the '<em><b>Data Input</b></em>' reference.
@@ -1410,34 +1312,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GRAPH_QL_DATA_SERVICE__DATA_INPUT = DATA_SERVICE__DATA_INPUT;
-
-	/**
-	 * The feature id for the '<em><b>Transformation</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GRAPH_QL_DATA_SERVICE__TRANSFORMATION = DATA_SERVICE__TRANSFORMATION;
-
-	/**
-	 * The feature id for the '<em><b>Distribution Export</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GRAPH_QL_DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_SERVICE__DISTRIBUTION_EXPORT;
-
-	/**
-	 * The feature id for the '<em><b>Publication</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GRAPH_QL_DATA_SERVICE__PUBLICATION = DATA_SERVICE__PUBLICATION;
+	int GRAPH_QL_DATA_SERVICE__DATA_INPUT = DATA_ATLAS_SERVICE__DATA_INPUT;
 
 	/**
 	 * The feature id for the '<em><b>Url Context</b></em>' attribute.
@@ -1446,7 +1321,34 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GRAPH_QL_DATA_SERVICE__URL_CONTEXT = DATA_SERVICE__URL_CONTEXT;
+	int GRAPH_QL_DATA_SERVICE__URL_CONTEXT = DATA_ATLAS_SERVICE__URL_CONTEXT;
+
+	/**
+	 * The feature id for the '<em><b>Transformation</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GRAPH_QL_DATA_SERVICE__TRANSFORMATION = DATA_ATLAS_SERVICE__TRANSFORMATION;
+
+	/**
+	 * The feature id for the '<em><b>Distribution Export</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GRAPH_QL_DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_ATLAS_SERVICE__DISTRIBUTION_EXPORT;
+
+	/**
+	 * The feature id for the '<em><b>Publication</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GRAPH_QL_DATA_SERVICE__PUBLICATION = DATA_ATLAS_SERVICE__PUBLICATION;
 
 	/**
 	 * The feature id for the '<em><b>Configuration</b></em>' containment reference list.
@@ -1455,7 +1357,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GRAPH_QL_DATA_SERVICE__CONFIGURATION = DATA_SERVICE_FEATURE_COUNT + 0;
+	int GRAPH_QL_DATA_SERVICE__CONFIGURATION = DATA_ATLAS_SERVICE_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Graph QL Data Service</em>' class.
@@ -1464,16 +1366,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GRAPH_QL_DATA_SERVICE_FEATURE_COUNT = DATA_SERVICE_FEATURE_COUNT + 1;
-
-	/**
-	 * The operation id for the '<em>Get Distributions</em>' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GRAPH_QL_DATA_SERVICE___GET_DISTRIBUTIONS = DATA_SERVICE___GET_DISTRIBUTIONS;
+	int GRAPH_QL_DATA_SERVICE_FEATURE_COUNT = DATA_ATLAS_SERVICE_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>Graph QL Data Service</em>' class.
@@ -1482,7 +1375,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GRAPH_QL_DATA_SERVICE_OPERATION_COUNT = DATA_SERVICE_OPERATION_COUNT + 0;
+	int GRAPH_QL_DATA_SERVICE_OPERATION_COUNT = DATA_ATLAS_SERVICE_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.QGisDataServiceImpl <em>QGis Data Service</em>}' class.
@@ -1492,7 +1385,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getQGisDataService()
 	 * @generated
 	 */
-	int QGIS_DATA_SERVICE = 14;
+	int QGIS_DATA_SERVICE = 13;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1501,7 +1394,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int QGIS_DATA_SERVICE__ID = DATA_SERVICE__ID;
+	int QGIS_DATA_SERVICE__ID = DATA_ATLAS_SERVICE__ID;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1510,7 +1403,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int QGIS_DATA_SERVICE__NAME = DATA_SERVICE__NAME;
+	int QGIS_DATA_SERVICE__NAME = DATA_ATLAS_SERVICE__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
@@ -1519,7 +1412,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int QGIS_DATA_SERVICE__DESCRIPTION = DATA_SERVICE__DESCRIPTION;
+	int QGIS_DATA_SERVICE__DESCRIPTION = DATA_ATLAS_SERVICE__DESCRIPTION;
 
 	/**
 	 * The feature id for the '<em><b>Data Input</b></em>' reference.
@@ -1528,34 +1421,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int QGIS_DATA_SERVICE__DATA_INPUT = DATA_SERVICE__DATA_INPUT;
-
-	/**
-	 * The feature id for the '<em><b>Transformation</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int QGIS_DATA_SERVICE__TRANSFORMATION = DATA_SERVICE__TRANSFORMATION;
-
-	/**
-	 * The feature id for the '<em><b>Distribution Export</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int QGIS_DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_SERVICE__DISTRIBUTION_EXPORT;
-
-	/**
-	 * The feature id for the '<em><b>Publication</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int QGIS_DATA_SERVICE__PUBLICATION = DATA_SERVICE__PUBLICATION;
+	int QGIS_DATA_SERVICE__DATA_INPUT = DATA_ATLAS_SERVICE__DATA_INPUT;
 
 	/**
 	 * The feature id for the '<em><b>Url Context</b></em>' attribute.
@@ -1564,7 +1430,34 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int QGIS_DATA_SERVICE__URL_CONTEXT = DATA_SERVICE__URL_CONTEXT;
+	int QGIS_DATA_SERVICE__URL_CONTEXT = DATA_ATLAS_SERVICE__URL_CONTEXT;
+
+	/**
+	 * The feature id for the '<em><b>Transformation</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int QGIS_DATA_SERVICE__TRANSFORMATION = DATA_ATLAS_SERVICE__TRANSFORMATION;
+
+	/**
+	 * The feature id for the '<em><b>Distribution Export</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int QGIS_DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_ATLAS_SERVICE__DISTRIBUTION_EXPORT;
+
+	/**
+	 * The feature id for the '<em><b>Publication</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int QGIS_DATA_SERVICE__PUBLICATION = DATA_ATLAS_SERVICE__PUBLICATION;
 
 	/**
 	 * The feature id for the '<em><b>Configuration</b></em>' containment reference list.
@@ -1573,7 +1466,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int QGIS_DATA_SERVICE__CONFIGURATION = DATA_SERVICE_FEATURE_COUNT + 0;
+	int QGIS_DATA_SERVICE__CONFIGURATION = DATA_ATLAS_SERVICE_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>QGis Data Service</em>' class.
@@ -1582,16 +1475,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int QGIS_DATA_SERVICE_FEATURE_COUNT = DATA_SERVICE_FEATURE_COUNT + 1;
-
-	/**
-	 * The operation id for the '<em>Get Distributions</em>' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int QGIS_DATA_SERVICE___GET_DISTRIBUTIONS = DATA_SERVICE___GET_DISTRIBUTIONS;
+	int QGIS_DATA_SERVICE_FEATURE_COUNT = DATA_ATLAS_SERVICE_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>QGis Data Service</em>' class.
@@ -1600,7 +1484,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int QGIS_DATA_SERVICE_OPERATION_COUNT = DATA_SERVICE_OPERATION_COUNT + 0;
+	int QGIS_DATA_SERVICE_OPERATION_COUNT = DATA_ATLAS_SERVICE_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.QGisDataServiceConfigurationImpl <em>QGis Data Service Configuration</em>}' class.
@@ -1610,7 +1494,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getQGisDataServiceConfiguration()
 	 * @generated
 	 */
-	int QGIS_DATA_SERVICE_CONFIGURATION = 15;
+	int QGIS_DATA_SERVICE_CONFIGURATION = 14;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1665,7 +1549,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getGraphQLDataServiceConfiguration()
 	 * @generated
 	 */
-	int GRAPH_QL_DATA_SERVICE_CONFIGURATION = 16;
+	int GRAPH_QL_DATA_SERVICE_CONFIGURATION = 15;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1711,7 +1595,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getOgcFeaturesDataService()
 	 * @generated
 	 */
-	int OGC_FEATURES_DATA_SERVICE = 17;
+	int OGC_FEATURES_DATA_SERVICE = 16;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1720,7 +1604,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int OGC_FEATURES_DATA_SERVICE__ID = DATA_SERVICE__ID;
+	int OGC_FEATURES_DATA_SERVICE__ID = DATA_ATLAS_SERVICE__ID;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1729,7 +1613,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int OGC_FEATURES_DATA_SERVICE__NAME = DATA_SERVICE__NAME;
+	int OGC_FEATURES_DATA_SERVICE__NAME = DATA_ATLAS_SERVICE__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
@@ -1738,7 +1622,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int OGC_FEATURES_DATA_SERVICE__DESCRIPTION = DATA_SERVICE__DESCRIPTION;
+	int OGC_FEATURES_DATA_SERVICE__DESCRIPTION = DATA_ATLAS_SERVICE__DESCRIPTION;
 
 	/**
 	 * The feature id for the '<em><b>Data Input</b></em>' reference.
@@ -1747,34 +1631,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int OGC_FEATURES_DATA_SERVICE__DATA_INPUT = DATA_SERVICE__DATA_INPUT;
-
-	/**
-	 * The feature id for the '<em><b>Transformation</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int OGC_FEATURES_DATA_SERVICE__TRANSFORMATION = DATA_SERVICE__TRANSFORMATION;
-
-	/**
-	 * The feature id for the '<em><b>Distribution Export</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int OGC_FEATURES_DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_SERVICE__DISTRIBUTION_EXPORT;
-
-	/**
-	 * The feature id for the '<em><b>Publication</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int OGC_FEATURES_DATA_SERVICE__PUBLICATION = DATA_SERVICE__PUBLICATION;
+	int OGC_FEATURES_DATA_SERVICE__DATA_INPUT = DATA_ATLAS_SERVICE__DATA_INPUT;
 
 	/**
 	 * The feature id for the '<em><b>Url Context</b></em>' attribute.
@@ -1783,7 +1640,34 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int OGC_FEATURES_DATA_SERVICE__URL_CONTEXT = DATA_SERVICE__URL_CONTEXT;
+	int OGC_FEATURES_DATA_SERVICE__URL_CONTEXT = DATA_ATLAS_SERVICE__URL_CONTEXT;
+
+	/**
+	 * The feature id for the '<em><b>Transformation</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OGC_FEATURES_DATA_SERVICE__TRANSFORMATION = DATA_ATLAS_SERVICE__TRANSFORMATION;
+
+	/**
+	 * The feature id for the '<em><b>Distribution Export</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OGC_FEATURES_DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_ATLAS_SERVICE__DISTRIBUTION_EXPORT;
+
+	/**
+	 * The feature id for the '<em><b>Publication</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OGC_FEATURES_DATA_SERVICE__PUBLICATION = DATA_ATLAS_SERVICE__PUBLICATION;
 
 	/**
 	 * The feature id for the '<em><b>Default Limit</b></em>' attribute.
@@ -1792,7 +1676,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int OGC_FEATURES_DATA_SERVICE__DEFAULT_LIMIT = DATA_SERVICE_FEATURE_COUNT + 0;
+	int OGC_FEATURES_DATA_SERVICE__DEFAULT_LIMIT = DATA_ATLAS_SERVICE_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Max Limit</b></em>' attribute.
@@ -1801,7 +1685,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int OGC_FEATURES_DATA_SERVICE__MAX_LIMIT = DATA_SERVICE_FEATURE_COUNT + 1;
+	int OGC_FEATURES_DATA_SERVICE__MAX_LIMIT = DATA_ATLAS_SERVICE_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Configuration</b></em>' containment reference list.
@@ -1810,7 +1694,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int OGC_FEATURES_DATA_SERVICE__CONFIGURATION = DATA_SERVICE_FEATURE_COUNT + 2;
+	int OGC_FEATURES_DATA_SERVICE__CONFIGURATION = DATA_ATLAS_SERVICE_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of structural features of the '<em>Ogc Features Data Service</em>' class.
@@ -1819,16 +1703,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int OGC_FEATURES_DATA_SERVICE_FEATURE_COUNT = DATA_SERVICE_FEATURE_COUNT + 3;
-
-	/**
-	 * The operation id for the '<em>Get Distributions</em>' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int OGC_FEATURES_DATA_SERVICE___GET_DISTRIBUTIONS = DATA_SERVICE___GET_DISTRIBUTIONS;
+	int OGC_FEATURES_DATA_SERVICE_FEATURE_COUNT = DATA_ATLAS_SERVICE_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of operations of the '<em>Ogc Features Data Service</em>' class.
@@ -1837,7 +1712,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int OGC_FEATURES_DATA_SERVICE_OPERATION_COUNT = DATA_SERVICE_OPERATION_COUNT + 0;
+	int OGC_FEATURES_DATA_SERVICE_OPERATION_COUNT = DATA_ATLAS_SERVICE_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.OgcFeaturesDataServiceConfigurationImpl <em>Ogc Features Data Service Configuration</em>}' class.
@@ -1847,7 +1722,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getOgcFeaturesDataServiceConfiguration()
 	 * @generated
 	 */
-	int OGC_FEATURES_DATA_SERVICE_CONFIGURATION = 18;
+	int OGC_FEATURES_DATA_SERVICE_CONFIGURATION = 17;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1965,7 +1840,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getOgcSensorThingsDataService()
 	 * @generated
 	 */
-	int OGC_SENSOR_THINGS_DATA_SERVICE = 19;
+	int OGC_SENSOR_THINGS_DATA_SERVICE = 18;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1974,7 +1849,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int OGC_SENSOR_THINGS_DATA_SERVICE__ID = DATA_SERVICE__ID;
+	int OGC_SENSOR_THINGS_DATA_SERVICE__ID = DATA_ATLAS_SERVICE__ID;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1983,7 +1858,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int OGC_SENSOR_THINGS_DATA_SERVICE__NAME = DATA_SERVICE__NAME;
+	int OGC_SENSOR_THINGS_DATA_SERVICE__NAME = DATA_ATLAS_SERVICE__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
@@ -1992,7 +1867,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int OGC_SENSOR_THINGS_DATA_SERVICE__DESCRIPTION = DATA_SERVICE__DESCRIPTION;
+	int OGC_SENSOR_THINGS_DATA_SERVICE__DESCRIPTION = DATA_ATLAS_SERVICE__DESCRIPTION;
 
 	/**
 	 * The feature id for the '<em><b>Data Input</b></em>' reference.
@@ -2001,34 +1876,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int OGC_SENSOR_THINGS_DATA_SERVICE__DATA_INPUT = DATA_SERVICE__DATA_INPUT;
-
-	/**
-	 * The feature id for the '<em><b>Transformation</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int OGC_SENSOR_THINGS_DATA_SERVICE__TRANSFORMATION = DATA_SERVICE__TRANSFORMATION;
-
-	/**
-	 * The feature id for the '<em><b>Distribution Export</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int OGC_SENSOR_THINGS_DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_SERVICE__DISTRIBUTION_EXPORT;
-
-	/**
-	 * The feature id for the '<em><b>Publication</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int OGC_SENSOR_THINGS_DATA_SERVICE__PUBLICATION = DATA_SERVICE__PUBLICATION;
+	int OGC_SENSOR_THINGS_DATA_SERVICE__DATA_INPUT = DATA_ATLAS_SERVICE__DATA_INPUT;
 
 	/**
 	 * The feature id for the '<em><b>Url Context</b></em>' attribute.
@@ -2037,7 +1885,34 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int OGC_SENSOR_THINGS_DATA_SERVICE__URL_CONTEXT = DATA_SERVICE__URL_CONTEXT;
+	int OGC_SENSOR_THINGS_DATA_SERVICE__URL_CONTEXT = DATA_ATLAS_SERVICE__URL_CONTEXT;
+
+	/**
+	 * The feature id for the '<em><b>Transformation</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OGC_SENSOR_THINGS_DATA_SERVICE__TRANSFORMATION = DATA_ATLAS_SERVICE__TRANSFORMATION;
+
+	/**
+	 * The feature id for the '<em><b>Distribution Export</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OGC_SENSOR_THINGS_DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_ATLAS_SERVICE__DISTRIBUTION_EXPORT;
+
+	/**
+	 * The feature id for the '<em><b>Publication</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OGC_SENSOR_THINGS_DATA_SERVICE__PUBLICATION = DATA_ATLAS_SERVICE__PUBLICATION;
 
 	/**
 	 * The number of structural features of the '<em>Ogc Sensor Things Data Service</em>' class.
@@ -2046,16 +1921,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int OGC_SENSOR_THINGS_DATA_SERVICE_FEATURE_COUNT = DATA_SERVICE_FEATURE_COUNT + 0;
-
-	/**
-	 * The operation id for the '<em>Get Distributions</em>' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int OGC_SENSOR_THINGS_DATA_SERVICE___GET_DISTRIBUTIONS = DATA_SERVICE___GET_DISTRIBUTIONS;
+	int OGC_SENSOR_THINGS_DATA_SERVICE_FEATURE_COUNT = DATA_ATLAS_SERVICE_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of operations of the '<em>Ogc Sensor Things Data Service</em>' class.
@@ -2064,208 +1930,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int OGC_SENSOR_THINGS_DATA_SERVICE_OPERATION_COUNT = DATA_SERVICE_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.MongoDataInputImpl <em>Mongo Data Input</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.MongoDataInputImpl
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getMongoDataInput()
-	 * @generated
-	 */
-	int MONGO_DATA_INPUT = 20;
-
-	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MONGO_DATA_INPUT__ID = DATA_INPUT__ID;
-
-	/**
-	 * The feature id for the '<em><b>Supported EClasses</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MONGO_DATA_INPUT__SUPPORTED_ECLASSES = DATA_INPUT__SUPPORTED_ECLASSES;
-
-	/**
-	 * The feature id for the '<em><b>Data Source</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MONGO_DATA_INPUT__DATA_SOURCE = DATA_INPUT_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of structural features of the '<em>Mongo Data Input</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MONGO_DATA_INPUT_FEATURE_COUNT = DATA_INPUT_FEATURE_COUNT + 1;
-
-	/**
-	 * The operation id for the '<em>Stream Data</em>' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MONGO_DATA_INPUT___STREAM_DATA = DATA_INPUT___STREAM_DATA;
-
-	/**
-	 * The number of operations of the '<em>Mongo Data Input</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MONGO_DATA_INPUT_OPERATION_COUNT = DATA_INPUT_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.FileDataInputImpl <em>File Data Input</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.FileDataInputImpl
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getFileDataInput()
-	 * @generated
-	 */
-	int FILE_DATA_INPUT = 21;
-
-	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FILE_DATA_INPUT__ID = DATA_INPUT__ID;
-
-	/**
-	 * The feature id for the '<em><b>Supported EClasses</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FILE_DATA_INPUT__SUPPORTED_ECLASSES = DATA_INPUT__SUPPORTED_ECLASSES;
-
-	/**
-	 * The feature id for the '<em><b>Uri</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FILE_DATA_INPUT__URI = DATA_INPUT_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of structural features of the '<em>File Data Input</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FILE_DATA_INPUT_FEATURE_COUNT = DATA_INPUT_FEATURE_COUNT + 1;
-
-	/**
-	 * The operation id for the '<em>Stream Data</em>' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FILE_DATA_INPUT___STREAM_DATA = DATA_INPUT___STREAM_DATA;
-
-	/**
-	 * The number of operations of the '<em>File Data Input</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FILE_DATA_INPUT_OPERATION_COUNT = DATA_INPUT_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.JPADataInputImpl <em>JPA Data Input</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.JPADataInputImpl
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getJPADataInput()
-	 * @generated
-	 */
-	int JPA_DATA_INPUT = 22;
-
-	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int JPA_DATA_INPUT__ID = DATA_INPUT__ID;
-
-	/**
-	 * The feature id for the '<em><b>Supported EClasses</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int JPA_DATA_INPUT__SUPPORTED_ECLASSES = DATA_INPUT__SUPPORTED_ECLASSES;
-
-	/**
-	 * The feature id for the '<em><b>Persistence Config</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int JPA_DATA_INPUT__PERSISTENCE_CONFIG = DATA_INPUT_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Data Source</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int JPA_DATA_INPUT__DATA_SOURCE = DATA_INPUT_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of structural features of the '<em>JPA Data Input</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int JPA_DATA_INPUT_FEATURE_COUNT = DATA_INPUT_FEATURE_COUNT + 2;
-
-	/**
-	 * The operation id for the '<em>Stream Data</em>' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int JPA_DATA_INPUT___STREAM_DATA = DATA_INPUT___STREAM_DATA;
-
-	/**
-	 * The number of operations of the '<em>JPA Data Input</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int JPA_DATA_INPUT_OPERATION_COUNT = DATA_INPUT_OPERATION_COUNT + 0;
+	int OGC_SENSOR_THINGS_DATA_SERVICE_OPERATION_COUNT = DATA_ATLAS_SERVICE_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.TransformationImpl <em>Transformation</em>}' class.
@@ -2275,7 +1940,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getTransformation()
 	 * @generated
 	 */
-	int TRANSFORMATION = 29;
+	int TRANSFORMATION = 25;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2330,7 +1995,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDataTransformation()
 	 * @generated
 	 */
-	int DATA_TRANSFORMATION = 23;
+	int DATA_TRANSFORMATION = 19;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2412,7 +2077,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getQueryTransformation()
 	 * @generated
 	 */
-	int QUERY_TRANSFORMATION = 24;
+	int QUERY_TRANSFORMATION = 20;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2467,7 +2132,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getODataDataService()
 	 * @generated
 	 */
-	int ODATA_DATA_SERVICE = 25;
+	int ODATA_DATA_SERVICE = 21;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2476,7 +2141,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ODATA_DATA_SERVICE__ID = DATA_SERVICE__ID;
+	int ODATA_DATA_SERVICE__ID = DATA_ATLAS_SERVICE__ID;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2485,7 +2150,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ODATA_DATA_SERVICE__NAME = DATA_SERVICE__NAME;
+	int ODATA_DATA_SERVICE__NAME = DATA_ATLAS_SERVICE__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
@@ -2494,7 +2159,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ODATA_DATA_SERVICE__DESCRIPTION = DATA_SERVICE__DESCRIPTION;
+	int ODATA_DATA_SERVICE__DESCRIPTION = DATA_ATLAS_SERVICE__DESCRIPTION;
 
 	/**
 	 * The feature id for the '<em><b>Data Input</b></em>' reference.
@@ -2503,34 +2168,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ODATA_DATA_SERVICE__DATA_INPUT = DATA_SERVICE__DATA_INPUT;
-
-	/**
-	 * The feature id for the '<em><b>Transformation</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ODATA_DATA_SERVICE__TRANSFORMATION = DATA_SERVICE__TRANSFORMATION;
-
-	/**
-	 * The feature id for the '<em><b>Distribution Export</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ODATA_DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_SERVICE__DISTRIBUTION_EXPORT;
-
-	/**
-	 * The feature id for the '<em><b>Publication</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ODATA_DATA_SERVICE__PUBLICATION = DATA_SERVICE__PUBLICATION;
+	int ODATA_DATA_SERVICE__DATA_INPUT = DATA_ATLAS_SERVICE__DATA_INPUT;
 
 	/**
 	 * The feature id for the '<em><b>Url Context</b></em>' attribute.
@@ -2539,7 +2177,34 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ODATA_DATA_SERVICE__URL_CONTEXT = DATA_SERVICE__URL_CONTEXT;
+	int ODATA_DATA_SERVICE__URL_CONTEXT = DATA_ATLAS_SERVICE__URL_CONTEXT;
+
+	/**
+	 * The feature id for the '<em><b>Transformation</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ODATA_DATA_SERVICE__TRANSFORMATION = DATA_ATLAS_SERVICE__TRANSFORMATION;
+
+	/**
+	 * The feature id for the '<em><b>Distribution Export</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ODATA_DATA_SERVICE__DISTRIBUTION_EXPORT = DATA_ATLAS_SERVICE__DISTRIBUTION_EXPORT;
+
+	/**
+	 * The feature id for the '<em><b>Publication</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ODATA_DATA_SERVICE__PUBLICATION = DATA_ATLAS_SERVICE__PUBLICATION;
 
 	/**
 	 * The feature id for the '<em><b>Configuration</b></em>' containment reference list.
@@ -2548,7 +2213,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ODATA_DATA_SERVICE__CONFIGURATION = DATA_SERVICE_FEATURE_COUNT + 0;
+	int ODATA_DATA_SERVICE__CONFIGURATION = DATA_ATLAS_SERVICE_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>OData Data Service</em>' class.
@@ -2557,16 +2222,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ODATA_DATA_SERVICE_FEATURE_COUNT = DATA_SERVICE_FEATURE_COUNT + 1;
-
-	/**
-	 * The operation id for the '<em>Get Distributions</em>' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ODATA_DATA_SERVICE___GET_DISTRIBUTIONS = DATA_SERVICE___GET_DISTRIBUTIONS;
+	int ODATA_DATA_SERVICE_FEATURE_COUNT = DATA_ATLAS_SERVICE_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>OData Data Service</em>' class.
@@ -2575,7 +2231,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ODATA_DATA_SERVICE_OPERATION_COUNT = DATA_SERVICE_OPERATION_COUNT + 0;
+	int ODATA_DATA_SERVICE_OPERATION_COUNT = DATA_ATLAS_SERVICE_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.ODataDataServiceConfigurationImpl <em>OData Data Service Configuration</em>}' class.
@@ -2585,7 +2241,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getODataDataServiceConfiguration()
 	 * @generated
 	 */
-	int ODATA_DATA_SERVICE_CONFIGURATION = 26;
+	int ODATA_DATA_SERVICE_CONFIGURATION = 22;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2649,7 +2305,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDistributionExport()
 	 * @generated
 	 */
-	int DISTRIBUTION_EXPORT = 27;
+	int DISTRIBUTION_EXPORT = 23;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2713,7 +2369,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getCSVDistributionExport()
 	 * @generated
 	 */
-	int CSV_DISTRIBUTION_EXPORT = 28;
+	int CSV_DISTRIBUTION_EXPORT = 24;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2804,7 +2460,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDcatPublication()
 	 * @generated
 	 */
-	int DCAT_PUBLICATION = 30;
+	int DCAT_PUBLICATION = 26;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2977,516 +2633,6 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	 */
 	int DCAT_PUBLICATION_OPERATION_COUNT = 0;
 
-	/**
-	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DataSourceImpl <em>Data Source</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DataSourceImpl
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDataSource()
-	 * @generated
-	 */
-	int DATA_SOURCE = 31;
-
-	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATA_SOURCE__ID = 0;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATA_SOURCE__NAME = 1;
-
-	/**
-	 * The feature id for the '<em><b>Description</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATA_SOURCE__DESCRIPTION = 2;
-
-	/**
-	 * The feature id for the '<em><b>Filter</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATA_SOURCE__FILTER = 3;
-
-	/**
-	 * The number of structural features of the '<em>Data Source</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATA_SOURCE_FEATURE_COUNT = 4;
-
-	/**
-	 * The number of operations of the '<em>Data Source</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATA_SOURCE_OPERATION_COUNT = 0;
-
-	/**
-	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DatabaseDataSourceImpl <em>Database Data Source</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DatabaseDataSourceImpl
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDatabaseDataSource()
-	 * @generated
-	 */
-	int DATABASE_DATA_SOURCE = 32;
-
-	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATABASE_DATA_SOURCE__ID = DATA_SOURCE__ID;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATABASE_DATA_SOURCE__NAME = DATA_SOURCE__NAME;
-
-	/**
-	 * The feature id for the '<em><b>Description</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATABASE_DATA_SOURCE__DESCRIPTION = DATA_SOURCE__DESCRIPTION;
-
-	/**
-	 * The feature id for the '<em><b>Filter</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATABASE_DATA_SOURCE__FILTER = DATA_SOURCE__FILTER;
-
-	/**
-	 * The feature id for the '<em><b>Host</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATABASE_DATA_SOURCE__HOST = DATA_SOURCE_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Port</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATABASE_DATA_SOURCE__PORT = DATA_SOURCE_FEATURE_COUNT + 1;
-
-	/**
-	 * The feature id for the '<em><b>Database</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATABASE_DATA_SOURCE__DATABASE = DATA_SOURCE_FEATURE_COUNT + 2;
-
-	/**
-	 * The feature id for the '<em><b>User</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATABASE_DATA_SOURCE__USER = DATA_SOURCE_FEATURE_COUNT + 3;
-
-	/**
-	 * The feature id for the '<em><b>Password</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATABASE_DATA_SOURCE__PASSWORD = DATA_SOURCE_FEATURE_COUNT + 4;
-
-	/**
-	 * The feature id for the '<em><b>Properties</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATABASE_DATA_SOURCE__PROPERTIES = DATA_SOURCE_FEATURE_COUNT + 5;
-
-	/**
-	 * The number of structural features of the '<em>Database Data Source</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATABASE_DATA_SOURCE_FEATURE_COUNT = DATA_SOURCE_FEATURE_COUNT + 6;
-
-	/**
-	 * The number of operations of the '<em>Database Data Source</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATABASE_DATA_SOURCE_OPERATION_COUNT = DATA_SOURCE_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.ConnectionPropertyImpl <em>Connection Property</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.ConnectionPropertyImpl
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getConnectionProperty()
-	 * @generated
-	 */
-	int CONNECTION_PROPERTY = 33;
-
-	/**
-	 * The feature id for the '<em><b>Key</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONNECTION_PROPERTY__KEY = 0;
-
-	/**
-	 * The feature id for the '<em><b>Value</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONNECTION_PROPERTY__VALUE = 1;
-
-	/**
-	 * The number of structural features of the '<em>Connection Property</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONNECTION_PROPERTY_FEATURE_COUNT = 2;
-
-	/**
-	 * The number of operations of the '<em>Connection Property</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONNECTION_PROPERTY_OPERATION_COUNT = 0;
-
-	/**
-	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.JdbcDataSourceImpl <em>Jdbc Data Source</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.JdbcDataSourceImpl
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getJdbcDataSource()
-	 * @generated
-	 */
-	int JDBC_DATA_SOURCE = 34;
-
-	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int JDBC_DATA_SOURCE__ID = DATABASE_DATA_SOURCE__ID;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int JDBC_DATA_SOURCE__NAME = DATABASE_DATA_SOURCE__NAME;
-
-	/**
-	 * The feature id for the '<em><b>Description</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int JDBC_DATA_SOURCE__DESCRIPTION = DATABASE_DATA_SOURCE__DESCRIPTION;
-
-	/**
-	 * The feature id for the '<em><b>Filter</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int JDBC_DATA_SOURCE__FILTER = DATABASE_DATA_SOURCE__FILTER;
-
-	/**
-	 * The feature id for the '<em><b>Host</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int JDBC_DATA_SOURCE__HOST = DATABASE_DATA_SOURCE__HOST;
-
-	/**
-	 * The feature id for the '<em><b>Port</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int JDBC_DATA_SOURCE__PORT = DATABASE_DATA_SOURCE__PORT;
-
-	/**
-	 * The feature id for the '<em><b>Database</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int JDBC_DATA_SOURCE__DATABASE = DATABASE_DATA_SOURCE__DATABASE;
-
-	/**
-	 * The feature id for the '<em><b>User</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int JDBC_DATA_SOURCE__USER = DATABASE_DATA_SOURCE__USER;
-
-	/**
-	 * The feature id for the '<em><b>Password</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int JDBC_DATA_SOURCE__PASSWORD = DATABASE_DATA_SOURCE__PASSWORD;
-
-	/**
-	 * The feature id for the '<em><b>Properties</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int JDBC_DATA_SOURCE__PROPERTIES = DATABASE_DATA_SOURCE__PROPERTIES;
-
-	/**
-	 * The feature id for the '<em><b>Driver</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int JDBC_DATA_SOURCE__DRIVER = DATABASE_DATA_SOURCE_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Schema</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int JDBC_DATA_SOURCE__SCHEMA = DATABASE_DATA_SOURCE_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of structural features of the '<em>Jdbc Data Source</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int JDBC_DATA_SOURCE_FEATURE_COUNT = DATABASE_DATA_SOURCE_FEATURE_COUNT + 2;
-
-	/**
-	 * The number of operations of the '<em>Jdbc Data Source</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int JDBC_DATA_SOURCE_OPERATION_COUNT = DATABASE_DATA_SOURCE_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.MongoDataSourceImpl <em>Mongo Data Source</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.MongoDataSourceImpl
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getMongoDataSource()
-	 * @generated
-	 */
-	int MONGO_DATA_SOURCE = 35;
-
-	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MONGO_DATA_SOURCE__ID = DATABASE_DATA_SOURCE__ID;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MONGO_DATA_SOURCE__NAME = DATABASE_DATA_SOURCE__NAME;
-
-	/**
-	 * The feature id for the '<em><b>Description</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MONGO_DATA_SOURCE__DESCRIPTION = DATABASE_DATA_SOURCE__DESCRIPTION;
-
-	/**
-	 * The feature id for the '<em><b>Filter</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MONGO_DATA_SOURCE__FILTER = DATABASE_DATA_SOURCE__FILTER;
-
-	/**
-	 * The feature id for the '<em><b>Host</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MONGO_DATA_SOURCE__HOST = DATABASE_DATA_SOURCE__HOST;
-
-	/**
-	 * The feature id for the '<em><b>Port</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MONGO_DATA_SOURCE__PORT = DATABASE_DATA_SOURCE__PORT;
-
-	/**
-	 * The feature id for the '<em><b>Database</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MONGO_DATA_SOURCE__DATABASE = DATABASE_DATA_SOURCE__DATABASE;
-
-	/**
-	 * The feature id for the '<em><b>User</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MONGO_DATA_SOURCE__USER = DATABASE_DATA_SOURCE__USER;
-
-	/**
-	 * The feature id for the '<em><b>Password</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MONGO_DATA_SOURCE__PASSWORD = DATABASE_DATA_SOURCE__PASSWORD;
-
-	/**
-	 * The feature id for the '<em><b>Properties</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MONGO_DATA_SOURCE__PROPERTIES = DATABASE_DATA_SOURCE__PROPERTIES;
-
-	/**
-	 * The feature id for the '<em><b>Auth Source</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MONGO_DATA_SOURCE__AUTH_SOURCE = DATABASE_DATA_SOURCE_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Flavor</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MONGO_DATA_SOURCE__FLAVOR = DATABASE_DATA_SOURCE_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of structural features of the '<em>Mongo Data Source</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MONGO_DATA_SOURCE_FEATURE_COUNT = DATABASE_DATA_SOURCE_FEATURE_COUNT + 2;
-
-	/**
-	 * The number of operations of the '<em>Mongo Data Source</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MONGO_DATA_SOURCE_OPERATION_COUNT = DATABASE_DATA_SOURCE_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link org.eclipse.fennec.data.atlas.configuration.JdbcDriver <em>Jdbc Driver</em>}' enum.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.fennec.data.atlas.configuration.JdbcDriver
-	 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getJdbcDriver()
-	 * @generated
-	 */
-	int JDBC_DRIVER = 36;
-
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.DataAtlasConfiguration <em>Data Atlas Configuration</em>}'.
@@ -3598,133 +2744,47 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	EReference getDataAtlasConfiguration_Publications();
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.DataProvider <em>Data Provider</em>}'.
+	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.DataAtlasProvider <em>Data Atlas Provider</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Data Provider</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DataProvider
+	 * @return the meta object for class '<em>Data Atlas Provider</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DataAtlasProvider
 	 * @generated
 	 */
-	EClass getDataProvider();
+	EClass getDataAtlasProvider();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DataProvider#getId <em>Id</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Id</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DataProvider#getId()
-	 * @see #getDataProvider()
-	 * @generated
-	 */
-	EAttribute getDataProvider_Id();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DataProvider#getName <em>Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DataProvider#getName()
-	 * @see #getDataProvider()
-	 * @generated
-	 */
-	EAttribute getDataProvider_Name();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DataProvider#getDescription <em>Description</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Description</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DataProvider#getDescription()
-	 * @see #getDataProvider()
-	 * @generated
-	 */
-	EAttribute getDataProvider_Description();
-
-	/**
-	 * Returns the meta object for the reference '{@link org.eclipse.fennec.data.atlas.configuration.DataProvider#getDataInput <em>Data Input</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Data Input</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DataProvider#getDataInput()
-	 * @see #getDataProvider()
-	 * @generated
-	 */
-	EReference getDataProvider_DataInput();
-
-	/**
-	 * Returns the meta object for the reference '{@link org.eclipse.fennec.data.atlas.configuration.DataProvider#getTransformation <em>Transformation</em>}'.
+	 * Returns the meta object for the reference '{@link org.eclipse.fennec.data.atlas.configuration.DataAtlasProvider#getTransformation <em>Transformation</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference '<em>Transformation</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DataProvider#getTransformation()
-	 * @see #getDataProvider()
+	 * @see org.eclipse.fennec.data.atlas.configuration.DataAtlasProvider#getTransformation()
+	 * @see #getDataAtlasProvider()
 	 * @generated
 	 */
-	EReference getDataProvider_Transformation();
+	EReference getDataAtlasProvider_Transformation();
 
 	/**
-	 * Returns the meta object for the reference list '{@link org.eclipse.fennec.data.atlas.configuration.DataProvider#getDistributionExport <em>Distribution Export</em>}'.
+	 * Returns the meta object for the reference list '{@link org.eclipse.fennec.data.atlas.configuration.DataAtlasProvider#getDistributionExport <em>Distribution Export</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference list '<em>Distribution Export</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DataProvider#getDistributionExport()
-	 * @see #getDataProvider()
+	 * @see org.eclipse.fennec.data.atlas.configuration.DataAtlasProvider#getDistributionExport()
+	 * @see #getDataAtlasProvider()
 	 * @generated
 	 */
-	EReference getDataProvider_DistributionExport();
+	EReference getDataAtlasProvider_DistributionExport();
 
 	/**
-	 * Returns the meta object for the reference '{@link org.eclipse.fennec.data.atlas.configuration.DataProvider#getPublication <em>Publication</em>}'.
+	 * Returns the meta object for the reference '{@link org.eclipse.fennec.data.atlas.configuration.DataAtlasProvider#getPublication <em>Publication</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference '<em>Publication</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DataProvider#getPublication()
-	 * @see #getDataProvider()
+	 * @see org.eclipse.fennec.data.atlas.configuration.DataAtlasProvider#getPublication()
+	 * @see #getDataAtlasProvider()
 	 * @generated
 	 */
-	EReference getDataProvider_Publication();
-
-	/**
-	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.DataInput <em>Data Input</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Data Input</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DataInput
-	 * @generated
-	 */
-	EClass getDataInput();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DataInput#getId <em>Id</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Id</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DataInput#getId()
-	 * @see #getDataInput()
-	 * @generated
-	 */
-	EAttribute getDataInput_Id();
-
-	/**
-	 * Returns the meta object for the reference list '{@link org.eclipse.fennec.data.atlas.configuration.DataInput#getSupportedEClasses <em>Supported EClasses</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Supported EClasses</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DataInput#getSupportedEClasses()
-	 * @see #getDataInput()
-	 * @generated
-	 */
-	EReference getDataInput_SupportedEClasses();
-
-	/**
-	 * Returns the meta object for the '{@link org.eclipse.fennec.data.atlas.configuration.DataInput#streamData() <em>Stream Data</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the '<em>Stream Data</em>' operation.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DataInput#streamData()
-	 * @generated
-	 */
-	EOperation getDataInput__StreamData();
+	EReference getDataAtlasProvider_Publication();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.BridgeRepository <em>Bridge Repository</em>}'.
@@ -3846,35 +2906,14 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	EReference getDataSet_ParentDataSet();
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.DataService <em>Data Service</em>}'.
+	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.DataAtlasService <em>Data Atlas Service</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Data Service</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DataService
+	 * @return the meta object for class '<em>Data Atlas Service</em>'.
+	 * @see org.eclipse.fennec.data.atlas.configuration.DataAtlasService
 	 * @generated
 	 */
-	EClass getDataService();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DataService#getUrlContext <em>Url Context</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Url Context</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DataService#getUrlContext()
-	 * @see #getDataService()
-	 * @generated
-	 */
-	EAttribute getDataService_UrlContext();
-
-	/**
-	 * Returns the meta object for the '{@link org.eclipse.fennec.data.atlas.configuration.DataService#getDistributions() <em>Get Distributions</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the '<em>Get Distributions</em>' operation.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DataService#getDistributions()
-	 * @generated
-	 */
-	EOperation getDataService__GetDistributions();
+	EClass getDataAtlasService();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.RestDataService <em>Rest Data Service</em>}'.
@@ -4413,80 +3452,6 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	EClass getOgcSensorThingsDataService();
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.MongoDataInput <em>Mongo Data Input</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Mongo Data Input</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.MongoDataInput
-	 * @generated
-	 */
-	EClass getMongoDataInput();
-
-	/**
-	 * Returns the meta object for the reference '{@link org.eclipse.fennec.data.atlas.configuration.MongoDataInput#getDataSource <em>Data Source</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Data Source</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.MongoDataInput#getDataSource()
-	 * @see #getMongoDataInput()
-	 * @generated
-	 */
-	EReference getMongoDataInput_DataSource();
-
-	/**
-	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.FileDataInput <em>File Data Input</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>File Data Input</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.FileDataInput
-	 * @generated
-	 */
-	EClass getFileDataInput();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.FileDataInput#getUri <em>Uri</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Uri</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.FileDataInput#getUri()
-	 * @see #getFileDataInput()
-	 * @generated
-	 */
-	EAttribute getFileDataInput_Uri();
-
-	/**
-	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.JPADataInput <em>JPA Data Input</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>JPA Data Input</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.JPADataInput
-	 * @generated
-	 */
-	EClass getJPADataInput();
-
-	/**
-	 * Returns the meta object for the containment reference '{@link org.eclipse.fennec.data.atlas.configuration.JPADataInput#getPersistenceConfig <em>Persistence Config</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Persistence Config</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.JPADataInput#getPersistenceConfig()
-	 * @see #getJPADataInput()
-	 * @generated
-	 */
-	EReference getJPADataInput_PersistenceConfig();
-
-	/**
-	 * Returns the meta object for the reference '{@link org.eclipse.fennec.data.atlas.configuration.JPADataInput#getDataSource <em>Data Source</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Data Source</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.JPADataInput#getDataSource()
-	 * @see #getJPADataInput()
-	 * @generated
-	 */
-	EReference getJPADataInput_DataSource();
-
-	/**
 	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.DataTransformation <em>Data Transformation</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4930,242 +3895,6 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 	EAttribute getDcatPublication_LicenseUri();
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.DataSource <em>Data Source</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Data Source</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DataSource
-	 * @generated
-	 */
-	EClass getDataSource();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DataSource#getId <em>Id</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Id</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DataSource#getId()
-	 * @see #getDataSource()
-	 * @generated
-	 */
-	EAttribute getDataSource_Id();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DataSource#getName <em>Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DataSource#getName()
-	 * @see #getDataSource()
-	 * @generated
-	 */
-	EAttribute getDataSource_Name();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DataSource#getDescription <em>Description</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Description</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DataSource#getDescription()
-	 * @see #getDataSource()
-	 * @generated
-	 */
-	EAttribute getDataSource_Description();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DataSource#getFilter <em>Filter</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Filter</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DataSource#getFilter()
-	 * @see #getDataSource()
-	 * @generated
-	 */
-	EAttribute getDataSource_Filter();
-
-	/**
-	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource <em>Database Data Source</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Database Data Source</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource
-	 * @generated
-	 */
-	EClass getDatabaseDataSource();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource#getHost <em>Host</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Host</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource#getHost()
-	 * @see #getDatabaseDataSource()
-	 * @generated
-	 */
-	EAttribute getDatabaseDataSource_Host();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource#getPort <em>Port</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Port</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource#getPort()
-	 * @see #getDatabaseDataSource()
-	 * @generated
-	 */
-	EAttribute getDatabaseDataSource_Port();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource#getDatabase <em>Database</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Database</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource#getDatabase()
-	 * @see #getDatabaseDataSource()
-	 * @generated
-	 */
-	EAttribute getDatabaseDataSource_Database();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource#getUser <em>User</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>User</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource#getUser()
-	 * @see #getDatabaseDataSource()
-	 * @generated
-	 */
-	EAttribute getDatabaseDataSource_User();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource#getPassword <em>Password</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Password</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource#getPassword()
-	 * @see #getDatabaseDataSource()
-	 * @generated
-	 */
-	EAttribute getDatabaseDataSource_Password();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource#getProperties <em>Properties</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Properties</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource#getProperties()
-	 * @see #getDatabaseDataSource()
-	 * @generated
-	 */
-	EReference getDatabaseDataSource_Properties();
-
-	/**
-	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.ConnectionProperty <em>Connection Property</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Connection Property</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.ConnectionProperty
-	 * @generated
-	 */
-	EClass getConnectionProperty();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.ConnectionProperty#getKey <em>Key</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Key</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.ConnectionProperty#getKey()
-	 * @see #getConnectionProperty()
-	 * @generated
-	 */
-	EAttribute getConnectionProperty_Key();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.ConnectionProperty#getValue <em>Value</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Value</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.ConnectionProperty#getValue()
-	 * @see #getConnectionProperty()
-	 * @generated
-	 */
-	EAttribute getConnectionProperty_Value();
-
-	/**
-	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.JdbcDataSource <em>Jdbc Data Source</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Jdbc Data Source</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.JdbcDataSource
-	 * @generated
-	 */
-	EClass getJdbcDataSource();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.JdbcDataSource#getDriver <em>Driver</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Driver</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.JdbcDataSource#getDriver()
-	 * @see #getJdbcDataSource()
-	 * @generated
-	 */
-	EAttribute getJdbcDataSource_Driver();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.JdbcDataSource#getSchema <em>Schema</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Schema</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.JdbcDataSource#getSchema()
-	 * @see #getJdbcDataSource()
-	 * @generated
-	 */
-	EAttribute getJdbcDataSource_Schema();
-
-	/**
-	 * Returns the meta object for class '{@link org.eclipse.fennec.data.atlas.configuration.MongoDataSource <em>Mongo Data Source</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Mongo Data Source</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.MongoDataSource
-	 * @generated
-	 */
-	EClass getMongoDataSource();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.MongoDataSource#getAuthSource <em>Auth Source</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Auth Source</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.MongoDataSource#getAuthSource()
-	 * @see #getMongoDataSource()
-	 * @generated
-	 */
-	EAttribute getMongoDataSource_AuthSource();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.data.atlas.configuration.MongoDataSource#getFlavor <em>Flavor</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Flavor</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.MongoDataSource#getFlavor()
-	 * @see #getMongoDataSource()
-	 * @generated
-	 */
-	EAttribute getMongoDataSource_Flavor();
-
-	/**
-	 * Returns the meta object for enum '{@link org.eclipse.fennec.data.atlas.configuration.JdbcDriver <em>Jdbc Driver</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for enum '<em>Jdbc Driver</em>'.
-	 * @see org.eclipse.fennec.data.atlas.configuration.JdbcDriver
-	 * @generated
-	 */
-	EEnum getJdbcDriver();
-
-	/**
 	 * Returns the factory that creates the instances of the model.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -5271,46 +4000,14 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		EReference DATA_ATLAS_CONFIGURATION__PUBLICATIONS = eINSTANCE.getDataAtlasConfiguration_Publications();
 
 		/**
-		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DataProviderImpl <em>Data Provider</em>}' class.
+		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DataAtlasProviderImpl <em>Data Atlas Provider</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DataProviderImpl
-		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDataProvider()
+		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DataAtlasProviderImpl
+		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDataAtlasProvider()
 		 * @generated
 		 */
-		EClass DATA_PROVIDER = eINSTANCE.getDataProvider();
-
-		/**
-		 * The meta object literal for the '<em><b>Id</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute DATA_PROVIDER__ID = eINSTANCE.getDataProvider_Id();
-
-		/**
-		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute DATA_PROVIDER__NAME = eINSTANCE.getDataProvider_Name();
-
-		/**
-		 * The meta object literal for the '<em><b>Description</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute DATA_PROVIDER__DESCRIPTION = eINSTANCE.getDataProvider_Description();
-
-		/**
-		 * The meta object literal for the '<em><b>Data Input</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference DATA_PROVIDER__DATA_INPUT = eINSTANCE.getDataProvider_DataInput();
+		EClass DATA_ATLAS_PROVIDER = eINSTANCE.getDataAtlasProvider();
 
 		/**
 		 * The meta object literal for the '<em><b>Transformation</b></em>' reference feature.
@@ -5318,7 +4015,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference DATA_PROVIDER__TRANSFORMATION = eINSTANCE.getDataProvider_Transformation();
+		EReference DATA_ATLAS_PROVIDER__TRANSFORMATION = eINSTANCE.getDataAtlasProvider_Transformation();
 
 		/**
 		 * The meta object literal for the '<em><b>Distribution Export</b></em>' reference list feature.
@@ -5326,7 +4023,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference DATA_PROVIDER__DISTRIBUTION_EXPORT = eINSTANCE.getDataProvider_DistributionExport();
+		EReference DATA_ATLAS_PROVIDER__DISTRIBUTION_EXPORT = eINSTANCE.getDataAtlasProvider_DistributionExport();
 
 		/**
 		 * The meta object literal for the '<em><b>Publication</b></em>' reference feature.
@@ -5334,41 +4031,7 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference DATA_PROVIDER__PUBLICATION = eINSTANCE.getDataProvider_Publication();
-
-		/**
-		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DataInputImpl <em>Data Input</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DataInputImpl
-		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDataInput()
-		 * @generated
-		 */
-		EClass DATA_INPUT = eINSTANCE.getDataInput();
-
-		/**
-		 * The meta object literal for the '<em><b>Id</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute DATA_INPUT__ID = eINSTANCE.getDataInput_Id();
-
-		/**
-		 * The meta object literal for the '<em><b>Supported EClasses</b></em>' reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference DATA_INPUT__SUPPORTED_ECLASSES = eINSTANCE.getDataInput_SupportedEClasses();
-
-		/**
-		 * The meta object literal for the '<em><b>Stream Data</b></em>' operation.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EOperation DATA_INPUT___STREAM_DATA = eINSTANCE.getDataInput__StreamData();
+		EReference DATA_ATLAS_PROVIDER__PUBLICATION = eINSTANCE.getDataAtlasProvider_Publication();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.BridgeRepositoryImpl <em>Bridge Repository</em>}' class.
@@ -5463,30 +4126,14 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		EReference DATA_SET__PARENT_DATA_SET = eINSTANCE.getDataSet_ParentDataSet();
 
 		/**
-		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DataServiceImpl <em>Data Service</em>}' class.
+		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DataAtlasServiceImpl <em>Data Atlas Service</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DataServiceImpl
-		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDataService()
+		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DataAtlasServiceImpl
+		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDataAtlasService()
 		 * @generated
 		 */
-		EClass DATA_SERVICE = eINSTANCE.getDataService();
-
-		/**
-		 * The meta object literal for the '<em><b>Url Context</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute DATA_SERVICE__URL_CONTEXT = eINSTANCE.getDataService_UrlContext();
-
-		/**
-		 * The meta object literal for the '<em><b>Get Distributions</b></em>' operation.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EOperation DATA_SERVICE___GET_DISTRIBUTIONS = eINSTANCE.getDataService__GetDistributions();
+		EClass DATA_ATLAS_SERVICE = eINSTANCE.getDataAtlasService();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.RestDataServiceImpl <em>Rest Data Service</em>}' class.
@@ -5917,68 +4564,6 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		EClass OGC_SENSOR_THINGS_DATA_SERVICE = eINSTANCE.getOgcSensorThingsDataService();
 
 		/**
-		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.MongoDataInputImpl <em>Mongo Data Input</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see org.eclipse.fennec.data.atlas.configuration.impl.MongoDataInputImpl
-		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getMongoDataInput()
-		 * @generated
-		 */
-		EClass MONGO_DATA_INPUT = eINSTANCE.getMongoDataInput();
-
-		/**
-		 * The meta object literal for the '<em><b>Data Source</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference MONGO_DATA_INPUT__DATA_SOURCE = eINSTANCE.getMongoDataInput_DataSource();
-
-		/**
-		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.FileDataInputImpl <em>File Data Input</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see org.eclipse.fennec.data.atlas.configuration.impl.FileDataInputImpl
-		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getFileDataInput()
-		 * @generated
-		 */
-		EClass FILE_DATA_INPUT = eINSTANCE.getFileDataInput();
-
-		/**
-		 * The meta object literal for the '<em><b>Uri</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute FILE_DATA_INPUT__URI = eINSTANCE.getFileDataInput_Uri();
-
-		/**
-		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.JPADataInputImpl <em>JPA Data Input</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see org.eclipse.fennec.data.atlas.configuration.impl.JPADataInputImpl
-		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getJPADataInput()
-		 * @generated
-		 */
-		EClass JPA_DATA_INPUT = eINSTANCE.getJPADataInput();
-
-		/**
-		 * The meta object literal for the '<em><b>Persistence Config</b></em>' containment reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference JPA_DATA_INPUT__PERSISTENCE_CONFIG = eINSTANCE.getJPADataInput_PersistenceConfig();
-
-		/**
-		 * The meta object literal for the '<em><b>Data Source</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference JPA_DATA_INPUT__DATA_SOURCE = eINSTANCE.getJPADataInput_DataSource();
-
-		/**
 		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DataTransformationImpl <em>Data Transformation</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -6321,194 +4906,6 @@ public interface DAConfigPackage extends org.eclipse.emf.ecore.EPackage {
 		 * @generated
 		 */
 		EAttribute DCAT_PUBLICATION__LICENSE_URI = eINSTANCE.getDcatPublication_LicenseUri();
-
-		/**
-		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DataSourceImpl <em>Data Source</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DataSourceImpl
-		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDataSource()
-		 * @generated
-		 */
-		EClass DATA_SOURCE = eINSTANCE.getDataSource();
-
-		/**
-		 * The meta object literal for the '<em><b>Id</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute DATA_SOURCE__ID = eINSTANCE.getDataSource_Id();
-
-		/**
-		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute DATA_SOURCE__NAME = eINSTANCE.getDataSource_Name();
-
-		/**
-		 * The meta object literal for the '<em><b>Description</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute DATA_SOURCE__DESCRIPTION = eINSTANCE.getDataSource_Description();
-
-		/**
-		 * The meta object literal for the '<em><b>Filter</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute DATA_SOURCE__FILTER = eINSTANCE.getDataSource_Filter();
-
-		/**
-		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.DatabaseDataSourceImpl <em>Database Data Source</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DatabaseDataSourceImpl
-		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getDatabaseDataSource()
-		 * @generated
-		 */
-		EClass DATABASE_DATA_SOURCE = eINSTANCE.getDatabaseDataSource();
-
-		/**
-		 * The meta object literal for the '<em><b>Host</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute DATABASE_DATA_SOURCE__HOST = eINSTANCE.getDatabaseDataSource_Host();
-
-		/**
-		 * The meta object literal for the '<em><b>Port</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute DATABASE_DATA_SOURCE__PORT = eINSTANCE.getDatabaseDataSource_Port();
-
-		/**
-		 * The meta object literal for the '<em><b>Database</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute DATABASE_DATA_SOURCE__DATABASE = eINSTANCE.getDatabaseDataSource_Database();
-
-		/**
-		 * The meta object literal for the '<em><b>User</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute DATABASE_DATA_SOURCE__USER = eINSTANCE.getDatabaseDataSource_User();
-
-		/**
-		 * The meta object literal for the '<em><b>Password</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute DATABASE_DATA_SOURCE__PASSWORD = eINSTANCE.getDatabaseDataSource_Password();
-
-		/**
-		 * The meta object literal for the '<em><b>Properties</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference DATABASE_DATA_SOURCE__PROPERTIES = eINSTANCE.getDatabaseDataSource_Properties();
-
-		/**
-		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.ConnectionPropertyImpl <em>Connection Property</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see org.eclipse.fennec.data.atlas.configuration.impl.ConnectionPropertyImpl
-		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getConnectionProperty()
-		 * @generated
-		 */
-		EClass CONNECTION_PROPERTY = eINSTANCE.getConnectionProperty();
-
-		/**
-		 * The meta object literal for the '<em><b>Key</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute CONNECTION_PROPERTY__KEY = eINSTANCE.getConnectionProperty_Key();
-
-		/**
-		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute CONNECTION_PROPERTY__VALUE = eINSTANCE.getConnectionProperty_Value();
-
-		/**
-		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.JdbcDataSourceImpl <em>Jdbc Data Source</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see org.eclipse.fennec.data.atlas.configuration.impl.JdbcDataSourceImpl
-		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getJdbcDataSource()
-		 * @generated
-		 */
-		EClass JDBC_DATA_SOURCE = eINSTANCE.getJdbcDataSource();
-
-		/**
-		 * The meta object literal for the '<em><b>Driver</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute JDBC_DATA_SOURCE__DRIVER = eINSTANCE.getJdbcDataSource_Driver();
-
-		/**
-		 * The meta object literal for the '<em><b>Schema</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute JDBC_DATA_SOURCE__SCHEMA = eINSTANCE.getJdbcDataSource_Schema();
-
-		/**
-		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.impl.MongoDataSourceImpl <em>Mongo Data Source</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see org.eclipse.fennec.data.atlas.configuration.impl.MongoDataSourceImpl
-		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getMongoDataSource()
-		 * @generated
-		 */
-		EClass MONGO_DATA_SOURCE = eINSTANCE.getMongoDataSource();
-
-		/**
-		 * The meta object literal for the '<em><b>Auth Source</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute MONGO_DATA_SOURCE__AUTH_SOURCE = eINSTANCE.getMongoDataSource_AuthSource();
-
-		/**
-		 * The meta object literal for the '<em><b>Flavor</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute MONGO_DATA_SOURCE__FLAVOR = eINSTANCE.getMongoDataSource_Flavor();
-
-		/**
-		 * The meta object literal for the '{@link org.eclipse.fennec.data.atlas.configuration.JdbcDriver <em>Jdbc Driver</em>}' enum.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see org.eclipse.fennec.data.atlas.configuration.JdbcDriver
-		 * @see org.eclipse.fennec.data.atlas.configuration.impl.DAConfigPackageImpl#getJdbcDriver()
-		 * @generated
-		 */
-		EEnum JDBC_DRIVER = eINSTANCE.getJdbcDriver();
 
 	}
 

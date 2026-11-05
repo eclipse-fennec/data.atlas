@@ -27,7 +27,7 @@ import org.eclipse.fennec.codec.csv.annotation.RequireCodecCsv;
 import org.eclipse.fennec.codec.openapi.annotation.RequireCodecOpenApi;
 import org.eclipse.fennec.codec.rest.annotations.RequireCodecMessageBodyReaderWriter;
 import org.eclipse.fennec.data.atlas.api.DataAtlasConstants;
-import org.eclipse.fennec.data.atlas.configuration.DataInput;
+import org.eclipse.fennec.atlas.configuration.DataInput;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
 import org.eclipse.fennec.data.atlas.configuration.RestDataService;
 import org.eclipse.fennec.data.atlas.configuration.RestDataServiceConfiguration;

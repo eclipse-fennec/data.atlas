@@ -20,7 +20,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.eclipse.fennec.data.atlas.api.DataAtlasConstants;
-import org.eclipse.fennec.data.atlas.configuration.FileDataInput;
+import org.eclipse.fennec.atlas.configuration.FileDataInput;
 import org.eclipse.fennec.emf.osgi.ResourceSetFactory;
 import org.eclipse.fennec.persistence.repository.RepositoryConstants;
 import org.eclipse.fennec.persistence.repository.api.ReadRepository;
