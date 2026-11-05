@@ -210,3 +210,11 @@ org.eclipse.fennec.models:org.eclipse.fennec.common.models.library:0.1.0-SNAPSHO
 # in its JPA extension, which is not part of the models library (it depends on persistence.orm)
 org.eclipse.fennec.models:org.eclipse.fennec.atlas.configuration.model:1.0.0-SNAPSHOT
 org.eclipse.fennec.models:org.eclipse.fennec.atlas.configuration.jpa.model:1.0.0-SNAPSHOT
+
+# MariaDB / MySQL data sources (data.atlas#26): the daanse providers behind the
+# JdbcDriver literals mariadb / mysql, and the drivers they import
+# (org.mariadb.jdbc [3.5,4), com.mysql.cj.jdbc [9.0,10))
+org.eclipse.daanse:org.eclipse.daanse.jdbc.datasource.mariadb:0.0.1-SNAPSHOT
+org.eclipse.daanse:org.eclipse.daanse.jdbc.datasource.mysql:0.0.1-SNAPSHOT
+org.mariadb.jdbc:mariadb-java-client:3.5.11
+com.mysql:mysql-connector-j:9.7.0

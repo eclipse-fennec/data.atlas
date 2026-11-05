@@ -16,18 +16,23 @@ usual M4 lifecycle — a corrected version recovers without a restart).
 ## What is created
 
 `JdbcDataSource` → one `daanse.jdbc.datasource.<driver>.DataSource~dataAtlas.<id>`
-(the runtime ships the PostgreSQL provider; H2 is used by the tests):
+(the runtime ships the PostgreSQL, MariaDB and MySQL providers; H2 is used by the tests):
 
-| Model | `postgresql` key | `h2` key |
-|---|---|---|
-| `host` | `host` | *not applicable* |
-| `port` | `port` (Integer) | *not applicable* |
-| `database` | `dbname` | `identifier` |
-| `schema` | `currentSchema` | *not applicable* |
-| `user` | `user` | `username` |
-| `password` | `.password` | `.password` |
-| `properties` | verbatim | verbatim |
-| *(always)* | `data.atlas.datasource.id=<id>` | `data.atlas.datasource.id=<id>` |
+| Model | `postgresql` key | `mariadb` / `mysql` key | `h2` key |
+|---|---|---|---|
+| `host` | `host` | `host` | *not applicable* |
+| `port` | `port` (Integer) | `port` (Integer) | *not applicable* |
+| `database` | `dbname` | `databaseName` | `identifier` |
+| `schema` | `currentSchema` | *not applicable* (the database is the catalog) | *not applicable* |
+| `user` | `user` | `user` | `username` |
+| `password` | `.password` | `.password` | `.password` |
+| `properties` | verbatim | verbatim (e.g. `sslMode` for MariaDB, `useSSL`/`serverTimezone` for MySQL) | verbatim |
+| *(always)* | `data.atlas.datasource.id=<id>` | `data.atlas.datasource.id=<id>` | `data.atlas.datasource.id=<id>` |
+
+A *not applicable* attribute that is set is refused at registration.
+MariaDB is covered by `DataAtlasMariaDbIntegrationTest` (docker-gated); MySQL is
+not tested here and runs on the portable query baseline of the fennec JPA
+persistence.
 
 The daanse components publish every non-dot key as a service property, so the
 `javax.sql.DataSource` service carries `data.atlas.datasource.id=<id>` — that is
@@ -84,8 +89,10 @@ checked). Changing the list re-evaluates every known definition.
 ## Constraints
 
 - The runtime has to carry the provider and driver bundles of the declared
-  `driver`; the image ships `daanse.jdbc.datasource.postgresql` + the
-  PostgreSQL driver and the fennec Mongo backend. A definition for a kind
+  `driver`; the image ships `daanse.jdbc.datasource.postgresql`,
+  `daanse.jdbc.datasource.mariadb` and `daanse.jdbc.datasource.mysql` with their
+  drivers (PostgreSQL, MariaDB Connector/J, MySQL Connector/J) and the fennec
+  Mongo backend. A definition for a kind
   without provider yields a factory configuration nobody consumes — silence,
   like a BIND filter matching nothing.
 - The materialized JDBC `DataSource` has **no connection pool** (the daanse

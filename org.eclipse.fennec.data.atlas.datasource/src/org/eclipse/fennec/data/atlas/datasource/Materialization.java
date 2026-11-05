@@ -169,6 +169,22 @@ final class Materialization {
 			putCredential(props, "username", source.getUser(), source, environment);
 			putCredential(props, ".password", source.getPassword(), source, environment);
 		}
+		case MARIADB, MYSQL -> {
+			require(source, "host", source.getHost());
+			require(source, "database", source.getDatabase());
+			if (set(source.getSchema())) {
+				throw new DataSourceDefinitionException(describe(source) + ": schema does not apply to the "
+						+ driver.getName() + " driver (the database is the catalog)");
+			}
+			checkHost(source, environment);
+			props.put("host", source.getHost().trim());
+			props.put("databaseName", source.getDatabase().trim());
+			if (source.getPort() != null) {
+				props.put("port", source.getPort());
+			}
+			putCredential(props, "user", source.getUser(), source, environment);
+			putCredential(props, ".password", source.getPassword(), source, environment);
+		}
 		}
 		props.put(DataAtlasConstants.DATASOURCE_ID, source.getId());
 		putProperties(props, source);

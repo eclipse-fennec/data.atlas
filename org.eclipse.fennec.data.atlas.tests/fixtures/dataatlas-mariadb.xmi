@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2026 Contributors to the Eclipse Foundation.
+
+     This program and the accompanying materials are made
+     available under the terms of the Eclipse Public License 2.0
+     which is available at https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0 -->
+<!-- MariaDB fixture (data.atlas#26): a MATERIALIZED JdbcDataSource with driver
+     mariadb - the datasource bundle writes daanse.jdbc.datasource.mariadb.DataSource
+     from the coordinates, the credentials are $[secret:...] placeholders resolved
+     against the checked-in test secrets. The port is the one
+     DataAtlasMariaDbIntegrationTest publishes the container on. -->
+<configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    xmlns:atlasconfig="https://eclipse.org/fennec/atlas/configuration/1.0.0"
+    xmlns:atlasconfigjpa="https://eclipse.org/fennec/atlas/configuration/jpa/1.0.0"
+    name="mariadb" description="A MariaDB table served through a materialized JdbcDataSource.">
+  <dataSources xsi:type="atlasconfig:JdbcDataSource" id="persons-mariadb" name="Persons (MariaDB)"
+      driver="mariadb" host="localhost" port="18106" database="dataatlas"
+      user="$[secret:dataatlas-db-user]" password="$[secret:dataatlas-db-password]"/>
+  <dataInputs xsi:type="atlasconfigjpa:JPADataInput" id="persons-mariadb-jpa" dataSource="persons-mariadb">
+    <supportedEClasses href="model/person.ecore#//Person"/>
+  </dataInputs>
+  <dataSets id="persons" name="Persons" description="All persons from the MariaDB table, as CSV or JSON."
+      dataInput="persons-mariadb-jpa" distributionExport="csv json">
+    <inputType href="model/person.ecore#//Person"/>
+    <outputType href="model/person.ecore#//Person"/>
+  </dataSets>
+  <services xsi:type="configuration:RestDataService" id="persons-maria-rest" name="Persons MariaDB REST"
+      description="REST endpoint publishing the MariaDB-backed persons." urlContext="/maria">
+    <configuration id="persons-maria-rest-config" dataSet="persons" path="persons"/>
+  </services>
+  <exports xsi:type="configuration:CSVDistributionExport" id="csv" name="CSV"
+      description="Semicolon separated, no SQL-type row." separator=";" includeTypeHeader="false"/>
+  <exports id="json" name="JSON" description="Plain JSON, kept alongside the CSV export." mediaType="application/json"/>
+</configuration:DataAtlasConfiguration>

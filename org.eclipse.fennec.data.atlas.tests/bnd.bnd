@@ -55,4 +55,5 @@ Private-Package: \
 	atlas/models=../docker/dockercompose/seed/models,\
 	atlas/models/configuration.ecore=../org.eclipse.fennec.data.atlas.configuration.model/model/configuration.ecore,\
 	postgres/init=../docker/dockercompose/postgres/init,\
+	mariadb/init=mariadb/init,\
 	history/init=../docker/dockercompose/history/init
