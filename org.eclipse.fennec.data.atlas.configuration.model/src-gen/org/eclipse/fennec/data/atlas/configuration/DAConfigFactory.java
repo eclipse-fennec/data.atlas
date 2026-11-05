@@ -181,33 +181,6 @@ public interface DAConfigFactory extends EFactory {
 	OgcSensorThingsDataService createOgcSensorThingsDataService();
 
 	/**
-	 * Returns a new object of class '<em>Mongo Data Input</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Mongo Data Input</em>'.
-	 * @generated
-	 */
-	MongoDataInput createMongoDataInput();
-
-	/**
-	 * Returns a new object of class '<em>File Data Input</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>File Data Input</em>'.
-	 * @generated
-	 */
-	FileDataInput createFileDataInput();
-
-	/**
-	 * Returns a new object of class '<em>JPA Data Input</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>JPA Data Input</em>'.
-	 * @generated
-	 */
-	JPADataInput createJPADataInput();
-
-	/**
 	 * Returns a new object of class '<em>Data Transformation</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -269,33 +242,6 @@ public interface DAConfigFactory extends EFactory {
 	 * @generated
 	 */
 	DcatPublication createDcatPublication();
-
-	/**
-	 * Returns a new object of class '<em>Connection Property</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Connection Property</em>'.
-	 * @generated
-	 */
-	ConnectionProperty createConnectionProperty();
-
-	/**
-	 * Returns a new object of class '<em>Jdbc Data Source</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Jdbc Data Source</em>'.
-	 * @generated
-	 */
-	JdbcDataSource createJdbcDataSource();
-
-	/**
-	 * Returns a new object of class '<em>Mongo Data Source</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Mongo Data Source</em>'.
-	 * @generated
-	 */
-	MongoDataSource createMongoDataSource();
 
 	/**
 	 * Returns the package supported by this factory.

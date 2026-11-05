@@ -22,9 +22,12 @@ import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
+import org.eclipse.fennec.atlas.configuration.DataInput;
+
+import org.eclipse.fennec.atlas.configuration.impl.DataInputImpl;
+
 import org.eclipse.fennec.data.atlas.configuration.BridgeRepository;
 import org.eclipse.fennec.data.atlas.configuration.DAConfigPackage;
-import org.eclipse.fennec.data.atlas.configuration.DataInput;
 import org.eclipse.fennec.data.atlas.configuration.DataTransformation;
 import org.eclipse.fennec.data.atlas.configuration.QueryTransformation;
 

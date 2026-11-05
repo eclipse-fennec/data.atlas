@@ -15,7 +15,6 @@
 package org.eclipse.fennec.data.atlas.configuration.impl;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 
@@ -85,9 +84,6 @@ public class DAConfigFactoryImpl extends EFactoryImpl implements DAConfigFactory
 			case DAConfigPackage.OGC_FEATURES_DATA_SERVICE: return createOgcFeaturesDataService();
 			case DAConfigPackage.OGC_FEATURES_DATA_SERVICE_CONFIGURATION: return createOgcFeaturesDataServiceConfiguration();
 			case DAConfigPackage.OGC_SENSOR_THINGS_DATA_SERVICE: return createOgcSensorThingsDataService();
-			case DAConfigPackage.MONGO_DATA_INPUT: return createMongoDataInput();
-			case DAConfigPackage.FILE_DATA_INPUT: return createFileDataInput();
-			case DAConfigPackage.JPA_DATA_INPUT: return createJPADataInput();
 			case DAConfigPackage.DATA_TRANSFORMATION: return createDataTransformation();
 			case DAConfigPackage.QUERY_TRANSFORMATION: return createQueryTransformation();
 			case DAConfigPackage.ODATA_DATA_SERVICE: return createODataDataService();
@@ -95,41 +91,8 @@ public class DAConfigFactoryImpl extends EFactoryImpl implements DAConfigFactory
 			case DAConfigPackage.DISTRIBUTION_EXPORT: return createDistributionExport();
 			case DAConfigPackage.CSV_DISTRIBUTION_EXPORT: return createCSVDistributionExport();
 			case DAConfigPackage.DCAT_PUBLICATION: return createDcatPublication();
-			case DAConfigPackage.CONNECTION_PROPERTY: return createConnectionProperty();
-			case DAConfigPackage.JDBC_DATA_SOURCE: return createJdbcDataSource();
-			case DAConfigPackage.MONGO_DATA_SOURCE: return createMongoDataSource();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
-		}
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Object createFromString(EDataType eDataType, String initialValue) {
-		switch (eDataType.getClassifierID()) {
-			case DAConfigPackage.JDBC_DRIVER:
-				return createJdbcDriverFromString(eDataType, initialValue);
-			default:
-				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
-		}
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String convertToString(EDataType eDataType, Object instanceValue) {
-		switch (eDataType.getClassifierID()) {
-			case DAConfigPackage.JDBC_DRIVER:
-				return convertJdbcDriverToString(eDataType, instanceValue);
-			default:
-				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
 	}
 
@@ -315,39 +278,6 @@ public class DAConfigFactoryImpl extends EFactoryImpl implements DAConfigFactory
 	 * @generated
 	 */
 	@Override
-	public MongoDataInput createMongoDataInput() {
-		MongoDataInputImpl mongoDataInput = new MongoDataInputImpl();
-		return mongoDataInput;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public FileDataInput createFileDataInput() {
-		FileDataInputImpl fileDataInput = new FileDataInputImpl();
-		return fileDataInput;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public JPADataInput createJPADataInput() {
-		JPADataInputImpl jpaDataInput = new JPADataInputImpl();
-		return jpaDataInput;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public DataTransformation createDataTransformation() {
 		DataTransformationImpl dataTransformation = new DataTransformationImpl();
 		return dataTransformation;
@@ -417,59 +347,6 @@ public class DAConfigFactoryImpl extends EFactoryImpl implements DAConfigFactory
 	public DcatPublication createDcatPublication() {
 		DcatPublicationImpl dcatPublication = new DcatPublicationImpl();
 		return dcatPublication;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public ConnectionProperty createConnectionProperty() {
-		ConnectionPropertyImpl connectionProperty = new ConnectionPropertyImpl();
-		return connectionProperty;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public JdbcDataSource createJdbcDataSource() {
-		JdbcDataSourceImpl jdbcDataSource = new JdbcDataSourceImpl();
-		return jdbcDataSource;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public MongoDataSource createMongoDataSource() {
-		MongoDataSourceImpl mongoDataSource = new MongoDataSourceImpl();
-		return mongoDataSource;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public JdbcDriver createJdbcDriverFromString(EDataType eDataType, String initialValue) {
-		JdbcDriver result = JdbcDriver.get(initialValue);
-		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-		return result;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String convertJdbcDriverToString(EDataType eDataType, Object instanceValue) {
-		return instanceValue == null ? null : instanceValue.toString();
 	}
 
 	/**

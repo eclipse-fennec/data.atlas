@@ -47,7 +47,7 @@ import org.eclipse.fennec.data.atlas.configuration.RestDataServiceConfiguration;
  *
  * @generated
  */
-public class RestDataServiceImpl extends DataServiceImpl implements RestDataService {
+public class RestDataServiceImpl extends DataAtlasServiceImpl implements RestDataService {
 	/**
 	 * The cached value of the '{@link #getConfiguration() <em>Configuration</em>}' containment reference list.
 	 * <!-- begin-user-doc -->

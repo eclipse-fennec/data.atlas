@@ -12,6 +12,7 @@ Bundle-Description: Tracks RestDataService configuration services and registers 
 	org.osgi.service.servlet;version=latest,\
 	jakarta.ws.rs-api;version=latest,\
 	org.eclipse.fennec.data.atlas.configuration.model;version=project,\
+	org.eclipse.fennec.atlas.configuration.model;version=latest,\
 	org.eclipse.fennec.data.atlas.api;version=project,\
 	org.eclipse.fennec.codec;version=latest,\
 	org.eclipse.fennec.codec.rest;version=latest,\

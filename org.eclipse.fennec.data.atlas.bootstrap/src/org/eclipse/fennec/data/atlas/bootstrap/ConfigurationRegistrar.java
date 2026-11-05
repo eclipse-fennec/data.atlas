@@ -39,10 +39,10 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.fennec.data.atlas.api.DataAtlasConstants;
 import org.eclipse.fennec.data.atlas.configuration.DataAtlasConfiguration;
-import org.eclipse.fennec.data.atlas.configuration.DataInput;
-import org.eclipse.fennec.data.atlas.configuration.DataService;
+import org.eclipse.fennec.atlas.configuration.DataInput;
+import org.eclipse.fennec.data.atlas.configuration.DataAtlasService;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
-import org.eclipse.fennec.data.atlas.configuration.DataSource;
+import org.eclipse.fennec.atlas.configuration.DataSource;
 import org.eclipse.fennec.data.atlas.configuration.Transformation;
 import org.eclipse.fennec.emf.osgi.configurator.EPackageConfigurator;
 import org.eclipse.fennec.emf.osgi.constants.EMFNamespaces;
@@ -252,7 +252,7 @@ class ConfigurationRegistrar {
 
 	private void applyConfigurationObjects(DataAtlasConfiguration configuration, Set<String> replacedNsUris) {
 		Map<String, EObject> desired = new LinkedHashMap<>();
-		for (DataService service : configuration.getServices()) {
+		for (DataAtlasService service : configuration.getServices()) {
 			addObject(desired, service, service.getId());
 		}
 		// data sources before the inputs referencing them: the datasource

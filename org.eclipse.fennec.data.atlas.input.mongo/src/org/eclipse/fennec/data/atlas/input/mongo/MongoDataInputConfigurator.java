@@ -20,8 +20,8 @@ import java.util.Hashtable;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import org.eclipse.fennec.data.atlas.configuration.MongoDataInput;
-import org.eclipse.fennec.data.atlas.configuration.MongoDataSource;
+import org.eclipse.fennec.atlas.configuration.MongoDataInput;
+import org.eclipse.fennec.atlas.configuration.MongoDataSource;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Activate;

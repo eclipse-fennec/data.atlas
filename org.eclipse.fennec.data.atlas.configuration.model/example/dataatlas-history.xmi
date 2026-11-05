@@ -25,9 +25,11 @@
     xmlns:eorm="https://eclipse.org/fennec/persistence/eorm/1.0.0"
     xmlns:expression="https://eclipse.org/fennec/expression/1.0.0"
     xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    xmlns:atlasconfig="https://eclipse.org/fennec/atlas/configuration/1.0.0"
+    xmlns:atlasconfigjpa="https://eclipse.org/fennec/atlas/configuration/jpa/1.0.0"
     name="example-history" description="Example Data Atlas instance serving the SensiNact history database as CSV.">
-  <dataSources xsi:type="configuration:JdbcDataSource" id="history-db" name="SensiNact history DB" filter="(dataSourceName=historyDs)"/>
-  <dataInputs xsi:type="configuration:JPADataInput" id="history-jpa" dataSource="history-db">
+  <dataSources xsi:type="atlasconfig:JdbcDataSource" id="history-db" name="SensiNact history DB" filter="(dataSourceName=historyDs)"/>
+  <dataInputs xsi:type="atlasconfigjpa:JPADataInput" id="history-jpa" dataSource="history-db">
     <supportedEClasses href="model/sensinact-history.ecore#//HistoryEntry"/>
     <persistenceConfig package="https://eclipse.org/fennec/data/atlas/example/sensinact/history/1.0.0" name="sensinact-history">
       <entity access="FIELD" name="HistoryEntry">

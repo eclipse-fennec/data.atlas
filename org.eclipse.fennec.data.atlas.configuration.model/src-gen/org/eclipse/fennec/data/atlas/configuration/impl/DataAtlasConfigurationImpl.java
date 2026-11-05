@@ -30,12 +30,13 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
+import org.eclipse.fennec.atlas.configuration.DataInput;
+import org.eclipse.fennec.atlas.configuration.DataSource;
+
 import org.eclipse.fennec.data.atlas.configuration.DAConfigPackage;
 import org.eclipse.fennec.data.atlas.configuration.DataAtlasConfiguration;
-import org.eclipse.fennec.data.atlas.configuration.DataInput;
-import org.eclipse.fennec.data.atlas.configuration.DataService;
+import org.eclipse.fennec.data.atlas.configuration.DataAtlasService;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
-import org.eclipse.fennec.data.atlas.configuration.DataSource;
 import org.eclipse.fennec.data.atlas.configuration.DcatPublication;
 import org.eclipse.fennec.data.atlas.configuration.DistributionExport;
 import org.eclipse.fennec.data.atlas.configuration.Transformation;
@@ -140,7 +141,7 @@ public class DataAtlasConfigurationImpl extends MinimalEObjectImpl.Container imp
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<DataService> services;
+	protected EList<DataAtlasService> services;
 
 	/**
 	 * The cached value of the '{@link #getExports() <em>Exports</em>}' containment reference list.
@@ -282,9 +283,9 @@ public class DataAtlasConfigurationImpl extends MinimalEObjectImpl.Container imp
 	 * @generated
 	 */
 	@Override
-	public EList<DataService> getServices() {
+	public EList<DataAtlasService> getServices() {
 		if (services == null) {
-			services = new EObjectContainmentEList<DataService>(DataService.class, this, DAConfigPackage.DATA_ATLAS_CONFIGURATION__SERVICES);
+			services = new EObjectContainmentEList<DataAtlasService>(DataAtlasService.class, this, DAConfigPackage.DATA_ATLAS_CONFIGURATION__SERVICES);
 		}
 		return services;
 	}
@@ -413,7 +414,7 @@ public class DataAtlasConfigurationImpl extends MinimalEObjectImpl.Container imp
 				return;
 			case DAConfigPackage.DATA_ATLAS_CONFIGURATION__SERVICES:
 				getServices().clear();
-				getServices().addAll((Collection<? extends DataService>)newValue);
+				getServices().addAll((Collection<? extends DataAtlasService>)newValue);
 				return;
 			case DAConfigPackage.DATA_ATLAS_CONFIGURATION__EXPORTS:
 				getExports().clear();

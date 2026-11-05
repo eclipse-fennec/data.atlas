@@ -24,7 +24,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * <!-- end-user-doc -->
  *
  * <!-- begin-model-doc -->
- * A reusable export/serialization template for a distribution (e.g. CSV settings). Defined once in the export registry and referenced from DataServices and DataSets (via DataProvider.distributionExport), so the same export settings are not duplicated per provider.
+ * A reusable export/serialization template for a distribution (e.g. CSV settings). Defined once in the export registry and referenced from DataServices and DataSets (via DataAtlasProvider.distributionExport), so the same export settings are not duplicated per provider.
  * <!-- end-model-doc -->
  *
  * <p>

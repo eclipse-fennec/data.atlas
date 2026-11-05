@@ -18,6 +18,9 @@ import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EObject;
 
+import org.eclipse.fennec.atlas.configuration.DataInput;
+import org.eclipse.fennec.atlas.configuration.DataSource;
+
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -105,11 +108,11 @@ public interface DataAtlasConfiguration extends EObject {
 
 	/**
 	 * Returns the value of the '<em><b>Data Sources</b></em>' containment reference list.
-	 * The list contents are of type {@link org.eclipse.fennec.data.atlas.configuration.DataSource}.
+	 * The list contents are of type {@link org.eclipse.fennec.atlas.configuration.DataSource}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * Registry of reusable data source definitions (JdbcDataSource, MongoDataSource), referenced from DataInputs.
+	 * Registry of reusable data source definitions (JdbcDataSource, MongoDataSource of the shared atlas configuration model), referenced from DataInputs. Kinds the Data Atlas cannot realize (e.g. MqttDataSource) are diagnosed and skipped.
 	 * A data source either BINDS to a service the deployment configured (filter set) or is MATERIALIZED from its connection definition by the Data Atlas (host and database set) - never both.
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Data Sources</em>' containment reference list.
@@ -121,7 +124,7 @@ public interface DataAtlasConfiguration extends EObject {
 
 	/**
 	 * Returns the value of the '<em><b>Data Inputs</b></em>' containment reference list.
-	 * The list contents are of type {@link org.eclipse.fennec.data.atlas.configuration.DataInput}.
+	 * The list contents are of type {@link org.eclipse.fennec.atlas.configuration.DataInput}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
@@ -151,7 +154,7 @@ public interface DataAtlasConfiguration extends EObject {
 
 	/**
 	 * Returns the value of the '<em><b>Services</b></em>' containment reference list.
-	 * The list contents are of type {@link org.eclipse.fennec.data.atlas.configuration.DataService}.
+	 * The list contents are of type {@link org.eclipse.fennec.data.atlas.configuration.DataAtlasService}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
@@ -162,7 +165,7 @@ public interface DataAtlasConfiguration extends EObject {
 	 * @model containment="true"
 	 * @generated
 	 */
-	EList<DataService> getServices();
+	EList<DataAtlasService> getServices();
 
 	/**
 	 * Returns the value of the '<em><b>Exports</b></em>' containment reference list.
@@ -200,7 +203,7 @@ public interface DataAtlasConfiguration extends EObject {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * Registry of reusable DcatPublication declarations, referenced from DataServices and DataSets (via DataProvider.publication).
+	 * Registry of reusable DcatPublication declarations, referenced from DataServices and DataSets (via DataAtlasProvider.publication).
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Publications</em>' containment reference list.
 	 * @see org.eclipse.fennec.data.atlas.configuration.DAConfigPackage#getDataAtlasConfiguration_Publications()

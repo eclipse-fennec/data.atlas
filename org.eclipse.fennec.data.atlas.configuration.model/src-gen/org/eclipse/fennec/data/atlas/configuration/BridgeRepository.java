@@ -16,6 +16,8 @@ package org.eclipse.fennec.data.atlas.configuration;
 
 import org.eclipse.emf.ecore.EObject;
 
+import org.eclipse.fennec.atlas.configuration.DataInput;
+
 import org.osgi.annotation.versioning.ProviderType;
 
 /**

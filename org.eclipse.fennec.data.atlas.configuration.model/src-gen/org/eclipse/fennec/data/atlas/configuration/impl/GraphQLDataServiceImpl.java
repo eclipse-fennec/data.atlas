@@ -43,7 +43,7 @@ import org.eclipse.fennec.data.atlas.configuration.GraphQLDataServiceConfigurati
  *
  * @generated
  */
-public class GraphQLDataServiceImpl extends DataServiceImpl implements GraphQLDataService {
+public class GraphQLDataServiceImpl extends DataAtlasServiceImpl implements GraphQLDataService {
 	/**
 	 * The cached value of the '{@link #getConfiguration() <em>Configuration</em>}' containment reference list.
 	 * <!-- begin-user-doc -->

@@ -24,7 +24,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.fennec.codec.geojson.annotation.RequireCodecGeoJson;
 import org.eclipse.fennec.data.atlas.api.DataAtlasConstants;
-import org.eclipse.fennec.data.atlas.configuration.DataInput;
+import org.eclipse.fennec.atlas.configuration.DataInput;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
 import org.eclipse.fennec.data.atlas.configuration.GeoJsonDataService;
 import org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration;

@@ -29,7 +29,7 @@ import java.util.Set;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.fennec.data.atlas.api.DataAtlasConstants;
-import org.eclipse.fennec.data.atlas.configuration.DataInput;
+import org.eclipse.fennec.atlas.configuration.DataInput;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
 import org.eclipse.fennec.data.atlas.configuration.ODataDataService;
 import org.eclipse.fennec.data.atlas.configuration.ODataDataServiceConfiguration;

@@ -43,7 +43,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * @generated
  */
 @ProviderType
-public interface OgcFeaturesDataService extends DataService {
+public interface OgcFeaturesDataService extends DataAtlasService {
 	/**
 	 * Returns the value of the '<em><b>Default Limit</b></em>' attribute.
 	 * The default value is <code>"-1"</code>.

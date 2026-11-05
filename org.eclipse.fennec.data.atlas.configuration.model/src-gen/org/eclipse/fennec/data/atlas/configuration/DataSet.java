@@ -48,7 +48,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * @generated
  */
 @ProviderType
-public interface DataSet extends DataProvider {
+public interface DataSet extends DataAtlasProvider {
 	/**
 	 * Returns the value of the '<em><b>Input Type</b></em>' reference.
 	 * <!-- begin-user-doc -->

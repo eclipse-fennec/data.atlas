@@ -352,7 +352,7 @@ order in which the exports are declared. An explicit preference still wins:
 
 The formats an endpoint offers come from the `DistributionExport` templates in
 the configuration's `exports` registry, referenced through
-`DataProvider.distributionExport`. The resolution has two cases and no third:
+`DataAtlasProvider.distributionExport`. The resolution has two cases and no third:
 
 - **the DataSet resolves to no export** (neither its own nor its service's) —
   `application/json` and `application/xml` are served, as before;
@@ -477,8 +477,9 @@ The complete example — one file input, one DataSet, one REST service
 <configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    xmlns:atlasconfig="https://eclipse.org/fennec/atlas/configuration/1.0.0"
     name="example" description="One file-based input served over REST.">
-  <dataInputs xsi:type="configuration:FileDataInput" id="persons-file" uri="data/persons.xmi">
+  <dataInputs xsi:type="atlasconfig:FileDataInput" id="persons-file" uri="data/persons.xmi">
     <supportedEClasses href="model/person.ecore#//Person"/>
   </dataInputs>
   <dataSets id="persons" name="Persons" dataInput="persons-file">
@@ -496,6 +497,14 @@ Relative URIs (`data/persons.xmi`, `model/person.ecore`) resolve against the
 configuration file's own location — a configuration folder is self-contained
 and can be mounted anywhere.
 
+Two namespaces are in play: `configuration:` for the Data Atlas types
+(`DataSet`, the services, exports, transformations, publications) and
+`atlasconfig:` for the building blocks shared by all Fennec atlases — data
+inputs (`FileDataInput`, `MongoDataInput`) and data sources (`JdbcDataSource`,
+`MongoDataSource`), from `org.eclipse.fennec.atlas.configuration.model`. A
+`JPADataInput` comes from the shared model's JPA extension and needs a third one,
+`xmlns:atlasconfigjpa="https://eclipse.org/fennec/atlas/configuration/jpa/1.0.0"`.
+
 ### Relational Data: JPA Input
 
 A `JPADataInput` references a `JdbcDataSource` from the registry. In its
@@ -507,8 +516,8 @@ carry the connection coordinates itself and let the Data Atlas create the
 service — see [Data Sources: Bound or Materialized](#data-sources-bound-or-materialized).
 
 ```xml
-<dataSources xsi:type="configuration:JdbcDataSource" id="persons-db" name="Persons DB" filter="(dataSourceName=personsDs)"/>
-<dataInputs xsi:type="configuration:JPADataInput" id="persons-jpa" dataSource="persons-db">
+<dataSources xsi:type="atlasconfig:JdbcDataSource" id="persons-db" name="Persons DB" filter="(dataSourceName=personsDs)"/>
+<dataInputs xsi:type="atlasconfigjpa:JPADataInput" id="persons-jpa" dataSource="persons-db">
   <supportedEClasses href="model/person.ecore#//Person"/>
 </dataInputs>
 ```
@@ -588,7 +597,7 @@ the backend service itself (as in the PostgreSQL example above) and the filter
 selects it. Nothing else may be set.
 
 ```xml
-<dataSources xsi:type="configuration:JdbcDataSource" id="persons-db" name="Persons DB"
+<dataSources xsi:type="atlasconfig:JdbcDataSource" id="persons-db" name="Persons DB"
     filter="(dataSourceName=personsDs)"/>
 ```
 
@@ -599,7 +608,7 @@ a fennec Mongo client + database. No Configurator file is needed for the
 connection any more; it travels with the configuration (file or Model Atlas).
 
 ```xml
-<dataSources xsi:type="configuration:JdbcDataSource" id="persons-db" name="Persons DB"
+<dataSources xsi:type="atlasconfig:JdbcDataSource" id="persons-db" name="Persons DB"
     driver="postgresql" host="postgres" port="5432" database="dataatlas" schema="public"
     user="$[env:DATA_ATLAS_DB_USER]" password="$[secret:dataatlas-db-password]">
   <properties key="sslMode" value="prefer"/>
@@ -658,10 +667,10 @@ Mongo persistence backend (shipped in the image). It references a
 `MongoDataSource`, bound or materialized exactly like the JDBC case:
 
 ```xml
-<dataSources xsi:type="configuration:MongoDataSource" id="assets-db" name="Assets"
+<dataSources xsi:type="atlasconfig:MongoDataSource" id="assets-db" name="Assets"
     host="mongo" database="assets" authSource="admin"
     user="$[secret:mongo-user]" password="$[secret:mongo-password]"/>
-<dataInputs xsi:type="configuration:MongoDataInput" id="assets-mongo" dataSource="assets-db">
+<dataInputs xsi:type="atlasconfig:MongoDataInput" id="assets-mongo" dataSource="assets-db">
   <supportedEClasses href="model/asset.ecore#//Asset"/>
 </dataInputs>
 ```
@@ -1039,10 +1048,15 @@ How the `href`s to EClasses are written depends on the config-source mode:
   against the Model Atlas schema registry of the instance's scope — upload
   the schemas there first, **dependencies before dependants**: a schema
   uploaded before one it references keeps a dangling proxy (model.atlas#322). The
-  configuration model itself references the fennec `eorm` model and, for
-  query-defined DataSets, the fennec `query` model (which references the
-  `expression` model); the compose seeder (`docker/dockercompose/seed`)
-  uploads `expression`, `query` and `eorm` before `configuration.ecore`.
+  configuration model builds on the shared atlas configuration model
+  (`atlasconfig`, nsURI `https://eclipse.org/fennec/atlas/configuration/1.0.0`)
+  and, for query-defined DataSets, references the fennec `query` model (which
+  references the `expression` model); a `JPADataInput` needs the shared model's
+  JPA extension (`atlasconfigjpa`), which references `atlasconfig` and the fennec
+  `eorm` model. The compose seeder (`docker/dockercompose/seed`) uploads
+  `expression`, `query`, `eorm`, `atlasconfig` and `atlasconfigjpa` before
+  `configuration.ecore`; `seed/models` holds copies of the two shared schemas
+  (the JPA one with its references rewritten to nsURIs, fennec.models#11).
   Compare the two example variants:
   [`dataatlas.xmi`](../org.eclipse.fennec.data.atlas.configuration.model/example/dataatlas.xmi)
   (file) vs.

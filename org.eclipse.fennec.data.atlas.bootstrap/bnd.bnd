@@ -10,6 +10,8 @@ Bundle-Description: File-mode configuration source: loads the DataAtlasConfigura
 	org.osgi.service.component.annotations;version=latest,\
 	org.osgi.service.metatype.annotations,\
 	org.eclipse.fennec.data.atlas.configuration.model;version=project,\
+	org.eclipse.fennec.atlas.configuration.model;version=latest,\
+	org.eclipse.fennec.atlas.configuration.jpa.model;version=latest,\
 	org.eclipse.fennec.data.atlas.api;version=project,\
 	org.eclipse.fennec.model.atlas.scope.api;version=latest,\
 	org.eclipse.daanse.io.fs.watcher.api;version=latest,\
@@ -17,3 +19,14 @@ Bundle-Description: File-mode configuration source: loads the DataAtlasConfigura
 	org.eclipse.fennec.m2x.ocl.model;version=latest,\
 	org.eclipse.fennec.m2x.qvt.model;version=latest,\
 	org.eclipse.fennec.emf.osgi.eobject.registry;version=latest
+
+# The registrar publishes every configuration object under its model interfaces
+# (ConfigurationRegistrar.serviceInterfaces). The framework only considers such a
+# service assignable to a consumer when the registering bundle is wired to the
+# interface's package - so the bootstrap imports the packages of every configuration
+# model whose objects it registers, even though its code never names them. The JPA
+# extension of the shared atlas configuration model (JPADataInput) is optional: a
+# runtime without it simply cannot load configurations that use it.
+Import-Package: \
+	org.eclipse.fennec.atlas.configuration.jpa;resolution:=optional,\
+	*

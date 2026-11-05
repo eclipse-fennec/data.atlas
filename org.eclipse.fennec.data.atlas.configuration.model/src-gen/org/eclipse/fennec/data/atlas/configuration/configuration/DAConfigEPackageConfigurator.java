@@ -33,6 +33,8 @@ import org.eclipse.fennec.emf.osgi.constants.EMFNamespaces;
  * 
  * It describes - independent of any concrete deployment - which data sources (DataInput) provide data, which DataSets are published, which DataServices (REST, OData, OGC, QGis, XMLA, GraphQL) expose them, which reusable DistributionExport templates are used for serialization, and which Transformations map between models.
  * An instance of this model is meant to fully configure a Data-Atlas runtime, while the model types it refers to are resolved against the Model-Atlas EPackage registry.
+ * 
+ * The building blocks shared by all Fennec atlases - data sources (DataSource and its subtypes), data inputs (DataInput, FileDataInput, MongoDataInput, ...) and the DataProvider/DataService bases - come from the shared atlas configuration model (https://eclipse.org/fennec/atlas/configuration/1.0.0, org.eclipse.fennec.atlas.configuration.model); JPADataInput from its JPA extension (https://eclipse.org/fennec/atlas/configuration/jpa/1.0.0). This model adds what is specific to the Data Atlas: the root registries, DataSets, the concrete DataServices, exports, transformations, bridges and publications.
  * <!-- end-model-doc -->
  * @see EPackageConfigurator
  * @generated
@@ -45,7 +47,7 @@ public class DAConfigEPackageConfigurator implements EPackageConfigurator {
 	 * service property.
 	 * @generated
 	 */
-	public static final String FINGERPRINT = "fp1:d49a8b4eedfbf52ee122ada396ab0c9a9c7a4e6c455ca71e953c63a90f4348c4";
+	public static final String FINGERPRINT = "fp1:638f2653e006f4fc9461e9c23de4aab7d83e55b79fb7144cdb0586782beb1bcf";
 
 	private DAConfigPackage ePackage;
 

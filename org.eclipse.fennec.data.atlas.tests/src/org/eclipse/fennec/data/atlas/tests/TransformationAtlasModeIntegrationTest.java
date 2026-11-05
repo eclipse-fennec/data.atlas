@@ -295,6 +295,10 @@ public class TransformationAtlasModeIntegrationTest {
 	 */
 	private static void seed(Path dir) throws Exception {
 		postSchema(dir.resolve("atlas/models/eorm.ecore"), "https://eclipse.org/fennec/persistence/eorm/1.0.0");
+		// the configuration model builds on the shared atlas configuration model
+		postSchema(dir.resolve("atlas/models/atlasconfig.ecore"), "https://eclipse.org/fennec/atlas/configuration/1.0.0");
+		postSchema(dir.resolve("atlas/models/atlasconfigjpa.ecore"),
+				"https://eclipse.org/fennec/atlas/configuration/jpa/1.0.0");
 		postSchema(dir.resolve("atlas/models/configuration.ecore"),
 				"https://eclipse.org/fennec/data/atlas/configuration/1.0.0");
 		postSchema(dir.resolve("data/model/person.ecore"),

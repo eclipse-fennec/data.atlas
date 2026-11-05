@@ -20,7 +20,7 @@ import java.util.Map;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.fennec.data.atlas.configuration.CSVDistributionExport;
-import org.eclipse.fennec.data.atlas.configuration.DataService;
+import org.eclipse.fennec.data.atlas.configuration.DataAtlasService;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
 import org.eclipse.fennec.data.atlas.configuration.DcatPublication;
 import org.eclipse.fennec.data.atlas.configuration.DistributionExport;
@@ -94,7 +94,7 @@ final class DcatMapper {
 	 * Whether the provider declares a publication at all — the opt-in gate
 	 * (DA-DCAT-4): no declaration, nothing is published.
 	 */
-	static boolean isPublished(DataService service) {
+	static boolean isPublished(DataAtlasService service) {
 		return service.getPublication() != null;
 	}
 
@@ -113,7 +113,7 @@ final class DcatMapper {
 	 * @throws PublicationConfigException when mandatory metadata is missing or
 	 *                                    the provider kind is not publishable
 	 */
-	static ProviderPlan plan(DataService service, String publicBaseUrl, String restContextPath)
+	static ProviderPlan plan(DataAtlasService service, String publicBaseUrl, String restContextPath)
 			throws PublicationConfigException {
 		DcatPublication publication = service.getPublication();
 		List<String> problems = new ArrayList<>();
@@ -233,7 +233,7 @@ final class DcatMapper {
 	 * endpoint it is reachable at (REST path, OData entity set name or the OGC
 	 * collection's items path); {@code shape} selects the distribution shape.
 	 */
-	private static DatasetPlan planDataSet(DataService service, DataSet dataSet, String path, Shape shape,
+	private static DatasetPlan planDataSet(DataAtlasService service, DataSet dataSet, String path, Shape shape,
 			DcatPublication servicePublication, String endpointUrl, List<String> problems) {
 		// override-else-default (DA-DCAT-7): a DataSet's own declaration wins
 		DcatPublication publication = dataSet.getPublication() != null ? dataSet.getPublication()
@@ -309,7 +309,7 @@ final class DcatMapper {
 	 * resolution the rest bundle serves by: the DataSet's own exports fully
 	 * replace the service's; none at all means the runtime defaults JSON and XMI.
 	 */
-	private static Map<String, String> mediaTypesOf(DataSet dataSet, DataService service, String where,
+	private static Map<String, String> mediaTypesOf(DataSet dataSet, DataAtlasService service, String where,
 			List<String> problems) {
 		List<DistributionExport> exports = dataSet.getDistributionExport().isEmpty()
 				? service.getDistributionExport()
@@ -433,7 +433,7 @@ final class DcatMapper {
 		return language == null || language.isBlank() ? "en" : language;
 	}
 
-	private static String basePath(DataService service) {
+	private static String basePath(DataAtlasService service) {
 		String base = service.getUrlContext() == null || service.getUrlContext().isBlank()
 				? "/" + service.getId()
 				: service.getUrlContext();
@@ -445,7 +445,7 @@ final class DcatMapper {
 	 * below the whiteboard's context path, OData and OGC API Features roots
 	 * directly on the HTTP runtime (data.atlas#19).
 	 */
-	static String mountPrefix(DataService service, String restContextPath) {
+	static String mountPrefix(DataAtlasService service, String restContextPath) {
 		if (!(service instanceof RestDataService) || restContextPath == null || restContextPath.isBlank()) {
 			return "";
 		}

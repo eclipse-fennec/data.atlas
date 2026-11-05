@@ -43,7 +43,7 @@ import org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfigurati
  *
  * @generated
  */
-public class GeoJsonDataServiceImpl extends DataServiceImpl implements GeoJsonDataService {
+public class GeoJsonDataServiceImpl extends DataAtlasServiceImpl implements GeoJsonDataService {
 	/**
 	 * The cached value of the '{@link #getConfiguration() <em>Configuration</em>}' containment reference list.
 	 * <!-- begin-user-doc -->

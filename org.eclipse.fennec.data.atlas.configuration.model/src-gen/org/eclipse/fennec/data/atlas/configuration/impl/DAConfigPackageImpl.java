@@ -16,39 +16,29 @@ package org.eclipse.fennec.data.atlas.configuration.impl;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EEnum;
-import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
+import org.eclipse.fennec.atlas.configuration.AtlasConfigPackage;
+
 import org.eclipse.fennec.data.atlas.configuration.BridgeRepository;
 import org.eclipse.fennec.data.atlas.configuration.CSVDistributionExport;
-import org.eclipse.fennec.data.atlas.configuration.ConnectionProperty;
 import org.eclipse.fennec.data.atlas.configuration.DAConfigFactory;
 import org.eclipse.fennec.data.atlas.configuration.DAConfigPackage;
 import org.eclipse.fennec.data.atlas.configuration.DataAtlasConfiguration;
-import org.eclipse.fennec.data.atlas.configuration.DataInput;
-import org.eclipse.fennec.data.atlas.configuration.DataProvider;
-import org.eclipse.fennec.data.atlas.configuration.DataService;
+import org.eclipse.fennec.data.atlas.configuration.DataAtlasProvider;
+import org.eclipse.fennec.data.atlas.configuration.DataAtlasService;
 import org.eclipse.fennec.data.atlas.configuration.DataServiceConfiguration;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
-import org.eclipse.fennec.data.atlas.configuration.DataSource;
 import org.eclipse.fennec.data.atlas.configuration.DataTransformation;
-import org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource;
 import org.eclipse.fennec.data.atlas.configuration.DcatPublication;
 import org.eclipse.fennec.data.atlas.configuration.DistributionExport;
-import org.eclipse.fennec.data.atlas.configuration.FileDataInput;
 import org.eclipse.fennec.data.atlas.configuration.GeoJsonDataService;
 import org.eclipse.fennec.data.atlas.configuration.GeoJsonDataServiceConfiguration;
 import org.eclipse.fennec.data.atlas.configuration.GraphQLDataService;
 import org.eclipse.fennec.data.atlas.configuration.GraphQLDataServiceConfiguration;
-import org.eclipse.fennec.data.atlas.configuration.JPADataInput;
-import org.eclipse.fennec.data.atlas.configuration.JdbcDataSource;
-import org.eclipse.fennec.data.atlas.configuration.JdbcDriver;
-import org.eclipse.fennec.data.atlas.configuration.MongoDataInput;
-import org.eclipse.fennec.data.atlas.configuration.MongoDataSource;
 import org.eclipse.fennec.data.atlas.configuration.ODataDataService;
 import org.eclipse.fennec.data.atlas.configuration.ODataDataServiceConfiguration;
 import org.eclipse.fennec.data.atlas.configuration.OgcFeaturesDataService;
@@ -69,8 +59,6 @@ import org.eclipse.fennec.model.expression.ExpressionPackage;
 
 import org.eclipse.fennec.model.query.QueryPackage;
 
-import org.eclipse.fennec.persistence.eorm.EORMPackage;
-
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model <b>Package</b>.
@@ -90,14 +78,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass dataProviderEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass dataInputEClass = null;
+	private EClass dataAtlasProviderEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -118,7 +99,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass dataServiceEClass = null;
+	private EClass dataAtlasServiceEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -223,27 +204,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass mongoDataInputEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass fileDataInputEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass jpaDataInputEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	private EClass dataTransformationEClass = null;
 
 	/**
@@ -296,48 +256,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	private EClass dcatPublicationEClass = null;
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass dataSourceEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass databaseDataSourceEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass connectionPropertyEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass jdbcDataSourceEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass mongoDataSourceEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EEnum jdbcDriverEEnum = null;
-
-	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
 	 * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the package
 	 * package URI value.
@@ -384,7 +302,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		isInited = true;
 
 		// Initialize simple dependencies
-		EORMPackage.eINSTANCE.eClass();
+		AtlasConfigPackage.eINSTANCE.eClass();
 		QueryPackage.eINSTANCE.eClass();
 		ExpressionPackage.eINSTANCE.eClass();
 		QvtOperationalPackage.eINSTANCE.eClass();
@@ -509,8 +427,8 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
-	public EClass getDataProvider() {
-		return dataProviderEClass;
+	public EClass getDataAtlasProvider() {
+		return dataAtlasProviderEClass;
 	}
 
 	/**
@@ -519,8 +437,8 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
-	public EAttribute getDataProvider_Id() {
-		return (EAttribute)dataProviderEClass.getEStructuralFeatures().get(0);
+	public EReference getDataAtlasProvider_Transformation() {
+		return (EReference)dataAtlasProviderEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -529,8 +447,8 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
-	public EAttribute getDataProvider_Name() {
-		return (EAttribute)dataProviderEClass.getEStructuralFeatures().get(1);
+	public EReference getDataAtlasProvider_DistributionExport() {
+		return (EReference)dataAtlasProviderEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -539,88 +457,8 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
-	public EAttribute getDataProvider_Description() {
-		return (EAttribute)dataProviderEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getDataProvider_DataInput() {
-		return (EReference)dataProviderEClass.getEStructuralFeatures().get(3);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getDataProvider_Transformation() {
-		return (EReference)dataProviderEClass.getEStructuralFeatures().get(4);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getDataProvider_DistributionExport() {
-		return (EReference)dataProviderEClass.getEStructuralFeatures().get(5);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getDataProvider_Publication() {
-		return (EReference)dataProviderEClass.getEStructuralFeatures().get(6);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EClass getDataInput() {
-		return dataInputEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getDataInput_Id() {
-		return (EAttribute)dataInputEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getDataInput_SupportedEClasses() {
-		return (EReference)dataInputEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EOperation getDataInput__StreamData() {
-		return dataInputEClass.getEOperations().get(0);
+	public EReference getDataAtlasProvider_Publication() {
+		return (EReference)dataAtlasProviderEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -739,28 +577,8 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
-	public EClass getDataService() {
-		return dataServiceEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getDataService_UrlContext() {
-		return (EAttribute)dataServiceEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EOperation getDataService__GetDistributions() {
-		return dataServiceEClass.getEOperations().get(0);
+	public EClass getDataAtlasService() {
+		return dataAtlasServiceEClass;
 	}
 
 	/**
@@ -1269,76 +1087,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
-	public EClass getMongoDataInput() {
-		return mongoDataInputEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getMongoDataInput_DataSource() {
-		return (EReference)mongoDataInputEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EClass getFileDataInput() {
-		return fileDataInputEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getFileDataInput_Uri() {
-		return (EAttribute)fileDataInputEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EClass getJPADataInput() {
-		return jpaDataInputEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getJPADataInput_PersistenceConfig() {
-		return (EReference)jpaDataInputEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getJPADataInput_DataSource() {
-		return (EReference)jpaDataInputEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public EClass getDataTransformation() {
 		return dataTransformationEClass;
 	}
@@ -1749,226 +1497,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
-	public EClass getDataSource() {
-		return dataSourceEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getDataSource_Id() {
-		return (EAttribute)dataSourceEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getDataSource_Name() {
-		return (EAttribute)dataSourceEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getDataSource_Description() {
-		return (EAttribute)dataSourceEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getDataSource_Filter() {
-		return (EAttribute)dataSourceEClass.getEStructuralFeatures().get(3);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EClass getDatabaseDataSource() {
-		return databaseDataSourceEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getDatabaseDataSource_Host() {
-		return (EAttribute)databaseDataSourceEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getDatabaseDataSource_Port() {
-		return (EAttribute)databaseDataSourceEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getDatabaseDataSource_Database() {
-		return (EAttribute)databaseDataSourceEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getDatabaseDataSource_User() {
-		return (EAttribute)databaseDataSourceEClass.getEStructuralFeatures().get(3);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getDatabaseDataSource_Password() {
-		return (EAttribute)databaseDataSourceEClass.getEStructuralFeatures().get(4);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getDatabaseDataSource_Properties() {
-		return (EReference)databaseDataSourceEClass.getEStructuralFeatures().get(5);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EClass getConnectionProperty() {
-		return connectionPropertyEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getConnectionProperty_Key() {
-		return (EAttribute)connectionPropertyEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getConnectionProperty_Value() {
-		return (EAttribute)connectionPropertyEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EClass getJdbcDataSource() {
-		return jdbcDataSourceEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getJdbcDataSource_Driver() {
-		return (EAttribute)jdbcDataSourceEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getJdbcDataSource_Schema() {
-		return (EAttribute)jdbcDataSourceEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EClass getMongoDataSource() {
-		return mongoDataSourceEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getMongoDataSource_AuthSource() {
-		return (EAttribute)mongoDataSourceEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getMongoDataSource_Flavor() {
-		return (EAttribute)mongoDataSourceEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EEnum getJdbcDriver() {
-		return jdbcDriverEEnum;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public DAConfigFactory getDAConfigFactory() {
 		return (DAConfigFactory)getEFactoryInstance();
 	}
@@ -2003,19 +1531,10 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		createEReference(dataAtlasConfigurationEClass, DATA_ATLAS_CONFIGURATION__TRANSFORMATIONS);
 		createEReference(dataAtlasConfigurationEClass, DATA_ATLAS_CONFIGURATION__PUBLICATIONS);
 
-		dataProviderEClass = createEClass(DATA_PROVIDER);
-		createEAttribute(dataProviderEClass, DATA_PROVIDER__ID);
-		createEAttribute(dataProviderEClass, DATA_PROVIDER__NAME);
-		createEAttribute(dataProviderEClass, DATA_PROVIDER__DESCRIPTION);
-		createEReference(dataProviderEClass, DATA_PROVIDER__DATA_INPUT);
-		createEReference(dataProviderEClass, DATA_PROVIDER__TRANSFORMATION);
-		createEReference(dataProviderEClass, DATA_PROVIDER__DISTRIBUTION_EXPORT);
-		createEReference(dataProviderEClass, DATA_PROVIDER__PUBLICATION);
-
-		dataInputEClass = createEClass(DATA_INPUT);
-		createEAttribute(dataInputEClass, DATA_INPUT__ID);
-		createEReference(dataInputEClass, DATA_INPUT__SUPPORTED_ECLASSES);
-		createEOperation(dataInputEClass, DATA_INPUT___STREAM_DATA);
+		dataAtlasProviderEClass = createEClass(DATA_ATLAS_PROVIDER);
+		createEReference(dataAtlasProviderEClass, DATA_ATLAS_PROVIDER__TRANSFORMATION);
+		createEReference(dataAtlasProviderEClass, DATA_ATLAS_PROVIDER__DISTRIBUTION_EXPORT);
+		createEReference(dataAtlasProviderEClass, DATA_ATLAS_PROVIDER__PUBLICATION);
 
 		bridgeRepositoryEClass = createEClass(BRIDGE_REPOSITORY);
 		createEReference(bridgeRepositoryEClass, BRIDGE_REPOSITORY__SOURCE);
@@ -2030,9 +1549,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		createEReference(dataSetEClass, DATA_SET__CHILD_DATA_SET);
 		createEReference(dataSetEClass, DATA_SET__PARENT_DATA_SET);
 
-		dataServiceEClass = createEClass(DATA_SERVICE);
-		createEAttribute(dataServiceEClass, DATA_SERVICE__URL_CONTEXT);
-		createEOperation(dataServiceEClass, DATA_SERVICE___GET_DISTRIBUTIONS);
+		dataAtlasServiceEClass = createEClass(DATA_ATLAS_SERVICE);
 
 		restDataServiceEClass = createEClass(REST_DATA_SERVICE);
 		createEReference(restDataServiceEClass, REST_DATA_SERVICE__CONFIGURATION);
@@ -2098,16 +1615,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 
 		ogcSensorThingsDataServiceEClass = createEClass(OGC_SENSOR_THINGS_DATA_SERVICE);
 
-		mongoDataInputEClass = createEClass(MONGO_DATA_INPUT);
-		createEReference(mongoDataInputEClass, MONGO_DATA_INPUT__DATA_SOURCE);
-
-		fileDataInputEClass = createEClass(FILE_DATA_INPUT);
-		createEAttribute(fileDataInputEClass, FILE_DATA_INPUT__URI);
-
-		jpaDataInputEClass = createEClass(JPA_DATA_INPUT);
-		createEReference(jpaDataInputEClass, JPA_DATA_INPUT__PERSISTENCE_CONFIG);
-		createEReference(jpaDataInputEClass, JPA_DATA_INPUT__DATA_SOURCE);
-
 		dataTransformationEClass = createEClass(DATA_TRANSFORMATION);
 		createEReference(dataTransformationEClass, DATA_TRANSFORMATION__TRANSFORMATION);
 		createEReference(dataTransformationEClass, DATA_TRANSFORMATION__SUPPORTED_ECLASSES);
@@ -2156,35 +1663,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		createEAttribute(dcatPublicationEClass, DCAT_PUBLICATION__CONTACT_EMAIL);
 		createEAttribute(dcatPublicationEClass, DCAT_PUBLICATION__CONTACT_URL);
 		createEAttribute(dcatPublicationEClass, DCAT_PUBLICATION__LICENSE_URI);
-
-		dataSourceEClass = createEClass(DATA_SOURCE);
-		createEAttribute(dataSourceEClass, DATA_SOURCE__ID);
-		createEAttribute(dataSourceEClass, DATA_SOURCE__NAME);
-		createEAttribute(dataSourceEClass, DATA_SOURCE__DESCRIPTION);
-		createEAttribute(dataSourceEClass, DATA_SOURCE__FILTER);
-
-		databaseDataSourceEClass = createEClass(DATABASE_DATA_SOURCE);
-		createEAttribute(databaseDataSourceEClass, DATABASE_DATA_SOURCE__HOST);
-		createEAttribute(databaseDataSourceEClass, DATABASE_DATA_SOURCE__PORT);
-		createEAttribute(databaseDataSourceEClass, DATABASE_DATA_SOURCE__DATABASE);
-		createEAttribute(databaseDataSourceEClass, DATABASE_DATA_SOURCE__USER);
-		createEAttribute(databaseDataSourceEClass, DATABASE_DATA_SOURCE__PASSWORD);
-		createEReference(databaseDataSourceEClass, DATABASE_DATA_SOURCE__PROPERTIES);
-
-		connectionPropertyEClass = createEClass(CONNECTION_PROPERTY);
-		createEAttribute(connectionPropertyEClass, CONNECTION_PROPERTY__KEY);
-		createEAttribute(connectionPropertyEClass, CONNECTION_PROPERTY__VALUE);
-
-		jdbcDataSourceEClass = createEClass(JDBC_DATA_SOURCE);
-		createEAttribute(jdbcDataSourceEClass, JDBC_DATA_SOURCE__DRIVER);
-		createEAttribute(jdbcDataSourceEClass, JDBC_DATA_SOURCE__SCHEMA);
-
-		mongoDataSourceEClass = createEClass(MONGO_DATA_SOURCE);
-		createEAttribute(mongoDataSourceEClass, MONGO_DATA_SOURCE__AUTH_SOURCE);
-		createEAttribute(mongoDataSourceEClass, MONGO_DATA_SOURCE__FLAVOR);
-
-		// Create enums
-		jdbcDriverEEnum = createEEnum(JDBC_DRIVER);
 	}
 
 	/**
@@ -2211,8 +1689,8 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		setNsURI(eNS_URI);
 
 		// Obtain other dependent packages
+		AtlasConfigPackage theAtlasConfigPackage = (AtlasConfigPackage)EPackage.Registry.INSTANCE.getEPackage(AtlasConfigPackage.eNS_URI);
 		QueryPackage theQueryPackage = (QueryPackage)EPackage.Registry.INSTANCE.getEPackage(QueryPackage.eNS_URI);
-		EORMPackage theEORMPackage = (EORMPackage)EPackage.Registry.INSTANCE.getEPackage(EORMPackage.eNS_URI);
 		QvtOperationalPackage theQvtOperationalPackage = (QvtOperationalPackage)EPackage.Registry.INSTANCE.getEPackage(QvtOperationalPackage.eNS_URI);
 
 		// Create type parameters
@@ -2220,63 +1698,49 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		// Set bounds for type parameters
 
 		// Add supertypes to classes
-		bridgeRepositoryEClass.getESuperTypes().add(this.getDataInput());
-		dataSetEClass.getESuperTypes().add(this.getDataProvider());
-		dataServiceEClass.getESuperTypes().add(this.getDataProvider());
-		restDataServiceEClass.getESuperTypes().add(this.getDataService());
+		dataAtlasProviderEClass.getESuperTypes().add(theAtlasConfigPackage.getDataProvider());
+		bridgeRepositoryEClass.getESuperTypes().add(theAtlasConfigPackage.getDataInput());
+		dataSetEClass.getESuperTypes().add(this.getDataAtlasProvider());
+		dataAtlasServiceEClass.getESuperTypes().add(theAtlasConfigPackage.getDataService());
+		dataAtlasServiceEClass.getESuperTypes().add(this.getDataAtlasProvider());
+		restDataServiceEClass.getESuperTypes().add(this.getDataAtlasService());
 		restDataServiceConfigurationEClass.getESuperTypes().add(this.getDataServiceConfiguration());
-		geoJsonDataServiceEClass.getESuperTypes().add(this.getDataService());
+		geoJsonDataServiceEClass.getESuperTypes().add(this.getDataAtlasService());
 		geoJsonDataServiceConfigurationEClass.getESuperTypes().add(this.getDataServiceConfiguration());
-		xmlaDataServiceEClass.getESuperTypes().add(this.getDataService());
+		xmlaDataServiceEClass.getESuperTypes().add(this.getDataAtlasService());
 		xmlaDataServiceConfigurationEClass.getESuperTypes().add(this.getDataServiceConfiguration());
-		graphQLDataServiceEClass.getESuperTypes().add(this.getDataService());
-		qGisDataServiceEClass.getESuperTypes().add(this.getDataService());
+		graphQLDataServiceEClass.getESuperTypes().add(this.getDataAtlasService());
+		qGisDataServiceEClass.getESuperTypes().add(this.getDataAtlasService());
 		qGisDataServiceConfigurationEClass.getESuperTypes().add(this.getDataServiceConfiguration());
 		graphQLDataServiceConfigurationEClass.getESuperTypes().add(this.getDataServiceConfiguration());
-		ogcFeaturesDataServiceEClass.getESuperTypes().add(this.getDataService());
+		ogcFeaturesDataServiceEClass.getESuperTypes().add(this.getDataAtlasService());
 		ogcFeaturesDataServiceConfigurationEClass.getESuperTypes().add(this.getDataServiceConfiguration());
-		ogcSensorThingsDataServiceEClass.getESuperTypes().add(this.getDataService());
-		mongoDataInputEClass.getESuperTypes().add(this.getDataInput());
-		fileDataInputEClass.getESuperTypes().add(this.getDataInput());
-		jpaDataInputEClass.getESuperTypes().add(this.getDataInput());
+		ogcSensorThingsDataServiceEClass.getESuperTypes().add(this.getDataAtlasService());
 		dataTransformationEClass.getESuperTypes().add(this.getTransformation());
 		queryTransformationEClass.getESuperTypes().add(this.getTransformation());
-		oDataDataServiceEClass.getESuperTypes().add(this.getDataService());
+		oDataDataServiceEClass.getESuperTypes().add(this.getDataAtlasService());
 		oDataDataServiceConfigurationEClass.getESuperTypes().add(this.getDataServiceConfiguration());
 		csvDistributionExportEClass.getESuperTypes().add(this.getDistributionExport());
-		databaseDataSourceEClass.getESuperTypes().add(this.getDataSource());
-		jdbcDataSourceEClass.getESuperTypes().add(this.getDatabaseDataSource());
-		mongoDataSourceEClass.getESuperTypes().add(this.getDatabaseDataSource());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(dataAtlasConfigurationEClass, DataAtlasConfiguration.class, "DataAtlasConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getDataAtlasConfiguration_Name(), ecorePackage.getEString(), "name", null, 1, 1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getDataAtlasConfiguration_Description(), ecorePackage.getEString(), "description", null, 0, 1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getDataAtlasConfiguration_DataSources(), this.getDataSource(), null, "dataSources", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getDataAtlasConfiguration_DataInputs(), this.getDataInput(), null, "dataInputs", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getDataAtlasConfiguration_DataSources(), theAtlasConfigPackage.getDataSource(), null, "dataSources", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getDataAtlasConfiguration_DataInputs(), theAtlasConfigPackage.getDataInput(), null, "dataInputs", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDataAtlasConfiguration_DataSets(), this.getDataSet(), null, "dataSets", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getDataAtlasConfiguration_Services(), this.getDataService(), null, "services", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getDataAtlasConfiguration_Services(), this.getDataAtlasService(), null, "services", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDataAtlasConfiguration_Exports(), this.getDistributionExport(), null, "exports", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDataAtlasConfiguration_Transformations(), this.getTransformation(), null, "transformations", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDataAtlasConfiguration_Publications(), this.getDcatPublication(), null, "publications", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(dataProviderEClass, DataProvider.class, "DataProvider", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getDataProvider_Id(), ecorePackage.getEString(), "id", null, 1, 1, DataProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getDataProvider_Name(), ecorePackage.getEString(), "name", null, 1, 1, DataProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getDataProvider_Description(), ecorePackage.getEString(), "description", null, 1, 1, DataProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getDataProvider_DataInput(), this.getDataInput(), null, "dataInput", null, 0, 1, DataProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getDataProvider_Transformation(), this.getTransformation(), null, "transformation", null, 0, 1, DataProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getDataProvider_DistributionExport(), this.getDistributionExport(), null, "distributionExport", null, 0, -1, DataProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getDataProvider_Publication(), this.getDcatPublication(), null, "publication", null, 0, 1, DataProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(dataInputEClass, DataInput.class, "DataInput", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getDataInput_Id(), ecorePackage.getEString(), "id", null, 1, 1, DataInput.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getDataInput_SupportedEClasses(), ecorePackage.getEClass(), null, "supportedEClasses", null, 0, -1, DataInput.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEOperation(getDataInput__StreamData(), null, "streamData", 0, 1, IS_UNIQUE, IS_ORDERED);
+		initEClass(dataAtlasProviderEClass, DataAtlasProvider.class, "DataAtlasProvider", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getDataAtlasProvider_Transformation(), this.getTransformation(), null, "transformation", null, 0, 1, DataAtlasProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getDataAtlasProvider_DistributionExport(), this.getDistributionExport(), null, "distributionExport", null, 0, -1, DataAtlasProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getDataAtlasProvider_Publication(), this.getDcatPublication(), null, "publication", null, 0, 1, DataAtlasProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(bridgeRepositoryEClass, BridgeRepository.class, "BridgeRepository", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getBridgeRepository_Source(), this.getDataInput(), null, "source", null, 1, 1, BridgeRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBridgeRepository_Source(), theAtlasConfigPackage.getDataInput(), null, "source", null, 1, 1, BridgeRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getBridgeRepository_DataTrafo(), this.getDataTransformation(), null, "dataTrafo", null, 1, 1, BridgeRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getBridgeRepository_QueryTrafo(), this.getQueryTransformation(), null, "queryTrafo", null, 0, 1, BridgeRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getBridgeRepository_Filter(), ecorePackage.getEObject(), null, "filter", null, 0, 1, BridgeRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2288,10 +1752,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		initEReference(getDataSet_ChildDataSet(), this.getDataSet(), this.getDataSet_ParentDataSet(), "childDataSet", null, 0, -1, DataSet.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDataSet_ParentDataSet(), this.getDataSet(), this.getDataSet_ChildDataSet(), "parentDataSet", null, 0, 1, DataSet.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(dataServiceEClass, DataService.class, "DataService", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getDataService_UrlContext(), ecorePackage.getEString(), "urlContext", null, 1, 1, DataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEOperation(getDataService__GetDistributions(), null, "getDistributions", 0, 1, IS_UNIQUE, IS_ORDERED);
+		initEClass(dataAtlasServiceEClass, DataAtlasService.class, "DataAtlasService", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(restDataServiceEClass, RestDataService.class, "RestDataService", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getRestDataService_Configuration(), this.getRestDataServiceConfiguration(), null, "configuration", null, 0, -1, RestDataService.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
@@ -2357,16 +1818,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 
 		initEClass(ogcSensorThingsDataServiceEClass, OgcSensorThingsDataService.class, "OgcSensorThingsDataService", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(mongoDataInputEClass, MongoDataInput.class, "MongoDataInput", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getMongoDataInput_DataSource(), this.getMongoDataSource(), null, "dataSource", null, 1, 1, MongoDataInput.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(fileDataInputEClass, FileDataInput.class, "FileDataInput", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getFileDataInput_Uri(), ecorePackage.getEString(), "uri", null, 1, 1, FileDataInput.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(jpaDataInputEClass, JPADataInput.class, "JPADataInput", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getJPADataInput_PersistenceConfig(), theEORMPackage.getEntityMappings(), null, "persistenceConfig", null, 0, 1, JPADataInput.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getJPADataInput_DataSource(), this.getJdbcDataSource(), null, "dataSource", null, 1, 1, JPADataInput.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
 		initEClass(dataTransformationEClass, DataTransformation.class, "DataTransformation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getDataTransformation_Transformation(), theQvtOperationalPackage.getOperationalTransformation(), null, "transformation", null, 1, 1, DataTransformation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDataTransformation_SupportedEClasses(), ecorePackage.getEClass(), null, "supportedEClasses", null, 0, -1, DataTransformation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2416,37 +1867,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		initEAttribute(getDcatPublication_ContactUrl(), ecorePackage.getEString(), "contactUrl", null, 0, 1, DcatPublication.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getDcatPublication_LicenseUri(), ecorePackage.getEString(), "licenseUri", null, 0, 1, DcatPublication.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(dataSourceEClass, DataSource.class, "DataSource", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getDataSource_Id(), ecorePackage.getEString(), "id", null, 1, 1, DataSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getDataSource_Name(), ecorePackage.getEString(), "name", null, 1, 1, DataSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getDataSource_Description(), ecorePackage.getEString(), "description", null, 0, 1, DataSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getDataSource_Filter(), ecorePackage.getEString(), "filter", null, 0, 1, DataSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(databaseDataSourceEClass, DatabaseDataSource.class, "DatabaseDataSource", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getDatabaseDataSource_Host(), ecorePackage.getEString(), "host", null, 0, 1, DatabaseDataSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getDatabaseDataSource_Port(), ecorePackage.getEIntegerObject(), "port", null, 0, 1, DatabaseDataSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getDatabaseDataSource_Database(), ecorePackage.getEString(), "database", null, 0, 1, DatabaseDataSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getDatabaseDataSource_User(), ecorePackage.getEString(), "user", null, 0, 1, DatabaseDataSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getDatabaseDataSource_Password(), ecorePackage.getEString(), "password", null, 0, 1, DatabaseDataSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getDatabaseDataSource_Properties(), this.getConnectionProperty(), null, "properties", null, 0, -1, DatabaseDataSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(connectionPropertyEClass, ConnectionProperty.class, "ConnectionProperty", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getConnectionProperty_Key(), ecorePackage.getEString(), "key", null, 1, 1, ConnectionProperty.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getConnectionProperty_Value(), ecorePackage.getEString(), "value", null, 1, 1, ConnectionProperty.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(jdbcDataSourceEClass, JdbcDataSource.class, "JdbcDataSource", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getJdbcDataSource_Driver(), this.getJdbcDriver(), "driver", null, 0, 1, JdbcDataSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getJdbcDataSource_Schema(), ecorePackage.getEString(), "schema", null, 0, 1, JdbcDataSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(mongoDataSourceEClass, MongoDataSource.class, "MongoDataSource", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getMongoDataSource_AuthSource(), ecorePackage.getEString(), "authSource", null, 0, 1, MongoDataSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getMongoDataSource_Flavor(), ecorePackage.getEString(), "flavor", null, 0, 1, MongoDataSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		// Initialize enums and add enum literals
-		initEEnum(jdbcDriverEEnum, JdbcDriver.class, "JdbcDriver");
-		addEEnumLiteral(jdbcDriverEEnum, JdbcDriver.POSTGRESQL);
-		addEEnumLiteral(jdbcDriverEEnum, JdbcDriver.H2);
-
 		// Create resource
 		createResource(eNS_URI);
 
@@ -2473,8 +1893,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		  (this,
 		   source,
 		   new String[] {
-			   "ecore", "http://www.eclipse.org/emf/2002/Ecore",
-			   "eorm", "platform:/resource/org.eclipse.fennec.persistence.orm/model/eorm.ecore#/"
+			   "ecore", "http://www.eclipse.org/emf/2002/Ecore"
 		   });
 	}
 
@@ -2490,7 +1909,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		  (this,
 		   source,
 		   new String[] {
-			   "documentation", "Configuration model for the Fennec Data-Atlas.\n\nIt describes - independent of any concrete deployment - which data sources (DataInput) provide data, which DataSets are published, which DataServices (REST, OData, OGC, QGis, XMLA, GraphQL) expose them, which reusable DistributionExport templates are used for serialization, and which Transformations map between models.\nAn instance of this model is meant to fully configure a Data-Atlas runtime, while the model types it refers to are resolved against the Model-Atlas EPackage registry.",
+			   "documentation", "Configuration model for the Fennec Data-Atlas.\n\nIt describes - independent of any concrete deployment - which data sources (DataInput) provide data, which DataSets are published, which DataServices (REST, OData, OGC, QGis, XMLA, GraphQL) expose them, which reusable DistributionExport templates are used for serialization, and which Transformations map between models.\nAn instance of this model is meant to fully configure a Data-Atlas runtime, while the model types it refers to are resolved against the Model-Atlas EPackage registry.\n\nThe building blocks shared by all Fennec atlases - data sources (DataSource and its subtypes), data inputs (DataInput, FileDataInput, MongoDataInput, ...) and the DataProvider/DataService bases - come from the shared atlas configuration model (https://eclipse.org/fennec/atlas/configuration/1.0.0, org.eclipse.fennec.atlas.configuration.model); JPADataInput from its JPA extension (https://eclipse.org/fennec/atlas/configuration/jpa/1.0.0). This model adds what is specific to the Data Atlas: the root registries, DataSets, the concrete DataServices, exports, transformations, bridges and publications.",
 			   "oSGiCompatible", "true",
 			   "basePackage", "org.eclipse.fennec.data.atlas",
 			   "copyrightText", "******************************************************************\nCopyright (c) 2026 Contributors to the Eclipse Foundation.\n\nThis program and the accompanying materials are made\navailable under the terms of the Eclipse Public License 2.0\nwhich is available at https://www.eclipse.org/legal/epl-2.0/\n\nSPDX-License-Identifier: EPL-2.0\n\nContributors:\n  Data In Motion Consulting - initial implementation\n******************************************************************",
@@ -2519,7 +1938,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		  (getDataAtlasConfiguration_DataSources(),
 		   source,
 		   new String[] {
-			   "documentation", "Registry of reusable data source definitions (JdbcDataSource, MongoDataSource), referenced from DataInputs.\nA data source either BINDS to a service the deployment configured (filter set) or is MATERIALIZED from its connection definition by the Data Atlas (host and database set) - never both."
+			   "documentation", "Registry of reusable data source definitions (JdbcDataSource, MongoDataSource of the shared atlas configuration model), referenced from DataInputs. Kinds the Data Atlas cannot realize (e.g. MqttDataSource) are diagnosed and skipped.\nA data source either BINDS to a service the deployment configured (filter set) or is MATERIALIZED from its connection definition by the Data Atlas (host and database set) - never both."
 		   });
 		addAnnotation
 		  (getDataAtlasConfiguration_DataInputs(),
@@ -2555,79 +1974,31 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		  (getDataAtlasConfiguration_Publications(),
 		   source,
 		   new String[] {
-			   "documentation", "Registry of reusable DcatPublication declarations, referenced from DataServices and DataSets (via DataProvider.publication)."
+			   "documentation", "Registry of reusable DcatPublication declarations, referenced from DataServices and DataSets (via DataAtlasProvider.publication)."
 		   });
 		addAnnotation
-		  (dataProviderEClass,
+		  (dataAtlasProviderEClass,
 		   source,
 		   new String[] {
-			   "documentation", "Abstract base for anything that provides data and can be distributed: a generic DataService or a concrete DataSet.\nCarries the common identity (id/name/description) and the data configuration trias: data source (dataInput), transformation and distribution exports.\n\nA DataSet refines its enclosing DataService: if it sets one of the trias features itself, that value overrides the one of the DataService; if it leaves the feature unset, the value of the DataService applies (override-else-default)."
+			   "documentation", "Data-Atlas refinement of the shared DataProvider (id, name, description, dataInput): anything that provides data and can be distributed - a DataService (via DataAtlasService) or a concrete DataSet. Adds the rest of the data configuration trias besides the dataInput - transformation and distribution exports - plus the opt-in publication.\n\nA DataSet refines its enclosing DataService: if it sets one of the trias features (dataInput, transformation, distributionExport) itself, that value overrides the one of the DataService; if it leaves the feature unset, the value of the DataService applies (override-else-default). Runtime constraint: a DataService that does not contain any DataSet must define a dataInput."
 		   });
 		addAnnotation
-		  (getDataProvider_Id(),
-		   source,
-		   new String[] {
-			   "documentation", "Unique identifier of this data provider (DataService or DataSet)."
-		   });
-		addAnnotation
-		  (getDataProvider_Name(),
-		   source,
-		   new String[] {
-			   "documentation", "Derives from the model annotation by default"
-		   });
-		addAnnotation
-		  (getDataProvider_Description(),
-		   source,
-		   new String[] {
-			   "documentation", "Derives from the model annotation by default"
-		   });
-		addAnnotation
-		  (getDataProvider_DataInput(),
-		   source,
-		   new String[] {
-			   "documentation", "The DataInput (data source) used by this provider.\nOn a standalone DataService this is the source served generically. On a DataSet it overrides the DataInput of the enclosing DataService; if left unset, the service\'s DataInput applies.\nRuntime constraint: a DataService that does not contain any DataSet must define a dataInput here."
-		   });
-		addAnnotation
-		  (getDataProvider_Transformation(),
+		  (getDataAtlasProvider_Transformation(),
 		   source,
 		   new String[] {
 			   "documentation", "Optional transformation applied to the data of this provider. On a DataSet it overrides the transformation of the enclosing DataService; if left unset, the service\'s transformation applies."
 		   });
 		addAnnotation
-		  (getDataProvider_DistributionExport(),
+		  (getDataAtlasProvider_DistributionExport(),
 		   source,
 		   new String[] {
 			   "documentation", "References reusable DistributionExport templates (defined in the export registry) describing the formats this provider can be serialized to.\nOn a DataService this is the set of available/default exports. On a DataSet, if it defines its own exports they fully replace the service\'s; if left empty, the service\'s exports apply (override-else-default)."
 		   });
 		addAnnotation
-		  (getDataProvider_Publication(),
+		  (getDataAtlasProvider_Publication(),
 		   source,
 		   new String[] {
 			   "documentation", "Opt-in open-data publication of this provider: references a DcatPublication declaration (defined in the publications registry). Absent means the provider is not published - nothing is published implicitly.\nFollows the override-else-default rule: what a DataService declares applies to its DataSets unless a DataSet references a DcatPublication of its own.\nDeliberately plain data - the mapping to a DCAT model lives in the omittable publication bundle, never in this model (see data.atlas issue #4, DA-DCAT-1)."
-		   });
-		addAnnotation
-		  (dataInputEClass,
-		   source,
-		   new String[] {
-			   "documentation", "Base type for any data source that can stream EObjects into the Data-Atlas.\nA DataInput can be backed by a database (JPADataInput), MongoDB (MongoDataInput), EMF files (FileDataInput) or another input wrapped and transformed by a BridgeRepository.\n\nIntended as an abstract base - it is not meant to be instantiated directly."
-		   });
-		addAnnotation
-		  (getDataInput__StreamData(),
-		   source,
-		   new String[] {
-			   "documentation", "Returns a PushStream of the EObjects provided by this input."
-		   });
-		addAnnotation
-		  (getDataInput_Id(),
-		   source,
-		   new String[] {
-			   "documentation", "Unique identifier of this data input, used to reference it from DataSets and DataServices."
-		   });
-		addAnnotation
-		  (getDataInput_SupportedEClasses(),
-		   source,
-		   new String[] {
-			   "documentation", "The EClasses (model types resolved against the Model-Atlas) whose instances this input can provide."
 		   });
 		addAnnotation
 		  (bridgeRepositoryEClass,
@@ -2696,22 +2067,10 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 			   "documentation", "Parent DataSet within a DCAT dataset hierarchy/series; opposite of childDataSet."
 		   });
 		addAnnotation
-		  (dataServiceEClass,
+		  (dataAtlasServiceEClass,
 		   source,
 		   new String[] {
-			   "documentation", "Abstract definition of an Endpoint to publish DataSets.\nAs a DataProvider a DataService can also act standalone - serving its own dataInput generically in the formats given by its distributionExport - or it can contain refined DataSets (via its configurations)."
-		   });
-		addAnnotation
-		  (getDataService__GetDistributions(),
-		   source,
-		   new String[] {
-			   "documentation", "Marker operation. Each configuration of a DataService must result in a DCAT Distribution."
-		   });
-		addAnnotation
-		  (getDataService_UrlContext(),
-		   source,
-		   new String[] {
-			   "documentation", "Base URL context (path prefix) under which this service is published."
+			   "documentation", "Abstract definition of a Data-Atlas endpoint to publish DataSets: the shared DataService (urlContext) with the Data-Atlas provider features (transformation, distribution exports, publication).\nAs a DataProvider a DataService can also act standalone - serving its own dataInput generically in the formats given by its distributionExport - or it can contain refined DataSets (via its configurations). Each configuration of a published DataService results in a DCAT Distribution."
 		   });
 		addAnnotation
 		  (restDataServiceEClass,
@@ -2735,7 +2094,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		  (dataServiceConfigurationEClass,
 		   source,
 		   new String[] {
-			   "documentation", "Abstract binding of a DataSet to a specific DataService (the link DataService -> configuration -> dataSet).\nHolds the service-specific, per-DataSet settings (e.g. REST path / mime types). The exports themselves are no longer held here - they are resolved via the DataService default and the DataSet override (see DataProvider.distributionExport)."
+			   "documentation", "Abstract binding of a DataSet to a specific DataService (the link DataService -> configuration -> dataSet).\nHolds the service-specific, per-DataSet settings (e.g. REST path / mime types). The exports themselves are no longer held here - they are resolved via the DataService default and the DataSet override (see DataAtlasProvider.distributionExport)."
 		   });
 		addAnnotation
 		  (getDataServiceConfiguration_Id(),
@@ -3014,48 +2373,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 			   "documentation", "DataService that exposes DataSets via the OGC SensorThings API."
 		   });
 		addAnnotation
-		  (mongoDataInputEClass,
-		   source,
-		   new String[] {
-			   "documentation", "DataInput backed by a MongoDB database: the fennec Mongo persistence backend reads the collections through the BSON codec, so documents have to follow its layout (EMF id as _id, type discriminator, references as URIs). No mapping is needed - a registered EPackage is all the backend requires."
-		   });
-		addAnnotation
-		  (getMongoDataInput_DataSource(),
-		   source,
-		   new String[] {
-			   "documentation", "The MongoDB data source definition providing the database for this input."
-		   });
-		addAnnotation
-		  (fileDataInputEClass,
-		   source,
-		   new String[] {
-			   "documentation", "DataInput backed by EMF files as a source."
-		   });
-		addAnnotation
-		  (getFileDataInput_Uri(),
-		   source,
-		   new String[] {
-			   "documentation", "URI of the EMF resource (or a directory of EMF resources) this input loads its EObjects from."
-		   });
-		addAnnotation
-		  (jpaDataInputEClass,
-		   source,
-		   new String[] {
-			   "documentation", "DataInput backed by any relational data source supported by e.g. EclipseLink (JPA)."
-		   });
-		addAnnotation
-		  (getJPADataInput_PersistenceConfig(),
-		   source,
-		   new String[] {
-			   "documentation", "JPA entity mapping (the EclipseLink orm.xml equivalent) describing how the model types map to the relational schema. Set it when the derived naming cannot address the schema - e.g. lower-case or schema-qualified tables, or a table without a primary key that needs a declared composite id.\nContainment, deliberately: the mapping has to travel WITH the configuration. A non-containment href into a deployment-local file cannot be resolved by a Model Atlas that serves the configuration, which fails the upload with an unresolved EClass proxy. If a mapping ever needs to be shared between inputs, that belongs in a registry of the root, like the other reusables."
-		   });
-		addAnnotation
-		  (getJPADataInput_DataSource(),
-		   source,
-		   new String[] {
-			   "documentation", "The JDBC data source definition providing the database connection for this input - bound by filter or materialized from its connection definition, the input does not care which."
-		   });
-		addAnnotation
 		  (dataTransformationEClass,
 		   source,
 		   new String[] {
@@ -3119,7 +2436,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		  (distributionExportEClass,
 		   source,
 		   new String[] {
-			   "documentation", "A reusable export/serialization template for a distribution (e.g. CSV settings). Defined once in the export registry and referenced from DataServices and DataSets (via DataProvider.distributionExport), so the same export settings are not duplicated per provider."
+			   "documentation", "A reusable export/serialization template for a distribution (e.g. CSV settings). Defined once in the export registry and referenced from DataServices and DataSets (via DataAtlasProvider.distributionExport), so the same export settings are not duplicated per provider."
 		   });
 		addAnnotation
 		  (getDistributionExport_Id(),
@@ -3197,7 +2514,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		  (dcatPublicationEClass,
 		   source,
 		   new String[] {
-			   "documentation", "Declares that a DataProvider referencing this element is published as open data to a DCAT portal (DCAT.Atlas). Defined once in the publications registry and referenced from DataServices and DataSets (via DataProvider.publication), so the same target catalog and metadata defaults are not duplicated per provider.\n\nDeliberately plain data: an id, a catalog name and a handful of metadata overrides. The mapping to dcat:Dataset / dcat:DataService lives in the omittable publication bundle - this model must never depend on a DCAT model (data.atlas issue #4, DA-DCAT-1). Metadata left unset here is derived from the provider (name, description, model annotations); an explicit value wins over a derived one (DA-DCAT-8).\n\nThe portal endpoint itself (base URL, credentials, timeouts) is a deployment concern and is NOT configured here: it is the Config-Admin configuration of the dcat.atlas client (DA-DCAT-6)."
+			   "documentation", "Declares that a DataProvider referencing this element is published as open data to a DCAT portal (DCAT.Atlas). Defined once in the publications registry and referenced from DataServices and DataSets (via DataAtlasProvider.publication), so the same target catalog and metadata defaults are not duplicated per provider.\n\nDeliberately plain data: an id, a catalog name and a handful of metadata overrides. The mapping to dcat:Dataset / dcat:DataService lives in the omittable publication bundle - this model must never depend on a DCAT model (data.atlas issue #4, DA-DCAT-1). Metadata left unset here is derived from the provider (name, description, model annotations); an explicit value wins over a derived one (DA-DCAT-8).\n\nThe portal endpoint itself (base URL, credentials, timeouts) is a deployment concern and is NOT configured here: it is the Config-Admin configuration of the dcat.atlas client (DA-DCAT-6)."
 		   });
 		addAnnotation
 		  (getDcatPublication_Id(),
@@ -3301,126 +2618,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		   new String[] {
 			   "documentation", "License IRI of the published distributions (e.g. a dcat-ap.de license vocabulary entry). Mandatory for a distribution by the portal\'s shapes - a publication whose provider serves distributions needs one (DA-DCAT-9)."
 		   });
-		addAnnotation
-		  (dataSourceEClass,
-		   source,
-		   new String[] {
-			   "documentation", "A reusable data source definition, living in the root\'s dataSources registry so it can be shared across DataInputs (and tenants).\n\nA data source is realized in exactly one of two modes:\n- BIND: filter is set. The deployment configured the backend service itself (e.g. a daanse DataSource factory configuration); the filter selects it. Nothing else may be set.\n- MATERIALIZE: the connection definition of the concrete subtype is set (at least host and database). The Data Atlas creates the backend service from it.\nSetting both, or neither, is a configuration error - the source is reported and skipped.\n\nCredential rule: the configuration model never carries a credential value. user and password are placeholders resolved in the consuming runtime only: $[env:NAME] for an environment variable or $[secret:NAME] for a file in the runtime\'s secrets directory. A literal value is rejected."
-		   });
-		addAnnotation
-		  (getDataSource_Id(),
-		   source,
-		   new String[] {
-			   "documentation", "Unique identifier of this data source definition. A materialized source is selectable by the service property data.atlas.datasource.id=<id>."
-		   });
-		addAnnotation
-		  (getDataSource_Name(),
-		   source,
-		   new String[] {
-			   "documentation", "Human-readable name of the data source."
-		   });
-		addAnnotation
-		  (getDataSource_Description(),
-		   source,
-		   new String[] {
-			   "documentation", "Optional description: what the database holds, who owns it."
-		   });
-		addAnnotation
-		  (getDataSource_Filter(),
-		   source,
-		   new String[] {
-			   "documentation", "BIND mode: OSGi target filter (LDAP-style) selecting the backend service the deployment configured - a javax.sql.DataSource for JDBC (e.g. (dataSourceName=personsDs)), a MongoDatabase for MongoDB (e.g. (mongo.database.alias=assets)). Mutually exclusive with the connection definition."
-		   });
-		addAnnotation
-		  (databaseDataSourceEClass,
-		   source,
-		   new String[] {
-			   "documentation", "A data source addressed by network coordinates: the connection definition shared by all database kinds (MATERIALIZE mode). host and database are the minimum; the rest is optional."
-		   });
-		addAnnotation
-		  (getDatabaseDataSource_Host(),
-		   source,
-		   new String[] {
-			   "documentation", "Database host name or address. May be a $[env:NAME] placeholder."
-		   });
-		addAnnotation
-		  (getDatabaseDataSource_Port(),
-		   source,
-		   new String[] {
-			   "documentation", "Database port; unset = the driver\'s default (5432 for PostgreSQL, 27017 for MongoDB)."
-		   });
-		addAnnotation
-		  (getDatabaseDataSource_Database(),
-		   source,
-		   new String[] {
-			   "documentation", "Name of the database (for H2: the database identifier - a name or path)."
-		   });
-		addAnnotation
-		  (getDatabaseDataSource_User(),
-		   source,
-		   new String[] {
-			   "documentation", "Login user - a $[env:NAME] or $[secret:NAME] placeholder ONLY, never a literal (see DataSource). Unset for databases without authentication."
-		   });
-		addAnnotation
-		  (getDatabaseDataSource_Password(),
-		   source,
-		   new String[] {
-			   "documentation", "Login password - a $[env:NAME] or $[secret:NAME] placeholder ONLY, never a literal (see DataSource)."
-		   });
-		addAnnotation
-		  (getDatabaseDataSource_Properties(),
-		   source,
-		   new String[] {
-			   "documentation", "Additional driver-specific settings, passed through verbatim to the backend\'s factory configuration (e.g. sslMode=require for PostgreSQL, dbCloseDelay=-1 for H2, flavor=ferretdb for MongoDB). They cannot override the keys derived from the coordinate attributes."
-		   });
-		addAnnotation
-		  (connectionPropertyEClass,
-		   source,
-		   new String[] {
-			   "documentation", "One driver-specific key/value setting of a DatabaseDataSource. The value is a string; the backend\'s metatype decides the target type."
-		   });
-		addAnnotation
-		  (jdbcDataSourceEClass,
-		   source,
-		   new String[] {
-			   "documentation", "A relational data source realized as a javax.sql.DataSource service.\nBIND: filter selects the DataSource service the deployment configured.\nMATERIALIZE: the Data Atlas creates a daanse.jdbc.datasource.<driver>.DataSource factory configuration from host/port/database/schema/user/password/properties (no connection pool - pooling is EclipseLink\'s), registered with the service property data.atlas.datasource.id=<id>."
-		   });
-		addAnnotation
-		  (getJdbcDataSource_Driver(),
-		   source,
-		   new String[] {
-			   "documentation", "The database kind the materialized DataSource connects to; selects the daanse provider (MATERIALIZE only, default PostgreSQL). The runtime has to carry the provider and driver bundles of that kind."
-		   });
-		addAnnotation
-		  (getJdbcDataSource_Schema(),
-		   source,
-		   new String[] {
-			   "documentation", "Optional default schema of the connection (PostgreSQL currentSchema)."
-		   });
-		addAnnotation
-		  (jdbcDriverEEnum,
-		   source,
-		   new String[] {
-			   "documentation", "The relational database kinds a JdbcDataSource can be materialized for. The literal is the daanse provider infix: daanse.jdbc.datasource.<literal>.DataSource."
-		   });
-		addAnnotation
-		  (mongoDataSourceEClass,
-		   source,
-		   new String[] {
-			   "documentation", "A MongoDB data source realized as a com.mongodb.client.MongoDatabase service of the fennec Mongo persistence backend.\nBIND: filter selects the MongoDatabase service the deployment configured (e.g. (mongo.database.alias=assets)).\nMATERIALIZE: the Data Atlas creates one persistence.mongo.client (connection string assembled from host/port/user/password/authSource, liveness-gated) and one persistence.mongo.database configuration (alias dataAtlas.<id>) from the definition."
-		   });
-		addAnnotation
-		  (getMongoDataSource_AuthSource(),
-		   source,
-		   new String[] {
-			   "documentation", "Optional authentication database (the connection string\'s authSource option); unset = the driver\'s default."
-		   });
-		addAnnotation
-		  (getMongoDataSource_Flavor(),
-		   source,
-		   new String[] {
-			   "documentation", "Optional server flavor behind the wire protocol as understood by the fennec Mongo backend (mongo, ferretdb, documentdb-pg); unset = mongo."
-		   });
 	}
 
 	/**
@@ -3431,13 +2628,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 */
 	protected void createStatusAnnotations() {
 		String source = "https://eclipse.org/fennec/data/atlas/configuration/status";
-		addAnnotation
-		  (getDataInput__StreamData(),
-		   source,
-		   new String[] {
-			   "implementation", "not implemented yet",
-			   "note", "legacy operation of the first draft; the generated implementation throws UnsupportedOperationException"
-		   });
 		addAnnotation
 		  (getBridgeRepository_QueryTrafo(),
 		   source,
@@ -3465,13 +2655,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		   new String[] {
 			   "implementation", "not implemented yet",
 			   "note", "no runtime effect"
-		   });
-		addAnnotation
-		  (getDataService__GetDistributions(),
-		   source,
-		   new String[] {
-			   "implementation", "not implemented yet",
-			   "note", "legacy operation of the first draft; the generated implementation throws UnsupportedOperationException"
 		   });
 		addAnnotation
 		  (xmlaDataServiceEClass,

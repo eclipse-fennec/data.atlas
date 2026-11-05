@@ -204,3 +204,9 @@ org.eclipse.fennec.dcat:org.eclipse.fennec.dcat.atlas.client.impl:1.0.0-SNAPSHOT
 org.eclipse.fennec.dcat:org.eclipse.fennec.dcat.atlas.client.osgi:1.0.0-SNAPSHOT
 org.eclipse.fennec.dcat:org.eclipse.fennec.dcat.atlas.dcatap.de.model:1.0.0-SNAPSHOT
 org.eclipse.fennec.models:org.eclipse.fennec.common.models.library:0.1.0-SNAPSHOT
+
+# the shared atlas configuration model (fennec.models#10): data sources, data inputs and the
+# DataProvider/DataService bases the Data Atlas configuration model builds on; JPADataInput lives
+# in its JPA extension, which is not part of the models library (it depends on persistence.orm)
+org.eclipse.fennec.models:org.eclipse.fennec.atlas.configuration.model:1.0.0-SNAPSHOT
+org.eclipse.fennec.models:org.eclipse.fennec.atlas.configuration.jpa.model:1.0.0-SNAPSHOT

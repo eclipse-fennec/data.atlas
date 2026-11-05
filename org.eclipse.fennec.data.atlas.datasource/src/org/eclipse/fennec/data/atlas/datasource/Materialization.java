@@ -23,13 +23,13 @@ import java.util.Set;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.fennec.data.atlas.api.DataAtlasConstants;
-import org.eclipse.fennec.data.atlas.configuration.ConnectionProperty;
-import org.eclipse.fennec.data.atlas.configuration.DAConfigPackage;
-import org.eclipse.fennec.data.atlas.configuration.DataSource;
-import org.eclipse.fennec.data.atlas.configuration.DatabaseDataSource;
-import org.eclipse.fennec.data.atlas.configuration.JdbcDataSource;
-import org.eclipse.fennec.data.atlas.configuration.JdbcDriver;
-import org.eclipse.fennec.data.atlas.configuration.MongoDataSource;
+import org.eclipse.fennec.atlas.configuration.ConnectionProperty;
+import org.eclipse.fennec.atlas.configuration.AtlasConfigPackage;
+import org.eclipse.fennec.atlas.configuration.DataSource;
+import org.eclipse.fennec.atlas.configuration.DatabaseDataSource;
+import org.eclipse.fennec.atlas.configuration.JdbcDataSource;
+import org.eclipse.fennec.atlas.configuration.JdbcDriver;
+import org.eclipse.fennec.atlas.configuration.MongoDataSource;
 
 /**
  * The pure part of the datasource configurator: decides the mode of a
@@ -62,9 +62,9 @@ final class Materialization {
 	static final String PID_MONGO_CLIENT = "persistence.mongo.client";
 	static final String PID_MONGO_DATABASE = "persistence.mongo.database";
 
-	private static final Set<EStructuralFeature> IDENTITY_FEATURES = Set.of(DAConfigPackage.Literals.DATA_SOURCE__ID,
-			DAConfigPackage.Literals.DATA_SOURCE__NAME, DAConfigPackage.Literals.DATA_SOURCE__DESCRIPTION,
-			DAConfigPackage.Literals.DATA_SOURCE__FILTER);
+	private static final Set<EStructuralFeature> IDENTITY_FEATURES = Set.of(AtlasConfigPackage.Literals.DATA_SOURCE__ID,
+			AtlasConfigPackage.Literals.DATA_SOURCE__NAME, AtlasConfigPackage.Literals.DATA_SOURCE__DESCRIPTION,
+			AtlasConfigPackage.Literals.DATA_SOURCE__FILTER);
 
 	/** How a definition is realized. */
 	enum Mode {

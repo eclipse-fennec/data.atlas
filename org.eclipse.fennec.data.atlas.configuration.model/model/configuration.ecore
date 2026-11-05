@@ -4,10 +4,9 @@
     nsPrefix="configuration">
   <eAnnotations source="http://www.eclipse.org/OCL/Import">
     <details key="ecore" value="http://www.eclipse.org/emf/2002/Ecore"/>
-    <details key="eorm" value="platform:/resource/org.eclipse.fennec.persistence.orm/model/eorm.ecore#/"/>
   </eAnnotations>
   <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-    <details key="documentation" value="Configuration model for the Fennec Data-Atlas.&#xA;&#xA;It describes - independent of any concrete deployment - which data sources (DataInput) provide data, which DataSets are published, which DataServices (REST, OData, OGC, QGis, XMLA, GraphQL) expose them, which reusable DistributionExport templates are used for serialization, and which Transformations map between models.&#xA;An instance of this model is meant to fully configure a Data-Atlas runtime, while the model types it refers to are resolved against the Model-Atlas EPackage registry."/>
+    <details key="documentation" value="Configuration model for the Fennec Data-Atlas.&#xA;&#xA;It describes - independent of any concrete deployment - which data sources (DataInput) provide data, which DataSets are published, which DataServices (REST, OData, OGC, QGis, XMLA, GraphQL) expose them, which reusable DistributionExport templates are used for serialization, and which Transformations map between models.&#xA;An instance of this model is meant to fully configure a Data-Atlas runtime, while the model types it refers to are resolved against the Model-Atlas EPackage registry.&#xA;&#xA;The building blocks shared by all Fennec atlases - data sources (DataSource and its subtypes), data inputs (DataInput, FileDataInput, MongoDataInput, ...) and the DataProvider/DataService bases - come from the shared atlas configuration model (https://eclipse.org/fennec/atlas/configuration/1.0.0, org.eclipse.fennec.atlas.configuration.model); JPADataInput from its JPA extension (https://eclipse.org/fennec/atlas/configuration/jpa/1.0.0). This model adds what is specific to the Data Atlas: the root registries, DataSets, the concrete DataServices, exports, transformations, bridges and publications."/>
     <details key="oSGiCompatible" value="true"/>
     <details key="basePackage" value="org.eclipse.fennec.data.atlas"/>
     <details key="copyrightText" value="******************************************************************&#xA;Copyright (c) 2026 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0&#xA;&#xA;Contributors:&#xA;  Data In Motion Consulting - initial implementation&#xA;******************************************************************"/>
@@ -29,13 +28,13 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="dataSources" upperBound="-1"
-        eType="#//DataSource" containment="true">
+        eType="ecore:EClass https://eclipse.org/fennec/atlas/configuration/1.0.0#//DataSource" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Registry of reusable data source definitions (JdbcDataSource, MongoDataSource), referenced from DataInputs.&#xA;A data source either BINDS to a service the deployment configured (filter set) or is MATERIALIZED from its connection definition by the Data Atlas (host and database set) - never both."/>
+        <details key="documentation" value="Registry of reusable data source definitions (JdbcDataSource, MongoDataSource of the shared atlas configuration model), referenced from DataInputs. Kinds the Data Atlas cannot realize (e.g. MqttDataSource) are diagnosed and skipped.&#xA;A data source either BINDS to a service the deployment configured (filter set) or is MATERIALIZED from its connection definition by the Data Atlas (host and database set) - never both."/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="dataInputs" upperBound="-1"
-        eType="#//DataInput" containment="true">
+        eType="ecore:EClass https://eclipse.org/fennec/atlas/configuration/1.0.0#//DataInput" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Registry of the DataInputs of this instance, referenced from DataServices and DataSets."/>
       </eAnnotations>
@@ -47,7 +46,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="services" upperBound="-1"
-        eType="#//DataService" containment="true">
+        eType="#//DataAtlasService" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The DataServices (endpoints) this instance publishes."/>
       </eAnnotations>
@@ -67,36 +66,15 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="publications" upperBound="-1"
         eType="#//DcatPublication" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Registry of reusable DcatPublication declarations, referenced from DataServices and DataSets (via DataProvider.publication)."/>
+        <details key="documentation" value="Registry of reusable DcatPublication declarations, referenced from DataServices and DataSets (via DataAtlasProvider.publication)."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DataProvider" abstract="true">
+  <eClassifiers xsi:type="ecore:EClass" name="DataAtlasProvider" abstract="true"
+      eSuperTypes="https://eclipse.org/fennec/atlas/configuration/1.0.0#//DataProvider">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Abstract base for anything that provides data and can be distributed: a generic DataService or a concrete DataSet.&#xA;Carries the common identity (id/name/description) and the data configuration trias: data source (dataInput), transformation and distribution exports.&#xA;&#xA;A DataSet refines its enclosing DataService: if it sets one of the trias features itself, that value overrides the one of the DataService; if it leaves the feature unset, the value of the DataService applies (override-else-default)."/>
+      <details key="documentation" value="Data-Atlas refinement of the shared DataProvider (id, name, description, dataInput): anything that provides data and can be distributed - a DataService (via DataAtlasService) or a concrete DataSet. Adds the rest of the data configuration trias besides the dataInput - transformation and distribution exports - plus the opt-in publication.&#xA;&#xA;A DataSet refines its enclosing DataService: if it sets one of the trias features (dataInput, transformation, distributionExport) itself, that value overrides the one of the DataService; if it leaves the feature unset, the value of the DataService applies (override-else-default). Runtime constraint: a DataService that does not contain any DataSet must define a dataInput."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        iD="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Unique identifier of this data provider (DataService or DataSet)."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Derives from the model annotation by default"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Derives from the model annotation by default"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="dataInput" eType="#//DataInput">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The DataInput (data source) used by this provider.&#xA;On a standalone DataService this is the source served generically. On a DataSet it overrides the DataInput of the enclosing DataService; if left unset, the service's DataInput applies.&#xA;Runtime constraint: a DataService that does not contain any DataSet must define a dataInput here."/>
-      </eAnnotations>
-    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="transformation" eType="#//Transformation">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Optional transformation applied to the data of this provider. On a DataSet it overrides the transformation of the enclosing DataService; if left unset, the service's transformation applies."/>
@@ -114,38 +92,12 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DataInput" abstract="true">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Base type for any data source that can stream EObjects into the Data-Atlas.&#xA;A DataInput can be backed by a database (JPADataInput), MongoDB (MongoDataInput), EMF files (FileDataInput) or another input wrapped and transformed by a BridgeRepository.&#xA;&#xA;Intended as an abstract base - it is not meant to be instantiated directly."/>
-    </eAnnotations>
-    <eOperations name="streamData">
-      <eAnnotations source="https://eclipse.org/fennec/data/atlas/configuration/status">
-        <details key="implementation" value="not implemented yet"/>
-        <details key="note" value="legacy operation of the first draft; the generated implementation throws UnsupportedOperationException"/>
-      </eAnnotations>
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Returns a PushStream of the EObjects provided by this input."/>
-      </eAnnotations>
-    </eOperations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        iD="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Unique identifier of this data input, used to reference it from DataSets and DataServices."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="supportedEClasses" upperBound="-1"
-        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EClass">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The EClasses (model types resolved against the Model-Atlas) whose instances this input can provide."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="BridgeRepository" eSuperTypes="#//DataInput">
+  <eClassifiers xsi:type="ecore:EClass" name="BridgeRepository" eSuperTypes="https://eclipse.org/fennec/atlas/configuration/1.0.0#//DataInput">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A DataInput that can load data from another source and transform it if necessary.&#xA;BridgeRepository can be cascaded, so one original Entity can result in multiple intermediate formats if necessary.&#xA;&#xA;A bridge can have an attached data transformation for the source objects it loads.&#xA;On the other hand, incoming queries might be transformed as well."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="source" lowerBound="1"
-        eType="#//DataInput">
+        eType="ecore:EClass https://eclipse.org/fennec/atlas/configuration/1.0.0#//DataInput">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The underlying DataInput this bridge reads from before applying its transformations."/>
       </eAnnotations>
@@ -175,7 +127,7 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DataSet" eSuperTypes="#//DataProvider">
+  <eClassifiers xsi:type="ecore:EClass" name="DataSet" eSuperTypes="#//DataAtlasProvider">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Conforms to the DCAT Dataset. A concrete realization of a DataService: it refines the service for a specific case (e.g. a concrete query) by overriding the inherited dataInput, transformation and distributionExport where needed.&#xA;Inherits id, name, description and the data configuration trias from DataProvider."/>
     </eAnnotations>
@@ -218,27 +170,13 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DataService" abstract="true" eSuperTypes="#//DataProvider">
+  <eClassifiers xsi:type="ecore:EClass" name="DataAtlasService" abstract="true"
+      eSuperTypes="https://eclipse.org/fennec/atlas/configuration/1.0.0#//DataService #//DataAtlasProvider">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Abstract definition of an Endpoint to publish DataSets.&#xA;As a DataProvider a DataService can also act standalone - serving its own dataInput generically in the formats given by its distributionExport - or it can contain refined DataSets (via its configurations)."/>
+      <details key="documentation" value="Abstract definition of a Data-Atlas endpoint to publish DataSets: the shared DataService (urlContext) with the Data-Atlas provider features (transformation, distribution exports, publication).&#xA;As a DataProvider a DataService can also act standalone - serving its own dataInput generically in the formats given by its distributionExport - or it can contain refined DataSets (via its configurations). Each configuration of a published DataService results in a DCAT Distribution."/>
     </eAnnotations>
-    <eOperations name="getDistributions">
-      <eAnnotations source="https://eclipse.org/fennec/data/atlas/configuration/status">
-        <details key="implementation" value="not implemented yet"/>
-        <details key="note" value="legacy operation of the first draft; the generated implementation throws UnsupportedOperationException"/>
-      </eAnnotations>
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Marker operation. Each configuration of a DataService must result in a DCAT Distribution."/>
-      </eAnnotations>
-    </eOperations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="urlContext" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Base URL context (path prefix) under which this service is published."/>
-      </eAnnotations>
-    </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="RestDataService" eSuperTypes="#//DataService">
+  <eClassifiers xsi:type="ecore:EClass" name="RestDataService" eSuperTypes="#//DataAtlasService">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="DataService definition for a REST endpoint over HTTP(s), serialized to several mimetypes like XML, CSV, JSON etc."/>
     </eAnnotations>
@@ -260,7 +198,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DataServiceConfiguration" abstract="true">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Abstract binding of a DataSet to a specific DataService (the link DataService -&gt; configuration -&gt; dataSet).&#xA;Holds the service-specific, per-DataSet settings (e.g. REST path / mime types). The exports themselves are no longer held here - they are resolved via the DataService default and the DataSet override (see DataProvider.distributionExport)."/>
+      <details key="documentation" value="Abstract binding of a DataSet to a specific DataService (the link DataService -&gt; configuration -&gt; dataSet).&#xA;Holds the service-specific, per-DataSet settings (e.g. REST path / mime types). The exports themselves are no longer held here - they are resolved via the DataService default and the DataSet override (see DataAtlasProvider.distributionExport)."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         iD="true">
@@ -313,7 +251,7 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="GeoJsonDataService" eSuperTypes="#//DataService">
+  <eClassifiers xsi:type="ecore:EClass" name="GeoJsonDataService" eSuperTypes="#//DataAtlasService">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="DataService that publishes DataSets as RFC 7946 GeoJSON: GET {path} returns a FeatureCollection, GET {path}/{id} a single Feature, media type application/geo+json.&#xA;A dedicated service kind rather than a media type on RestDataService, because serving GeoJSON needs mapping configuration (which features carry the geometry, what becomes the Feature id) that has no place on the generic REST service. Coordinates are assumed to be WGS 84 (RFC 7946 mandates it); coordinate transformation is a Transformation concern, not a serving one."/>
     </eAnnotations>
@@ -390,7 +328,7 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="XMLADataService" eSuperTypes="#//DataService">
+  <eClassifiers xsi:type="ecore:EClass" name="XMLADataService" eSuperTypes="#//DataAtlasService">
     <eAnnotations source="https://eclipse.org/fennec/data/atlas/configuration/status">
       <details key="implementation" value="not implemented yet"/>
       <details key="note" value="no XMLA endpoint configurator exists"/>
@@ -423,7 +361,7 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="GraphQLDataService" eSuperTypes="#//DataService">
+  <eClassifiers xsi:type="ecore:EClass" name="GraphQLDataService" eSuperTypes="#//DataAtlasService">
     <eAnnotations source="https://eclipse.org/fennec/data/atlas/configuration/status">
       <details key="implementation" value="not implemented yet"/>
       <details key="note" value="no GraphQL endpoint configurator exists"/>
@@ -441,7 +379,7 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="QGisDataService" eSuperTypes="#//DataService">
+  <eClassifiers xsi:type="ecore:EClass" name="QGisDataService" eSuperTypes="#//DataAtlasService">
     <eAnnotations source="https://eclipse.org/fennec/data/atlas/configuration/status">
       <details key="implementation" value="not implemented yet"/>
       <details key="note" value="no QGis endpoint configurator exists"/>
@@ -482,7 +420,7 @@
       <details key="documentation" value="Per-DataSet configuration for a GraphQLDataService. Placeholder - no GraphQL-specific parameters yet."/>
     </eAnnotations>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="OgcFeaturesDataService" eSuperTypes="#//DataService">
+  <eClassifiers xsi:type="ecore:EClass" name="OgcFeaturesDataService" eSuperTypes="#//DataAtlasService">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="DataService that exposes DataSets via the OGC API - Features standard (Part 1 Core, Part 3 Filtering with CQL2), served by the Fennec OGC API Features server (emf.ogc.features). One service is one API root with its own landing page at urlContext: /conformance, /collections, /collections/{collectionId}/items (GeoJSON, HTML), the OpenAPI document at /api, a QGIS project at /collections?f=qgs and, when the viewer bundle is present, a map viewer at {urlContext}/viewer/. The root publishes exactly the collections its configurations declare; every collection is served through the ReadRepository of its DataSet's DataInput, so bbox, datetime and CQL2 filters push down into the input. Read only."/>
     </eAnnotations>
@@ -553,7 +491,7 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="OgcSensorThingsDataService" eSuperTypes="#//DataService">
+  <eClassifiers xsi:type="ecore:EClass" name="OgcSensorThingsDataService" eSuperTypes="#//DataAtlasService">
     <eAnnotations source="https://eclipse.org/fennec/data/atlas/configuration/status">
       <details key="implementation" value="not implemented yet"/>
       <details key="note" value="no OGC SensorThings endpoint configurator exists"/>
@@ -561,44 +499,6 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="DataService that exposes DataSets via the OGC SensorThings API."/>
     </eAnnotations>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="MongoDataInput" eSuperTypes="#//DataInput">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="DataInput backed by a MongoDB database: the fennec Mongo persistence backend reads the collections through the BSON codec, so documents have to follow its layout (EMF id as _id, type discriminator, references as URIs). No mapping is needed - a registered EPackage is all the backend requires."/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="dataSource" lowerBound="1"
-        eType="#//MongoDataSource">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The MongoDB data source definition providing the database for this input."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FileDataInput" eSuperTypes="#//DataInput">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="DataInput backed by EMF files as a source."/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="uri" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="URI of the EMF resource (or a directory of EMF resources) this input loads its EObjects from."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="JPADataInput" eSuperTypes="#//DataInput">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="DataInput backed by any relational data source supported by e.g. EclipseLink (JPA)."/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="persistenceConfig" eType="ecore:EClass https://eclipse.org/fennec/persistence/eorm/1.0.0#//EntityMappings"
-        containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="JPA entity mapping (the EclipseLink orm.xml equivalent) describing how the model types map to the relational schema. Set it when the derived naming cannot address the schema - e.g. lower-case or schema-qualified tables, or a table without a primary key that needs a declared composite id.&#xA;Containment, deliberately: the mapping has to travel WITH the configuration. A non-containment href into a deployment-local file cannot be resolved by a Model Atlas that serves the configuration, which fails the upload with an unresolved EClass proxy. If a mapping ever needs to be shared between inputs, that belongs in a registry of the root, like the other reusables."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="dataSource" lowerBound="1"
-        eType="#//JdbcDataSource">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The JDBC data source definition providing the database connection for this input - bound by filter or materialized from its connection definition, the input does not care which."/>
-      </eAnnotations>
-    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DataTransformation" eSuperTypes="#//Transformation">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -632,7 +532,7 @@
       <details key="documentation" value="Queries are incoming requests, that need to be mapped on the corresponding data source"/>
     </eAnnotations>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ODataDataService" eSuperTypes="#//DataService">
+  <eClassifiers xsi:type="ecore:EClass" name="ODataDataService" eSuperTypes="#//DataAtlasService">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="DataService that exposes DataSets via the OData protocol."/>
     </eAnnotations>
@@ -665,7 +565,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DistributionExport">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A reusable export/serialization template for a distribution (e.g. CSV settings). Defined once in the export registry and referenced from DataServices and DataSets (via DataProvider.distributionExport), so the same export settings are not duplicated per provider."/>
+      <details key="documentation" value="A reusable export/serialization template for a distribution (e.g. CSV settings). Defined once in the export registry and referenced from DataServices and DataSets (via DataAtlasProvider.distributionExport), so the same export settings are not duplicated per provider."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         iD="true">
@@ -734,7 +634,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DcatPublication">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Declares that a DataProvider referencing this element is published as open data to a DCAT portal (DCAT.Atlas). Defined once in the publications registry and referenced from DataServices and DataSets (via DataProvider.publication), so the same target catalog and metadata defaults are not duplicated per provider.&#xA;&#xA;Deliberately plain data: an id, a catalog name and a handful of metadata overrides. The mapping to dcat:Dataset / dcat:DataService lives in the omittable publication bundle - this model must never depend on a DCAT model (data.atlas issue #4, DA-DCAT-1). Metadata left unset here is derived from the provider (name, description, model annotations); an explicit value wins over a derived one (DA-DCAT-8).&#xA;&#xA;The portal endpoint itself (base URL, credentials, timeouts) is a deployment concern and is NOT configured here: it is the Config-Admin configuration of the dcat.atlas client (DA-DCAT-6)."/>
+      <details key="documentation" value="Declares that a DataProvider referencing this element is published as open data to a DCAT portal (DCAT.Atlas). Defined once in the publications registry and referenced from DataServices and DataSets (via DataAtlasProvider.publication), so the same target catalog and metadata defaults are not duplicated per provider.&#xA;&#xA;Deliberately plain data: an id, a catalog name and a handful of metadata overrides. The mapping to dcat:Dataset / dcat:DataService lives in the omittable publication bundle - this model must never depend on a DCAT model (data.atlas issue #4, DA-DCAT-1). Metadata left unset here is derived from the provider (name, description, model annotations); an explicit value wins over a derived one (DA-DCAT-8).&#xA;&#xA;The portal endpoint itself (base URL, credentials, timeouts) is a deployment concern and is NOT configured here: it is the Config-Admin configuration of the dcat.atlas client (DA-DCAT-6)."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         iD="true">
@@ -824,112 +724,6 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="licenseUri" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="License IRI of the published distributions (e.g. a dcat-ap.de license vocabulary entry). Mandatory for a distribution by the portal's shapes - a publication whose provider serves distributions needs one (DA-DCAT-9)."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DataSource" abstract="true">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A reusable data source definition, living in the root's dataSources registry so it can be shared across DataInputs (and tenants).&#xA;&#xA;A data source is realized in exactly one of two modes:&#xA;- BIND: filter is set. The deployment configured the backend service itself (e.g. a daanse DataSource factory configuration); the filter selects it. Nothing else may be set.&#xA;- MATERIALIZE: the connection definition of the concrete subtype is set (at least host and database). The Data Atlas creates the backend service from it.&#xA;Setting both, or neither, is a configuration error - the source is reported and skipped.&#xA;&#xA;Credential rule: the configuration model never carries a credential value. user and password are placeholders resolved in the consuming runtime only: $[env:NAME] for an environment variable or $[secret:NAME] for a file in the runtime's secrets directory. A literal value is rejected."/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        iD="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Unique identifier of this data source definition. A materialized source is selectable by the service property data.atlas.datasource.id=&lt;id&gt;."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Human-readable name of the data source."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Optional description: what the database holds, who owns it."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="filter" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="BIND mode: OSGi target filter (LDAP-style) selecting the backend service the deployment configured - a javax.sql.DataSource for JDBC (e.g. (dataSourceName=personsDs)), a MongoDatabase for MongoDB (e.g. (mongo.database.alias=assets)). Mutually exclusive with the connection definition."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DatabaseDataSource" abstract="true" eSuperTypes="#//DataSource">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A data source addressed by network coordinates: the connection definition shared by all database kinds (MATERIALIZE mode). host and database are the minimum; the rest is optional."/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="host" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Database host name or address. May be a $[env:NAME] placeholder."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="port" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Database port; unset = the driver's default (5432 for PostgreSQL, 27017 for MongoDB)."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="database" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Name of the database (for H2: the database identifier - a name or path)."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="user" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Login user - a $[env:NAME] or $[secret:NAME] placeholder ONLY, never a literal (see DataSource). Unset for databases without authentication."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="password" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Login password - a $[env:NAME] or $[secret:NAME] placeholder ONLY, never a literal (see DataSource)."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" upperBound="-1"
-        eType="#//ConnectionProperty" containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Additional driver-specific settings, passed through verbatim to the backend's factory configuration (e.g. sslMode=require for PostgreSQL, dbCloseDelay=-1 for H2, flavor=ferretdb for MongoDB). They cannot override the keys derived from the coordinate attributes."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ConnectionProperty">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="One driver-specific key/value setting of a DatabaseDataSource. The value is a string; the backend's metatype decides the target type."/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="JdbcDataSource" eSuperTypes="#//DatabaseDataSource">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A relational data source realized as a javax.sql.DataSource service.&#xA;BIND: filter selects the DataSource service the deployment configured.&#xA;MATERIALIZE: the Data Atlas creates a daanse.jdbc.datasource.&lt;driver&gt;.DataSource factory configuration from host/port/database/schema/user/password/properties (no connection pool - pooling is EclipseLink's), registered with the service property data.atlas.datasource.id=&lt;id&gt;."/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="driver" eType="#//JdbcDriver">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The database kind the materialized DataSource connects to; selects the daanse provider (MATERIALIZE only, default PostgreSQL). The runtime has to carry the provider and driver bundles of that kind."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="schema" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Optional default schema of the connection (PostgreSQL currentSchema)."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="JdbcDriver">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="The relational database kinds a JdbcDataSource can be materialized for. The literal is the daanse provider infix: daanse.jdbc.datasource.&lt;literal&gt;.DataSource."/>
-    </eAnnotations>
-    <eLiterals name="POSTGRESQL" literal="postgresql"/>
-    <eLiterals name="H2" value="1" literal="h2"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="MongoDataSource" eSuperTypes="#//DatabaseDataSource">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A MongoDB data source realized as a com.mongodb.client.MongoDatabase service of the fennec Mongo persistence backend.&#xA;BIND: filter selects the MongoDatabase service the deployment configured (e.g. (mongo.database.alias=assets)).&#xA;MATERIALIZE: the Data Atlas creates one persistence.mongo.client (connection string assembled from host/port/user/password/authSource, liveness-gated) and one persistence.mongo.database configuration (alias dataAtlas.&lt;id&gt;) from the definition."/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="authSource" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Optional authentication database (the connection string's authSource option); unset = the driver's default."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="flavor" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Optional server flavor behind the wire protocol as understood by the fennec Mongo backend (mongo, ferretdb, documentdb-pg); unset = mongo."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>

@@ -43,7 +43,7 @@ import org.eclipse.fennec.data.atlas.configuration.ODataDataServiceConfiguration
  *
  * @generated
  */
-public class ODataDataServiceImpl extends DataServiceImpl implements ODataDataService {
+public class ODataDataServiceImpl extends DataAtlasServiceImpl implements ODataDataService {
 	/**
 	 * The cached value of the '{@link #getConfiguration() <em>Configuration</em>}' containment reference list.
 	 * <!-- begin-user-doc -->

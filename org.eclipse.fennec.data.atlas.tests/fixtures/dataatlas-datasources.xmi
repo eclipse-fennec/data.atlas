@@ -7,26 +7,28 @@
 <configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    xmlns:atlasconfig="https://eclipse.org/fennec/atlas/configuration/1.0.0"
+    xmlns:atlasconfigjpa="https://eclipse.org/fennec/atlas/configuration/jpa/1.0.0"
     name="datasources" description="Modeled data sources: materialized H2 with placeholder credentials, plus refused definitions.">
-  <dataSources xsi:type="configuration:JdbcDataSource" id="h2-materialized" name="Materialized H2"
+  <dataSources xsi:type="atlasconfig:JdbcDataSource" id="h2-materialized" name="Materialized H2"
       driver="h2" database="dataatlas-materialized"
       user="$[secret:dataatlas-db-user]" password="$[secret:dataatlas-db-password]">
     <properties key="plugableFilesystem" value="mem"/>
     <properties key="dbCloseDelay" value="-1"/>
   </dataSources>
-  <dataSources xsi:type="configuration:JdbcDataSource" id="bad-literal" name="Literal credential"
+  <dataSources xsi:type="atlasconfig:JdbcDataSource" id="bad-literal" name="Literal credential"
       driver="h2" database="dataatlas-bad-literal" user="sa" password="$[secret:dataatlas-db-password]">
     <properties key="plugableFilesystem" value="mem"/>
   </dataSources>
-  <dataSources xsi:type="configuration:JdbcDataSource" id="bad-both" name="Filter and coordinates"
+  <dataSources xsi:type="atlasconfig:JdbcDataSource" id="bad-both" name="Filter and coordinates"
       filter="(dataatlas.test.ds=nowhere)" host="db.example.org" database="dataatlas-bad-both"/>
-  <dataInputs xsi:type="configuration:JPADataInput" id="persons-materialized-jpa" dataSource="h2-materialized">
+  <dataInputs xsi:type="atlasconfigjpa:JPADataInput" id="persons-materialized-jpa" dataSource="h2-materialized">
     <supportedEClasses href="model/person.ecore#//Person"/>
   </dataInputs>
-  <dataInputs xsi:type="configuration:JPADataInput" id="persons-bad-literal-jpa" dataSource="bad-literal">
+  <dataInputs xsi:type="atlasconfigjpa:JPADataInput" id="persons-bad-literal-jpa" dataSource="bad-literal">
     <supportedEClasses href="model/person.ecore#//Person"/>
   </dataInputs>
-  <dataInputs xsi:type="configuration:JPADataInput" id="persons-bad-both-jpa" dataSource="bad-both">
+  <dataInputs xsi:type="atlasconfigjpa:JPADataInput" id="persons-bad-both-jpa" dataSource="bad-both">
     <supportedEClasses href="model/person.ecore#//Person"/>
   </dataInputs>
   <dataSets id="persons-materialized" name="Persons (materialized)" dataInput="persons-materialized-jpa">

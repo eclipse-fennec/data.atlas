@@ -51,7 +51,7 @@ import org.eclipse.fennec.model.query.Query;
  *
  * @generated
  */
-public class DataSetImpl extends DataProviderImpl implements DataSet {
+public class DataSetImpl extends DataAtlasProviderImpl implements DataSet {
 	/**
 	 * The cached value of the '{@link #getInputType() <em>Input Type</em>}' reference.
 	 * <!-- begin-user-doc -->

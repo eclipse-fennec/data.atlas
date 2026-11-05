@@ -40,7 +40,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * @generated
  */
 @ProviderType
-public interface QGisDataService extends DataService {
+public interface QGisDataService extends DataAtlasService {
 	/**
 	 * Returns the value of the '<em><b>Configuration</b></em>' containment reference list.
 	 * The list contents are of type {@link org.eclipse.fennec.data.atlas.configuration.QGisDataServiceConfiguration}.

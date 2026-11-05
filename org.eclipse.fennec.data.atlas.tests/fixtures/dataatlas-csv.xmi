@@ -2,8 +2,9 @@
 <configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    xmlns:atlasconfig="https://eclipse.org/fennec/atlas/configuration/1.0.0"
     name="csv" description="Export fixture: one DataSet offering CSV and JSON, one offering CSV only, and one relying on the runtime defaults.">
-  <dataInputs xsi:type="configuration:FileDataInput" id="persons-file" uri="data/persons.xmi">
+  <dataInputs xsi:type="atlasconfig:FileDataInput" id="persons-file" uri="data/persons.xmi">
     <supportedEClasses href="model/person.ecore#//Person"/>
   </dataInputs>
   <dataSets id="persons-csv-and-json" name="Persons CSV and JSON" description="Serves both configured exports."
