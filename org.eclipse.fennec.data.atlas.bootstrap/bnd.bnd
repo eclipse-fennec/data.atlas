@@ -12,6 +12,7 @@ Bundle-Description: File-mode configuration source: loads the DataAtlasConfigura
 	org.eclipse.fennec.data.atlas.configuration.model;version=project,\
 	org.eclipse.fennec.atlas.configuration.model;version=latest,\
 	org.eclipse.fennec.atlas.configuration.jpa.model;version=latest,\
+	org.eclipse.fennec.atlas.configuration.qvto.model;version=latest,\
 	org.eclipse.fennec.data.atlas.api;version=project,\
 	org.eclipse.fennec.model.atlas.scope.api;version=latest,\
 	org.eclipse.daanse.io.fs.watcher.api;version=latest,\
@@ -26,7 +27,9 @@ Bundle-Description: File-mode configuration source: loads the DataAtlasConfigura
 # interface's package - so the bootstrap imports the packages of every configuration
 # model whose objects it registers, even though its code never names them. The JPA
 # extension of the shared atlas configuration model (JPADataInput) is optional: a
-# runtime without it simply cannot load configurations that use it.
+# runtime without it simply cannot load configurations that use it. The QVT-O
+# extension (QvtoDataTransformation) is not: the Model Atlas bootstrap resolves the
+# transformation documents of every configuration it applies.
 Import-Package: \
 	org.eclipse.fennec.atlas.configuration.jpa;resolution:=optional,\
 	*

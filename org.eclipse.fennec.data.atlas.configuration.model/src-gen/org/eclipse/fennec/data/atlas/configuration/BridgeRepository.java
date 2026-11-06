@@ -17,6 +17,7 @@ package org.eclipse.fennec.data.atlas.configuration;
 import org.eclipse.emf.ecore.EObject;
 
 import org.eclipse.fennec.atlas.configuration.DataInput;
+import org.eclipse.fennec.atlas.configuration.DataTransformation;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -31,6 +32,10 @@ import org.osgi.annotation.versioning.ProviderType;
  * 
  * A bridge can have an attached data transformation for the source objects it loads.
  * On the other hand, incoming queries might be transformed as well.
+ * 
+ * Bridge contract: the data transformation is 1:1 - exactly one supported and one result EClass, one result object per source object, carrying the same id. That is what keeps paging push-down and by-id lookups through the bridge correct; a transformation violating it is refused.
+ * 
+ * The transformation types themselves (DataTransformation, and its QVT-O binding QvtoDataTransformation) come from the shared atlas configuration model and its QVT-O extension (https://eclipse.org/fennec/atlas/configuration/qvto/1.0.0).
  * <!-- end-model-doc -->
  *
  * <p>

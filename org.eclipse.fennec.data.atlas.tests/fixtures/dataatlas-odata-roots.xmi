@@ -12,7 +12,7 @@
      type's closure (emf.odata#91). -->
 <configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0" xmlns:atlasconfigqvto="https://eclipse.org/fennec/atlas/configuration/qvto/1.0.0"
     xmlns:atlasconfig="https://eclipse.org/fennec/atlas/configuration/1.0.0"
     xmlns:atlasconfigjpa="https://eclipse.org/fennec/atlas/configuration/jpa/1.0.0"
     name="odata" description="OData test fixture: persons served as OData entity sets from a file, a database and a bridge.">
@@ -69,7 +69,7 @@
       description="OData service root publishing one set of a package that also holds internal types." urlContext="/odata-narrowed">
     <configuration id="narrowed-openings-config" dataSet="odata-openings" entitySetName="Openings"/>
   </services>
-  <transformations xsi:type="configuration:DataTransformation" id="odata-person-to-public" name="PersonToPublic"
+  <transformations xsi:type="atlasconfigqvto:QvtoDataTransformation" id="odata-person-to-public" name="PersonToPublic"
       description="Projects a Person onto a PublicPerson (id, displayName).">
     <transformation href="trafo/person-to-public.xmi#//@unit"/>
     <supportedEClasses href="model/person.ecore#//Person"/>

@@ -32,7 +32,6 @@ import org.eclipse.fennec.data.atlas.configuration.DataAtlasProvider;
 import org.eclipse.fennec.data.atlas.configuration.DataAtlasService;
 import org.eclipse.fennec.data.atlas.configuration.DataServiceConfiguration;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
-import org.eclipse.fennec.data.atlas.configuration.DataTransformation;
 import org.eclipse.fennec.data.atlas.configuration.DcatPublication;
 import org.eclipse.fennec.data.atlas.configuration.DistributionExport;
 import org.eclipse.fennec.data.atlas.configuration.GeoJsonDataService;
@@ -49,11 +48,8 @@ import org.eclipse.fennec.data.atlas.configuration.QGisDataServiceConfiguration;
 import org.eclipse.fennec.data.atlas.configuration.QueryTransformation;
 import org.eclipse.fennec.data.atlas.configuration.RestDataService;
 import org.eclipse.fennec.data.atlas.configuration.RestDataServiceConfiguration;
-import org.eclipse.fennec.data.atlas.configuration.Transformation;
 import org.eclipse.fennec.data.atlas.configuration.XMLADataService;
 import org.eclipse.fennec.data.atlas.configuration.XMLADataServiceConfiguration;
-
-import org.eclipse.fennec.m2x.model.qvtoperational.QvtOperationalPackage;
 
 import org.eclipse.fennec.model.expression.ExpressionPackage;
 
@@ -204,13 +200,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass dataTransformationEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	private EClass queryTransformationEClass = null;
 
 	/**
@@ -240,13 +229,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	private EClass csvDistributionExportEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass transformationEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -305,7 +287,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		AtlasConfigPackage.eINSTANCE.eClass();
 		QueryPackage.eINSTANCE.eClass();
 		ExpressionPackage.eINSTANCE.eClass();
-		QvtOperationalPackage.eINSTANCE.eClass();
 
 		// Create package meta-data objects
 		theDAConfigPackage.createPackageContents();
@@ -1087,46 +1068,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	 * @generated
 	 */
 	@Override
-	public EClass getDataTransformation() {
-		return dataTransformationEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getDataTransformation_Transformation() {
-		return (EReference)dataTransformationEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getDataTransformation_SupportedEClasses() {
-		return (EReference)dataTransformationEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getDataTransformation_ResultEClasses() {
-		return (EReference)dataTransformationEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public EClass getQueryTransformation() {
 		return queryTransformationEClass;
 	}
@@ -1269,46 +1210,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 	@Override
 	public EAttribute getCSVDistributionExport_IncludeTypeHeader() {
 		return (EAttribute)csvDistributionExportEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EClass getTransformation() {
-		return transformationEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getTransformation_Id() {
-		return (EAttribute)transformationEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getTransformation_Name() {
-		return (EAttribute)transformationEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getTransformation_Description() {
-		return (EAttribute)transformationEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -1615,11 +1516,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 
 		ogcSensorThingsDataServiceEClass = createEClass(OGC_SENSOR_THINGS_DATA_SERVICE);
 
-		dataTransformationEClass = createEClass(DATA_TRANSFORMATION);
-		createEReference(dataTransformationEClass, DATA_TRANSFORMATION__TRANSFORMATION);
-		createEReference(dataTransformationEClass, DATA_TRANSFORMATION__SUPPORTED_ECLASSES);
-		createEReference(dataTransformationEClass, DATA_TRANSFORMATION__RESULT_ECLASSES);
-
 		queryTransformationEClass = createEClass(QUERY_TRANSFORMATION);
 
 		oDataDataServiceEClass = createEClass(ODATA_DATA_SERVICE);
@@ -1639,11 +1535,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		createEAttribute(csvDistributionExportEClass, CSV_DISTRIBUTION_EXPORT__SEPARATOR);
 		createEAttribute(csvDistributionExportEClass, CSV_DISTRIBUTION_EXPORT__COMPRESSED);
 		createEAttribute(csvDistributionExportEClass, CSV_DISTRIBUTION_EXPORT__INCLUDE_TYPE_HEADER);
-
-		transformationEClass = createEClass(TRANSFORMATION);
-		createEAttribute(transformationEClass, TRANSFORMATION__ID);
-		createEAttribute(transformationEClass, TRANSFORMATION__NAME);
-		createEAttribute(transformationEClass, TRANSFORMATION__DESCRIPTION);
 
 		dcatPublicationEClass = createEClass(DCAT_PUBLICATION);
 		createEAttribute(dcatPublicationEClass, DCAT_PUBLICATION__ID);
@@ -1691,7 +1582,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		// Obtain other dependent packages
 		AtlasConfigPackage theAtlasConfigPackage = (AtlasConfigPackage)EPackage.Registry.INSTANCE.getEPackage(AtlasConfigPackage.eNS_URI);
 		QueryPackage theQueryPackage = (QueryPackage)EPackage.Registry.INSTANCE.getEPackage(QueryPackage.eNS_URI);
-		QvtOperationalPackage theQvtOperationalPackage = (QvtOperationalPackage)EPackage.Registry.INSTANCE.getEPackage(QvtOperationalPackage.eNS_URI);
 
 		// Create type parameters
 
@@ -1716,8 +1606,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		ogcFeaturesDataServiceEClass.getESuperTypes().add(this.getDataAtlasService());
 		ogcFeaturesDataServiceConfigurationEClass.getESuperTypes().add(this.getDataServiceConfiguration());
 		ogcSensorThingsDataServiceEClass.getESuperTypes().add(this.getDataAtlasService());
-		dataTransformationEClass.getESuperTypes().add(this.getTransformation());
-		queryTransformationEClass.getESuperTypes().add(this.getTransformation());
+		queryTransformationEClass.getESuperTypes().add(theAtlasConfigPackage.getTransformation());
 		oDataDataServiceEClass.getESuperTypes().add(this.getDataAtlasService());
 		oDataDataServiceConfigurationEClass.getESuperTypes().add(this.getDataServiceConfiguration());
 		csvDistributionExportEClass.getESuperTypes().add(this.getDistributionExport());
@@ -1731,17 +1620,17 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		initEReference(getDataAtlasConfiguration_DataSets(), this.getDataSet(), null, "dataSets", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDataAtlasConfiguration_Services(), this.getDataAtlasService(), null, "services", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDataAtlasConfiguration_Exports(), this.getDistributionExport(), null, "exports", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getDataAtlasConfiguration_Transformations(), this.getTransformation(), null, "transformations", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getDataAtlasConfiguration_Transformations(), theAtlasConfigPackage.getTransformation(), null, "transformations", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDataAtlasConfiguration_Publications(), this.getDcatPublication(), null, "publications", null, 0, -1, DataAtlasConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(dataAtlasProviderEClass, DataAtlasProvider.class, "DataAtlasProvider", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getDataAtlasProvider_Transformation(), this.getTransformation(), null, "transformation", null, 0, 1, DataAtlasProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getDataAtlasProvider_Transformation(), theAtlasConfigPackage.getTransformation(), null, "transformation", null, 0, 1, DataAtlasProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDataAtlasProvider_DistributionExport(), this.getDistributionExport(), null, "distributionExport", null, 0, -1, DataAtlasProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDataAtlasProvider_Publication(), this.getDcatPublication(), null, "publication", null, 0, 1, DataAtlasProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(bridgeRepositoryEClass, BridgeRepository.class, "BridgeRepository", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getBridgeRepository_Source(), theAtlasConfigPackage.getDataInput(), null, "source", null, 1, 1, BridgeRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getBridgeRepository_DataTrafo(), this.getDataTransformation(), null, "dataTrafo", null, 1, 1, BridgeRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBridgeRepository_DataTrafo(), theAtlasConfigPackage.getDataTransformation(), null, "dataTrafo", null, 1, 1, BridgeRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getBridgeRepository_QueryTrafo(), this.getQueryTransformation(), null, "queryTrafo", null, 0, 1, BridgeRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getBridgeRepository_Filter(), ecorePackage.getEObject(), null, "filter", null, 0, 1, BridgeRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -1818,11 +1707,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 
 		initEClass(ogcSensorThingsDataServiceEClass, OgcSensorThingsDataService.class, "OgcSensorThingsDataService", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(dataTransformationEClass, DataTransformation.class, "DataTransformation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getDataTransformation_Transformation(), theQvtOperationalPackage.getOperationalTransformation(), null, "transformation", null, 1, 1, DataTransformation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getDataTransformation_SupportedEClasses(), ecorePackage.getEClass(), null, "supportedEClasses", null, 0, -1, DataTransformation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getDataTransformation_ResultEClasses(), ecorePackage.getEClass(), null, "resultEClasses", null, 0, -1, DataTransformation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
 		initEClass(queryTransformationEClass, QueryTransformation.class, "QueryTransformation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(oDataDataServiceEClass, ODataDataService.class, "ODataDataService", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1842,11 +1726,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		initEAttribute(getCSVDistributionExport_Separator(), ecorePackage.getEString(), "separator", null, 0, 1, CSVDistributionExport.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getCSVDistributionExport_Compressed(), ecorePackage.getEBoolean(), "compressed", null, 0, 1, CSVDistributionExport.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getCSVDistributionExport_IncludeTypeHeader(), ecorePackage.getEBoolean(), "includeTypeHeader", null, 0, 1, CSVDistributionExport.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(transformationEClass, Transformation.class, "Transformation", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getTransformation_Id(), ecorePackage.getEString(), "id", null, 1, 1, Transformation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getTransformation_Name(), ecorePackage.getEString(), "name", null, 1, 1, Transformation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getTransformation_Description(), ecorePackage.getEString(), "description", null, 1, 1, Transformation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(dcatPublicationEClass, DcatPublication.class, "DcatPublication", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getDcatPublication_Id(), ecorePackage.getEString(), "id", null, 1, 1, DcatPublication.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1909,7 +1788,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		  (this,
 		   source,
 		   new String[] {
-			   "documentation", "Configuration model for the Fennec Data-Atlas.\n\nIt describes - independent of any concrete deployment - which data sources (DataInput) provide data, which DataSets are published, which DataServices (REST, OData, OGC, QGis, XMLA, GraphQL) expose them, which reusable DistributionExport templates are used for serialization, and which Transformations map between models.\nAn instance of this model is meant to fully configure a Data-Atlas runtime, while the model types it refers to are resolved against the Model-Atlas EPackage registry.\n\nThe building blocks shared by all Fennec atlases - data sources (DataSource and its subtypes), data inputs (DataInput, FileDataInput, MongoDataInput, ...) and the DataProvider/DataService bases - come from the shared atlas configuration model (https://eclipse.org/fennec/atlas/configuration/1.0.0, org.eclipse.fennec.atlas.configuration.model); JPADataInput from its JPA extension (https://eclipse.org/fennec/atlas/configuration/jpa/1.0.0). This model adds what is specific to the Data Atlas: the root registries, DataSets, the concrete DataServices, exports, transformations, bridges and publications.",
+			   "documentation", "Configuration model for the Fennec Data-Atlas.\n\nIt describes - independent of any concrete deployment - which data sources (DataInput) provide data, which DataSets are published, which DataServices (REST, OData, OGC, QGis, XMLA, GraphQL) expose them, which reusable DistributionExport templates are used for serialization, and which Transformations map between models.\nAn instance of this model is meant to fully configure a Data-Atlas runtime, while the model types it refers to are resolved against the Model-Atlas EPackage registry.\n\nThe building blocks shared by all Fennec atlases - data sources (DataSource and its subtypes), data inputs (DataInput, FileDataInput, MongoDataInput, ...) and the DataProvider/DataService bases - come from the shared atlas configuration model (https://eclipse.org/fennec/atlas/configuration/1.0.0, org.eclipse.fennec.atlas.configuration.model); JPADataInput from its JPA extension (https://eclipse.org/fennec/atlas/configuration/jpa/1.0.0). The engine-neutral Transformation/DataTransformation also come from the shared model, the QVT-O binding QvtoDataTransformation from its QVT-O extension (https://eclipse.org/fennec/atlas/configuration/qvto/1.0.0). This model adds what is specific to the Data Atlas: the root registries, DataSets, the concrete DataServices, exports, query transformations, bridges and publications.",
 			   "oSGiCompatible", "true",
 			   "basePackage", "org.eclipse.fennec.data.atlas",
 			   "copyrightText", "******************************************************************\nCopyright (c) 2026 Contributors to the Eclipse Foundation.\n\nThis program and the accompanying materials are made\navailable under the terms of the Eclipse Public License 2.0\nwhich is available at https://www.eclipse.org/legal/epl-2.0/\n\nSPDX-License-Identifier: EPL-2.0\n\nContributors:\n  Data In Motion Consulting - initial implementation\n******************************************************************",
@@ -2004,7 +1883,7 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		  (bridgeRepositoryEClass,
 		   source,
 		   new String[] {
-			   "documentation", "A DataInput that can load data from another source and transform it if necessary.\nBridgeRepository can be cascaded, so one original Entity can result in multiple intermediate formats if necessary.\n\nA bridge can have an attached data transformation for the source objects it loads.\nOn the other hand, incoming queries might be transformed as well."
+			   "documentation", "A DataInput that can load data from another source and transform it if necessary.\nBridgeRepository can be cascaded, so one original Entity can result in multiple intermediate formats if necessary.\n\nA bridge can have an attached data transformation for the source objects it loads.\nOn the other hand, incoming queries might be transformed as well.\n\nBridge contract: the data transformation is 1:1 - exactly one supported and one result EClass, one result object per source object, carrying the same id. That is what keeps paging push-down and by-id lookups through the bridge correct; a transformation violating it is refused.\n\nThe transformation types themselves (DataTransformation, and its QVT-O binding QvtoDataTransformation) come from the shared atlas configuration model and its QVT-O extension (https://eclipse.org/fennec/atlas/configuration/qvto/1.0.0)."
 		   });
 		addAnnotation
 		  (getBridgeRepository_Source(),
@@ -2373,30 +2252,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 			   "documentation", "DataService that exposes DataSets via the OGC SensorThings API."
 		   });
 		addAnnotation
-		  (dataTransformationEClass,
-		   source,
-		   new String[] {
-			   "documentation", "Describes a transformation Step from Model A to B.\n\nThe executable transformation is a QVT-O AST (an OperationalTransformation of the fennec m2x qvto model) referenced as an EObject: in file mode from an XMI next to the configuration, in Model Atlas mode from a dedicated EObject registry of the scope. Authoring happens in QVT-O text, parsed once at publish time.\n\nData-Atlas contract: the transformation is 1:1 - one source object maps to exactly one result object carrying the same id."
-		   });
-		addAnnotation
-		  (getDataTransformation_Transformation(),
-		   source,
-		   new String[] {
-			   "documentation", "The executable QVT-O transformation (the parsed AST, referenced as an EObject)."
-		   });
-		addAnnotation
-		  (getDataTransformation_SupportedEClasses(),
-		   source,
-		   new String[] {
-			   "documentation", "Input EClasses this transformation accepts."
-		   });
-		addAnnotation
-		  (getDataTransformation_ResultEClasses(),
-		   source,
-		   new String[] {
-			   "documentation", "Output EClasses this transformation produces."
-		   });
-		addAnnotation
 		  (queryTransformationEClass,
 		   source,
 		   new String[] {
@@ -2485,30 +2340,6 @@ public class DAConfigPackageImpl extends EPackageImpl implements DAConfigPackage
 		   source,
 		   new String[] {
 			   "documentation", "Whether to emit an additional row carrying each column\'s SQL type between the header row and the data rows. The column header row itself is ALWAYS written and cannot be switched off. Maps to the fennec codec option \'codec.csv.dataTypeInSecondRow\'."
-		   });
-		addAnnotation
-		  (transformationEClass,
-		   source,
-		   new String[] {
-			   "documentation", "Base type for a named transformation, either of loaded data (DataTransformation) or of incoming queries (QueryTransformation).\n\nIntended as an abstract base - it is not meant to be instantiated directly."
-		   });
-		addAnnotation
-		  (getTransformation_Id(),
-		   source,
-		   new String[] {
-			   "documentation", "Unique identifier of this transformation."
-		   });
-		addAnnotation
-		  (getTransformation_Name(),
-		   source,
-		   new String[] {
-			   "documentation", "Derives from the model annotation by default"
-		   });
-		addAnnotation
-		  (getTransformation_Description(),
-		   source,
-		   new String[] {
-			   "documentation", "Derives from the model annotation by default"
 		   });
 		addAnnotation
 		  (dcatPublicationEClass,

@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.util.Switch;
 import org.eclipse.fennec.atlas.configuration.DataInput;
 import org.eclipse.fennec.atlas.configuration.DataProvider;
 import org.eclipse.fennec.atlas.configuration.DataService;
+import org.eclipse.fennec.atlas.configuration.Transformation;
 
 import org.eclipse.fennec.data.atlas.configuration.*;
 
@@ -237,13 +238,6 @@ public class DAConfigSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case DAConfigPackage.DATA_TRANSFORMATION: {
-				DataTransformation dataTransformation = (DataTransformation)theEObject;
-				T result = caseDataTransformation(dataTransformation);
-				if (result == null) result = caseTransformation(dataTransformation);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case DAConfigPackage.QUERY_TRANSFORMATION: {
 				QueryTransformation queryTransformation = (QueryTransformation)theEObject;
 				T result = caseQueryTransformation(queryTransformation);
@@ -278,12 +272,6 @@ public class DAConfigSwitch<T> extends Switch<T> {
 				CSVDistributionExport csvDistributionExport = (CSVDistributionExport)theEObject;
 				T result = caseCSVDistributionExport(csvDistributionExport);
 				if (result == null) result = caseDistributionExport(csvDistributionExport);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case DAConfigPackage.TRANSFORMATION: {
-				Transformation transformation = (Transformation)theEObject;
-				T result = caseTransformation(transformation);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -583,21 +571,6 @@ public class DAConfigSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Data Transformation</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Data Transformation</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseDataTransformation(DataTransformation object) {
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Query Transformation</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -673,21 +646,6 @@ public class DAConfigSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Transformation</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Transformation</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseTransformation(Transformation object) {
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Dcat Publication</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -744,6 +702,21 @@ public class DAConfigSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseDataService(DataService object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Transformation</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Transformation</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseTransformation(Transformation object) {
 		return null;
 	}
 

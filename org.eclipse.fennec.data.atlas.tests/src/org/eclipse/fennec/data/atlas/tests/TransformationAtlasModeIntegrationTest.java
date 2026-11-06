@@ -299,6 +299,9 @@ public class TransformationAtlasModeIntegrationTest {
 		postSchema(dir.resolve("atlas/models/atlasconfig.ecore"), "https://eclipse.org/fennec/atlas/configuration/1.0.0");
 		postSchema(dir.resolve("atlas/models/atlasconfigjpa.ecore"),
 				"https://eclipse.org/fennec/atlas/configuration/jpa/1.0.0");
+		// QvtoDataTransformation, the type of the instance's transformation
+		postSchema(dir.resolve("atlas/models/atlasconfigqvto.ecore"),
+				"https://eclipse.org/fennec/atlas/configuration/qvto/1.0.0");
 		postSchema(dir.resolve("atlas/models/configuration.ecore"),
 				"https://eclipse.org/fennec/data/atlas/configuration/1.0.0");
 		postSchema(dir.resolve("data/model/person.ecore"),

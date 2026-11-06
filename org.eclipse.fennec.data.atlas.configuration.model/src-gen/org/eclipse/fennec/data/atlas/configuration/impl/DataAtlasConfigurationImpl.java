@@ -32,6 +32,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.eclipse.fennec.atlas.configuration.DataInput;
 import org.eclipse.fennec.atlas.configuration.DataSource;
+import org.eclipse.fennec.atlas.configuration.Transformation;
 
 import org.eclipse.fennec.data.atlas.configuration.DAConfigPackage;
 import org.eclipse.fennec.data.atlas.configuration.DataAtlasConfiguration;
@@ -39,7 +40,6 @@ import org.eclipse.fennec.data.atlas.configuration.DataAtlasService;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
 import org.eclipse.fennec.data.atlas.configuration.DcatPublication;
 import org.eclipse.fennec.data.atlas.configuration.DistributionExport;
-import org.eclipse.fennec.data.atlas.configuration.Transformation;
 
 /**
  * <!-- begin-user-doc -->

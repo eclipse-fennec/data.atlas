@@ -19,7 +19,7 @@
      mounted at, like every file the runtime reads in this mode. -->
 <configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0" xmlns:atlasconfigqvto="https://eclipse.org/fennec/atlas/configuration/qvto/1.0.0"
     xmlns:atlasconfig="https://eclipse.org/fennec/atlas/configuration/1.0.0"
     xmlns:atlasconfigjpa="https://eclipse.org/fennec/atlas/configuration/jpa/1.0.0"
     name="example-full" description="Full example: PostgreSQL persons, raw and QVT-O-transformed, as CSV and JSON, published to a DCAT portal - configuration delivered by a Model Atlas.">
@@ -68,7 +68,7 @@
   <exports xsi:type="configuration:CSVDistributionExport" id="csv" name="CSV"
       description="Semicolon separated, no SQL-type row." separator=";" includeTypeHeader="false"/>
   <exports id="json" name="JSON" description="Plain JSON, kept alongside the CSV export." mediaType="application/json"/>
-  <transformations xsi:type="configuration:DataTransformation" id="person-to-public" name="PersonToPublic"
+  <transformations xsi:type="atlasconfigqvto:QvtoDataTransformation" id="person-to-public" name="PersonToPublic"
       description="Projects a Person onto a PublicPerson (id, displayName).">
     <transformation href="file:///opt/dataatlas/runtime/data/trafo/person-to-public-atlas.xmi#//@unit"/>
     <supportedEClasses href="https://eclipse.org/fennec/data/atlas/example/person/1.0.0#//Person"/>

@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copy of model/configuration.ecore from org.eclipse.fennec.atlas.configuration.model 1.0.0-SNAPSHOT
-     (eclipse-fennec/fennec.models#10, 2026-11-05), unchanged. The Data Atlas configuration model
-     builds on it (DataProvider/DataService bases, DataSource and DataInput kinds), so it has to be
-     seeded into the Model Atlas BEFORE configuration.ecore. Keep in sync with upstream. -->
+     (eclipse-fennec/fennec.models#10, #12; 2026-11-06), unchanged. The Data Atlas configuration model
+     builds on it (DataProvider/DataService bases, DataSource and DataInput kinds, Transformation and
+     DataTransformation), so it has to be seeded into the Model Atlas BEFORE configuration.ecore. Keep in
+     sync with upstream. -->
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="configuration" nsURI="https://eclipse.org/fennec/atlas/configuration/1.0.0"
     nsPrefix="atlasconfig">
   <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-    <details key="documentation" value="Configuration building blocks shared by the Fennec atlases (Data Atlas, Model Atlas, Event Atlas, ...).&#xA;&#xA;The atlas-specific configuration models reference or extend these types instead of defining their own, so that e.g. a data source or a data input looks the same in every atlas:&#xA;- DataSource (JdbcDataSource, MongoDataSource, MqttDataSource): where the data lives and how to connect to it.&#xA;- DataInput (FileDataInput, MqttDataInput, MongoDataInput): what streams EObjects into an atlas. Inputs receiving serialized payloads (PayloadDataInput) carry a CodecConfiguration saying how the EMF codec reads them.&#xA;- DataProvider and DataService: the common base of anything an atlas provides data through, and of the endpoints it publishes; atlas-specific subtypes add their own features (transformations, exports, ...).&#xA;&#xA;Inputs that need further models live in their own modules (e.g. JPADataInput in org.eclipse.fennec.atlas.configuration.jpa.model), so this model stays free of dependencies."/>
+    <details key="documentation" value="Configuration building blocks shared by the Fennec atlases (Data Atlas, Model Atlas, Event Atlas, ...).&#xA;&#xA;The atlas-specific configuration models reference or extend these types instead of defining their own, so that e.g. a data source or a data input looks the same in every atlas:&#xA;- DataSource (JdbcDataSource, MongoDataSource, MqttDataSource): where the data lives and how to connect to it.&#xA;- DataInput (FileDataInput, MqttDataInput, MongoDataInput): what streams EObjects into an atlas. Inputs receiving serialized payloads (PayloadDataInput) carry a CodecConfiguration saying how the EMF codec reads them.&#xA;- DataProvider and DataService: the common base of anything an atlas provides data through, and of the endpoints it publishes; atlas-specific subtypes add their own features (transformations, exports, ...).&#xA;- Transformation and DataTransformation: engine-neutral descriptions of a transformation; ExtentTransformationInput serves the transformed result of a whole source extent.&#xA;&#xA;Inputs and engine bindings that need further models live in their own modules (e.g. JPADataInput in org.eclipse.fennec.atlas.configuration.jpa.model, QvtoDataTransformation in org.eclipse.fennec.atlas.configuration.qvto.model), so this model stays free of dependencies."/>
   </eAnnotations>
   <eClassifiers xsi:type="ecore:EClass" name="DataProvider" abstract="true">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -162,6 +163,73 @@
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The topic filters this input subscribes to, in MQTT syntax (+ for one level, # for the rest), e.g. 5g/ilsa/+/config."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ExtentTransformationInput" eSuperTypes="#//DataInput">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="DataInput serving the result of transforming a whole source extent: all instances of the sourceEClasses the source input provides are handed to the transformation in one run (n:m - no correspondence between source and result objects is assumed). The result is cached and served until refreshInterval has passed, then recomputed.&#xA;The inherited supportedEClasses are the served result classes.&#xA;&#xA;Runtime semantics, implemented by each atlas runtime: if a recomputation fails, the last good result stays served; if the first computation fails, the input stays down."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" lowerBound="1"
+        eType="#//DataInput">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The DataInput providing the source extent. A reference: the input lives in a registry of the consuming atlas configuration."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="transformation" lowerBound="1"
+        eType="#//DataTransformation">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The transformation run on the source extent. A reference: the transformation lives in a registry of the consuming atlas configuration."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sourceEClasses" lowerBound="1"
+        upperBound="-1" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EClass">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The EClasses whose instances in the source input form the input extent of the transformation."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="refreshInterval" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELongObject">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="How long, in seconds, a computed result is served before it is recomputed. Unset or not positive = computed once when the input starts and never recomputed."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Transformation" abstract="true">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Base type for a named transformation, kept in a registry of the consuming atlas configuration and referenced from where it is applied. Atlas-specific models add further kinds (e.g. transformations of incoming queries).&#xA;&#xA;Intended as an abstract base - it is not meant to be instantiated directly."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        iD="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Unique identifier of this transformation."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Human-readable name of the transformation."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optional description: what the transformation does."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DataTransformation" abstract="true"
+      eSuperTypes="#//Transformation">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A transformation of data from one model to another, independent of the engine that runs it. Engine bindings extend it in their own modules (e.g. QvtoDataTransformation in org.eclipse.fennec.atlas.configuration.qvto.model).&#xA;&#xA;No cardinality contract: whether one source object has to map to exactly one result object (1:1) or a whole extent maps to a whole result (n:m, see ExtentTransformationInput) is a rule of the consumer that runs the transformation, not of the transformation.&#xA;&#xA;Intended as an abstract base - it is not meant to be instantiated directly."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="supportedEClasses" upperBound="-1"
+        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EClass">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Input EClasses this transformation accepts."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="resultEClasses" upperBound="-1"
+        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EClass">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Output EClasses this transformation produces."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>

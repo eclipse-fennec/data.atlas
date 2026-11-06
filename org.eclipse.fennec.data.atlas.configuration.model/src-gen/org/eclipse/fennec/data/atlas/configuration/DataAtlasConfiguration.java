@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.EObject;
 
 import org.eclipse.fennec.atlas.configuration.DataInput;
 import org.eclipse.fennec.atlas.configuration.DataSource;
+import org.eclipse.fennec.atlas.configuration.Transformation;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -184,7 +185,7 @@ public interface DataAtlasConfiguration extends EObject {
 
 	/**
 	 * Returns the value of the '<em><b>Transformations</b></em>' containment reference list.
-	 * The list contents are of type {@link org.eclipse.fennec.data.atlas.configuration.Transformation}.
+	 * The list contents are of type {@link org.eclipse.fennec.atlas.configuration.Transformation}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->

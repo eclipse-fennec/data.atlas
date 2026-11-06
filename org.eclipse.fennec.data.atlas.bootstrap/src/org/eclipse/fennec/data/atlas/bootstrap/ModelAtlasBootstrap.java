@@ -29,9 +29,9 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
-import org.eclipse.fennec.data.atlas.configuration.DAConfigPackage;
+import org.eclipse.fennec.atlas.configuration.qvto.AtlasConfigQvtoPackage;
+import org.eclipse.fennec.atlas.configuration.qvto.QvtoDataTransformation;
 import org.eclipse.fennec.data.atlas.configuration.DataAtlasConfiguration;
-import org.eclipse.fennec.data.atlas.configuration.DataTransformation;
 import org.eclipse.fennec.emf.osgi.eobject.registry.EObjectRegistry;
 import org.eclipse.fennec.emf.osgi.eobject.registry.EObjectRegistryEntry;
 import org.eclipse.fennec.emf.osgi.eobject.registry.EObjectRegistryListener;
@@ -316,9 +316,10 @@ public class ModelAtlasBootstrap {
 	 * </p>
 	 */
 	private void resolveRegistryTransformations(DataAtlasConfiguration configuration) {
-		for (DataTransformation transformation : configuration.getTransformations().stream()
-				.filter(DataTransformation.class::isInstance).map(DataTransformation.class::cast).toList()) {
-			Object raw = transformation.eGet(DAConfigPackage.eINSTANCE.getDataTransformation_Transformation(), false);
+		for (QvtoDataTransformation transformation : configuration.getTransformations().stream()
+				.filter(QvtoDataTransformation.class::isInstance).map(QvtoDataTransformation.class::cast).toList()) {
+			Object raw = transformation.eGet(AtlasConfigQvtoPackage.eINSTANCE.getQvtoDataTransformation_Transformation(),
+					false);
 			if (!(raw instanceof InternalEObject proxy) || !proxy.eIsProxy()) {
 				continue;
 			}
@@ -392,8 +393,8 @@ public class ModelAtlasBootstrap {
 	 */
 	private void resolveTransformationDocuments(DataAtlasConfiguration configuration) {
 		configuration.getTransformations().stream() //
-				.filter(DataTransformation.class::isInstance).map(DataTransformation.class::cast) //
-				.map(DataTransformation::getTransformation) //
+				.filter(QvtoDataTransformation.class::isInstance).map(QvtoDataTransformation.class::cast) //
+				.map(QvtoDataTransformation::getTransformation) //
 				.filter(ast -> ast != null && !ast.eIsProxy()) //
 				.forEach(ast -> {
 					EObject root = EcoreUtil.getRootContainer(ast);

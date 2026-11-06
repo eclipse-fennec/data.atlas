@@ -4,7 +4,7 @@
     modelDirectory="/org.eclipse.fennec.data.atlas.configuration.model/src" modelPluginID="org.eclipse.fennec.data.atlas.configuration.model"
     modelName="configuration" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
     importerID="org.eclipse.emf.importer.ecore" complianceLevel="21.0" suppressGenModelAnnotations="false"
-    copyrightFields="false" usedGenPackages="../../org.eclipse.fennec.atlas.configuration.model/model/configuration.genmodel#//configuration ../../org.eclipse.fennec.query.model/model/query.genmodel#//query ../../org.eclipse.fennec.expression.model/model/expression.genmodel#//expression ../../org.eclipse.fennec.m2x.qvto.model/model/qvto.genmodel#//qvtoperational"
+    copyrightFields="false" usedGenPackages="../../org.eclipse.fennec.atlas.configuration.model/model/configuration.genmodel#//configuration ../../org.eclipse.fennec.query.model/model/query.genmodel#//query ../../org.eclipse.fennec.expression.model/model/expression.genmodel#//expression"
     operationReflection="true" importOrganizing="true" oSGiCompatible="true">
   <foreignModel>configuration.ecore</foreignModel>
   <genPackages prefix="DAConfig" basePackage="org.eclipse.fennec.data.atlas" resource="XMI"
@@ -101,11 +101,6 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//OgcFeaturesDataServiceConfiguration/style"/>
     </genClasses>
     <genClasses ecoreClass="configuration.ecore#//OgcSensorThingsDataService"/>
-    <genClasses ecoreClass="configuration.ecore#//DataTransformation">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//DataTransformation/transformation"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//DataTransformation/supportedEClasses"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference configuration.ecore#//DataTransformation/resultEClasses"/>
-    </genClasses>
     <genClasses ecoreClass="configuration.ecore#//QueryTransformation"/>
     <genClasses ecoreClass="configuration.ecore#//ODataDataService">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//ODataDataService/configuration"/>
@@ -124,11 +119,6 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//CSVDistributionExport/separator"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//CSVDistributionExport/compressed"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//CSVDistributionExport/includeTypeHeader"/>
-    </genClasses>
-    <genClasses image="false" ecoreClass="configuration.ecore#//Transformation">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//Transformation/id"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//Transformation/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//Transformation/description"/>
     </genClasses>
     <genClasses ecoreClass="configuration.ecore#//DcatPublication">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//DcatPublication/id"/>

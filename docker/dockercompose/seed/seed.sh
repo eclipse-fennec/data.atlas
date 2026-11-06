@@ -57,13 +57,17 @@ upload_schema() {
 # DataProvider/DataService bases) and references the fennec query model
 # (DataSet.query), which references the expression model. JPADataInput lives in
 # the JPA extension of the shared model (atlasconfigjpa), which references atlasconfig
-# and the eorm model (persistenceConfig). So: expression -> query -> eorm ->
-# atlasconfig -> atlasconfigjpa -> configuration.
+# and the eorm model (persistenceConfig); QvtoDataTransformation in its QVT-O
+# extension (atlasconfigqvto), which references atlasconfig (and the m2x
+# qvtoperational model, needed only by atlas-side transformation documents). So:
+# expression -> query -> eorm -> atlasconfig -> atlasconfigjpa -> atlasconfigqvto
+# -> configuration.
 upload_schema /seed/models/expression.ecore "https://eclipse.org/fennec/expression/1.0.0" expression
 upload_schema /seed/models/query.ecore "https://eclipse.org/fennec/query/2.0.0" query 2.0.0
 upload_schema /seed/models/eorm.ecore "https://eclipse.org/fennec/persistence/eorm/1.0.0" eorm
 upload_schema /seed/models/atlasconfig.ecore "https://eclipse.org/fennec/atlas/configuration/1.0.0" atlasconfig
 upload_schema /seed/models/atlasconfigjpa.ecore "https://eclipse.org/fennec/atlas/configuration/jpa/1.0.0" atlasconfigjpa
+upload_schema /seed/models/atlasconfigqvto.ecore "https://eclipse.org/fennec/atlas/configuration/qvto/1.0.0" atlasconfigqvto
 upload_schema /seed/models/configuration.ecore "https://eclipse.org/fennec/data/atlas/configuration/1.0.0" configuration
 upload_schema /seed/models/person.ecore "https://eclipse.org/fennec/data/atlas/example/person/1.0.0" person
 

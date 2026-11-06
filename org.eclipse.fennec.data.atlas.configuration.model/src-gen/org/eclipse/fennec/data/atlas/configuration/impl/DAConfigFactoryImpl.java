@@ -84,7 +84,6 @@ public class DAConfigFactoryImpl extends EFactoryImpl implements DAConfigFactory
 			case DAConfigPackage.OGC_FEATURES_DATA_SERVICE: return createOgcFeaturesDataService();
 			case DAConfigPackage.OGC_FEATURES_DATA_SERVICE_CONFIGURATION: return createOgcFeaturesDataServiceConfiguration();
 			case DAConfigPackage.OGC_SENSOR_THINGS_DATA_SERVICE: return createOgcSensorThingsDataService();
-			case DAConfigPackage.DATA_TRANSFORMATION: return createDataTransformation();
 			case DAConfigPackage.QUERY_TRANSFORMATION: return createQueryTransformation();
 			case DAConfigPackage.ODATA_DATA_SERVICE: return createODataDataService();
 			case DAConfigPackage.ODATA_DATA_SERVICE_CONFIGURATION: return createODataDataServiceConfiguration();
@@ -270,17 +269,6 @@ public class DAConfigFactoryImpl extends EFactoryImpl implements DAConfigFactory
 	public OgcSensorThingsDataService createOgcSensorThingsDataService() {
 		OgcSensorThingsDataServiceImpl ogcSensorThingsDataService = new OgcSensorThingsDataServiceImpl();
 		return ogcSensorThingsDataService;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public DataTransformation createDataTransformation() {
-		DataTransformationImpl dataTransformation = new DataTransformationImpl();
-		return dataTransformation;
 	}
 
 	/**

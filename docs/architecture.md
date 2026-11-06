@@ -219,11 +219,14 @@ Implemented today:
   `endpointURL`, `/api` as `endpointDescription`, one `application/geo+json`
   distribution per collection (`/collections/{id}/items`); the QGIS project is
   not a dataset distribution and is left to the root's own links.
-- **Data transformations**: the `transformation` bundle turns
-  every `DataTransformation` configuration service into a ready-to-execute
-  `DataTransformer` (fennec m2x QVT-O engine; the compiled AST — the
-  `OperationalTransformation` inside a CompiledUnit document the configuration
-  references — is copied with its whole document at registration), and the
+- **Data transformations**: the transformation types come from the shared
+  atlas configuration model (`atlasconfig:DataTransformation`, QVT-O binding
+  `atlasconfigqvto:QvtoDataTransformation`, fennec.models#12). The
+  `transformation` bundle turns every `QvtoDataTransformation` configuration
+  service into a ready-to-execute `DataTransformer` (fennec m2x QVT-O engine;
+  either the compiled AST — the `OperationalTransformation` inside a
+  CompiledUnit document the configuration references, copied with its whole
+  document at registration — or a `.qvto` source compiled on apply), and the
   `input.bridge` bundle registers one read-only `ReadRepository` per
   `BridgeRepository` that reads from the source input's repository and
   transforms — the REST layer is untouched, bridges cascade, and the 1:1
