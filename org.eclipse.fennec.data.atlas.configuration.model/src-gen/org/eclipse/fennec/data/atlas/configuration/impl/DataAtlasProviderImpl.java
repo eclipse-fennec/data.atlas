@@ -27,13 +27,14 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 
+import org.eclipse.fennec.atlas.configuration.Transformation;
+
 import org.eclipse.fennec.atlas.configuration.impl.DataProviderImpl;
 
 import org.eclipse.fennec.data.atlas.configuration.DAConfigPackage;
 import org.eclipse.fennec.data.atlas.configuration.DataAtlasProvider;
 import org.eclipse.fennec.data.atlas.configuration.DcatPublication;
 import org.eclipse.fennec.data.atlas.configuration.DistributionExport;
-import org.eclipse.fennec.data.atlas.configuration.Transformation;
 
 /**
  * <!-- begin-user-doc -->

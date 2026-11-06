@@ -47,11 +47,13 @@ import org.osgi.test.junit5.service.ServiceExtension;
 
 /**
  * Milestone 6, the transformation slice end to end in file mode: a DataSet on
- * a {@code BridgeRepository} with a QVT-O {@code DataTransformation} (the
+ * a {@code BridgeRepository} with a {@code QvtoDataTransformation} (the
  * compiled AST referenced as an EObject from the configuration) serves
  * transformed objects over REST — list, by id and paginated, all through the
  * 1:1 bridge — and a configuration whose transformation reference breaks keeps
- * the instance down until a corrected version recovers it (M4 semantics).
+ * the instance down until a corrected version recovers it (M4 semantics). The
+ * same transformation given as its {@code .qvto} source is compiled when the
+ * configuration is applied (data.atlas#29).
  *
  * <p>
  * The fixture is the shipped example {@code dataatlas-transformation.xmi}
@@ -156,6 +158,56 @@ public class DataAtlasTransformationIntegrationTest {
 		Files.writeString(configFile, v1, StandardCharsets.UTF_8);
 		assertEquals(200, awaitStatus(BASE + "/public-persons", 200, 60_000));
 		assertTrue(get(BASE + "/public-persons").body().contains("Ada Lovelace"));
+	}
+
+	/**
+	 * The transformation given as its {@code .qvto} source instead of the
+	 * compiled AST: the runtime compiles it when the configuration is applied,
+	 * resolving the relative URI against the configuration document
+	 * (data.atlas#29, #33). A source that cannot be compiled keeps the
+	 * instance down like an unresolvable AST does.
+	 */
+	@Test
+	@Order(3)
+	void qvtoSourceIsCompiledWhenTheConfigurationIsApplied() throws Exception {
+		Files.writeString(configFile, withSource("trafo/does-not-exist.qvto"), StandardCharsets.UTF_8);
+		assertEquals(404, awaitStatus(BASE + "/public-persons", 404, 60_000));
+
+		Files.writeString(configFile, withSource("trafo/person-to-public.qvto"), StandardCharsets.UTF_8);
+		assertEquals(200, awaitStatus(BASE + "/public-persons", 200, 60_000));
+		String list = get(BASE + "/public-persons").body();
+		assertTrue(list.contains("Ada Lovelace"), list);
+		assertFalse(list.contains("firstName"), "source features must not leak through the bridge: " + list);
+		String byId = get(BASE + "/public-persons/p2").body();
+		assertTrue(byId.contains("Grace Hopper"), byId);
+	}
+
+	/**
+	 * A QvtoDataTransformation names exactly one of compiled AST and source:
+	 * both set is a configuration error that keeps the instance down.
+	 */
+	@Test
+	@Order(4)
+	void compiledUnitAndSourceTogetherAreRefused() throws Exception {
+		Files.writeString(configFile,
+				v1.replace(TRANSFORMATION_START, TRANSFORMATION_START + " source=\"trafo/person-to-public.qvto\""),
+				StandardCharsets.UTF_8);
+		assertEquals(404, awaitStatus(BASE + "/public-persons", 404, 60_000));
+
+		Files.writeString(configFile, v1, StandardCharsets.UTF_8);
+		assertEquals(200, awaitStatus(BASE + "/public-persons", 200, 60_000));
+		assertTrue(get(BASE + "/public-persons").body().contains("Ada Lovelace"));
+	}
+
+	private static final String TRANSFORMATION_START = "<transformations xsi:type=\"atlasconfigqvto:QvtoDataTransformation\" id=\"person-to-public\"";
+	private static final String UNIT_REFERENCE = "<transformation href=\"trafo/person-to-public.xmi#//@unit\"/>";
+
+	/** The example configuration with the compiled-unit reference swapped for a source URI. */
+	private static String withSource(String source) {
+		assertTrue(v1.contains(TRANSFORMATION_START) && v1.contains(UNIT_REFERENCE),
+				"the example configuration changed shape - adjust the test");
+		return v1.replace(UNIT_REFERENCE, "")
+				.replace(TRANSFORMATION_START, TRANSFORMATION_START + " source=\"" + source + "\"");
 	}
 
 	private static Path extractTestData(BundleContext bundleContext) throws Exception {

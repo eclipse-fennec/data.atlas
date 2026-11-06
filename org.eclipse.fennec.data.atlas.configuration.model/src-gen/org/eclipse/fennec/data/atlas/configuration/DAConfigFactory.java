@@ -181,15 +181,6 @@ public interface DAConfigFactory extends EFactory {
 	OgcSensorThingsDataService createOgcSensorThingsDataService();
 
 	/**
-	 * Returns a new object of class '<em>Data Transformation</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Data Transformation</em>'.
-	 * @generated
-	 */
-	DataTransformation createDataTransformation();
-
-	/**
 	 * Returns a new object of class '<em>Query Transformation</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

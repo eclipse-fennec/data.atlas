@@ -14,6 +14,8 @@
  */
 package org.eclipse.fennec.data.atlas.configuration;
 
+import org.eclipse.fennec.atlas.configuration.Transformation;
+
 import org.osgi.annotation.versioning.ProviderType;
 
 /**

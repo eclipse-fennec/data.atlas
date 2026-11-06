@@ -24,6 +24,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.fennec.atlas.configuration.DataInput;
 import org.eclipse.fennec.atlas.configuration.DataProvider;
 import org.eclipse.fennec.atlas.configuration.DataService;
+import org.eclipse.fennec.atlas.configuration.Transformation;
 
 import org.eclipse.fennec.data.atlas.configuration.*;
 
@@ -160,10 +161,6 @@ public class DAConfigAdapterFactory extends AdapterFactoryImpl {
 				return createOgcSensorThingsDataServiceAdapter();
 			}
 			@Override
-			public Adapter caseDataTransformation(DataTransformation object) {
-				return createDataTransformationAdapter();
-			}
-			@Override
 			public Adapter caseQueryTransformation(QueryTransformation object) {
 				return createQueryTransformationAdapter();
 			}
@@ -184,10 +181,6 @@ public class DAConfigAdapterFactory extends AdapterFactoryImpl {
 				return createCSVDistributionExportAdapter();
 			}
 			@Override
-			public Adapter caseTransformation(Transformation object) {
-				return createTransformationAdapter();
-			}
-			@Override
 			public Adapter caseDcatPublication(DcatPublication object) {
 				return createDcatPublicationAdapter();
 			}
@@ -202,6 +195,10 @@ public class DAConfigAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseDataService(DataService object) {
 				return createDataServiceAdapter();
+			}
+			@Override
+			public Adapter caseTransformation(Transformation object) {
+				return createTransformationAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -490,20 +487,6 @@ public class DAConfigAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.fennec.data.atlas.configuration.DataTransformation <em>Data Transformation</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see org.eclipse.fennec.data.atlas.configuration.DataTransformation
-	 * @generated
-	 */
-	public Adapter createDataTransformationAdapter() {
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link org.eclipse.fennec.data.atlas.configuration.QueryTransformation <em>Query Transformation</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -574,20 +557,6 @@ public class DAConfigAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.fennec.data.atlas.configuration.Transformation <em>Transformation</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see org.eclipse.fennec.data.atlas.configuration.Transformation
-	 * @generated
-	 */
-	public Adapter createTransformationAdapter() {
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link org.eclipse.fennec.data.atlas.configuration.DcatPublication <em>Dcat Publication</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -640,6 +609,20 @@ public class DAConfigAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createDataServiceAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.fennec.atlas.configuration.Transformation <em>Transformation</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.fennec.atlas.configuration.Transformation
+	 * @generated
+	 */
+	public Adapter createTransformationAdapter() {
 		return null;
 	}
 

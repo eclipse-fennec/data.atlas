@@ -17,9 +17,16 @@ atlas shares — the `DataProvider`/`DataService` bases, the `DataInput` kinds
 (`JdbcDataSource`, `MongoDataSource`, …) — live there. `JPADataInput` lives in its
 JPA extension (`org.eclipse.fennec.atlas.configuration.jpa.model`, nsURI
 `https://eclipse.org/fennec/atlas/configuration/jpa/1.0.0`, nsPrefix
-`atlasconfigjpa`), so that only JPA users depend on the eorm model. This model adds
-what is specific to the Data Atlas: the root registries, `DataSet`, the concrete
-services, exports, transformations, `BridgeRepository` and `DcatPublication`.
+`atlasconfigjpa`), so that only JPA users depend on the eorm model. The
+transformation types are shared too (fennec.models#12): the engine-neutral
+`Transformation`/`DataTransformation` live in `atlasconfig`, the QVT-O binding
+`QvtoDataTransformation` in the QVT-O extension
+(`org.eclipse.fennec.atlas.configuration.qvto.model`, nsURI
+`https://eclipse.org/fennec/atlas/configuration/qvto/1.0.0`, nsPrefix
+`atlasconfigqvto`), so that only QVT-O users depend on the m2x model. This model
+adds what is specific to the Data Atlas: the root registries, `DataSet`, the
+concrete services, exports, `QueryTransformation`, `BridgeRepository` and
+`DcatPublication`.
 
 In an XMI the shared types carry their own namespace:
 
@@ -44,6 +51,13 @@ rewrite: `configuration:FileDataInput`, `configuration:MongoDataInput`,
 plus the two namespace declarations. Features and ids are unchanged. In Model
 Atlas mode both shared schemas have to be seeded before `configuration.ecore`
 (see the [user guide](../docs/user-guide.md)).
+
+Since 2026-11-06 the same holds for transformations:
+`configuration:DataTransformation` becomes
+`atlasconfigqvto:QvtoDataTransformation`, plus
+`xmlns:atlasconfigqvto="https://eclipse.org/fennec/atlas/configuration/qvto/1.0.0"`
+(and, in Model Atlas mode, the `atlasconfigqvto` schema seeded after
+`atlasconfig`). Features and ids are unchanged.
 
 ## Root: `DataAtlasConfiguration`
 
@@ -275,21 +289,31 @@ specifically), independent of the declaration order.
 
 ### `Transformation`
 
-`DataTransformation` (model A → model B) and `QueryTransformation` (maps
-incoming queries onto the underlying source; not executed yet — a
-`BridgeRepository` with a configured `queryTrafo` stays down).
+The `transformations` registry holds the shared `atlasconfig:Transformation`
+kinds: data transformations (model A → model B) and this model's
+`QueryTransformation` (maps incoming queries onto the underlying source; not
+executed yet — a `BridgeRepository` with a configured `queryTrafo` stays down).
 
-A `DataTransformation` references its executable as an **EObject**: the
-`transformation` reference points at the QVT-O AST — an
-`OperationalTransformation` of the fennec m2x `qvtoperational` metamodel —
-inside a **CompiledUnit document** (`#//@unit`). A bare parsed AST is not
-storable (the parser's satellites live outside any resource), so authoring
-compiles the `.qvto` text once into that self-contained document; see
-[`example/trafo/`](example/trafo/) for the source, the generated documents and
-the generator. `supportedEClasses`/`resultEClasses` must name exactly one
-EClass each — Data Atlas transformations are **1:1 by contract** (one source
-object maps to one result object with the same id), which is what makes
-pagination push-down and by-id lookups through a bridge correct.
+The data transformation the runtime executes is a `QvtoDataTransformation`
+(the QVT-O binding of the engine-neutral `atlasconfig:DataTransformation`). It
+names its executable in exactly one of two ways — both or neither is a
+configuration error:
+
+- `source`: the URI of the `.qvto` file, compiled when the configuration is
+  applied (relative to the configuration document in file mode).
+- `transformation`: the QVT-O AST as an **EObject** — an
+  `OperationalTransformation` of the fennec m2x `qvtoperational` metamodel —
+  inside a **CompiledUnit document** (`#//@unit`). A bare parsed AST is not
+  storable (the parser's satellites live outside any resource), so authoring
+  compiles the `.qvto` text once into that self-contained document; see
+  [`example/trafo/`](example/trafo/) for the source, the generated documents
+  and the generator.
+
+The transformation types carry no cardinality contract; the `BridgeRepository`
+does: its `dataTrafo` must name exactly one `supportedEClasses` and one
+`resultEClasses` EClass and map one source object to one result object with
+the same id, which is what makes pagination push-down and by-id lookups
+through a bridge correct.
 
 In file mode the document is referenced relative to the configuration. A
 configuration served by a Model Atlas names it either by an **absolute URI**

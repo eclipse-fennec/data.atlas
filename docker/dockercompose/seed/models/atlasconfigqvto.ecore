@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copy of model/qvto.ecore from org.eclipse.fennec.atlas.configuration.qvto.model 1.0.0-SNAPSHOT
+     (eclipse-fennec/fennec.models#12, 2026-11-06), unchanged (it references atlasconfig and the m2x
+     qvtoperational model by nsURI). QvtoDataTransformation, the QVT-O binding of the shared
+     DataTransformation, so it has to be seeded after atlasconfig and before any configuration instance
+     holding a transformation. Keep in sync with upstream. -->
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="qvto" nsURI="https://eclipse.org/fennec/atlas/configuration/qvto/1.0.0"
+    nsPrefix="atlasconfigqvto">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="QVT-O extension of the shared atlas configuration model: data transformations run by the fennec m2x QVT-O engine.&#xA;&#xA;Kept apart from the atlas configuration model, so that only atlases using QVT-O depend on the m2x QVT-O model."/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="QvtoDataTransformation" eSuperTypes="https://eclipse.org/fennec/atlas/configuration/1.0.0#//DataTransformation">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A DataTransformation written in QVT-O, given either as the compiled AST (transformation) or as the URI of its .qvto source (source), which the consuming runtime compiles when the configuration is applied.&#xA;Exactly one of the two must be set; setting both, or neither, is a configuration error."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="transformation" eType="ecore:EClass http://www.eclipse.org/fennec/m2x/qvto/qvtoperational/1.0#//OperationalTransformation">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The executable QVT-O transformation: the compiled AST, referenced as an EObject (e.g. from an XMI next to the configuration, or from an EObject registry of the Model Atlas). Mutually exclusive with source."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="source" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="URI of the .qvto source of the transformation, compiled by the consuming runtime when the configuration is applied. Mutually exclusive with transformation."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>

@@ -210,6 +210,9 @@ org.eclipse.fennec.models:org.eclipse.fennec.common.models.library:0.1.0-SNAPSHO
 # in its JPA extension, which is not part of the models library (it depends on persistence.orm)
 org.eclipse.fennec.models:org.eclipse.fennec.atlas.configuration.model:1.0.0-SNAPSHOT
 org.eclipse.fennec.models:org.eclipse.fennec.atlas.configuration.jpa.model:1.0.0-SNAPSHOT
+# its QVT-O extension (fennec.models#12): QvtoDataTransformation, the QVT-O binding of the shared
+# DataTransformation (compiled AST or .qvto source)
+org.eclipse.fennec.models:org.eclipse.fennec.atlas.configuration.qvto.model:1.0.0-SNAPSHOT
 
 # MariaDB / MySQL data sources (data.atlas#26): the daanse providers behind the
 # JdbcDriver literals mariadb / mysql, and the drivers they import

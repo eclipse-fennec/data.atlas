@@ -6,7 +6,7 @@
     <details key="ecore" value="http://www.eclipse.org/emf/2002/Ecore"/>
   </eAnnotations>
   <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-    <details key="documentation" value="Configuration model for the Fennec Data-Atlas.&#xA;&#xA;It describes - independent of any concrete deployment - which data sources (DataInput) provide data, which DataSets are published, which DataServices (REST, OData, OGC, QGis, XMLA, GraphQL) expose them, which reusable DistributionExport templates are used for serialization, and which Transformations map between models.&#xA;An instance of this model is meant to fully configure a Data-Atlas runtime, while the model types it refers to are resolved against the Model-Atlas EPackage registry.&#xA;&#xA;The building blocks shared by all Fennec atlases - data sources (DataSource and its subtypes), data inputs (DataInput, FileDataInput, MongoDataInput, ...) and the DataProvider/DataService bases - come from the shared atlas configuration model (https://eclipse.org/fennec/atlas/configuration/1.0.0, org.eclipse.fennec.atlas.configuration.model); JPADataInput from its JPA extension (https://eclipse.org/fennec/atlas/configuration/jpa/1.0.0). This model adds what is specific to the Data Atlas: the root registries, DataSets, the concrete DataServices, exports, transformations, bridges and publications."/>
+    <details key="documentation" value="Configuration model for the Fennec Data-Atlas.&#xA;&#xA;It describes - independent of any concrete deployment - which data sources (DataInput) provide data, which DataSets are published, which DataServices (REST, OData, OGC, QGis, XMLA, GraphQL) expose them, which reusable DistributionExport templates are used for serialization, and which Transformations map between models.&#xA;An instance of this model is meant to fully configure a Data-Atlas runtime, while the model types it refers to are resolved against the Model-Atlas EPackage registry.&#xA;&#xA;The building blocks shared by all Fennec atlases - data sources (DataSource and its subtypes), data inputs (DataInput, FileDataInput, MongoDataInput, ...) and the DataProvider/DataService bases - come from the shared atlas configuration model (https://eclipse.org/fennec/atlas/configuration/1.0.0, org.eclipse.fennec.atlas.configuration.model); JPADataInput from its JPA extension (https://eclipse.org/fennec/atlas/configuration/jpa/1.0.0). The engine-neutral Transformation/DataTransformation also come from the shared model, the QVT-O binding QvtoDataTransformation from its QVT-O extension (https://eclipse.org/fennec/atlas/configuration/qvto/1.0.0). This model adds what is specific to the Data Atlas: the root registries, DataSets, the concrete DataServices, exports, query transformations, bridges and publications."/>
     <details key="oSGiCompatible" value="true"/>
     <details key="basePackage" value="org.eclipse.fennec.data.atlas"/>
     <details key="copyrightText" value="******************************************************************&#xA;Copyright (c) 2026 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0&#xA;&#xA;Contributors:&#xA;  Data In Motion Consulting - initial implementation&#xA;******************************************************************"/>
@@ -58,7 +58,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="transformations" upperBound="-1"
-        eType="#//Transformation" containment="true">
+        eType="ecore:EClass https://eclipse.org/fennec/atlas/configuration/1.0.0#//Transformation" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Registry of the Transformations of this instance, referenced from DataProviders and BridgeRepositories."/>
       </eAnnotations>
@@ -75,7 +75,7 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Data-Atlas refinement of the shared DataProvider (id, name, description, dataInput): anything that provides data and can be distributed - a DataService (via DataAtlasService) or a concrete DataSet. Adds the rest of the data configuration trias besides the dataInput - transformation and distribution exports - plus the opt-in publication.&#xA;&#xA;A DataSet refines its enclosing DataService: if it sets one of the trias features (dataInput, transformation, distributionExport) itself, that value overrides the one of the DataService; if it leaves the feature unset, the value of the DataService applies (override-else-default). Runtime constraint: a DataService that does not contain any DataSet must define a dataInput."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="transformation" eType="#//Transformation">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="transformation" eType="ecore:EClass https://eclipse.org/fennec/atlas/configuration/1.0.0#//Transformation">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Optional transformation applied to the data of this provider. On a DataSet it overrides the transformation of the enclosing DataService; if left unset, the service's transformation applies."/>
       </eAnnotations>
@@ -94,7 +94,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="BridgeRepository" eSuperTypes="https://eclipse.org/fennec/atlas/configuration/1.0.0#//DataInput">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A DataInput that can load data from another source and transform it if necessary.&#xA;BridgeRepository can be cascaded, so one original Entity can result in multiple intermediate formats if necessary.&#xA;&#xA;A bridge can have an attached data transformation for the source objects it loads.&#xA;On the other hand, incoming queries might be transformed as well."/>
+      <details key="documentation" value="A DataInput that can load data from another source and transform it if necessary.&#xA;BridgeRepository can be cascaded, so one original Entity can result in multiple intermediate formats if necessary.&#xA;&#xA;A bridge can have an attached data transformation for the source objects it loads.&#xA;On the other hand, incoming queries might be transformed as well.&#xA;&#xA;Bridge contract: the data transformation is 1:1 - exactly one supported and one result EClass, one result object per source object, carrying the same id. That is what keeps paging push-down and by-id lookups through the bridge correct; a transformation violating it is refused.&#xA;&#xA;The transformation types themselves (DataTransformation, and its QVT-O binding QvtoDataTransformation) come from the shared atlas configuration model and its QVT-O extension (https://eclipse.org/fennec/atlas/configuration/qvto/1.0.0)."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="source" lowerBound="1"
         eType="ecore:EClass https://eclipse.org/fennec/atlas/configuration/1.0.0#//DataInput">
@@ -103,7 +103,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="dataTrafo" lowerBound="1"
-        eType="#//DataTransformation">
+        eType="ecore:EClass https://eclipse.org/fennec/atlas/configuration/1.0.0#//DataTransformation">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Transformation applied to the source EObjects when they are loaded."/>
       </eAnnotations>
@@ -500,30 +500,7 @@
       <details key="documentation" value="DataService that exposes DataSets via the OGC SensorThings API."/>
     </eAnnotations>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DataTransformation" eSuperTypes="#//Transformation">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Describes a transformation Step from Model A to B.&#xA;&#xA;The executable transformation is a QVT-O AST (an OperationalTransformation of the fennec m2x qvto model) referenced as an EObject: in file mode from an XMI next to the configuration, in Model Atlas mode from a dedicated EObject registry of the scope. Authoring happens in QVT-O text, parsed once at publish time.&#xA;&#xA;Data-Atlas contract: the transformation is 1:1 - one source object maps to exactly one result object carrying the same id."/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="transformation" lowerBound="1"
-        eType="ecore:EClass http://www.eclipse.org/fennec/m2x/qvto/qvtoperational/1.0#//OperationalTransformation">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The executable QVT-O transformation (the parsed AST, referenced as an EObject)."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="supportedEClasses" upperBound="-1"
-        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EClass">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Input EClasses this transformation accepts."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="resultEClasses" upperBound="-1"
-        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EClass">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Output EClasses this transformation produces."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="QueryTransformation" eSuperTypes="#//Transformation">
+  <eClassifiers xsi:type="ecore:EClass" name="QueryTransformation" eSuperTypes="https://eclipse.org/fennec/atlas/configuration/1.0.0#//Transformation">
     <eAnnotations source="https://eclipse.org/fennec/data/atlas/configuration/status">
       <details key="implementation" value="not implemented yet"/>
       <details key="note" value="no query transformation engine is wired; a bridge that references one stays down"/>
@@ -607,28 +584,6 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="includeTypeHeader" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Whether to emit an additional row carrying each column's SQL type between the header row and the data rows. The column header row itself is ALWAYS written and cannot be switched off. Maps to the fennec codec option 'codec.csv.dataTypeInSecondRow'."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Transformation" abstract="true">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Base type for a named transformation, either of loaded data (DataTransformation) or of incoming queries (QueryTransformation).&#xA;&#xA;Intended as an abstract base - it is not meant to be instantiated directly."/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        iD="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Unique identifier of this transformation."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Derives from the model annotation by default"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Derives from the model annotation by default"/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>

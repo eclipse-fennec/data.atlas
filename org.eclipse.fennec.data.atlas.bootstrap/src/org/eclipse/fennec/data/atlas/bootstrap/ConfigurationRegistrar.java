@@ -44,7 +44,7 @@ import org.eclipse.fennec.atlas.configuration.DataInput;
 import org.eclipse.fennec.data.atlas.configuration.DataAtlasService;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
 import org.eclipse.fennec.atlas.configuration.DataSource;
-import org.eclipse.fennec.data.atlas.configuration.Transformation;
+import org.eclipse.fennec.atlas.configuration.Transformation;
 import org.eclipse.fennec.emf.osgi.configurator.EPackageConfigurator;
 import org.eclipse.fennec.emf.osgi.constants.EMFNamespaces;
 import org.osgi.framework.Bundle;

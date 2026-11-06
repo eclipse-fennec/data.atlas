@@ -16,6 +16,8 @@ package org.eclipse.fennec.data.atlas.configuration.impl;
 
 import org.eclipse.emf.ecore.EClass;
 
+import org.eclipse.fennec.atlas.configuration.impl.TransformationImpl;
+
 import org.eclipse.fennec.data.atlas.configuration.DAConfigPackage;
 import org.eclipse.fennec.data.atlas.configuration.QueryTransformation;
 

@@ -65,6 +65,9 @@ services:
     volumes:
       - ./seed/seed.sh:/seed/seed.sh:ro
       - ./seed/models/eorm.ecore:/seed/models/eorm.ecore:ro
+      - ./seed/models/atlasconfig.ecore:/seed/models/atlasconfig.ecore:ro
+      - ./seed/models/atlasconfigjpa.ecore:/seed/models/atlasconfigjpa.ecore:ro
+      - ./seed/models/atlasconfigqvto.ecore:/seed/models/atlasconfigqvto.ecore:ro
       - ../../org.eclipse.fennec.data.atlas.configuration.model/model/configuration.ecore:/seed/models/configuration.ecore:ro
       - ../../org.eclipse.fennec.data.atlas.configuration.model/example/model/person.ecore:/seed/models/person.ecore:ro
       - ../../org.eclipse.fennec.data.atlas.configuration.model/example/dataatlas-postgres-atlas.xmi:/seed/dataatlas-postgres-atlas.xmi:ro

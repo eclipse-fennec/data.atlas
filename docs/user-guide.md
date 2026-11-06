@@ -736,8 +736,8 @@ references to abstract types like `PropertyPath.segments` need an explicit
 ### Transforming Data: QVT-O over a Bridge
 
 A DataSet can serve **transformed** objects: a `BridgeRepository` wraps
-another input and applies a QVT-O `DataTransformation` to every loaded
-object. The REST layer does not change at all — a bridge is just one more
+another input and applies a QVT-O transformation (`QvtoDataTransformation`)
+to every loaded object. The REST layer does not change at all — a bridge is just one more
 input, so it can be cascaded, and a DataSet on a bridge declares the bridge's
 *output* type as its `inputType`.
 
@@ -751,7 +751,7 @@ input, so it can be cascaded, and a DataSet on a bridge declares the bridge's
   <inputType href="model/person-public.ecore#//PublicPerson"/>
   <outputType href="model/person-public.ecore#//PublicPerson"/>
 </dataSets>
-<transformations xsi:type="configuration:DataTransformation" id="person-to-public"
+<transformations xsi:type="atlasconfigqvto:QvtoDataTransformation" id="person-to-public"
     name="PersonToPublic" description="Projects a Person onto a PublicPerson.">
   <transformation href="trafo/person-to-public.xmi#//@unit"/>
   <supportedEClasses href="model/person.ecore#//Person"/>
@@ -759,12 +759,35 @@ input, so it can be cascaded, and a DataSet on a bridge declares the bridge's
 </transformations>
 ```
 
-**Authoring** happens in QVT-O text, **the runtime executes the compiled
-AST**: the `transformation` reference points at the `OperationalTransformation`
-inside a *CompiledUnit* document (fragment `#//@unit`), produced once from the
-`.qvto` source with the fennec m2x engine's `compile()` — a bare parsed AST is
-not storable. The shipped example
-(`configuration.model/example/trafo/`) carries the source
+The transformation types come from the shared atlas configuration model: the
+engine-neutral `DataTransformation` from `atlasconfig`, its QVT-O binding
+`QvtoDataTransformation` from the QVT-O extension — declare
+`xmlns:atlasconfigqvto="https://eclipse.org/fennec/atlas/configuration/qvto/1.0.0"`
+on the root.
+
+A `QvtoDataTransformation` names its executable in exactly one of two ways
+(both or neither is refused):
+
+- **`source`: the `.qvto` file**, compiled when the configuration is applied.
+  A relative URI resolves against the configuration document. Editing the
+  source and saving the configuration is all a change takes:
+
+  ```xml
+  <transformations xsi:type="atlasconfigqvto:QvtoDataTransformation" id="person-to-public"
+      name="PersonToPublic" source="trafo/person-to-public.qvto">
+    <supportedEClasses href="model/person.ecore#//Person"/>
+    <resultEClasses href="model/person-public.ecore#//PublicPerson"/>
+  </transformations>
+  ```
+
+  A source that does not compile keeps every dependent endpoint down, like an
+  unresolvable AST.
+- **`transformation`: the compiled AST**, the `OperationalTransformation`
+  inside a *CompiledUnit* document (fragment `#//@unit`), produced once from
+  the `.qvto` source with the fennec m2x engine's `compile()` — a bare parsed
+  AST is not storable. This is the form a Model Atlas registry can hold.
+
+The shipped example (`configuration.model/example/trafo/`) carries the source
 (`person-to-public.qvto`), both generated documents and the generator
 (`AstGen.java`) with regeneration instructions in the `.qvto` header:
 
@@ -786,10 +809,11 @@ mapping Person::toPublic() : PublicPerson {
 
 Rules the runtime enforces:
 
-- **Transformations are 1:1 by contract**: exactly one `supportedEClasses`
+- **The bridge runs transformations 1:1**: exactly one `supportedEClasses`
   and one `resultEClasses`, one result object per source object, carrying the
   **same id**. That is what makes pagination push-down and by-id lookups
-  through the bridge correct; anything non-1:1 is refused loudly.
+  through the bridge correct; anything non-1:1 is refused loudly. (The
+  transformation types themselves carry no cardinality contract.)
 - **Fail-early gating, M4 lifecycle**: a missing or unresolvable
   transformation keeps every dependent endpoint down (404) rather than
   serving untransformed data; fixing the configuration recovers the instance
@@ -806,8 +830,10 @@ Rules the runtime enforces:
   push-down) is not implemented yet; a bridge that declares one stays down.
 
 In **Model Atlas mode** the configuration — including the
-`DataTransformation` — travels through the Model Atlas. The CompiledUnit
-document can be named two ways:
+`QvtoDataTransformation` — travels through the Model Atlas (seed the
+`atlasconfigqvto` schema before an instance that holds one). A `source` must
+then be an absolute URI the runtime can read. The CompiledUnit document can
+be named two ways:
 
 - by an **absolute URI** the runtime resolves locally (mounted next to the
   data, like every `FileDataInput` in that mode), using the nsURI-referencing
@@ -1060,10 +1086,12 @@ How the `href`s to EClasses are written depends on the config-source mode:
   and, for query-defined DataSets, references the fennec `query` model (which
   references the `expression` model); a `JPADataInput` needs the shared model's
   JPA extension (`atlasconfigjpa`), which references `atlasconfig` and the fennec
-  `eorm` model. The compose seeder (`docker/dockercompose/seed`) uploads
-  `expression`, `query`, `eorm`, `atlasconfig` and `atlasconfigjpa` before
-  `configuration.ecore`; `seed/models` holds copies of the two shared schemas
-  (the JPA one with its references rewritten to nsURIs, fennec.models#11).
+  `eorm` model; a `QvtoDataTransformation` needs its QVT-O extension
+  (`atlasconfigqvto`). The compose seeder (`docker/dockercompose/seed`) uploads
+  `expression`, `query`, `eorm`, `atlasconfig`, `atlasconfigjpa` and
+  `atlasconfigqvto` before `configuration.ecore`; `seed/models` holds copies of
+  the three shared schemas (the JPA one with its references rewritten to nsURIs,
+  fennec.models#11).
   Compare the two example variants:
   [`dataatlas.xmi`](../org.eclipse.fennec.data.atlas.configuration.model/example/dataatlas.xmi)
   (file) vs.

@@ -17,6 +17,7 @@ package org.eclipse.fennec.data.atlas.configuration;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.fennec.atlas.configuration.DataProvider;
+import org.eclipse.fennec.atlas.configuration.Transformation;
 
 import org.osgi.annotation.versioning.ProviderType;
 
