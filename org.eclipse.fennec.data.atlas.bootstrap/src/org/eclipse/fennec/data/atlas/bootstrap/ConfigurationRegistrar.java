@@ -23,6 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -79,6 +80,13 @@ import org.osgi.framework.ServiceRegistration;
  * references of a copy (e.g. {@code configuration.dataSet}) still point into
  * the original, fully resolved configuration tree.
  * </p>
+ *
+ * <p>
+ * A copy has no resource, so the location of the configuration document is
+ * published as the {@link DataAtlasConstants#CONFIG_BASE_URI} service property
+ * when the config source has one — configurators of any input type resolve
+ * their relative file references against it (data.atlas#33).
+ * </p>
  */
 class ConfigurationRegistrar {
 
@@ -91,7 +99,7 @@ class ConfigurationRegistrar {
 			ServiceRegistration<?> packageRegistration) {
 	}
 
-	private record ObjectEntry(EObject original, ServiceRegistration<?> registration) {
+	private record ObjectEntry(EObject original, String baseUri, ServiceRegistration<?> registration) {
 	}
 
 	private final BundleContext bundleContext;
@@ -120,10 +128,14 @@ class ConfigurationRegistrar {
 	/**
 	 * Publishes the configuration, diffing against the currently published
 	 * state: the referenced EPackages first, then the configuration objects.
+	 *
+	 * @param baseUri the location of the configuration document, published as
+	 *                {@link DataAtlasConstants#CONFIG_BASE_URI}; {@code null}
+	 *                when the config source has none
 	 */
-	synchronized void apply(DataAtlasConfiguration configuration) {
+	synchronized void apply(DataAtlasConfiguration configuration, URI baseUri) {
 		Set<String> replacedNsUris = applyEPackages(configuration);
-		applyConfigurationObjects(configuration, replacedNsUris);
+		applyConfigurationObjects(configuration, baseUri == null ? null : baseUri.toString(), replacedNsUris);
 		diagnosePublicationDeclarations(configuration);
 		LOG.log(Level.INFO,
 				() -> "Data Atlas instance '" + configuration.getName() + "' published ("
@@ -250,7 +262,8 @@ class ConfigurationRegistrar {
 		}
 	}
 
-	private void applyConfigurationObjects(DataAtlasConfiguration configuration, Set<String> replacedNsUris) {
+	private void applyConfigurationObjects(DataAtlasConfiguration configuration, String baseUri,
+			Set<String> replacedNsUris) {
 		Map<String, EObject> desired = new LinkedHashMap<>();
 		for (DataAtlasService service : configuration.getServices()) {
 			addObject(desired, service, service.getId());
@@ -279,7 +292,9 @@ class ConfigurationRegistrar {
 			String id = wanted.getKey();
 			EObject object = wanted.getValue();
 			ObjectEntry current = objects.get(id);
+			// a moved configuration file changes the base of relative references
 			if (current != null && EcoreUtil.equals(current.original(), object)
+					&& Objects.equals(current.baseUri(), baseUri)
 					&& !referencesReplacedPackage(object, replacedNsUris)) {
 				continue; // unchanged: its runtime pieces stay up
 			}
@@ -287,7 +302,7 @@ class ConfigurationRegistrar {
 				objects.remove(id).registration().unregister();
 				LOG.log(Level.INFO, () -> "Re-registering changed configuration object '" + id + "'");
 			}
-			registerConfigurationObject(configuration, object, id);
+			registerConfigurationObject(configuration, object, id, baseUri);
 		}
 	}
 
@@ -343,7 +358,8 @@ class ConfigurationRegistrar {
 		return false;
 	}
 
-	private void registerConfigurationObject(DataAtlasConfiguration configuration, EObject object, String id) {
+	private void registerConfigurationObject(DataAtlasConfiguration configuration, EObject object, String id,
+			String baseUri) {
 		String[] interfaces = serviceInterfaces(object);
 		Dictionary<String, Object> props = new Hashtable<>();
 		if (configuration.getName() != null) {
@@ -351,9 +367,12 @@ class ConfigurationRegistrar {
 		}
 		props.put(DataAtlasConstants.CONFIG_OBJECT_ID, id);
 		props.put(DataAtlasConstants.CONFIG_OBJECT_TYPE, object.eClass().getName());
+		if (baseUri != null) {
+			props.put(DataAtlasConstants.CONFIG_BASE_URI, baseUri);
+		}
 		ServiceRegistration<?> registration = bundleContext.registerService(interfaces,
 				new EObjectPrototypeFactory(object), props);
-		objects.put(id, new ObjectEntry(object, registration));
+		objects.put(id, new ObjectEntry(object, baseUri, registration));
 		LOG.log(Level.INFO, () -> "Registered " + object.eClass().getName() + " '" + id + "'");
 	}
 

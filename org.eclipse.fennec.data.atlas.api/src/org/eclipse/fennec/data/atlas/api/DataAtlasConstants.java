@@ -34,6 +34,17 @@ public final class DataAtlasConstants {
 	public static final String CONFIG_OBJECT_TYPE = "data.atlas.config.type";
 
 	/**
+	 * The URI of the configuration document a configuration object was loaded
+	 * from, as a string. Relative file references in a configuration object
+	 * (a data file, a transformation source, a mapping file) resolve against
+	 * it — the same way the bootstrap resolves {@code FileDataInput.uri}, which
+	 * is the only reference it resolves itself. Set when the configuration
+	 * source has a location (file mode); absent otherwise (Model Atlas mode).
+	 * {@link ConfigurationUris#resolve(String, java.util.Map)} applies it.
+	 */
+	public static final String CONFIG_BASE_URI = "data.atlas.config.base.uri";
+
+	/**
 	 * The {@code DataTransformation} id a {@link DataTransformer} service
 	 * executes, used to correlate transformer services with the configuration
 	 * objects referencing the transformation.

@@ -35,6 +35,17 @@ up whiteboard-style and create the actual runtime pieces — data importers,
 REST/GraphQL endpoints, DCAT providers — and tear them down again when the
 config service disappears.
 
+Every config service carries `data.atlas.config.id` (the object's `id`),
+`data.atlas.config.type` (its EClass name) and `data.atlas.name` (the
+instance name). The objects are handed out as detached copies without a
+resource, so in file mode the location of the configuration document travels
+as `data.atlas.config.base.uri`: a configurator of any input type — including
+one from a bundle outside this repository — resolves its relative file
+references (a mapping file, a transformation source) against it with
+`ConfigurationUris.resolve(value, serviceProperties)` from the `api` bundle.
+The bootstrap itself only absolutizes `FileDataInput.uri`. In Model Atlas mode
+there is no document location and the property is absent.
+
 ```mermaid
 flowchart TB
     subgraph CONFIG["Configuration model (EMF/XMI) — the single source of truth"]
