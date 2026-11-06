@@ -46,6 +46,17 @@ references (a mapping file, a transformation source) against it with
 The bootstrap itself only absolutizes `FileDataInput.uri`. In Model Atlas mode
 there is no document location and the property is absent.
 
+A config service is registered under the model interfaces of its EClass, **with
+the context of the bundle that defines that type** — not with the bootstrap's
+(data.atlas#34). The framework hands a reference only to a bundle for which
+every `objectClass` name is assignable, and `isAssignableTo` is `false` when
+the registering bundle has no source for a name's package. Registered by the
+bootstrap, a configuration type from a bundle it is not wired to (a third-party
+`DataInput` subtype in its own EPackage) would be invisible to every
+configurator. The defining bundle sees its own type and all supertypes, so a
+new configuration type needs nothing but its model bundle and a configurator
+that binds it with DS. Dynamic EClasses fall back to the bootstrap's context.
+
 ```mermaid
 flowchart TB
     subgraph CONFIG["Configuration model (EMF/XMI) — the single source of truth"]

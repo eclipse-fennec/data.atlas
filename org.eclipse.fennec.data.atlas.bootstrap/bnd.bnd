@@ -21,15 +21,6 @@ Bundle-Description: File-mode configuration source: loads the DataAtlasConfigura
 	org.eclipse.fennec.m2x.qvt.model;version=latest,\
 	org.eclipse.fennec.emf.osgi.eobject.registry;version=latest
 
-# The registrar publishes every configuration object under its model interfaces
-# (ConfigurationRegistrar.serviceInterfaces). The framework only considers such a
-# service assignable to a consumer when the registering bundle is wired to the
-# interface's package - so the bootstrap imports the packages of every configuration
-# model whose objects it registers, even though its code never names them. The JPA
-# extension of the shared atlas configuration model (JPADataInput) is optional: a
-# runtime without it simply cannot load configurations that use it. The QVT-O
-# extension (QvtoDataTransformation) is not: the Model Atlas bootstrap resolves the
-# transformation documents of every configuration it applies.
-Import-Package: \
-	org.eclipse.fennec.atlas.configuration.jpa;resolution:=optional,\
-	*
+# No hand-maintained Import-Package for the configuration models: the registrar
+# registers every configuration object with the context of the bundle that defines
+# its type (data.atlas#34), so the bootstrap does not need to be wired to them.

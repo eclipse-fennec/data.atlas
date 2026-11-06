@@ -1,0 +1,23 @@
+Bundle-Name: Fennec Data Atlas - Integration Test Extension
+Bundle-Description: Test-only stand-in for a third-party bundle that defines its own \
+	DataInput subtype (ProbeInput, own EPackage) and binds it with DS - the situation of \
+	data.atlas#34. Used by the integration tests only, never part of a runtime.
+
+-library: enableEMF
+
+# the generated sources must be part of the bnd source path
+src=${^src},src-gen
+
+-generate:\
+	model/probe.genmodel;\
+		generate=fennecEMF;\
+		genmodel=model/probe.genmodel;\
+		output=src-gen
+
+-includeresource.model: model=model
+
+-buildpath: \
+	org.osgi.service.component.annotations;version=latest,\
+	org.osgi.service.condition;version=latest,\
+	org.eclipse.fennec.atlas.configuration.model;version=latest,\
+	org.eclipse.fennec.data.atlas.api;version=project

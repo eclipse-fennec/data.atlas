@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- data.atlas#34 fixture: a configuration object whose type comes from a third-party
+     bundle (ProbeInput of org.eclipse.fennec.data.atlas.tests.extension), which the
+     bootstrap is not wired to. Its configurator must still bind it through DS. -->
+<configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    xmlns:probe="https://eclipse.org/fennec/data/atlas/test/extension/1.0.0"
+    name="extension" description="Third-party configuration type test fixture.">
+  <dataInputs xsi:type="probe:ProbeInput" id="probe-1" mappingFile="mapping/probe.csv">
+    <supportedEClasses href="model/person.ecore#//Person"/>
+  </dataInputs>
+</configuration:DataAtlasConfiguration>

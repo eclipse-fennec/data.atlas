@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Test-only configuration type of a third-party bundle (data.atlas#34): a DataInput
+     subtype in its own EPackage, which the Data Atlas bootstrap is NOT wired to. -->
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="extension" nsURI="https://eclipse.org/fennec/data/atlas/test/extension/1.0.0"
+    nsPrefix="probe">
+  <eClassifiers xsi:type="ecore:EClass" name="ProbeInput" eSuperTypes="https://eclipse.org/fennec/atlas/configuration/1.0.0#//DataInput">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mappingFile" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+</ecore:EPackage>
