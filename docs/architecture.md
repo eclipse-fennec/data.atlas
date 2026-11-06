@@ -35,6 +35,17 @@ up whiteboard-style and create the actual runtime pieces — data importers,
 REST/GraphQL endpoints, DCAT providers — and tear them down again when the
 config service disappears.
 
+Every config service carries `data.atlas.config.id` (the object's `id`),
+`data.atlas.config.type` (its EClass name) and `data.atlas.name` (the
+instance name). The objects are handed out as detached copies without a
+resource, so in file mode the location of the configuration document travels
+as `data.atlas.config.base.uri`: a configurator of any input type — including
+one from a bundle outside this repository — resolves its relative file
+references (a mapping file, a transformation source) against it with
+`ConfigurationUris.resolve(value, serviceProperties)` from the `api` bundle.
+The bootstrap itself only absolutizes `FileDataInput.uri`. In Model Atlas mode
+there is no document location and the property is absent.
+
 ```mermaid
 flowchart TB
     subgraph CONFIG["Configuration model (EMF/XMI) — the single source of truth"]
@@ -70,7 +81,7 @@ flowchart TB
 
 ## Current state vs. target
 
-Implemented today (roadmap Milestones 0–8):
+Implemented today:
 
 - **Model bundle**: `configuration.model` — `DataAtlasConfiguration` root with
   containment registries (data sources, inputs, data sets, services, exports,
@@ -107,7 +118,7 @@ Implemented today (roadmap Milestones 0–8):
   pushes down as `skip`/`top`, declared query parameters bind from HTTP query
   parameters; fennec codec serialization), `runtime.config` (resource-only
   Configurator: Felix HTTP + whiteboard + bootstrap config, env-var driven).
-- **Export formats are configuration** (Milestone 7): the `DistributionExport`
+- **Export formats are configuration**: the `DistributionExport`
   templates a DataSet resolves to define the media types its endpoint offers —
   none resolved keeps the JSON/XMI defaults, at least one makes exactly those
   the served set and anything else a `406`. `ExportFormats` in the `rest` bundle
@@ -123,7 +134,7 @@ Implemented today (roadmap Milestones 0–8):
   `ReadableScopeService`) and feeds the same registrar pipeline; the
   `runtime.config.atlas` Configurator wires the client (env-var driven), and
   the `_docker_atlas` bndrun / `docker/dataatlas-atlas` image package it.
-- **DCAT publication** (Milestone 8, data.atlas#4): the omittable
+- **DCAT publication** (data.atlas#4): the omittable
   `publication.dcat` bundle tracks `DataService` configuration services whose
   configuration references a `DcatPublication` and keeps them registered with a
   DCAT.Atlas portal through the dcat.atlas client — DataService-first
@@ -143,7 +154,7 @@ Implemented today (roadmap Milestones 0–8):
   whiteboard's context path (`rest.context.path`, default `rest`) for
   `RestDataService`s and nothing for OData and OGC roots, which mount
   directly on the HTTP runtime (data.atlas#19).
-- **GeoJSON serving** (Milestone 5): a `GeoJsonDataService` publishes DataSets
+- **GeoJSON serving**: a `GeoJsonDataService` publishes DataSets
   as RFC 7946 GeoJSON (`application/geo+json`) — `GET {path}` a
   `FeatureCollection`, `{path}/{id}` a `Feature` — through its own
   configurator/resource pair in the `rest` bundle, sharing the repository
@@ -154,7 +165,7 @@ Implemented today (roadmap Milestones 0–8):
   through the fennec GeoJSON codec, whose content-type registration was
   emf.codec#168; `@RequireCodecGeoJson` (emf.codec#201) makes the codec a
   resolve-time requirement of the `rest` bundle, like its CSV/JSON siblings.
-- **OData serving** (Milestone 10, WP-DA-13): the omittable `odata` bundle
+- **OData serving**: the omittable `odata` bundle
   tracks `ODataDataService` configuration services and the `ReadRepository`s
   of their inputs like the REST/GeoJSON configurators do, but serves nothing
   itself — it configures the Fennec OData server (emf.odata) through Config
@@ -208,7 +219,7 @@ Implemented today (roadmap Milestones 0–8):
   `endpointURL`, `/api` as `endpointDescription`, one `application/geo+json`
   distribution per collection (`/collections/{id}/items`); the QGIS project is
   not a dataset distribution and is left to the root's own links.
-- **Data transformations** (Milestone 6): the `transformation` bundle turns
+- **Data transformations**: the `transformation` bundle turns
   every `DataTransformation` configuration service into a ready-to-execute
   `DataTransformer` (fennec m2x QVT-O engine; the compiled AST — the
   `OperationalTransformation` inside a CompiledUnit document the configuration
@@ -238,7 +249,7 @@ Implemented today (roadmap Milestones 0–8):
   nothing and watches its configuration location, so mounting one later brings
   it up without a restart. Everything an example needs is mounted in, or
   deposited in the Model Atlas. The runtime carries
-  the fennec CSV codec and — since Milestone 7 — the daanse PostgreSQL
+  the fennec CSV codec and — the daanse PostgreSQL
   `DataSource` provider plus the JDBC driver, so a PostgreSQL deployment needs
   configuration only; other databases still need their own provider bundle. The
   schema always belongs to the database (`eclipselink.ddl-generation` stays
@@ -249,7 +260,7 @@ Not yet implemented: the other DataService kinds, importers, query
 transformations (a bridge with a configured `queryTrafo` stays down), a
 platform-wide data source catalog (a Model Atlas registry of definitions
 shared between components) and the `Deployment`/`Tenant` layer that would
-pick a definition per tenant (see the [roadmap](roadmap.md)).
+pick a definition per tenant.
 
 ## Configuration lifecycle
 

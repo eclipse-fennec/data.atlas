@@ -13,6 +13,7 @@
 package org.eclipse.fennec.data.atlas.tests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
@@ -26,14 +27,19 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Dictionary;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
+import org.eclipse.fennec.data.atlas.api.ConfigurationUris;
+import org.eclipse.fennec.data.atlas.api.DataAtlasConstants;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.test.common.annotation.InjectBundleContext;
@@ -133,6 +139,47 @@ public class FileConfigLifecycleIntegrationTest {
 		Files.writeString(configFile, v1, StandardCharsets.UTF_8);
 		assertEquals(200, awaitStatus(BASE + "/persons", 200, 60_000));
 		assertTrue(get(BASE + "/persons").body().contains("Hopper"));
+	}
+
+	/**
+	 * Configuration objects reach their configurators as detached copies; the
+	 * configuration document's location travels as a service property, so a
+	 * relative file reference of ANY input type resolves like
+	 * {@code FileDataInput.uri} does (data.atlas#33).
+	 */
+	@Test
+	void configurationObjectsCarryTheConfigurationBaseUri(@InjectBundleContext BundleContext bundleContext)
+			throws Exception {
+		Map<String, Object> properties = awaitConfigObjectProperties(bundleContext, "persons-file", 60_000);
+		assertNotNull(properties, "the persons-file input is registered");
+		Object base = properties.get(DataAtlasConstants.CONFIG_BASE_URI);
+		assertNotNull(base, "file mode publishes the configuration base URI");
+		assertEquals(configFile.toRealPath(), Path.of(java.net.URI.create(base.toString())).toRealPath());
+
+		String resolved = ConfigurationUris.resolve("data/persons.xmi", properties);
+		assertEquals(configFile.getParent().resolve("data").resolve("persons.xmi").toRealPath(),
+				Path.of(java.net.URI.create(resolved)).toRealPath());
+		// absolute values and objects without a base stay untouched
+		assertEquals("https://example.org/x.xmi", ConfigurationUris.resolve("https://example.org/x.xmi", properties));
+		assertEquals("data/persons.xmi", ConfigurationUris.resolve("data/persons.xmi", Map.of()));
+	}
+
+	private static Map<String, Object> awaitConfigObjectProperties(BundleContext bundleContext, String id,
+			long timeoutMs) throws Exception {
+		long deadline = System.currentTimeMillis() + timeoutMs;
+		while (System.currentTimeMillis() < deadline) {
+			ServiceReference<?>[] references = bundleContext.getServiceReferences((String) null,
+					"(" + DataAtlasConstants.CONFIG_OBJECT_ID + "=" + id + ")");
+			if (references != null && references.length > 0) {
+				Map<String, Object> properties = new HashMap<>();
+				for (String key : references[0].getPropertyKeys()) {
+					properties.put(key, references[0].getProperty(key));
+				}
+				return properties;
+			}
+			Thread.sleep(500);
+		}
+		return null;
 	}
 
 	private static Path extractTestData(BundleContext bundleContext) throws Exception {

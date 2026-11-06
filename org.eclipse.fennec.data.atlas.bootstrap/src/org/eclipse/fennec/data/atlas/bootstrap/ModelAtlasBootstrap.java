@@ -290,7 +290,8 @@ public class ModelAtlasBootstrap {
 		resolveRegistryTransformations(configuration);
 		resolveTransformationDocuments(configuration);
 		ConfigurationRegistrar.failOnUnresolvedProxies(configuration, source());
-		registrar.apply(configuration);
+		// a registry object has no file location relative references could use
+		registrar.apply(configuration, null);
 		lastApplied = object;
 	}
 

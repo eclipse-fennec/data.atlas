@@ -187,7 +187,7 @@ public class DataAtlasBootstrap {
 		EcoreUtil.resolveAll(resourceSet);
 		ConfigurationRegistrar.failOnUnresolvedProxies(configuration, configUri.toString());
 		absolutizeFileInputUris(configuration, resource.getURI());
-		registrar.apply(configuration);
+		registrar.apply(configuration, resource.getURI());
 	}
 
 	/** A reload triggered by the file watcher: a broken file fails hard. */
@@ -325,7 +325,9 @@ public class DataAtlasBootstrap {
 	/**
 	 * Resolves relative FileDataInput URIs against the configuration resource,
 	 * so consumers of the (detached) configuration object copies do not need
-	 * the resource context.
+	 * the resource context. Other input types resolve their references
+	 * themselves against the published
+	 * {@link org.eclipse.fennec.data.atlas.api.DataAtlasConstants#CONFIG_BASE_URI}.
 	 */
 	private void absolutizeFileInputUris(DataAtlasConfiguration configuration, URI base) {
 		for (DataInput input : configuration.getDataInputs()) {
