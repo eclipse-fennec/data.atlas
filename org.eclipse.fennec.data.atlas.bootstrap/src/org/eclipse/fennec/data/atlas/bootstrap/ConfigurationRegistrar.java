@@ -49,6 +49,7 @@ import org.eclipse.fennec.emf.osgi.configurator.EPackageConfigurator;
 import org.eclipse.fennec.emf.osgi.constants.EMFNamespaces;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.PrototypeServiceFactory;
 import org.osgi.framework.ServiceRegistration;
@@ -79,6 +80,20 @@ import org.osgi.framework.ServiceRegistration;
  * and adapt them without mutating the shared model. Note that non-containment
  * references of a copy (e.g. {@code configuration.dataSet}) still point into
  * the original, fully resolved configuration tree.
+ * </p>
+ *
+ * <p>
+ * A configuration object is registered <em>with the context of the bundle that
+ * defines its Java type</em> (data.atlas#34), not with the bootstrap's own.
+ * The framework hands a service reference to a bundle only if every
+ * {@code objectClass} name is assignable for it, and
+ * {@code ServiceReference.isAssignableTo} is {@code false} when the
+ * <em>registering</em> bundle has no source for a name's package. Registered
+ * by the bootstrap, a configuration type from any bundle the bootstrap is not
+ * wired to would therefore be invisible to every consumer. The defining bundle
+ * has a source for all of them: its own type and, through the type hierarchy,
+ * the packages of every supertype. Dynamic EClasses (no Java type) and types
+ * of a bundle without a context fall back to the bootstrap.
  * </p>
  *
  * <p>
@@ -181,7 +196,7 @@ class ConfigurationRegistrar {
 	}
 
 	synchronized void unregisterAll() {
-		objects.values().forEach(entry -> entry.registration().unregister());
+		objects.values().forEach(entry -> unregister(entry.registration()));
 		objects.clear();
 		ePackages.values().forEach(ConfigurationRegistrar::unregister);
 		ePackages.clear();
@@ -283,7 +298,7 @@ class ConfigurationRegistrar {
 		// unregister removed objects
 		for (String id : List.copyOf(objects.keySet())) {
 			if (!desired.containsKey(id)) {
-				objects.remove(id).registration().unregister();
+				unregister(objects.remove(id).registration());
 				LOG.log(Level.INFO, () -> "Unregistered configuration object '" + id + "'");
 			}
 		}
@@ -293,13 +308,15 @@ class ConfigurationRegistrar {
 			EObject object = wanted.getValue();
 			ObjectEntry current = objects.get(id);
 			// a moved configuration file changes the base of relative references
+			// a registration the framework already took down (its defining bundle
+			// stopped) counts as changed, so the next apply re-registers it
 			if (current != null && EcoreUtil.equals(current.original(), object)
-					&& Objects.equals(current.baseUri(), baseUri)
+					&& Objects.equals(current.baseUri(), baseUri) && isRegistered(current.registration())
 					&& !referencesReplacedPackage(object, replacedNsUris)) {
 				continue; // unchanged: its runtime pieces stay up
 			}
 			if (current != null) {
-				objects.remove(id).registration().unregister();
+				unregister(objects.remove(id).registration());
 				LOG.log(Level.INFO, () -> "Re-registering changed configuration object '" + id + "'");
 			}
 			registerConfigurationObject(configuration, object, id, baseUri);
@@ -370,10 +387,49 @@ class ConfigurationRegistrar {
 		if (baseUri != null) {
 			props.put(DataAtlasConstants.CONFIG_BASE_URI, baseUri);
 		}
-		ServiceRegistration<?> registration = bundleContext.registerService(interfaces,
+		ServiceRegistration<?> registration = registeringContext(object).registerService(interfaces,
 				new EObjectPrototypeFactory(object), props);
 		objects.put(id, new ObjectEntry(object, baseUri, registration));
 		LOG.log(Level.INFO, () -> "Registered " + object.eClass().getName() + " '" + id + "'");
+	}
+
+	/**
+	 * The context of the bundle defining the object's Java type (see the class
+	 * comment): the only registrant for which every service interface name is
+	 * guaranteed to be assignable for consumers.
+	 */
+	private BundleContext registeringContext(EObject object) {
+		Class<?> type = object.eClass().getInstanceClass();
+		if (type == null) {
+			return bundleContext; // dynamic EClass: no Java type to wire to
+		}
+		Bundle definingBundle = FrameworkUtil.getBundle(type);
+		BundleContext context = definingBundle == null ? null : definingBundle.getBundleContext();
+		if (context == null) {
+			LOG.log(Level.WARNING, () -> "The bundle defining " + type.getName()
+					+ " has no context (not active?) - registering with the bootstrap, so consumers outside"
+					+ " the bootstrap's wiring may not see the configuration object");
+			return bundleContext;
+		}
+		return context;
+	}
+
+	private static boolean isRegistered(ServiceRegistration<?> registration) {
+		try {
+			registration.getReference();
+			return true;
+		} catch (IllegalStateException e) {
+			return false;
+		}
+	}
+
+	/** Unregisters, tolerating a registration its bundle's stop already took down. */
+	private static void unregister(ServiceRegistration<?> registration) {
+		try {
+			registration.unregister();
+		} catch (IllegalStateException alreadyGone) {
+			// the defining bundle stopped and the framework cleaned up
+		}
 	}
 
 	/**
