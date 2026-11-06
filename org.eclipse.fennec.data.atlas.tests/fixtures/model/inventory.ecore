@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- data.atlas#31 fixture: a type identified by a composite key, the way DMTF CIM
+     identifies instances by several key properties. No single iD attribute - the
+     identity is declared with the fennec persistence idFeatures annotation. -->
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="inventory" nsURI="https://eclipse.org/fennec/data/atlas/test/inventory/1.0.0"
+    nsPrefix="inventory">
+  <eClassifiers xsi:type="ecore:EClass" name="EthernetPort">
+    <eAnnotations source="http://eclipse.org/fennec/persistence/1.0">
+      <details key="idFeatures" value="systemName,deviceID"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="systemName" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="deviceID" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="speed" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELongObject"/>
+  </eClassifiers>
+</ecore:EPackage>

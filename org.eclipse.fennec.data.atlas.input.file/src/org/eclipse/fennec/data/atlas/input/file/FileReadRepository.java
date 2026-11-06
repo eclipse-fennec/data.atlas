@@ -37,6 +37,7 @@ import org.eclipse.fennec.emf.osgi.ResourceSetFactory;
 import org.eclipse.fennec.model.query.ParameterDecl;
 import org.eclipse.fennec.model.query.Query;
 import org.eclipse.fennec.persistence.capabilities.CommandCapabilitiesBuilder;
+import org.eclipse.fennec.persistence.helper.CompositeIds;
 import org.eclipse.fennec.persistence.capabilities.PersistenceCapabilities;
 import org.eclipse.fennec.persistence.capabilities.QueryCapabilities;
 import org.eclipse.fennec.persistence.capabilities.StoreCapabilitiesBuilder;
@@ -133,7 +134,9 @@ public class FileReadRepository implements ReadRepository {
 
 	@Override
 	public URI createUri(EObject object) {
-		return createUri(object.eClass(), EcoreUtil.getID(object));
+		// the persistence stack's identity: the single iD attribute, or the
+		// idFeatures annotation's k1=v1,k2=v2 shape for composite keys
+		return createUri(object.eClass(), CompositeIds.fragment(object));
 	}
 
 	@Override
@@ -307,7 +310,7 @@ public class FileReadRepository implements ReadRepository {
 	}
 
 	private EObject findById(EClass eClass, String id) throws IOException {
-		return contents(eClass).filter(o -> Objects.equals(EcoreUtil.getID(o), id)).findFirst().orElse(null);
+		return contents(eClass).filter(o -> Objects.equals(CompositeIds.fragment(o), id)).findFirst().orElse(null);
 	}
 
 	private Stream<EObject> contents(EClass eClass) throws IOException {

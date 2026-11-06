@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- data.atlas#31 fixture: a file input over a type whose identity is a composite key
+     (systemName + deviceID, idFeatures annotation), served over REST. -->
+<configuration:DataAtlasConfiguration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:configuration="https://eclipse.org/fennec/data/atlas/configuration/1.0.0"
+    xmlns:atlasconfig="https://eclipse.org/fennec/atlas/configuration/1.0.0"
+    name="composite" description="Composite-key test fixture.">
+  <dataInputs xsi:type="atlasconfig:FileDataInput" id="ports-file" uri="data/inventory.xmi">
+    <supportedEClasses href="model/inventory.ecore#//EthernetPort"/>
+  </dataInputs>
+  <dataSets id="ports" name="Ports" description="Ethernet ports, identified by system and device." dataInput="ports-file">
+    <inputType href="model/inventory.ecore#//EthernetPort"/>
+    <outputType href="model/inventory.ecore#//EthernetPort"/>
+  </dataSets>
+  <services xsi:type="configuration:RestDataService" id="ports-rest" name="Ports REST"
+      description="REST endpoint over a composite-key type." urlContext="/inventory">
+    <configuration id="ports-rest-config" dataSet="ports" path="ports"/>
+  </services>
+</configuration:DataAtlasConfiguration>

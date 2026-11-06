@@ -12,6 +12,7 @@ Bundle-Description: Input configurator: tracks BridgeRepository configuration se
 	org.eclipse.fennec.atlas.configuration.model;version=latest,\
 	org.eclipse.fennec.data.atlas.api;version=project,\
 	org.eclipse.fennec.persistence.repository;version=latest,\
+	org.eclipse.fennec.persistence;version=latest,\
 	org.eclipse.fennec.persistence.query;version=latest,\
 	org.eclipse.fennec.persistence.capabilities;version=latest,\
 	org.eclipse.fennec.query.model;version=latest,\
