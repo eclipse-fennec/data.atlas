@@ -17,7 +17,7 @@ concepts, the REST endpoints, and the configuration lifecycle, see the
 
 ## Status
 
-Implemented today (see the [roadmap](docs/roadmap.md)): file- and JPA-backed
+Implemented today: file- and JPA-backed
 data inputs served over REST, as GeoJSON, as OData v4.01 service roots
 (through the [Fennec OData server](https://github.com/eclipse-fennec/emf.odata))
 and as OGC API - Features roots (through the

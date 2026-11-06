@@ -794,9 +794,16 @@ Rules the runtime enforces:
   transformation keeps every dependent endpoint down (404) rather than
   serving untransformed data; fixing the configuration recovers the instance
   without a restart.
-- The bridge accepts `from`/`skip`/`top` queries only. A DataSet with
-  predicates or a configured `queryTrafo` on a bridge never becomes an
-  endpoint (query transformation is not implemented yet).
+- **Queries**: a plain `from`/`skip`/`top` query is pushed down to the
+  source repository (the 1:1 contract keeps paging correct). Any richer query
+  (predicates, ordering, select, expand, count, ...) is answered by
+  transforming every source object and evaluating the query in memory with
+  the fennec `MemoryQueries` engine — correct, but every such request reads
+  and transforms the whole source. A query the in-memory engine cannot
+  evaluate is refused when the DataSet is prepared, so that endpoint stays
+  down.
+- A configured `queryTrafo` (rewriting output queries into source queries for
+  push-down) is not implemented yet; a bridge that declares one stays down.
 
 In **Model Atlas mode** the configuration — including the
 `DataTransformation` — travels through the Model Atlas. The CompiledUnit
@@ -1333,7 +1340,6 @@ driver/pool *bundles*, which do require a custom runtime assembly.
   file-vs-atlas example stack and how the Model Atlas side is assembled
 - [JPA input details](../org.eclipse.fennec.data.atlas.input.jpa/readme.md) —
   how a `JPADataInput` maps to the fennec persistence stack
-- [Roadmap](roadmap.md) — implemented milestones and what comes next
 - [Model Atlas User Guide](https://github.com/eclipse-fennec/model.atlas/blob/snapshot/docs/user-guide.md) —
   scopes, registries, stages, and the schema APIs referenced throughout this
   guide
