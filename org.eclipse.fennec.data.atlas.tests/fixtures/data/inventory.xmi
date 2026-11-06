@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:inventory="https://eclipse.org/fennec/data/atlas/test/inventory/1.0.0">
+  <inventory:EthernetPort systemName="switch-1" deviceID="port-1" speed="1000"/>
+  <inventory:EthernetPort systemName="switch-1" deviceID="port-2" speed="10000"/>
+  <inventory:EthernetPort systemName="switch-2" deviceID="port-1" speed="100"/>
+</xmi:XMI>

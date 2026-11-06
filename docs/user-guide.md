@@ -293,6 +293,13 @@ curl http://localhost:8080/rest/example/persons
 curl http://localhost:8080/rest/example/persons/p1
 ```
 
+The `{id}` is the object's identity as the fennec persistence stack defines it:
+the value of the single `iD` attribute, or — for a type identified by several
+key attributes, declared with the EAnnotation `http://eclipse.org/fennec/persistence/1.0`,
+detail `idFeatures="systemName,deviceID"` — the canonical composite key
+`systemName=switch-1,deviceID=port-2` (attribute order as declared). File and
+bridge inputs honour both forms, like the JPA and Mongo repositories do.
+
 ### Pagination
 
 The list endpoint overlays REST pagination onto the DataSet's query

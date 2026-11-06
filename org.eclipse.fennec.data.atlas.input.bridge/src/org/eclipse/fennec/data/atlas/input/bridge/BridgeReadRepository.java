@@ -33,6 +33,7 @@ import org.eclipse.fennec.model.query.ParameterDecl;
 import org.eclipse.fennec.model.query.Query;
 import org.eclipse.fennec.model.query.builder.QueryBuilder;
 import org.eclipse.fennec.persistence.capabilities.CommandCapabilitiesBuilder;
+import org.eclipse.fennec.persistence.helper.CompositeIds;
 import org.eclipse.fennec.persistence.capabilities.PersistenceCapabilities;
 import org.eclipse.fennec.persistence.capabilities.StoreCapabilitiesBuilder;
 import org.eclipse.fennec.persistence.query.QueryException;
@@ -141,7 +142,9 @@ public class BridgeReadRepository implements ReadRepository {
 
 	@Override
 	public URI createUri(EObject object) {
-		return createUri(object.eClass(), EcoreUtil.getID(object));
+		// the persistence stack's identity: the single iD attribute, or the
+		// idFeatures annotation's k1=v1,k2=v2 shape for composite keys
+		return createUri(object.eClass(), CompositeIds.fragment(object));
 	}
 
 	@Override
