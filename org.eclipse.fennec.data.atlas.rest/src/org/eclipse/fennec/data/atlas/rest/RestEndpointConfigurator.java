@@ -22,12 +22,12 @@ import java.util.Map;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.fennec.atlas.configuration.DataInput;
 import org.eclipse.fennec.codec.annotation.RequireCodecJson;
 import org.eclipse.fennec.codec.csv.annotation.RequireCodecCsv;
 import org.eclipse.fennec.codec.openapi.annotation.RequireCodecOpenApi;
 import org.eclipse.fennec.codec.rest.annotations.RequireCodecMessageBodyReaderWriter;
 import org.eclipse.fennec.data.atlas.api.DataAtlasConstants;
-import org.eclipse.fennec.atlas.configuration.DataInput;
 import org.eclipse.fennec.data.atlas.configuration.DataSet;
 import org.eclipse.fennec.data.atlas.configuration.RestDataService;
 import org.eclipse.fennec.data.atlas.configuration.RestDataServiceConfiguration;
@@ -48,6 +48,7 @@ import org.osgi.service.jakartars.whiteboard.JakartarsWhiteboardConstants;
 import org.osgi.service.jakartars.whiteboard.annotations.RequireJakartarsWhiteboard;
 import org.osgi.service.servlet.whiteboard.annotations.RequireHttpWhiteboard;
 
+import aQute.bnd.annotation.service.ServiceCapability;
 import jakarta.ws.rs.core.Application;
 
 /**
@@ -87,6 +88,8 @@ import jakarta.ws.rs.core.Application;
 @RequireCodecJson
 @RequireCodecCsv
 @RequireCodecOpenApi
+@ServiceCapability(ReadRepository.class)
+@ServiceCapability(Application.class)
 public class RestEndpointConfigurator {
 
 	private static final Logger LOG = System.getLogger(RestEndpointConfigurator.class.getName());
