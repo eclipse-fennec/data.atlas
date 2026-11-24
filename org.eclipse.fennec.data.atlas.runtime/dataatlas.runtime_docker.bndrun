@@ -1,4 +1,10 @@
--include: dataatlas.runtime_base.bndrun
+# The second entry is the SBOM exporter for `./gradlew sbom`, included only once it has been
+# fetched (see cnf/sbom/plugin.bnd); until then it expands to nothing, and resolve, the build
+# and the export ignore it as well as -sbom.
+-include: \
+	dataatlas.runtime_base.bndrun,\
+	${if;${isfile;${workspace}/cnf/cache/sbom-exporter/org.gecko.bnd.sbom.jar};${workspace}/cnf/sbom/plugin.bnd}
+-sbom: level=medium, format=cyclonedx
 
 # the file-mode configuration flavour (runtime.config is no longer part of the
 # base resolve so the atlas flavour can ship its own config bundle instead)
