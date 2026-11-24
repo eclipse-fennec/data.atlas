@@ -35,8 +35,6 @@ jobs:
         distribution: "temurin"
         cache: "gradle"
         java-version: 21
-    - name: Grant execute permission for gradlew
-      run: chmod +x ./gradlew
     - name: Gradle version
       run: ./gradlew --no-daemon --version
     - name: Build with Gradle
