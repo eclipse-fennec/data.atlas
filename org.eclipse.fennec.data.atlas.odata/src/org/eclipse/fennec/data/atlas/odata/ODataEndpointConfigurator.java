@@ -122,15 +122,13 @@ public class ODataEndpointConfigurator {
 	private static final String KEY_MAX_TOP = "odata.max.top";
 	private static final String KEY_QUERY_SERVICE_TARGET = "QueryService.target";
 	/**
-	 * The backend's DS reference is declared by {@code setRepository(...)} without an
-	 * explicit name, so its target property is {@code Repository.target} — not the
-	 * lower-case key the emf.odata manual documents, which DS ignores (the backend then
-	 * binds an arbitrary repository; emf.odata#82). Config Admin keys are
-	 * case-insensitive, so exactly one spelling can be set: the one that works. Config
-	 * Admin's case-insensitive lookup also keeps it working should upstream rename the
-	 * reference to {@code repository}.
+	 * The backend's DS reference is named {@code repository} (emf.odata#111), so its
+	 * target property is {@code repository.target}, as the emf.odata manual documents.
+	 * DS matches the target key case-sensitively: the former {@code Repository.target}
+	 * (needed while the reference was unnamed, emf.odata#82) is ignored since then and
+	 * the backend binds an arbitrary repository.
 	 */
-	private static final String KEY_REPOSITORY_TARGET = "Repository.target";
+	private static final String KEY_REPOSITORY_TARGET = "repository.target";
 	private static final String KEY_BACKEND_PACKAGES = "emf.nsURIs";
 	private static final String KEY_BACKEND_PAGE_SIZE = "max.page.size";
 	private static final String CONFIG_NAME_PREFIX = "dataAtlas.";
